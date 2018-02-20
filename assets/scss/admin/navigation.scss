@@ -1,0 +1,105 @@
+.admin-navigation {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 240px;
+    padding-bottom: 30px;
+    z-index: 2;
+    -webkit-border-radius: 0.1rem;
+    -moz-border-radius: 0.1rem;
+    border-radius: 0.1rem;
+
+    .admin-logo {
+
+        position: absolute;
+        width: 100%;
+
+        a {
+            display: block;
+            width: 100%;
+            height: 70px;
+            color: #fff;
+            font-size: 24px;
+            line-height: 70px;
+            padding-left: 20px;
+        }
+        a:hover {
+            text-decoration: none;
+        }
+    }
+
+    ul {
+        position: absolute;
+        top: 70px;
+        list-style: none;
+        width: 240px;
+        li {
+            width: 100%;
+            text-align: left;
+            position: relative;
+            a {
+                display: block;
+                width: 100%;
+                padding: 10px 5px 10px 20px;
+                -webkit-transition: all 0.25s ease-in-out;
+                -moz-transition: all 0.25s ease-in-out;
+                -o-transition: all 0.25s ease-in-out;
+                transition: all 0.25s ease-in-out;
+                i {
+                    margin-right: 0.5rem;
+                }
+                i.fa-chevron-right {
+                    float: right;
+                }
+                .icon {
+
+                }
+                .label {
+
+                }
+            }
+            a:hover {
+                text-decoration: none;
+            }
+            ul {
+                display: block;
+                position: absolute;
+                left: 240px;
+                top: 0;
+                padding-left: 0;
+                width: 200px;
+                visibility:hidden;
+                opacity: 0;
+                list-style: none;
+                -webkit-transition: all 0.25s ease-in-out;
+                -moz-transition: all 0.25s ease-in-out;
+                -o-transition: all 0.25s ease-in-out;
+                transition: all 0.25s ease-in-out;
+            }
+        }
+        li:hover {
+
+            ul {
+                visibility: visible;
+                opacity: 1;
+                width: 200px;
+                -webkit-transition: all 0.1s ease-in-out;
+                -moz-transition: all 0.1s ease-in-out;
+                -o-transition: all 0.1s ease-in-out;
+                transition: all 0.1s ease-in-out;
+            }
+        }
+    }
+}
+
+
+
+.collapsed {
+    .admin-menu {
+
+
+
+
+    }
+}

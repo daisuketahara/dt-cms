@@ -1,0 +1,8 @@
+#https://symfony.com/doc/current/doctrine.html
+
+# Create entity
+php bin/console make:entity Product
+
+
+php bin/console doctrine:migrations:diff
+php bin/console doctrine:migrations:migrate

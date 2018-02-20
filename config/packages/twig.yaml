@@ -1,0 +1,8 @@
+twig:
+    paths: ['%kernel.project_dir%/templates', '%kernel.project_dir%/modules/Freelancer/templates']
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+    globals:
+        menuservice: '@App\Service\MenuService'
+        settingservice: '@App\Service\SettingService'
+    form_themes: ['bootstrap_4_layout.html.twig']

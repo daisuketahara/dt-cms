@@ -1,0 +1,40 @@
+{# templates/locale/admin/list.html.twig #}
+{% extends 'admin.html.twig' %}
+
+{% set page_title='Locale' %}
+
+{% block body %}
+<table class="table table-hover table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th class="width-100" data-column="id">{% trans %}ID{% endtrans %}</th>
+            <th data-column="name">{% trans %}Language{% endtrans %}</th>
+            <th data-column="locale">{% trans %}Locale{% endtrans %}</th>
+            <th data-column="lcid">{% trans %}LCID{% endtrans %}</th>
+            <th data-column="isoCode">{% trans %}ISO Code{% endtrans %}</th>
+            <th data-column="default">{% trans %}Default{% endtrans %}</th>
+            <th data-column="active">{% trans %}Active{% endtrans %}</th>
+        </tr>
+    </thead>
+</table>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/paginator.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/modal.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/list.js') }}"></script>
+    <script type="text/javascript">
+
+        $('.table').dtTable({
+            ajaxUrl: '/{{ app.request.locale }}/admin/locale/ajaxlist',
+            addUrl: '/{{ app.request.locale }}/admin/locale/add',
+            editUrl: '/{{ app.request.locale }}/admin/locale/edit',
+            deleteUrl: '/{{ app.request.locale }}/admin/locale/delete',
+            filter: true,
+            sort: 'asc',
+            limit: 15
+        });
+
+    </script>
+{% endblock %}

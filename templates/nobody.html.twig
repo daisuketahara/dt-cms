@@ -1,0 +1,62 @@
+{# templates/admin.html.twig #}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="profile" href="http://gmpg.org/xfn/11">
+        <title>{% block title %}Test Application{% endblock %}</title>
+
+        {% block stylesheets %}
+            <link href="{{ asset('css/admin.css') }}" rel="stylesheet" />
+        {% endblock %}
+
+        <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+
+    </head>
+    <body>
+        <div class="">
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-dismissible alert-danger">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            {% for message in app.flashes('notice') %}
+                <div class="alert alert-dismissible alert-danger">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-dismissible alert-danger">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            {% block body %}{% endblock %}
+        </div>
+        <footer class="container-fluid margin-top-10 font-12">
+                &copy; 2014 - {{ "now"|date('Y') }} by InterMention.
+                {% trans %}All rights reserved.{% endtrans %}
+                {{constant('APPLICATION_VERSION')}}
+        </footer>
+        <div class="modal fade" id="im-media-manager" tabindex="-1" role="dialog" aria-labelledby="im-media-manager" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{% trans %}Media Manager{% endtrans %}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans %}Close{% endtrans %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% block javascripts %}
+            <script src="{{ asset('js/admin.js') }}"></script>
+        {% endblock %}
+    </body>
+</html>

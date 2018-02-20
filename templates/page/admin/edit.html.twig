@@ -1,0 +1,281 @@
+{# templates/lucky/number.html.twig #}
+{% extends 'admin.html.twig' %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+
+        <script type="text/javascript" src="{{ asset('vendor/tinymce/tinymce.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('vendor/edit_area/edit_area_full.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+
+<form action="" method="post">
+    <input type="hidden" name="token" value="{{ csrf_token('edit-page') }}" />
+    <div class="form-group">
+        <input type="text" id="post-title" name="post-title" class="form-control" value="{{page_title}}" placeholder="{% trans %}Enter your title here...{% endtrans %}">
+    </div>
+    <div class="row margin-bottom-15">
+        <div class="col">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon3">{{constant('PUBLIC_PATH')}}/</span>
+                </div>
+                <input type="text" class="form-control" id="post-route" name="post-route" value="{{slug}}" aria-describedby="basic-addon3">
+            </div>
+        </div>
+        <div class="col-md-auto text-right">
+            <a id="im-post-editor-meta" class="btn btn-secondary text-white" data-toggle="collapse" data-target="#im-post-meta-container" data-parent="#im-post-collapse" aria-expanded="false" aria-controls="im-post-meta-container">
+                {% trans %}Meta{% endtrans %}
+                <i class="fa fa-caret-down" aria-hidden="true"></i>
+            </a>
+            <a id="im-post-editor-settings" class="btn btn-secondary text-white" data-toggle="collapse" data-target="#im-post-settings-container" data-parent="#im-post-collapse" aria-expanded="false" aria-controls="im-post-settings-container">
+                <i class="fa fa-cogs"></i>
+                {% trans %}Settings{% endtrans %}
+                <i class="fa fa-caret-down" aria-hidden="true"></i>
+            </a>
+            <div class="dropdown inline-block">
+                <button class="btn btn-secondary rounded dropdown-toggle" type="button" id="im-post-editor-mode" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                    {% trans %}Editor{% endtrans %}
+                </button>
+                <div class="dropdown-menu w-100" aria-labelledby="im-post-editor-mode">
+                    <a id="im-set-visual" class="im-set-switch btn btn-secondary w-100 dropdown-item" href="#">
+                        <i class="fa fa-eye" aria-hidden="true"></i> {% trans %}Visual{% endtrans %}
+                    </a>
+                    <a id="im-set-editor" class="im-set-switch btn btn-secondary w-100 dropdown-item" href="#">
+                        <i class="fa fa-pencil" aria-hidden="true"></i> {% trans %}Editor{% endtrans %}
+                    </a>
+                    <a id="im-set-html" class="im-set-switch btn btn-secondary w-100 dropdown-item" href="#">
+                        <i class="fa fa-code" aria-hidden="true"></i> {% trans %}HTML{% endtrans %}
+                    </a>
+                </div>
+            </div>
+            <button type="submit" id="post-submit" class="btn btn-primary width-150">
+                <i class="fa fa-save" aria-hidden="true"></i> {% trans %}Publish{% endtrans %}
+            </button>
+        </div>
+    </div>
+    <div id="im-post-collapse">
+        <div id="im-post-meta-container" class="margin-bottom-10 collapse">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>{% trans %}Title tag{% endtrans %}</label>
+                        <input type="input" id="im-post-meta-title" name="im-post-meta-title" class="form-control" value="{{meta_title}}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>{% trans %}Meta keywords{% endtrans %}</label>
+                        <input type="input" id="im-post-meta-keywords" name="im-post-meta-keywords" class="form-control" value="{{meta_keywords}}">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>{% trans %}Meta description{% endtrans %}</label>
+                        <input type="input" id="im-post-meta-description" name="im-post-meta-description" class="form-control" value="{{meta_description}}>">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>{% trans %}Custom meta{% endtrans %}</label>
+                <textarea class="form-control" rows="4">{{meta_custom}}</textarea>
+            </div>
+        </div>
+        <div id="im-post-settings-container" class="margin-bottom-10 collapse">
+            <div class="row">
+                <div class="col-md-auto">
+                    <?php if (!empty($post->main_image)) { ?>
+                    <img src="<?php echo $post->main_image; ?>" alt="..." class="img-thumbnail">
+                    <?php } else { ?>
+                    <img src="/img/default-300x169.png" alt="{% trans %}No image{% endtrans %}" class="img-thumbnail">
+                    <?php } ?><br>
+                    <a id="" class="btn btn-secondary w-100 margin-top-5" data-toggle="modal" data-target="#im-media-manager">{% trans %}Add image{% endtrans %}</a>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>{% trans %}Publish date{% endtrans %}</label>
+                                <input type="date" name="post-date" class="form-control" value="{{publish_date}}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>{% trans %}Expire date{% endtrans %}</label>
+                                <input type="date" name="expire-date" class="form-control" value="{{expire_date}}">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>{% trans %}Page status{% endtrans %}</label>
+                                <select name="page-status" class="form-control">
+                                    <option value="publish">{% trans %}Publish{% endtrans %}</option>
+                                    <option value="draft">{% trans %}Draft{% endtrans %}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>{% trans %}Page width{% endtrans %}</label>
+                                <select name="page-width" class="form-control">
+                                    <option value="default">{% trans %}Default{% endtrans %}</option>
+                                    <option value="1140">{% trans %}1140px{% endtrans %}</option>
+                                    <option value="980">{% trans %}980px{% endtrans %}</option>
+                                    <option value="700">{% trans %}700px{% endtrans %}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>{% trans %}Disable layout{% endtrans %}</label>
+                                <select name="disable-layout" class="form-control">
+                                    <option value="0">{% trans %}No{% endtrans %}</option>
+                                    <option value="1">{% trans %}Yes{% endtrans %}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>{% trans %}Authorization{% endtrans %}</label>
+                                <input type="text" name="authorization" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="im-post-editor-html" class="form-group">
+        <textarea id="page-content" name="page-content" class="form-control" style="min-height: 543px;">{{content}}</textarea>
+    </div>
+    <div id="im-post-editor-components" class="w-100 mb-3" style="display: none; min-height: 543px;background: white; border: 1px solid rgba(0, 0, 0, .125); border-radius: 4px; ">
+
+    </div>
+    <div class="card margin-bottom-15">
+        <div class="card-header im-post-editor-card" data-toggle="collapse" data-target="#custom-css-collapse" aria-expanded="false" aria-controls="custom-css-collapse">
+                {% trans %}Custom CSS{% endtrans %}
+                <a class="float-right pointer"><i class="fa fa-chevron-left" aria-hidden="true"></i></a>
+        </div>
+        <div id="custom-css-collapse" class="card-block collapse">
+            <textarea id="custom-css" name="custom-css" class="form-control">{{custom_css}}</textarea>
+        </div>
+    </div>
+    <div class="card margin-bottom-15">
+        <div class="card-header im-post-editor-card" data-toggle="collapse" data-target="#custom-js-collapse" aria-expanded="false" aria-controls="custom-js-collapse">
+            {% trans %}Custom Javascript{% endtrans %}
+            <a class="float-right pointer"><i class="fa fa-chevron-left" aria-hidden="true"></i></a>
+        </div>
+        <div id="custom-js-collapse" class="card-block collapse">
+            <textarea id="custom-js" name="custom-js" class="form-control">{{custom_js}}</textarea>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+
+    jQuery(document).ready(function() {
+
+        jQuery(document).on('blur', '#post-title', function() {
+
+            var url = jQuery('#post-url').val();
+
+            if (url == '') jQuery('#post-url').val(encodeURIComponent(jQuery('#post-title').val()));
+
+
+
+        });
+
+        jQuery('#im-post-collapse').on('show.bs.collapse','.collapse', function() {
+            jQuery('#im-post-collapse').find('.collapse.show').collapse('hide');
+        });
+
+        jQuery(document).on('click', '.im-post-editor-card', function() {
+
+            jQuery(this).find('i').toggleClass('fa-chevron-left').toggleClass('fa-chevron-down');
+
+        });
+        jQuery(document).on('click', '#im-set-visual', function() {
+            jQuery('#im-post-editor-html').hide();
+            jQuery('#im-post-editor-components').addClass('active').show();
+            jQuery('.im-set-switch ').removeClass('btn-info').addClass('btn-secondary');
+            jQuery(this).removeClass('btn-default').addClass('btn-info');
+            disableEditor();
+        });
+        jQuery(document).on('click', '#im-set-editor', function() {
+            jQuery('#im-post-editor-html').show();
+            jQuery('#im-post-editor-components').removeClass('active').hide();
+            jQuery('.im-set-switch ').removeClass('btn-info').addClass('btn-secondary');
+            jQuery(this).removeClass('btn-default').addClass('btn-info');
+            enableEditor();
+        });
+        jQuery(document).on('click', '#im-set-html', function() {
+            jQuery('#im-post-editor-html').show();
+            jQuery('#im-post-editor-components').removeClass('active').hide();
+            jQuery('.im-set-switch ').removeClass('btn-info').addClass('btn-secondary');
+            jQuery(this).removeClass('btn-default').addClass('btn-info');
+            disableEditor();
+        });
+
+     	editAreaLoader.init({
+     		id: "custom-css",
+     		allow_toggle: true,
+            display: 'later',
+     		language: "en",
+     		syntax: "css",
+     		toolbar: "undo, redo",
+     		syntax_selection_allow: "css",
+     		min_height: 300,
+     		show_line_colors: true,
+     	});
+        editAreaLoader.init({
+            id: "custom-js",
+            start_highlight: true,
+            allow_toggle: true,
+            display: 'later',
+            language: "en",
+            syntax: "js",
+            toolbar: "undo, redo",
+            syntax_selection_allow: "js",
+            min_height: 300,
+            show_line_colors: true,
+        });
+
+        enableEditor();
+        function enableEditor() {
+
+            tinymce.init({
+                selector: '#page-content',
+                height: 400,
+                theme: 'modern',
+                menubar: false,
+                plugins: [
+                    'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                    'searchreplace wordcount visualblocks visualchars code fullscreen',
+                    'insertdatetime media nonbreaking save table contextmenu directionality',
+                    'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc help'
+                ],
+                toolbar1: 'undo redo | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+                image_advtab: true,
+                templates: [
+                    { title: 'Test template 1', content: 'Test 1' },
+                    { title: 'Test template 2', content: 'Test 2' }
+                ],
+                content_css: [
+                    '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+                    '//www.tinymce.com/css/codepen.min.css'
+                ],
+                branding: false
+            });
+        }
+        function disableEditor() {
+
+            tinyMCE.remove();
+
+        }
+    });
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,34 @@
+{# templates/locale/admin/list.html.twig #}
+{% extends 'admin.html.twig' %}
+
+{% block body %}
+<table class="table table-hover table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th class="width-100" data-column="id">{% trans %}ID{% endtrans %}</th>
+            <th data-column="creationDate">{% trans %}Date{% endtrans %}</th>
+            <th data-column="userIp">{% trans %}IP{% endtrans %}</th>
+            <th data-column="entity">{% trans %}Entity{% endtrans %}</th>
+            <th data-column="entityId">{% trans %}Entity ID{% endtrans %}</th>
+            <th data-column="log">{% trans %}Log{% endtrans %}</th>
+            <th data-column="comment">{% trans %}Comment{% endtrans %}</th>
+        </tr>
+    </thead>
+</table>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/paginator.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/modal.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/list.js') }}"></script>
+    <script type="text/javascript">
+
+        $('.table').dtTable({
+            ajaxUrl: '/{{ app.request.locale }}/admin/log/ajaxlist',
+            filter: true,
+            limit: 15
+        });
+
+    </script>
+{% endblock %}

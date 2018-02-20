@@ -1,0 +1,15 @@
+.env
+.DS_Store
+modules/*
+!modules/.gitignore
+Migrations/*
+!Migrations/.gitignore
+public/vendor/*
+!public/vendor/.gitignore
+var/cache/*
+vendor/*
+!vendor/.gitignore
+###> symfony/phpunit-bridge ###
+.phpunit
+/phpunit.xml
+###< symfony/phpunit-bridge ###
