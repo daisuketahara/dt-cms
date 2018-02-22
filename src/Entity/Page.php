@@ -57,42 +57,42 @@
         protected $publishDate;
 
         /**
-         * @ORM\Column(type="datetime")
+         * @ORM\Column(type="datetime", nullable=true)
          */
         protected $expireDate;
 
         /**
          * @ORM\Column(type="boolean")
          */
-        protected $status;
+        protected $status = 0;
 
         /**
-         * @ORM\Column(type="string", length=5)
+         * @ORM\Column(type="string", length=5, nullable=true)
          */
         protected $locale;
 
         /**
-         * @ORM\Column(type="string", length=20)
+         * @ORM\Column(type="string", length=20, nullable=true)
          */
         protected $pageWidth;
 
         /**
          * @ORM\Column(type="integer")
          */
-        protected $disableLayout;
+        protected $disableLayout = 0;
 
         /**
-         * @ORM\Column(type="integer")
+         * @ORM\Column(type="integer", nullable=true)
          */
         protected $mainImage;
 
         /**
-         * @ORM\Column(type="text")
+         * @ORM\Column(type="text", nullable=true)
          */
         protected $customCss;
 
         /**
-         * @ORM\Column(type="text")
+         * @ORM\Column(type="text", nullable=true)
          */
         protected $customJs;
 

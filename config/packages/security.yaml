@@ -19,13 +19,12 @@ security:
             form_login:
                 login_path: login
                 check_path: login
-                default_target_path: account_index
+                default_target_path: admin_dashboard
                 use_referer: true
                 csrf_token_generator: security.csrf.token_manager
-        #secured_area:
-                #logout:
-                    #path: /logout
-                    #target: /
+            logout:
+                path: logout
+                target: /en/login
 
 
     access_control:

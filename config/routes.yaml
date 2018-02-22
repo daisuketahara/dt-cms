@@ -6,15 +6,3 @@ freelancer_admin:
     controller: Freelancer\Controller\FreelancerController::list
     requirements:
         _locale: '%app.locales%'
-
-file:
-    path: /{_locale}/file/{file}
-    controller: App\Controller\FileController::index
-    requirements:
-        page: '\d+'
-        _locale: '%app.locales%'
-
-logout:
-    path: /{_locale}/logout
-    requirements:
-        _locale: '%app.locales%'

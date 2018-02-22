@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <link rel="profile" href="http://gmpg.org/xfn/11">
-        <title>{% block title %}{{ page_title }} - {{settingservice.getSetting('siteName')}}{% endblock %}</title>
+        <title>{% block title %}{{ page_title }} - {{settingservice.getSetting('siteName')|striptags}}{% endblock %}</title>
 
         {% block stylesheets %}
             <link href="https://fonts.googleapis.com/css?family=Ubuntu" media="screen" rel="stylesheet" type="text/css">
@@ -20,7 +20,7 @@
                 <div class="admin-logo">
                     <a href="/{{ app.request.locale }}/admin/">
                         <i class="fa fa-cubes" aria-hidden="true"></i>
-                        Inter<span style="color:#c42;">Mention</span>
+                        {{settingservice.getSetting('siteName')|raw}}
                     </a>
                 </div>
                 {% block sidebar %}
@@ -43,30 +43,19 @@
                         {% endif %}
                         </li>
                     {% endfor %}
-                        <li><a href="/{{ app.request.locale }}"><i class="fas fa-arrow-left"></i> {% trans %}To website{% endtrans %}</a></li>
                     </ul>
                 </nav>
                 {% endblock %}
             </div>
             <div class="admin-user-menu dropdown inline-block margin-right-15">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <!--
-                    <?php
-                        $gravatar = $this->gravatar();
-                        $gravatar->setEmail($this->identity());
-                        $gravatar->setImgSize(40);
-                        $gravatar->setDefaultImg( \Zend\View\Helper\Gravatar::DEFAULT_MM );
-                        $gravatar->setRating( \Zend\View\Helper\Gravatar::RATING_G );
-                        $gravatar->setSecure(true);
-                        echo $gravatar->getImgTag();
-                        echo '<span class="hidden-sm-down">' . $this->identity() . '</span>';
-                    ?>
-                -->
+                    <!-- Gravatar img -->
+                    <span class="hidden-sm-down">{{ app.user.getFirstname() }} {{ app.user.getLastname() }}</span>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="right:0;left:auto;">
-                    <a class="dropdown-item" href="#">{% trans %}My account{% endtrans %}</a>
-                    <a class="dropdown-item" href="/reset-password">{% trans %}Change password{% endtrans %}</a>
-                    <a class="dropdown-item" href="/logout">{% trans %}Logout{% endtrans %}</a>
+                    <a class="dropdown-item" href="/{{ app.request.locale }}/admin/account">{% trans %}My account{% endtrans %}</a>
+                    <a class="dropdown-item" href="/{{ app.request.locale }}/admin/reset-password">{% trans %}Change password{% endtrans %}</a>
+                    <a class="dropdown-item" href="/{{ app.request.locale }}/logout">{% trans %}Logout{% endtrans %}</a>
                 </div>
             </div>
             <main class="admin-content">

@@ -1,0 +1,35 @@
+{# templates/user/admin/list.html.twig #}
+{% extends 'admin.html.twig' %}
+
+{% block body %}
+<table class="table table-hover table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th class="width-100" data-column="id">{% trans %}ID{% endtrans %}</th>
+            <th data-column="email">{% trans %}Email{% endtrans %}</th>
+            <th data-column="firstname">{% trans %}Firstname{% endtrans %}</th>
+            <th data-column="lastname">{% trans %}Lastname{% endtrans %}</th>
+            <th data-column="active">{% trans %}Status{% endtrans %}</th>
+        </tr>
+    </thead>
+</table>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/paginator.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/modal.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/list.js') }}"></script>
+    <script type="text/javascript">
+
+        $('.table').dtTable({
+            ajaxUrl: '/{{ app.request.locale }}/admin/user/ajaxlist',
+            addUrl: '/{{ app.request.locale }}/admin/user/add',
+            editUrl: '/{{ app.request.locale }}/admin/user/edit',
+            deleteUrl: '/{{ app.request.locale }}/admin/user/delete',
+            filter: true,
+            limit: 15
+        });
+
+    </script>
+{% endblock %}

@@ -21,7 +21,7 @@
             $setting = $this->em->getRepository(Setting::class)
                 ->findBy(array('settingKey' => $key), array());
 
-            if ($setting) return $setting[0]->getSettingValue();
+            if ($setting) return html_entity_decode($setting[0]->getSettingValue());
             return false;
         }
     }

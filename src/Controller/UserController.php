@@ -12,23 +12,20 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-use App\Entity\Setting;
-use App\Form\SettingForm;
+use App\Entity\User;
+use App\Form\UserForm;
 use App\Service\LogService;
 
 
-class SettingController extends Controller
+class UserController extends Controller
 {
     /**
-     * @Route("/{_locale}/admin/setting", name="setting")
+     * @Route("/{_locale}/admin/user", name="user")
      */
      final public function list(TranslatorInterface $translator, LogService $log)
      {
-
-
-
-         return $this->render('setting/admin/list.html.twig', array(
-             'page_title' => $translator->trans('Settings'),
+         return $this->render('user/admin/list.html.twig', array(
+             'page_title' => $translator->trans('Users'),
              'can_add' => true,
              'can_edit' => true,
              'can_delete' => true,
@@ -36,7 +33,7 @@ class SettingController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/setting/ajaxlist", name="setting_ajaxlist")
+      * @Route("/{_locale}/admin/user/ajaxlist", name="user_ajaxlist")
       */
      final public function ajaxlist(Request $request)
      {
@@ -55,12 +52,12 @@ class SettingController extends Controller
          }
 
          if (empty($limit)) {
-             $pages = $this->getDoctrine()
-                 ->getRepository(Setting::class)
+             $users = $this->getDoctrine()
+                 ->getRepository(User::class)
                  ->findBy($where, array($sort_column => $sort_direction));
          } else {
-             $pages = $this->getDoctrine()
-                 ->getRepository(Setting::class)
+             $users = $this->getDoctrine()
+                 ->getRepository(User::class)
                  ->findBy($where, array($sort_column => $sort_direction), $limit, $offset);
          }
 
@@ -70,7 +67,7 @@ class SettingController extends Controller
 
          $json = array(
              'total' => 6,
-             'data' => $pages
+             'data' => $users
          );
 
          $json = $serializer->serialize($json, 'json');
@@ -79,13 +76,11 @@ class SettingController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/setting/add", name="setting_add")
-      * @Route("/{_locale}/admin/setting/edit/{id}", name="setting_edit")
+      * @Route("/{_locale}/admin/user/add", name="user_add")
+      * @Route("/{_locale}/admin/user/edit/{id}", name="user_edit")
       */
     final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
-        //$this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN', null, 'Unable to access this page!');
-
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
         $serializer = new Serializer($normalizers, $encoders);
@@ -93,54 +88,54 @@ class SettingController extends Controller
         $logComment = 'Insert';
 
         if (!empty($id)) {
-            $setting = $this->getDoctrine()
-                ->getRepository(Setting::class)
+            $user = $this->getDoctrine()
+                ->getRepository(User::class)
                 ->find($id);
-            if (!$setting) {
-                $setting = new Setting();
+            if (!$user) {
+                $user = new User();
                 $this->addFlash(
                     'error',
-                    $translator->trans('The requested setting does not exist!')
+                    $translator->trans('The requested user does not exist!')
                 );
             } else {
                 $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $serializer->serialize($setting, 'json');
+                $logMessage .= $serializer->serialize($user, 'json');
                 $logMessage .= '<br><br>';
                 $logComment = 'Update';
 
             }
         } else {
-            $setting = new Setting();
+            $user = new User();
         }
 
-        $form = $this->createForm(SettingForm::class, $setting);
+        $form = $this->createForm(UserForm::class, $user);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
             // perform some action...
-            $setting = $form->getData();
+            $user = $form->getData();
 
             $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $serializer->serialize($setting, 'json');
+            $logMessage .= $serializer->serialize($user, 'json');
 
             $em = $this->getDoctrine()->getManager();
-            $em->persist($setting);
+            $em->persist($user);
             $em->flush();
-            $id = $setting->getId();
+            $id = $user->getId();
 
-            $log->add('Setting', $id, $logMessage, $logComment);
+            $log->add('User', $id, $logMessage, $logComment);
 
             $this->addFlash(
                 'success',
                 $translator->trans('Your changes were saved!')
             );
-            return $this->redirectToRoute('setting_edit', array('id' => $id));
+            return $this->redirectToRoute('user_edit', array('id' => $id));
         }
 
-        if (!empty($id)) $title = $translator->trans('Edit setting');
-        else $title = $translator->trans('Add setting');
+        if (!empty($id)) $title = $translator->trans('Edit user');
+        else $title = $translator->trans('Add user');
 
         return $this->render('common/form.html.twig', array(
             'form' => $form->createView(),
@@ -149,22 +144,22 @@ class SettingController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/setting/delete/{id}", name="setting_delete")
+      * @Route("/{_locale}/admin/user/delete/{id}", name="user_delete")
       */
      final public function delete($id, LogService $log)
      {
          $em = $this->getDoctrine()->getManager();
-         $setting = $em->getRepository(Setting::class)->find($id);
+         $user = $em->getRepository(User::class)->find($id);
 
          $encoders = array(new XmlEncoder(), new JsonEncoder());
          $normalizers = array(new ObjectNormalizer());
          $serializer = new Serializer($normalizers, $encoders);
          $logMessage = '<i>Data:</i><br>';
-         $logMessage .= $serializer->serialize($setting, 'json');
+         $logMessage .= $serializer->serialize($user, 'json');
 
-         $log->add('Setting', $id, $logMessage, 'Delete');
+         $log->add('User', $id, $logMessage, 'Delete');
 
-         $em->remove($setting);
+         $em->remove($user);
          $em->flush();
 
          return new Response(

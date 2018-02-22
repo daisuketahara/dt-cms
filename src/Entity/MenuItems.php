@@ -37,14 +37,14 @@ class MenuItems
     protected $route;
 
     /**
-     * @ORM\Column(type="string", length=20)
+     * @ORM\Column(type="string", length=20, nullable=true)
      */
     protected $target;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $protected;
+    protected $protected = 0;
 
     /**
      * @ORM\Column(type="integer")

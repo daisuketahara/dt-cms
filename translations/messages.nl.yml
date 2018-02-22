@@ -50,7 +50,7 @@ Delete: Verwijderen
 Language: Taal
 Locale: Locale
 LCID: LCID
-'ISO Code': ISO Code'
+'ISO Code': 'ISO Code'''
 Active: Actief
 'To website': 'Naar website'
 Error: Fout
@@ -59,3 +59,12 @@ Error: Fout
 Key: Key
 Value: Waarde
 Save: Opslaan
+Firstname: Voornaam
+Lastname: Achternaam
+Date: Datum
+IP: IP
+Entity: Entity
+'Entity ID': 'Entity ID'
+Log: Log
+Comment: Opmerking
+'View record': 'Bekijk gegevens'
