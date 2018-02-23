@@ -27,6 +27,10 @@ services:
 
 
     # inject dependencies into services
+    App\Service\FileService:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'
+            
     App\Service\MenuService:
         arguments:
             $em: '@doctrine.orm.entity_manager'

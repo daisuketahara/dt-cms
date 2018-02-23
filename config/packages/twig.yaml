@@ -5,4 +5,5 @@ twig:
     globals:
         menuservice: '@App\Service\MenuService'
         settingservice: '@App\Service\SettingService'
+        fileservice: '@App\Service\FileService'
     form_themes: ['bootstrap_4_layout.html.twig']
