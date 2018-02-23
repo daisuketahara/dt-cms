@@ -1,20 +1,18 @@
 <?php
 
-    // src/Controller/ApiController.php
+namespace App\Controller;
 
-    namespace App\Controller;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-    use Symfony\Component\HttpFoundation\Response;
-    use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-
-    class ApiController extends Controller
+class ApiController extends Controller
+{
+    public function index()
     {
-        public function index()
-        {
-            $number = mt_rand(0, 100);
+        $number = mt_rand(0, 100);
 
-            return $this->render('contact/index.html.twig', array(
-                'page_title' => 'Contact',
-            ));
-        }
+        return $this->render('contact/index.html.twig', array(
+            'page_title' => 'Contact',
+        ));
     }
+}

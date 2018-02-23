@@ -1,6 +1,5 @@
 <?php
 
-// src/Form/LocaleForm.php
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;

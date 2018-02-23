@@ -1,7 +1,4 @@
 <?php
-
-    // src/Controller/TemplateController.php
-
     namespace App\Controller;
 
     use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -13,11 +10,17 @@
     class TemplateController extends Controller
     {
         /**
-         * @Route("/{_locale}/admin/template", name="template_admin")
+         * @Route("/{_locale}/admin/template", name="template")
          */
-        public function index()
-        {
-        }
+         final public function list(TranslatorInterface $translator, LogService $log)
+         {
+             return $this->render('setting/admin/list.html.twig', array(
+                 'page_title' => $translator->trans('Settings'),
+                 'can_add' => true,
+                 'can_edit' => true,
+                 'can_delete' => true,
+             ));
+         }
 
          /**
           * @Route("/{_locale}/admin/template/edit/{id}", name="template_edit")

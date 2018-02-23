@@ -1,18 +1,18 @@
 <?php
-    // tests/Service/MailService.php
-    namespace App\Tests\Util;
 
-    use App\Service\MailService;
-    use PHPUnit\Framework\TestCase;
+namespace App\Tests\Util;
 
-    class MailServiceTest extends TestCase
+use App\Service\MailService;
+use PHPUnit\Framework\TestCase;
+
+class MailServiceTest extends TestCase
+{
+
+    // Run function and check if true
+    public function testEmptyQueue()
     {
-
-        // Run function and check if true
-        public function testEmptyQueue()
-        {
-            $Mail = new MailService();
-            $result = $Mail->emptyQueue();
-            $this->assertEquals(true, $result);
-        }
+        $Mail = new MailService();
+        $result = $Mail->emptyQueue();
+        $this->assertEquals(true, $result);
     }
+}
