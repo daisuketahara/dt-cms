@@ -84,7 +84,6 @@
 
         paginator += '</ul>';
         paginator += '</nav>';
-
         this.append(paginator);
 
     }

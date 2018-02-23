@@ -57,12 +57,21 @@ class PageController extends Controller
         $filter = $request->request->get('filter', '');
 
         $where = array();
+        $whereString = '1=1';
         $filter = explode('&', $filter);
         if (!empty($filter))
         foreach($filter as $filter_item) {
             $filter_item = explode('=', $filter_item);
-            if (!empty($filter_item[1])) $where[$filter_item[0]] = $filter_item[1];
+            if (!empty($filter_item[1])) {
+                $where[$filter_item[0]] = $filter_item[1];
+                $whereString .= " AND `" . $filter_item[0] . "`='" . $filter_item[1] . "'";
+            }
         }
+
+        $qb = $this->getDoctrine()->getRepository(Page::class)->createQueryBuilder('p');
+        $qb->select('count(p.id)');
+        $qb->where($whereString);
+        $count = $qb->getQuery()->getSingleScalarResult();
 
         if (empty($limit)) {
             $pages = $this->getDoctrine()

@@ -135,7 +135,7 @@
                 $('.table thead').after(tbody);
 
                 var colspan = object.find('thead tr:first-child th').length;
-                object.find('tbody').after('<tfoot class="text-center"><tr><td colspan="' + colspan + '"><div class="dt-table-paginator"></div></td><tr></tfoot>');
+                object.find('tbody').after('<tfoot class="text-center"><tr><td colspan="' + colspan + '"><div class="dt-table-paginator"></div></td></tr></tfoot>');
                 $('.dt-table-paginator').dtPaginator({
                     page: page,
                     lastPage: Math.ceil(total/limit),
@@ -147,8 +147,8 @@
 			}
         });
     }
-    function get_columns() {
-
+    function get_columns()
+    {
         var columns = [];
 
         object.find('thead tr:first-child th').each(function() {
@@ -158,21 +158,14 @@
     }
     function formatValue(value)
     {
-
         if (value === true) return '<a class="green"><i class="fas fa-check"></i></a>';
         if (value === false) return '<a class="red"><i class="fas fa-times"></i></a>';
-        if (typeof value === 'object') {
-
-
-
-
-
-        }
 
         return value;
     }
 
-    $(document).on('click', '.im-table-sort', function() {
+    $(document).on('click', '.im-table-sort', function()
+    {
 
         var direction = jQuery(this).data('sort');
 
@@ -194,25 +187,30 @@
         }
         load_body();
     });
-    $(document).on('blur', '.im-table-filter input', function() {
+    $(document).on('blur', '.im-table-filter input', function()
+    {
         load_body();
     });
-    $(document).on('submit', '.im-table-form', function(e) {
+    $(document).on('submit', '.im-table-form', function(e)
+    {
         e.preventDefault();
         load_body();
     });
-    $(document).on('click', '.pagination .page-link', function() {
+    $(document).on('click', '.pagination .page-link', function()
+    {
 
         page = jQuery(this).data('page');
         offset = (page-1) * limit;
         load_body();
     });
 
-    $(document).on('click', '.im-table-view', function() {
+    $(document).on('click', '.im-table-view', function()
+    {
 
         var id = $(this).data('id');
+
         for (i = 0; i < data.length; i++) {
-            if (data[i]['id']) {
+            if (data[i]['id'] == id) {
                 var row = data[i];
                 break;
             }
@@ -237,7 +235,8 @@
         });
     });
 
-    $(document).on('click', '.im-table-delete', function() {
+    $(document).on('click', '.im-table-delete', function()
+    {
 
         var id = $(this).data('id');
 
@@ -253,7 +252,8 @@
             buttons: buttons
         });
     });
-    jQuery(document).on('click', '#confirm-delete', function(e) {
+    jQuery(document).on('click', '#confirm-delete', function(e)
+    {
 
         var url = $(this).data('url');
         var id = $(this).data('id');
@@ -294,13 +294,5 @@
 
 			}
         });
-
-
-
-
     });
-
-
-
-
 }( jQuery ));
