@@ -216,7 +216,7 @@ class TranslationController extends Controller
         ->getRepository(Locale::class)
         ->findActiveLocales();
 
-        $logMessage = '<i>Log files created:</i><br>';
+        $logMessage = '<i>Translation files created:</i><br>';
 
         foreach($locales as $locale) {
 
