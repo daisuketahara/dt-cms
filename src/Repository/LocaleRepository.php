@@ -13,16 +13,13 @@ class LocaleRepository extends ServiceEntityRepository
         parent::__construct($registry, Locale::class);
     }
 
-    /*
-    public function findBySomething($value)
+    public function findActiveLocales()
     {
-        return $this->createQueryBuilder('s')
-            ->where('s.something = :value')->setParameter('value', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('l')
+            ->where('l.active = 1')
+            ->orderBy('l.default', 'DESC')
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 }

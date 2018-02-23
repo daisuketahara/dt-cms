@@ -82,6 +82,7 @@
             }
 
             // Create symlinks
+            // https://symfony.com/doc/current/components/filesystem.html
             $symlinks = array(
                 //'vendor/components/jquery/jquery.min.js' => 'public/vendor/jquery/jquery.min.js',
                 //'vendor/components/jquery/jquery.min.map' => 'public/vendor/jquery/jquery.min.map',

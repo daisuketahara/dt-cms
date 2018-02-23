@@ -1,0 +1,33 @@
+{% extends 'admin.html.twig' %}
+
+{% block body %}
+<table class="table table-hover table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th class="width-100" data-column="id">{% trans %}ID{% endtrans %}</th>
+            <th data-column="original">{% trans %}Text{% endtrans %}</th>
+            <th data-column="complete">{% trans %}Complete{% endtrans %}</th>
+        </tr>
+    </thead>
+</table>
+<a href="/{{ app.request.locale }}/admin/translation/generate" class="btn btn-secondary">{% trans %}Generate translation files{% endtrans %}</a>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/paginator.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/modal.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/list.js') }}"></script>
+    <script type="text/javascript">
+
+        $('.table').dtTable({
+            ajaxUrl: '/{{ app.request.locale }}/admin/translation/ajaxlist',
+            addUrl: '/{{ app.request.locale }}/admin/translation/add',
+            editUrl: '/{{ app.request.locale }}/admin/translation/edit',
+            view: false,
+            filter: true,
+            limit: 15
+        });
+
+    </script>
+{% endblock %}

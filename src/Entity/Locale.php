@@ -24,25 +24,25 @@ class Locale
     protected $name;
 
     /**
-     * @ORM\Column(type="string", length=5)
+     * @ORM\Column(type="string", length=5, unique=true)
      * @Assert\NotBlank()
      */
     protected $locale;
 
     /**
-     * @ORM\Column(type="string", length=5)
+     * @ORM\Column(type="string", length=5, unique=true)
      * @Assert\NotBlank()
      */
     protected $lcid;
 
     /**
-     * @ORM\Column(type="string", length=5)
+     * @ORM\Column(type="string", length=5, unique=true)
      * @Assert\NotBlank()
      */
     protected $isoCode;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", unique=true)
      */
     protected $default;
 
