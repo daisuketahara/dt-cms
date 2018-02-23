@@ -3,8 +3,9 @@
 namespace App\Service;
 
 use Doctrine\ORM\EntityManager;
-use App\Entity\Log;
 use Symfony\Component\HttpFoundation\Request;
+
+use App\Entity\Log;
 
 class LogService
 {

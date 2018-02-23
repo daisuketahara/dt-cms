@@ -1,0 +1,34 @@
+{# templates/page/admin/list.html.twig #}
+{% extends 'admin.html.twig' %}
+
+{% block body %}
+<table class="table table-hover table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th class="width-100" data-column="id">{% trans %}ID{% endtrans %}</th>
+            <th data-column="toEmail">{% trans %}Email{% endtrans %}</th>
+            <th data-column="subject">{% trans %}Subject{% endtrans %}</th>
+            <th data-column="creationDate">{% trans %}Creation date{% endtrans %}</th>
+            <th data-column="sendDate">{% trans %}Send date{% endtrans %}</th>
+            <th data-column="status">{% trans %}Status{% endtrans %}</th>
+        </tr>
+    </thead>
+</table>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/paginator.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/modal.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/list.js') }}"></script>
+    <script type="text/javascript">
+
+        $('.table').dtTable({
+            ajaxUrl: '/{{ app.request.locale }}/admin/mail/queue/list',
+            deleteUrl: '/{{ app.request.locale }}/admin/mail/queue/delete',
+            filter: true,
+            limit: 15
+        });
+
+    </script>
+{% endblock %}

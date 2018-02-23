@@ -1,32 +1,38 @@
 <?php
 
-    // src/Service/MailService.php
+namespace App\Service;
 
-    namespace App\Service;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\Request;
 
-    class MailService
+use App\Entity\MailQueue;
+
+class MailService
+{
+    protected $em;
+    protected $request;
+
+    public function __construct(EntityManager $em)
     {
-        public function addToQueue($to, $from, $subject, $message, $attachment=array(), $delay=0)
-        {
-
-
-
-            return;
-        }
-
-        public function removeFromQueue($id)
-        {
-
-
-
-
-        }
-
-        public function emptyQueue()
-        {
-
-
-
-            return true;
-        }
+        $this->em = $em;
     }
+
+    public function addToQueue($fromName, $fromEmail, $toName, $toEmail, $subject, $body)
+    {
+        $mail = new MailQueue();
+        $request = Request::createFromGlobals();
+
+        $mail->setFromName($fromName);
+        $mail->setFromEmail($fromEmail);
+        $mail->setToName($toName);
+        $mail->setToEmail($toEmail);
+        $mail->setSubject($subject);
+        $mail->setBody($body);
+        $mail->setCreationDate(new \DateTime("now"));
+
+        $this->em->persist($mail);
+        $this->em->flush();
+
+        return false;
+    }
+}

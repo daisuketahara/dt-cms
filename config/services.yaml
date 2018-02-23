@@ -40,6 +40,10 @@ services:
             $em: '@doctrine.orm.entity_manager'
             #$request: '@request'
 
+    App\Service\MailService:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'
+
     # Load custom modules
     Freelancer\:
         resource: '../modules/Freelancer/src/*'
