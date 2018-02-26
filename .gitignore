@@ -1,5 +1,6 @@
 .env
 .DS_Store
+config/services.yaml
 modules/*
 !modules/.gitignore
 Migrations/*

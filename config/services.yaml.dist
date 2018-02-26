@@ -3,6 +3,7 @@
 parameters:
     locale: 'en'
     app.locales: en|nl
+    files_directory: '%kernel.project_dir%/files'
 
 services:
     # default configuration for services in *this* file
@@ -30,7 +31,7 @@ services:
     App\Service\FileService:
         arguments:
             $em: '@doctrine.orm.entity_manager'
-            
+
     App\Service\MenuService:
         arguments:
             $em: '@doctrine.orm.entity_manager'

@@ -17,6 +17,11 @@ class File
     private $id;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    protected $account_id;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     protected $name;
@@ -42,7 +47,7 @@ class File
     protected $fileType;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="boolean")
      */
     protected $active;
 
