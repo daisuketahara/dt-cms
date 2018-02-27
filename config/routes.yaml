@@ -1,8 +1,8 @@
-#index:
-#    path: /{_locale}/
-#    controller: App\Controller\DefaultController::index
-freelancer_admin:
-    path: /{_locale}/admin/freelancer
-    controller: Freelancer\Controller\FreelancerController::list
-    requirements:
-        _locale: '%app.locales%'
+# config/routes.yaml
+controllers:
+    resource: ../src/Controller/
+    type: annotation
+
+app_extra:
+    resource: .
+    type: extra

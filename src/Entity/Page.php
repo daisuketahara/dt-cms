@@ -24,7 +24,7 @@ class Page
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      */
-    protected $slug;
+    protected $pageRoute;
 
     /**
      * @ORM\Column(type="text")
@@ -145,25 +145,25 @@ class Page
     }
 
     /**
-     * Get the value of Slug
+     * Get the value of PageRoute
      *
      * @return mixed
      */
-    public function getSlug()
+    public function getPageRoute()
     {
-        return $this->slug;
+        return $this->pageRoute;
     }
 
     /**
-     * Set the value of Slug
+     * Set the value of PageRoute
      *
-     * @param mixed slug
+     * @param mixed pageRoute
      *
      * @return self
      */
-    public function setSlug($slug)
+    public function setPageRoute($pageRoute)
     {
-        $this->slug = $slug;
+        $this->pageRoute = $pageRoute;
 
         return $this;
     }

@@ -18,6 +18,47 @@ use App\Service\LogService;
 
 class PageController extends Controller
 {
+    public function loadPage(Request $request)
+    {
+        $route = $request->attributes->get('_route');
+
+        $page = $this->getDoctrine()
+            ->getRepository(Page::class)
+            ->findByRoute($route);
+
+        if (!$page) {
+            throw $this->createNotFoundException('The page does not exist');
+            return $this->render('page/404.html.twig');
+        }
+
+        $pageTitle = $page->getPageTitle();
+        $content = $page->getContent();
+        $metaTitle = $page->getMetaTitle();
+        $metaKeywords = $page->getMetaKeywords();
+        $metaDescription = $page->getMetaDescription();
+        $metaCustom = $page->getMetaCustom();
+        $publishDate = $page->getPublishDate();
+        $pageWidth = $page->getPageWidth();
+        $disableLayout = $page->getDisableLayout();
+        $mainImage = $page->getMainImage();
+        $customCss = $page->getCustomCss();
+        $customJs = $page->getCustomJs();
+
+        return $this->render('page/page.html.twig', array(
+            'page_title' => $pageTitle,
+            'content' => $content,
+            'meta_keywords' => $metaTitle,
+            'meta_description' => $metaDescription,
+            'meta_custom' => $metaCustom,
+            'publish_date' => $publishDate,
+            'page_width' => $pageWidth,
+            'disable_layout' => $disableLayout,
+            'main_image' => $mainImage,
+            'custom_css' => $customCss,
+            'custom_js' => $customJs,
+        ));
+    }
+
     final public function show($slug)
     {
         // $slug will equal the dynamic part of the URL

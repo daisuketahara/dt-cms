@@ -48,12 +48,3 @@ services:
     App\Service\MailService:
         arguments:
             $em: '@doctrine.orm.entity_manager'
-
-    # Load custom modules
-    Freelancer\:
-        resource: '../modules/Freelancer/src/*'
-        exclude: '../modules/Freelancer/src/{Entity,Migrations,Tests}'
-
-    Freelancer\Controller\:
-        resource: '../modules/Freelancer/src/Controller'
-        tags: ['controller.service_arguments']

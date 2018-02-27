@@ -12,4 +12,13 @@ class PageRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Page::class);
     }
+
+    public function findByRoute($route)
+    {
+        return $this->createQueryBuilder('p')
+            ->where('p.pageRoute = :routes')
+            ->setParameter('routes', $route)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
