@@ -3,9 +3,8 @@
 
 {% block javascripts %}
     {{ parent() }}
-
-        <script type="text/javascript" src="{{ asset('vendor/tinymce/tinymce.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('vendor/edit_area/edit_area_full.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('vendor/tinymce/tinymce.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('vendor/edit_area/edit_area_full.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -13,7 +12,7 @@
 <form action="" method="post">
     <input type="hidden" name="token" value="{{ csrf_token('edit-page') }}" />
     <div class="form-group">
-        <input type="text" id="post-title" name="post-title" class="form-control" value="{{page_title}}" placeholder="{% trans %}Enter your title here...{% endtrans %}">
+        <input type="text" id="post-title" name="post-title" class="form-control" value="{{edit_page_title}}" placeholder="{% trans %}Enter your title here...{% endtrans %}">
     </div>
     <div class="row margin-bottom-15">
         <div class="col">

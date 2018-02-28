@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Translation\TranslatorInterface;
 
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
@@ -142,7 +143,7 @@ class PageController extends Controller
       * @Route("/{_locale}/admin/page/add", name="page_add")
       * @Route("/{_locale}/admin/page/edit/{id}", name="page_edit")
       */
-    final public function edit($id)
+    final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
         if (!empty($id)) {
             $page = $this->getDoctrine()
@@ -150,10 +151,10 @@ class PageController extends Controller
                 ->find($id);
 
             if (!$page) {
-                throw $this->createNotFoundException(
-                    'Page not found, page id: '.$id
-                );
+                $page = new Page();
             }
+        } else {
+            $page = new Page();
         }
 
         // https://symfony.com/doc/current/security/csrf.html
@@ -161,26 +162,30 @@ class PageController extends Controller
         // ... do something, like deleting an object
         //}
 
+
+
+        if (!empty($id)) $title = $translator->trans('Edit locale');
+        else $title = $translator->trans('Add locale');
+
         return $this->render('page/admin/edit.html.twig', array(
-            'page' => array(
-            ),
-                'page_title' => $page->getPageTitle(),
-                'slug' => $page->getSlug(),
-                'content' => $page->getContent(),
-                'meta_title' => $page->getMetaTitle(),
-                'meta_keywords' => $page->getMetaKeywords(),
-                'meta_description' => $page->getMetaDescription(),
-                'meta_custom' => $page->getMetaCustom(),
-                'publish_date' => '',
-                'expire_date' => '',
-                'status' => $page->getStatus(),
-                'locale' => '',
-                'page_width' => $page->getPageWidth(),
-                'disable_layout' => $page->getDisableLayout(),
-                'authorization' => '',
-                'main_image' => $page->getMainImage(),
-                'custom_css' => $page->getCustomCss(),
-                'custom_js' => $page->getCustomJs(),
+            'page_title' => $title,
+            'edit_page_title' => $page->getPageTitle(),
+            'slug' => $page->getPageRoute(),
+            'content' => $page->getContent(),
+            'meta_title' => $page->getMetaTitle(),
+            'meta_keywords' => $page->getMetaKeywords(),
+            'meta_description' => $page->getMetaDescription(),
+            'meta_custom' => $page->getMetaCustom(),
+            'publish_date' => '',
+            'expire_date' => '',
+            'status' => $page->getStatus(),
+            'locale' => '',
+            'page_width' => $page->getPageWidth(),
+            'disable_layout' => $page->getDisableLayout(),
+            'authorization' => '',
+            'main_image' => $page->getMainImage(),
+            'custom_css' => $page->getCustomCss(),
+            'custom_js' => $page->getCustomJs(),
         ));
     }
 
