@@ -2,6 +2,8 @@
 .DS_Store
 config/services.yaml
 modules/*
+!modules/note.txt
+!modules/Background
 !modules/.gitignore
 Migrations/*
 !Migrations/.gitignore
