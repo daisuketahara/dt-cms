@@ -52,12 +52,12 @@ class Page
     protected $metaCustom;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="date")
      */
     protected $publishDate;
 
     /**
-     * @ORM\Column(type="datetime", nullable=true)
+     * @ORM\Column(type="date", nullable=true)
      */
     protected $expireDate;
 
@@ -295,7 +295,7 @@ class Page
      */
     public function getPublishDate()
     {
-        return $this->publishDate->format('Y-m-d H:i:s');
+        return $this->publishDate;
     }
 
     /**
@@ -319,7 +319,7 @@ class Page
      */
     public function getExpireDate()
     {
-        return $this->expireDate->format('Y-m-d H:i:s');
+        return $this->expireDate;
     }
 
     /**

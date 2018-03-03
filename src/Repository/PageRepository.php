@@ -17,7 +17,9 @@ class PageRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->where('p.pageRoute = :routes')
+            ->andWhere('p.status = :status')
             ->setParameter('routes', $route)
+            ->setParameter('status', 1)
             ->getQuery()
             ->getOneOrNullResult();
     }

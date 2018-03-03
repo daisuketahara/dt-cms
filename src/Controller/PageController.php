@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Translation\TranslatorInterface;
-
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -58,14 +57,6 @@ class PageController extends Controller
             'custom_css' => $customCss,
             'custom_js' => $customJs,
         ));
-    }
-
-    final public function show($slug)
-    {
-        // $slug will equal the dynamic part of the URL
-        // e.g. at /blog/yay-routing, then $slug='yay-routing'
-
-        // ...
     }
 
     final public function notfound()
@@ -145,6 +136,12 @@ class PageController extends Controller
       */
     final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $serializer = new Serializer($normalizers, $encoders);
+        $logMessage = '';
+        $logComment = 'Insert';
+
         if (!empty($id)) {
             $page = $this->getDoctrine()
                 ->getRepository(Page::class)
@@ -152,9 +149,68 @@ class PageController extends Controller
 
             if (!$page) {
                 $page = new Page();
+                $this->addFlash(
+                    'error',
+                    $translator->trans('The requested page does not exist!')
+                );
+            } else {
+                $logMessage .= '<i>Old data:</i><br>';
+                $logMessage .= $serializer->serialize($page, 'json');
+                $logMessage .= '<br><br>';
+                $logComment = 'Update';
             }
         } else {
             $page = new Page();
+        }
+
+
+
+        $form = $this->createFormBuilder();
+        $form = $form->getForm();
+        $form->handleRequest($request);
+
+        if ($request->isMethod('POST')) {
+
+            $page->setPageTitle($request->request->get('page-title', ''));
+            $page->setPageRoute($request->request->get('page-route', ''));
+            $page->setContent($request->request->get('page-content', ''));
+            $page->setMetaTitle($request->request->get('page-meta-title', ''));
+            $page->setMetaKeywords($request->request->get('page-meta-keywords', ''));
+            $page->setMetaDescription($request->request->get('page-meta-description', ''));
+            $page->setMetaCustom($request->request->get('page-meta-custom', ''));
+
+            // Image
+
+            $page->setPublishDate(new \DateTime($request->request->get('page-publish-date', '')));
+
+            $expireDate = $request->request->get('page-expire-date', '');
+            if (!empty($expireDate)) $page->setExpireDate(new \DateTime($expireDate));
+            else $page->setExpireDate(NULL);
+
+
+
+            $page->setStatus($request->request->get('page-status', 1));
+            $page->setPageWidth($request->request->get('page-width', ''));
+            $page->setDisableLayout($request->request->get('disable-layout', 0));
+
+            $page->setCustomCss($request->request->get('custom-css', ''));
+            $page->setCustomJs($request->request->get('custom-js', ''));
+
+            $logMessage .= '<i>New data:</i><br>';
+            $logMessage .= $serializer->serialize($page, 'json');
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($page);
+            $em->flush();
+            $id = $page->getId();
+
+            $log->add('Page', $id, $logMessage, $logComment);
+
+            $this->addFlash(
+                'success',
+                $translator->trans('Your changes were saved!')
+            );
+            return $this->redirectToRoute('page_edit', array('id' => $id));
         }
 
         // https://symfony.com/doc/current/security/csrf.html
@@ -164,20 +220,20 @@ class PageController extends Controller
 
 
 
-        if (!empty($id)) $title = $translator->trans('Edit locale');
-        else $title = $translator->trans('Add locale');
+        if (!empty($id)) $title = $translator->trans('Edit page');
+        else $title = $translator->trans('Add page');
 
         return $this->render('page/admin/edit.html.twig', array(
             'page_title' => $title,
             'edit_page_title' => $page->getPageTitle(),
-            'slug' => $page->getPageRoute(),
+            'page_route' => $page->getPageRoute(),
             'content' => $page->getContent(),
             'meta_title' => $page->getMetaTitle(),
             'meta_keywords' => $page->getMetaKeywords(),
             'meta_description' => $page->getMetaDescription(),
             'meta_custom' => $page->getMetaCustom(),
-            'publish_date' => '',
-            'expire_date' => '',
+            'publish_date' => $page->getPublishDate(),
+            'expire_date' => $page->getExpireDate(),
             'status' => $page->getStatus(),
             'locale' => '',
             'page_width' => $page->getPageWidth(),

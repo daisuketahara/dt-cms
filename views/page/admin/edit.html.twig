@@ -12,7 +12,7 @@
 <form action="" method="post">
     <input type="hidden" name="token" value="{{ csrf_token('edit-page') }}" />
     <div class="form-group">
-        <input type="text" id="post-title" name="post-title" class="form-control" value="{{edit_page_title}}" placeholder="{% trans %}Enter your title here...{% endtrans %}">
+        <input type="text" id="page-title" name="page-title" class="form-control" value="{{edit_page_title}}" placeholder="{% trans %}Enter your title here...{% endtrans %}">
     </div>
     <div class="row margin-bottom-15">
         <div class="col">
@@ -20,7 +20,7 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon3">{{constant('PUBLIC_PATH')}}/</span>
                 </div>
-                <input type="text" class="form-control" id="post-route" name="post-route" value="{{slug}}" aria-describedby="basic-addon3">
+                <input type="text" class="form-control" id="page-route" name="page-route" value="{{page_route}}" aria-describedby="basic-addon3">
             </div>
         </div>
         <div class="col-md-auto text-right">
@@ -39,9 +39,11 @@
                     {% trans %}Editor{% endtrans %}
                 </button>
                 <div class="dropdown-menu w-100" aria-labelledby="im-post-editor-mode">
+                    <!--
                     <a id="im-set-visual" class="im-set-switch btn btn-secondary w-100 dropdown-item" href="#">
                         <i class="fa fa-eye" aria-hidden="true"></i> {% trans %}Visual{% endtrans %}
                     </a>
+                    -->
                     <a id="im-set-editor" class="im-set-switch btn btn-secondary w-100 dropdown-item" href="#">
                         <i class="fa fa-pencil" aria-hidden="true"></i> {% trans %}Editor{% endtrans %}
                     </a>
@@ -51,7 +53,7 @@
                 </div>
             </div>
             <button type="submit" id="post-submit" class="btn btn-primary width-150">
-                <i class="fa fa-save" aria-hidden="true"></i> {% trans %}Publish{% endtrans %}
+                <i class="fa fa-save" aria-hidden="true"></i> {% trans %}Save{% endtrans %}
             </button>
         </div>
     </div>
@@ -61,35 +63,35 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>{% trans %}Title tag{% endtrans %}</label>
-                        <input type="input" id="im-post-meta-title" name="im-post-meta-title" class="form-control" value="{{meta_title}}">
+                        <input type="input" id="page-meta-title" name="page-meta-title" class="form-control" value="{{meta_title}}">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>{% trans %}Meta keywords{% endtrans %}</label>
-                        <input type="input" id="im-post-meta-keywords" name="im-post-meta-keywords" class="form-control" value="{{meta_keywords}}">
+                        <input type="input" id="page-meta-keywords" name="page-meta-keywords" class="form-control" value="{{meta_keywords}}">
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="form-group">
                         <label>{% trans %}Meta description{% endtrans %}</label>
-                        <input type="input" id="im-post-meta-description" name="im-post-meta-description" class="form-control" value="{{meta_description}}>">
+                        <input type="input" id="page-meta-description" name="page-meta-description" class="form-control" value="{{meta_description}}">
                     </div>
                 </div>
             </div>
             <div class="form-group">
                 <label>{% trans %}Custom meta{% endtrans %}</label>
-                <textarea class="form-control" rows="4">{{meta_custom}}</textarea>
+                <textarea id="page-meta-custom" name="page-meta-custom" class="form-control" rows="4">{{meta_custom}}</textarea>
             </div>
         </div>
         <div id="im-post-settings-container" class="margin-bottom-10 collapse">
             <div class="row">
                 <div class="col-md-auto">
-                    <?php if (!empty($post->main_image)) { ?>
+                    {% if main_image %}
                     <img src="<?php echo $post->main_image; ?>" alt="..." class="img-thumbnail">
-                    <?php } else { ?>
+                    {% else %}
                     <img src="/img/default-300x169.png" alt="{% trans %}No image{% endtrans %}" class="img-thumbnail">
-                    <?php } ?><br>
+                    {% endif %}<br>
                     <a id="" class="btn btn-secondary w-100 margin-top-5" data-toggle="modal" data-target="#im-media-manager">{% trans %}Add image{% endtrans %}</a>
                 </div>
                 <div class="col">
@@ -97,41 +99,41 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>{% trans %}Publish date{% endtrans %}</label>
-                                <input type="date" name="post-date" class="form-control" value="{{publish_date}}">
+                                <input type="date" id="page-publish-date" name="page-publish-date" class="form-control" value="{{publish_date|date('Y-m-d')}}">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>{% trans %}Expire date{% endtrans %}</label>
-                                <input type="date" name="expire-date" class="form-control" value="{{expire_date}}">
+                                <input type="date" id="page-expire-date" name="page-expire-date" class="form-control" value="{% if expire_date %}{{expire_date|date('Y-m-d')}}{% endif %}">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>{% trans %}Page status{% endtrans %}</label>
-                                <select name="page-status" class="form-control">
-                                    <option value="publish">{% trans %}Publish{% endtrans %}</option>
-                                    <option value="draft">{% trans %}Draft{% endtrans %}</option>
+                                <select id="page-status" name="page-status" class="form-control">
+                                    <option value="1"{% if status %} selected="selected"{% endif %}>{% trans %}Publish{% endtrans %}</option>
+                                    <option value="0"{% if not status %} selected="selected"{% endif %}>{% trans %}Draft{% endtrans %}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>{% trans %}Page width{% endtrans %}</label>
-                                <select name="page-width" class="form-control">
-                                    <option value="default">{% trans %}Default{% endtrans %}</option>
-                                    <option value="1140">{% trans %}1140px{% endtrans %}</option>
-                                    <option value="980">{% trans %}980px{% endtrans %}</option>
-                                    <option value="700">{% trans %}700px{% endtrans %}</option>
+                                <select id="page-width" name="page-width" class="form-control">
+                                    <option value="default"{% if page_width == 'default' %} selected="selected"{% endif %}>{% trans %}Default{% endtrans %}</option>
+                                    <option value="1140"{% if page_width == '1140' %} selected="selected"{% endif %}>{% trans %}1140px{% endtrans %}</option>
+                                    <option value="980"{% if page_width == '980' %} selected="selected"{% endif %}>{% trans %}980px{% endtrans %}</option>
+                                    <option value="700"{% if page_width == '700' %} selected="selected"{% endif %}>{% trans %}700px{% endtrans %}</option>
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>{% trans %}Disable layout{% endtrans %}</label>
-                                <select name="disable-layout" class="form-control">
-                                    <option value="0">{% trans %}No{% endtrans %}</option>
-                                    <option value="1">{% trans %}Yes{% endtrans %}</option>
+                                <select id="disable-layout" name="disable-layout" class="form-control">
+                                    <option value="0"{% if not disable_layout %} selected="selected"{% endif %}>{% trans %}No{% endtrans %}</option>
+                                    <option value="1"{% if disable_layout %} selected="selected"{% endif %}>{% trans %}Yes{% endtrans %}</option>
                                 </select>
                             </div>
                         </div>
