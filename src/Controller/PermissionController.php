@@ -22,7 +22,7 @@ class PermissionController extends Controller
     /**
      * @Route("/{_locale}/admin/permission", name="permission")
      */
-     final public function list(TranslatorInterface $translator, LogService $log)
+     final public function list(TranslatorInterface $translator)
      {
          return $this->render('permission/admin/list.html.twig', array(
              'page_title' => $translator->trans('Permissions'),

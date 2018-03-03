@@ -28,7 +28,7 @@ class UserController extends Controller
     /**
      * @Route("/{_locale}/admin/user", name="user")
      */
-     final public function list(TranslatorInterface $translator, LogService $log)
+     final public function list(TranslatorInterface $translator)
      {
          return $this->render('user/admin/list.html.twig', array(
              'page_title' => $translator->trans('Users'),

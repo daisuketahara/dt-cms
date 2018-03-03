@@ -26,7 +26,7 @@ class UserRoleController extends Controller
     /**
      * @Route("/{_locale}/admin/userrole", name="userrole")
      */
-     final public function list(TranslatorInterface $translator, LogService $log)
+     final public function list(TranslatorInterface $translator)
      {
          return $this->render('userrole/admin/list.html.twig', array(
              'page_title' => $translator->trans('User roles'),

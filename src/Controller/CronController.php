@@ -22,7 +22,7 @@ class CronController extends Controller
     /**
      * @Route("/{_locale}/admin/cron", name="cron")
      */
-     final public function list(TranslatorInterface $translator, LogService $log)
+     final public function list(TranslatorInterface $translator)
      {
          return $this->render('cron/admin/list.html.twig', array(
              'page_title' => $translator->trans('Crons'),

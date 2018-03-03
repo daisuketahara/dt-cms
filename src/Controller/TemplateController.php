@@ -17,7 +17,7 @@ class TemplateController extends Controller
     /**
      * @Route("/{_locale}/admin/template", name="template")
      */
-     final public function list(TranslatorInterface $translator, LogService $log)
+     final public function list(TranslatorInterface $translator)
      {
          $templates = $this->getDoctrine()
              ->getRepository(Template::class)

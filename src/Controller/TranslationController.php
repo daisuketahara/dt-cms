@@ -26,7 +26,7 @@ class TranslationController extends Controller
     /**
      * @Route("/{_locale}/admin/translation", name="translation")
      */
-     final public function list(TranslatorInterface $translator, LogService $log)
+     final public function list(TranslatorInterface $translator)
      {
 
          return $this->render('translation/admin/list.html.twig', array(

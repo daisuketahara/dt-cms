@@ -22,7 +22,7 @@ class FileController extends Controller
     /**
      * @Route("/{_locale}/admin/file", name="file")
      */
-     final public function list(TranslatorInterface $translator, LogService $log)
+     final public function list(TranslatorInterface $translator)
      {
          return $this->render('file/admin/list.html.twig', array(
              'page_title' => $translator->trans('Files'),

@@ -22,7 +22,7 @@ class SettingController extends Controller
     /**
      * @Route("/{_locale}/admin/setting", name="setting")
      */
-     final public function list(TranslatorInterface $translator, LogService $log)
+     final public function list(TranslatorInterface $translator)
      {
 
 
