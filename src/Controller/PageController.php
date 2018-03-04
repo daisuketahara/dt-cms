@@ -15,10 +15,11 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 use App\Entity\Page;
 use App\Service\LogService;
+use App\Service\RedirectService;
 
 class PageController extends Controller
 {
-    public function loadPage(Request $request)
+    public function loadPage(Request $request, RedirectService $redirect)
     {
         $route = $request->attributes->get('_route');
 
@@ -27,7 +28,10 @@ class PageController extends Controller
             ->findByRoute($route);
 
         if (!$page) {
-            throw $this->createNotFoundException('The page does not exist');
+
+            $newRoute = $redirect->getRedirect($route);
+            if ($newRoute) return $this->redirect($newRoute->getNewPageRoute(), $newRoute->getRedirectType());
+
             return $this->render('page/404.html.twig');
         }
 

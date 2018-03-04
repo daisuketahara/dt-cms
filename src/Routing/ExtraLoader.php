@@ -7,6 +7,7 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 use App\Entity\Page;
+use App\Entity\Redirect;
 
 class ExtraLoader extends Loader
 {
@@ -40,6 +41,23 @@ class ExtraLoader extends Loader
 
             // add the new route to the route collection
             $routeName = strtolower(str_replace('/', '_', $page->getPageRoute()));
+            $routes->add($routeName, $route);
+        }
+
+        $redirects = $this->em->getRepository(Redirect::class)->findBy(array('active' => 1));
+
+        foreach($redirects as $redirect) {
+            // prepare a new route
+            $path = '/' . $redirect->getOldPageRoute();
+            $defaults = array(
+                '_controller' => 'App\Controller\PageController::loadPage',
+            );
+            $requirements = array(
+            );
+            $route = new Route($path, $defaults, $requirements);
+
+            // add the new route to the route collection
+            $routeName = strtolower(str_replace('/', '_', $redirect->getOldPageRoute()));
             $routes->add($routeName, $route);
         }
 

@@ -40,6 +40,10 @@ services:
         arguments:
             $em: '@doctrine.orm.entity_manager'
 
+    App\Service\RedirectService:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'
+
     App\Service\LogService:
         arguments:
             $em: '@doctrine.orm.entity_manager'

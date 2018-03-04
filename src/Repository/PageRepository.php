@@ -19,7 +19,7 @@ class PageRepository extends ServiceEntityRepository
             ->where('p.pageRoute = :routes')
             ->andWhere('p.status = :status')
             ->setParameter('routes', $route)
-            ->setParameter('status', 1)
+            ->setParameter('status', true)
             ->getQuery()
             ->getOneOrNullResult();
     }

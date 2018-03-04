@@ -1,0 +1,33 @@
+{% extends 'admin.html.twig' %}
+
+{% block body %}
+<table class="table table-hover table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th class="width-100" data-column="id">{% trans %}ID{% endtrans %}</th>
+            <th data-column="oldUrl">{% trans %}Old page route{% endtrans %}</th>
+            <th data-column="newUrl">{% trans %}New page route{% endtrans %}</th>
+            <th data-column="redirectType">{% trans %}Type{% endtrans %}</th>
+        </tr>
+    </thead>
+</table>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/paginator.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/modal.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/list.js') }}"></script>
+    <script type="text/javascript">
+
+        $('.table').dtTable({
+            ajaxUrl: '/{{ app.request.locale }}/admin/redirect/ajaxlist',
+            addUrl: '/{{ app.request.locale }}/admin/redirect/add',
+            editUrl: '/{{ app.request.locale }}/admin/redirect/edit',
+            deleteUrl: '/{{ app.request.locale }}/admin/redirect/delete',
+            filter: true,
+            limit: 15
+        });
+
+    </script>
+{% endblock %}
