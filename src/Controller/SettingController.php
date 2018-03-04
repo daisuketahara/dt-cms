@@ -24,9 +24,6 @@ class SettingController extends Controller
      */
      final public function list(TranslatorInterface $translator)
      {
-
-
-
          return $this->render('setting/admin/list.html.twig', array(
              'page_title' => $translator->trans('Settings'),
              'can_add' => true,
@@ -41,7 +38,7 @@ class SettingController extends Controller
      final public function ajaxlist(Request $request)
      {
          $sort_column = $request->request->get('sortColumn', 'id');
-         $sort_direction = strtoupper($request->request->get('sortDirection', 'desc'));
+         $sort_direction = strtoupper($request->request->get('sortDirection', 'asc'));
          $limit = $request->request->get('limit', 15);
          $offset = $request->request->get('offset', 0);
          $filter = $request->request->get('filter', '');

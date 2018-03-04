@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <link rel="profile" href="http://gmpg.org/xfn/11">
-        <title>{% block title %}{{ page_title }} - {{settingservice.getSetting('siteName')|striptags}}{% endblock %}</title>
+        <title>{% block title %}{{ page_title }} - {{settingservice.getSetting('site.name')|striptags}}{% endblock %}</title>
 
         {% block meta %}
 
@@ -23,7 +23,7 @@
             <div class="admin-navigation">
                 <div class="admin-logo">
                     <a href="/{{ app.request.locale }}/admin/">
-                        {{settingservice.getSetting('siteName')|raw}}
+                        {{settingservice.getSetting('site.logo')|raw}}
                     </a>
                 </div>
                 {% block sidebar %}
