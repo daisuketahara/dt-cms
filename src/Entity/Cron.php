@@ -283,7 +283,7 @@ class Cron
      */
     public function setLastRun($lastRun)
     {
-        if (!empty($this->lastRun)) return $this->lastRun->format('Y-m-d H:i:s');
+        if (!empty($this->lastRun)) return $this->lastRun;
         return '';
     }
 

@@ -265,7 +265,7 @@ class MailQueue
      */
     public function getCreationDate()
     {
-        return $this->creationDate->format('Y-m-d H:i:s');
+        return $this->creationDate;
     }
 
     /**
@@ -289,7 +289,7 @@ class MailQueue
      */
     public function getSendDate()
     {
-        if (!empty($this->sendDate)) return $this->sendDate->format('Y-m-d H:i:s');
+        if (!empty($this->sendDate)) return $this->sendDate;
         return '';
     }
 

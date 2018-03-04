@@ -161,6 +161,12 @@
         if (value === true) return '<a class="green"><i class="fas fa-check"></i></a>';
         if (value === false) return '<a class="red"><i class="fas fa-times"></i></a>';
 
+        if (value.timestamp) {
+            var d = new Date(value.timestamp * 1000);
+            var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return d.toLocaleDateString('en-US', options);
+        }
+
         return value;
     }
 
