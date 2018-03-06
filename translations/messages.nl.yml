@@ -1,2 +1,84 @@
-'Dashboard': 'Dashboard2'
-'Pages': 'Paginas'
+Dashboard: Dashboard2
+Pages: Paginas
+Text: Tekst
+'Enter your title here...': '__Enter your title here...'
+Meta: __Meta
+Settings: __Settings
+Editor: __Editor
+Visual: __Visual
+HTML: __HTML
+Save: __Save
+'Title tag': '__Title tag'
+'Meta keywords': '__Meta keywords'
+'Meta description': '__Meta description'
+'Custom meta': '__Custom meta'
+'No image': '__No image'
+'Add image': '__Add image'
+'Publish date': '__Publish date'
+'Expire date': '__Expire date'
+'Page status': '__Page status'
+Publish: __Publish
+Draft: __Draft
+'Page width': '__Page width'
+Default: __Default
+1140px: __1140px
+980px: __980px
+700px: __700px
+'Disable layout': '__Disable layout'
+'No': __No
+'Yes': __Yes
+Authorization: __Authorization
+'Custom CSS': '__Custom CSS'
+'Custom Javascript': '__Custom Javascript'
+ID: __ID
+Title: __Title
+Status: __Status
+'My account': '__My account'
+'Change password': '__Change password'
+Logout: __Logout
+'All rights reserved.': '__All rights reserved.'
+Close: __Close
+Cancel: __Cancel
+Delete: __Delete
+Error: __Error
+'An error has occurred.': '__An error has occurred.'
+'Please try again.': '__Please try again.'
+'View record': '__View record'
+'Confirm delete': '__Confirm delete'
+'You are about to delete a record, this cannot be undone.': '__You are about to delete a record, this cannot be undone.'
+'Do you want to proceed?': '__Do you want to proceed?'
+Name: __Name
+Description: __Description
+Language: __Language
+Locale: __Locale
+LCID: __LCID
+'ISO Code': '__ISO Code'
+Active: __Active
+File: __File
+Complete: __Complete
+'Generate translation files': '__Generate translation files'
+Email: __Email
+Password: __Password
+'Reminder me': '__Reminder me'
+'Get new password': '__Get new password'
+Login: __Login
+Subject: __Subject
+'Creation date': '__Creation date'
+'Send date': '__Send date'
+'Edit template': '__Edit template'
+Firstname: __Firstname
+Lastname: __Lastname
+'Media Manager': '__Media Manager'
+'Old page route': '__Old page route'
+'New page route': '__New page route'
+Type: __Type
+Date: __Date
+IP: __IP
+Entity: __Entity
+'Entity ID': '__Entity ID'
+Comment: __Comment
+Key: __Key
+Value: __Value
+'Route name': '__Route name'
+'Run count': '__Run count'
+'Last run': '__Last run'
