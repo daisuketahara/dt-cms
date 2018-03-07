@@ -25,7 +25,7 @@
                     <a href="#">{% trans %}Get new password{% endtrans %}</a>
                 </div>
             </div>
-            <input type="hidden" name="_target_path" value="{{ path('account_index') }}" />
+            <input type="hidden" name="_target_path" value="{{ path('admin_dashboard') }}" />
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
             <button type="submit" class="btn btn-primary w-100">{% trans %}Login{% endtrans %}</button>
         </form>
