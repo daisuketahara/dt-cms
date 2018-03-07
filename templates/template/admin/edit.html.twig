@@ -1,7 +1,54 @@
-{% extends 'admin.html.twig' %}
+{% extends templateservice.getAdminTemplate() %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('vendor/tinymce/tinymce.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('vendor/edit_area/edit_area_full.js') }}"></script>
+{% endblock %}
 
 {% block body %}
 
+<form action="" method="post">
 
+    <div class="form-group">
+        <label>{% trans %}Custom CSS{% endtrans %}</label>
+        <textarea id="custom-css" name="custom-css" class="form-control">{{custom_css}}</textarea>
+    </div>
+    <div class="form-group">
+        <label>{% trans %}Custom Javascript{% endtrans %}</label>
+        <textarea id="custom-js" name="custom-js" class="form-control">{{custom_js}}</textarea>
+    </div>
+    <input type="submit" class="btn btn-primary" value="{% trans %}Save{% endtrans %}">
+    <a href="/{{ app.request.locale }}/admin/template/compile/{{templateId}}" class="btn btn-secondary">{% trans %}Compile{% endtrans %}</a>
+</form>
+
+<script type="text/javascript">
+
+    jQuery(document).ready(function() {
+
+     	editAreaLoader.init({
+     		id: "custom-css",
+     		allow_toggle: true,
+     		language: "en",
+     		syntax: "css",
+     		toolbar: "undo, redo",
+     		syntax_selection_allow: "css",
+     		min_height: 300,
+     		show_line_colors: true,
+     	});
+        editAreaLoader.init({
+            id: "custom-js",
+            start_highlight: true,
+            allow_toggle: true,
+            language: "en",
+            syntax: "js",
+            toolbar: "undo, redo",
+            syntax_selection_allow: "js",
+            min_height: 300,
+            show_line_colors: true,
+        });
+    });
+
+</script>
 
 {% endblock %}

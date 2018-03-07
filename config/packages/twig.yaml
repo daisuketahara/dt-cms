@@ -6,4 +6,5 @@ twig:
         menuservice: '@App\Service\MenuService'
         settingservice: '@App\Service\SettingService'
         fileservice: '@App\Service\FileService'
+        templateservice: '@App\Service\TemplateService'
     form_themes: ['bootstrap_4_layout.html.twig']

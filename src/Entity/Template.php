@@ -19,6 +19,11 @@ class Template
     /**
      * @ORM\Column(type="string", length=255)
      */
+    protected $tag;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     protected $name;
 
     /**
@@ -59,7 +64,12 @@ class Template
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $active = 0;
+    protected $frontend = 0;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $admin = 0;
 
     /**
      * @ORM\Column(type="boolean")
@@ -86,6 +96,30 @@ class Template
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Tag
+     *
+     * @return mixed
+     */
+    public function getTag()
+    {
+        return $this->tag;
+    }
+
+    /**
+     * Set the value of Tag
+     *
+     * @param mixed tag
+     *
+     * @return self
+     */
+    public function setTag($tag)
+    {
+        $this->tag = $tag;
 
         return $this;
     }
@@ -283,25 +317,49 @@ class Template
     }
 
     /**
-     * Get the value of Active
+     * Get the value of Frontend
      *
      * @return mixed
      */
-    public function getActive()
+    public function getFrontend()
     {
-        return $this->active;
+        return $this->frontend;
     }
 
     /**
-     * Set the value of Active
+     * Set the value of Frontend
      *
-     * @param mixed active
+     * @param mixed frontend
      *
      * @return self
      */
-    public function setActive($active)
+    public function setFrontend($frontend)
     {
-        $this->active = $active;
+        $this->frontend = $frontend;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Admin
+     *
+     * @return mixed
+     */
+    public function getAdmin()
+    {
+        return $this->admin;
+    }
+
+    /**
+     * Set the value of Admin
+     *
+     * @param mixed admin
+     *
+     * @return self
+     */
+    public function setAdmin($admin)
+    {
+        $this->admin = $admin;
 
         return $this;
     }
