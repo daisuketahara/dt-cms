@@ -20,7 +20,8 @@ use App\Service\LogService;
 class FileController extends Controller
 {
     /**
-     * @Route("/{_locale}/admin/file", name="file")
+     * @Route("/admin/file", name="file")
+     * @Route("/{_locale}/admin/file", name="file_locale")
      */
      final public function list(TranslatorInterface $translator)
      {
@@ -33,7 +34,8 @@ class FileController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/file/ajaxlist", name="file_ajaxlist")
+      * @Route("/admin/file/ajaxlist", name="file_ajaxlist")
+      * @Route("/{_locale}/admin/file/ajaxlist", name="file_ajaxlist_locale")
       */
      final public function ajaxlist(Request $request)
      {
@@ -85,8 +87,10 @@ class FileController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/file/add", name="file_add")
-      * @Route("/{_locale}/admin/file/edit/{id}", name="file_edit")
+      * @Route("/admin/file/add", name="file_add")
+      * @Route("/{_locale}/admin/file/add", name="file_add_locale")
+      * @Route("/admin/file/edit/{id}", name="file_edit")
+      * @Route("/{_locale}/admin/file/edit/{id}", name="file_edit_locale")
       */
     final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
@@ -155,7 +159,8 @@ class FileController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/file/delete/{id}", name="file_delete")
+      * @Route("/admin/file/delete/{id}", name="file_delete")
+      * @Route("/{_locale}/admin/file/delete/{id}", name="file_delete_locale")
       */
      final public function delete($id, LogService $log)
      {

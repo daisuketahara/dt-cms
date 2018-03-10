@@ -11,7 +11,8 @@ class SecurityController extends Controller
 {
 
     /**
-     * @Route("/{_locale}/login", name="login")
+     * @Route("/login", name="login")
+     * @Route("/{_locale}/login", name="login_locale")
      */
     public function login(Request $request, AuthenticationUtils $authUtils)
     {
@@ -27,7 +28,8 @@ class SecurityController extends Controller
         ));
     }
     /**
-     * @Route("/{_locale}/logout", name="logout")
+     * @Route("/logout", name="logout")
+     * @Route("/{_locale}/logout", name="logout_locale")
      */
     public function logout(Request $request, AuthenticationUtils $authUtils)
     {

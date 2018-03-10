@@ -24,7 +24,8 @@ use App\Service\LogService;
 class TranslationController extends Controller
 {
     /**
-     * @Route("/{_locale}/admin/translation", name="translation")
+     * @Route("/admin/translation", name="translation")
+     * @Route("/{_locale}/admin/translation", name="translation_locale")
      */
      final public function list(TranslatorInterface $translator)
      {
@@ -37,7 +38,8 @@ class TranslationController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/translation/ajaxlist", name="translation_ajaxlist")
+      * @Route("/admin/translation/ajaxlist", name="translation_ajaxlist")
+      * @Route("/{_locale}/admin/translation/ajaxlist", name="translation_ajaxlist_locale")
       */
      final public function ajaxlist(Request $request)
      {
@@ -89,8 +91,10 @@ class TranslationController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/translation/add", name="translation_add")
-      * @Route("/{_locale}/admin/translation/edit/{id}", name="translation_edit")
+      * @Route("/admin/translation/add", name="translation_add")
+      * @Route("/{_locale}/admin/translation/add", name="translation_add_locale")
+      * @Route("/admin/translation/edit/{id}", name="translation_edit")
+      * @Route("/{_locale}/admin/translation/edit/{id}", name="translation_edit_locale")
       */
     final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
@@ -211,7 +215,8 @@ class TranslationController extends Controller
      }
 
     /**
-     * @Route("/{_locale}/admin/translation/generate", name="translation_generate")
+     * @Route("/admin/translation/generate", name="translation_generate")
+     * @Route("/{_locale}/admin/translation/generate", name="translation_generate_locale")
      */
     final public function generate(TranslatorInterface $translator, LogService $log)
     {

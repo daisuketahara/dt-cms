@@ -20,7 +20,8 @@ use App\Service\LogService;
 class PermissionController extends Controller
 {
     /**
-     * @Route("/{_locale}/admin/permission", name="permission")
+     * @Route("/admin/permission", name="permission")
+     * @Route("/{_locale}/admin/permission", name="permission_locale")
      */
      final public function list(TranslatorInterface $translator)
      {
@@ -33,7 +34,8 @@ class PermissionController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/permission/ajaxlist", name="permissionajaxlist")
+      * @Route("/admin/permission/ajaxlist", name="permission_ajaxlist")
+      * @Route("/{_locale}/admin/permission/ajaxlist", name="permission_ajaxlist_locale")
       */
      final public function ajaxlist(Request $request)
      {
@@ -85,8 +87,10 @@ class PermissionController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/permission/add", name="permission_add")
-      * @Route("/{_locale}/admin/permission/edit/{id}", name="permission_edit")
+      * @Route("/admin/permission/add", name="permission_add")
+      * @Route("/{_locale}/admin/permission/add", name="permission_add_locale")
+      * @Route("/admin/permission/edit/{id}", name="permission_edit")
+      * @Route("/{_locale}/admin/permission/edit/{id}", name="permission_edit_locale")
       */
     final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
@@ -155,7 +159,8 @@ class PermissionController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/permission/delete/{id}", name="permission_delete")
+      * @Route("/admin/permission/delete/{id}", name="permission_delete")
+      * @Route("/{_locale}/admin/permission/delete/{id}", name="permission_delete_locale")
       */
      final public function delete($id, LogService $log)
      {

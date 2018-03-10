@@ -26,7 +26,8 @@ use App\Service\LogService;
 class UserController extends Controller
 {
     /**
-     * @Route("/{_locale}/admin/user", name="user")
+     * @Route("/admin/user", name="user")
+     * @Route("/{_locale}/admin/user", name="user_locale")
      */
      final public function list(TranslatorInterface $translator)
      {
@@ -39,7 +40,8 @@ class UserController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/user/ajaxlist", name="user_ajaxlist")
+      * @Route("/admin/user/ajaxlist", name="user_ajaxlist")
+      * @Route("/{_locale}/admin/user/ajaxlist", name="user_ajaxlist_locale")
       */
      final public function ajaxlist(Request $request)
      {
@@ -91,8 +93,10 @@ class UserController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/user/add", name="user_add")
-      * @Route("/{_locale}/admin/user/edit/{id}", name="user_edit")
+      * @Route("/admin/user/add", name="user_add")
+      * @Route("/{_locale}/admin/user/add", name="user_add_locale")
+      * @Route("/admin/user/edit/{id}", name="user_edit")
+      * @Route("/{_locale}/admin/user/edit/{id}", name="user_edit_locale")
       */
     final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log, UserPasswordEncoderInterface $encoder)
     {
@@ -171,7 +175,8 @@ class UserController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/user/delete/{id}", name="user_delete")
+      * @Route("/admin/user/delete/{id}", name="user_delete")
+      * @Route("/{_locale}/admin/user/delete/{id}", name="user_delete_locale")
       */
      final public function delete($id, LogService $log)
      {

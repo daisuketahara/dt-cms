@@ -20,7 +20,8 @@ use App\Service\LogService;
 class SettingController extends Controller
 {
     /**
-     * @Route("/{_locale}/admin/setting", name="setting")
+     * @Route("/admin/setting", name="setting")
+     * @Route("/{_locale}/admin/setting", name="setting_locale")
      */
      final public function list(TranslatorInterface $translator)
      {
@@ -33,7 +34,8 @@ class SettingController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/setting/ajaxlist", name="setting_ajaxlist")
+      * @Route("/admin/setting/ajaxlist", name="setting_ajaxlist")
+      * @Route("/{_locale}/admin/setting/ajaxlist", name="setting_ajaxlist_locale")
       */
      final public function ajaxlist(Request $request)
      {
@@ -85,8 +87,10 @@ class SettingController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/setting/add", name="setting_add")
-      * @Route("/{_locale}/admin/setting/edit/{id}", name="setting_edit")
+      * @Route("/admin/setting/add", name="setting_add")
+      * @Route("/{_locale}/admin/setting/add", name="setting_add_locale")
+      * @Route("/admin/setting/edit/{id}", name="setting_edit")
+      * @Route("/{_locale}/admin/setting/edit/{id}", name="setting_edit_locale")
       */
     final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
@@ -155,7 +159,8 @@ class SettingController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/setting/delete/{id}", name="setting_delete")
+      * @Route("/admin/setting/delete/{id}", name="setting_delete")
+      * @Route("/{_locale}/admin/setting/delete/{id}", name="setting_delete_locale")
       */
      final public function delete($id, LogService $log)
      {

@@ -20,7 +20,8 @@ use App\Service\LogService;
 class RedirectController extends Controller
 {
     /**
-     * @Route("/{_locale}/admin/redirect", name="redirect")
+     * @Route("/admin/redirect", name="redirect")
+     * @Route("/{_locale}/admin/redirect", name="redirect_locale")
      */
      final public function list(TranslatorInterface $translator)
      {
@@ -33,7 +34,8 @@ class RedirectController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/redirect/ajaxlist", name="redirect_ajaxlist")
+      * @Route("/admin/redirect/ajaxlist", name="redirect_ajaxlist")
+      * @Route("/{_locale}/admin/redirect/ajaxlist", name="redirect_ajaxlist_locale")
       */
      final public function ajaxlist(Request $request)
      {
@@ -85,8 +87,10 @@ class RedirectController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/redirect/add", name="redirect_add")
-      * @Route("/{_locale}/admin/redirect/edit/{id}", name="redirect_edit")
+      * @Route("/admin/redirect/add", name="redirect_add")
+      * @Route("/{_locale}/admin/redirect/add", name="redirect_add_locale")
+      * @Route("/admin/redirect/edit/{id}", name="redirect_edit")
+      * @Route("/{_locale}/admin/redirect/edit/{id}", name="redirect_edit_locale")
       */
     final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
@@ -155,7 +159,8 @@ class RedirectController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/redirect/delete/{id}", name="redirect_delete")
+      * @Route("/admin/redirect/delete/{id}", name="redirect_delete")
+      * @Route("/{_locale}/admin/redirect/delete/{id}", name="redirect_delete_locale")
       */
      final public function delete($id, LogService $log)
      {
