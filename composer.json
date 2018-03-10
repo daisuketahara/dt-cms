@@ -51,8 +51,7 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/",
-            "Bundles\\": "bundles/"
+            "App\\": "src/"
         }
     },
     "autoload-dev": {
