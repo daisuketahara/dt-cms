@@ -36,12 +36,9 @@ jQuery(document).ready(function() {
 		var body_height = jQuery('body').height();
 		var main_height = jQuery('.admin-content').height();
 
-		if (body_height < window_height) {
-			jQuery('body').css('min-height', window_height);
-			jQuery('.admin-navigation').css('min-height', window_height - 53);
-			jQuery('.admin-content').css('min-height', window_height - 53);
-		}
-
+		jQuery('body').css('min-height', window_height);
+		jQuery('.admin-navigation').css('min-height', window_height - 53);
+		jQuery('.admin-content').css('min-height', window_height - 53);
 	}
 
 	setContainerHeight();

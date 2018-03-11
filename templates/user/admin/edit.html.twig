@@ -1,0 +1,50 @@
+{% extends templateservice.getAdminTemplate() %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('vendor/intl-tel-input/js/intlTelInput.min.js') }}"></script>
+    <script type="text/javascript">
+        jQuery('#phone').intlTelInput({
+              nationalMode: true,
+              initialCountry: "nl",
+              preferredCountries: ['nl', 'be'],
+              utilsScript: "{{ asset('vendor/intl-tel-input/js/utils.js') }}"
+        });
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('vendor/intl-tel-input/css/intlTelInput.css') }}">
+{% endblock %}
+
+{% block body %}
+<form action="" method="post">
+    <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="account-tab" data-toggle="tab" href="#account" role="tab" aria-controls="account" aria-selected="true">{% trans %}Account{% endtrans %}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="information-tab" data-toggle="tab" href="#information" role="tab" aria-controls="information" aria-selected="false">{% trans %}Personal information{% endtrans %}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="note-tab" data-toggle="tab" href="#note" role="tab" aria-controls="note" aria-selected="false">{% trans %}Notes{% endtrans %}</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
+            {{ include('user/common/account.html.twig') }}
+        </div>
+        <div class="tab-pane fade" id="information" role="tabpanel" aria-labelledby="information-tab">
+            {{ include('user/common/information.html.twig') }}
+        </div>
+        <div class="tab-pane fade" id="note" role="tabpanel" aria-labelledby="note-tab">
+            {{ include('user/common/note.html.twig') }}
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" id="save" name="save" class="btn-secondary btn">{% trans %}Save{% endtrans %}</button>
+    </div>
+</form>
+{% endblock %}

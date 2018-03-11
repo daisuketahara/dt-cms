@@ -35,31 +35,19 @@ class PageController extends Controller
             return $this->render('page/404.html.twig');
         }
 
-        $pageTitle = $page->getPageTitle();
-        $content = $page->getContent();
-        $metaTitle = $page->getMetaTitle();
-        $metaKeywords = $page->getMetaKeywords();
-        $metaDescription = $page->getMetaDescription();
-        $metaCustom = $page->getMetaCustom();
-        $publishDate = $page->getPublishDate();
-        $pageWidth = $page->getPageWidth();
-        $disableLayout = $page->getDisableLayout();
-        $mainImage = $page->getMainImage();
-        $customCss = $page->getCustomCss();
-        $customJs = $page->getCustomJs();
-
         return $this->render('page/page.html.twig', array(
-            'page_title' => $pageTitle,
-            'content' => $content,
-            'meta_keywords' => $metaTitle,
-            'meta_description' => $metaDescription,
-            'meta_custom' => $metaCustom,
-            'publish_date' => $publishDate,
-            'page_width' => $pageWidth,
-            'disable_layout' => $disableLayout,
-            'main_image' => $mainImage,
-            'custom_css' => $customCss,
-            'custom_js' => $customJs,
+            'page_title' => $page->getPageTitle(),
+            'content' => $page->getContent(),
+            'meta_title' => $page->getMetaTitle(),
+            'meta_keywords' => $page->getMetaKeywords(),
+            'meta_description' => $page->getMetaDescription(),
+            'meta_custom' => $page->getMetaCustom(),
+            'publish_date' => $page->getPublishDate(),
+            'page_width' => $page->getPageWidth(),
+            'disable_layout' => $page->getDisableLayout(),
+            'main_image' => $page->getMainImage(),
+            'custom_css' => $page->getCustomCss(),
+            'custom_js' => $page->getCustomJs(),
         ));
     }
 
@@ -170,8 +158,6 @@ class PageController extends Controller
         } else {
             $page = new Page();
         }
-
-
 
         $form = $this->createFormBuilder();
         $form = $form->getForm();

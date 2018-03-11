@@ -19,7 +19,8 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use App\Entity\User;
-use App\Form\UserForm;
+use App\Entity\UserInformation;
+use App\Entity\UserNote;
 use App\Service\LogService;
 
 
@@ -123,38 +124,85 @@ class UserController extends Controller
                 $logComment = 'Update';
 
             }
+            $userinfo = $this->getDoctrine()
+                ->getRepository(UserInformation::class)
+                ->findOneBy(['userId' => $id]);
+            if (!$userinfo) {
+                $userinfo = new UserInformation();
+            } else {
+                $logMessage .= $serializer->serialize($userinfo, 'json');
+                $logMessage .= '<br><br>';
+            }
+            $usernote = $this->getDoctrine()
+                ->getRepository(UserNote::class)
+                ->findOneBy(['userId' => $id]);
+            if (!$usernote) {
+                $usernote = new UserNote();
+            } else {
+                $logMessage .= $serializer->serialize($usernote, 'json');
+                $logMessage .= '<br><br>';
+            }
         } else {
             $user = new User();
+            $userinfo = new UserInformation();
+            $usernote = new UserNote();
         }
 
         $form = $this->createFormBuilder();
-        $form->add('email', TextType::class, array('label' => 'Email', 'data' => $user->getEmail()));
-        $form->add('password', PasswordType::class, array('label' => 'Password', 'required' => false));
-        $form->add('firstname', TextType::class, array('label' => 'Firstname', 'data' => $user->getFirstname()));
-        $form->add('lastname', TextType::class, array('label' => 'Lastname', 'data' => $user->getLastname()));
-        $form->add('phone', TextType::class, array('label' => 'Phone', 'data' => $user->getPhone()));
-        $form->add('userrole', ChoiceType::class, array('label' => 'User roles', 'multiple' => true));
-        $form->add('emailConfirmed', CheckboxType::class, array('label' => 'Email confirmed', 'data' => $user->getEmailConfirmed()));
-        $form->add('phoneConfirmed', CheckboxType::class, array('label' => 'Phone confirmed', 'data' => $user->getPhoneConfirmed()));
-        $form->add('save', SubmitType::class, array('label' => 'Save'));
         $form = $form->getForm();
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($request->isMethod('POST')) {
 
-            $user = $form->getData();
+            $user->setFirstname($request->request->get('firstname', ''));
+            $user->setLastname($request->request->get('lastname', ''));
+            $user->setEmail($request->request->get('email', ''));
+            $user->setPhone($request->request->get('phone', ''));
 
-            $password = $user->getPassword();
-            $encoded = $encoder->encodePassword($user, $password);
-            $user->setPassword($encoded);
-
-            $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $serializer->serialize($user, 'json');
+            $password = $request->request->get('password', '');
+            if ($password != 'passwordnotchanged') {
+                $encoded = $encoder->encodePassword($user, $password);
+                $user->setPassword($encoded);
+            }
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
             $id = $user->getId();
+
+            $logMessage .= '<i>New data:</i><br>';
+            $logMessage .= $serializer->serialize($user, 'json');
+
+            $userinfo->setUserId($id);
+            $userinfo->setCompanyName($request->request->get('form_company_name', ''));
+            $userinfo->setWebsite($request->request->get('form_website', ''));
+            $userinfo->setVatNumber($request->request->get('form_vat_number', ''));
+            $userinfo->setRegistrationNumber($request->request->get('form_registration_number', ''));
+            $userinfo->setMailAddress1($request->request->get('form_mail_address_1', ''));
+            $userinfo->setMailAddress2($request->request->get('form_mail_address_2', ''));
+            $userinfo->setMailZipcode($request->request->get('form_mail_zipcode', ''));
+            $userinfo->setMailCity($request->request->get('form_mail_city', ''));
+            $userinfo->setMailCountry($request->request->get('form_mail_country', ''));
+            $userinfo->setBillingAddress1($request->request->get('form_billing_address_1', ''));
+            $userinfo->setBillingAddress2($request->request->get('form_billing_address_2', ''));
+            $userinfo->setBillingZipcode($request->request->get('form_billing_zipcode', ''));
+            $userinfo->setBillingCity($request->request->get('form_billing_city', ''));
+            $userinfo->setBillingCountry($request->request->get('form_billing_country', ''));
+
+            $logMessage .= $serializer->serialize($userinfo, 'json');
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($userinfo);
+            $em->flush();
+
+            $usernote->setUserId($id);
+            $usernote->setNote($request->request->get('form_note', ''));
+
+            $logMessage .= $serializer->serialize($usernote, 'json');
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($usernote);
+            $em->flush();
 
             $log->add('User', $id, $logMessage, $logComment);
 
@@ -168,9 +216,29 @@ class UserController extends Controller
         if (!empty($id)) $title = $translator->trans('Edit user');
         else $title = $translator->trans('Add user');
 
-        return $this->render('common/form.html.twig', array(
+        return $this->render('user/admin/edit.html.twig', array(
             'form' => $form->createView(),
             'page_title' => $title,
+            'firstname' => $user->getFirstname(),
+            'lastname' => $user->getLastname(),
+            'email' => $user->getEmail(),
+            'phone' => $user->getPhone(),
+            'password' => 'passwordnotchanged',
+            'company_name' => $userinfo->getCompanyName(),
+            'website' => $userinfo->getWebsite(),
+            'vat_number' => $userinfo->getVatNumber(),
+            'registration_number' => $userinfo->getRegistrationNumber(),
+            'mail_address_1' => $userinfo->getMailAddress1(),
+            'mail_address_2' => $userinfo->getMailAddress2(),
+            'mail_zipcode' => $userinfo->getMailZipcode(),
+            'mail_city' => $userinfo->getMailCity(),
+            'mail_country' => $userinfo->getMailCountry(),
+            'billing_address_1' => $userinfo->getBillingAddress1(),
+            'billing_address_2' => $userinfo->getBillingAddress2(),
+            'billing_zipcode' => $userinfo->getBillingZipcode(),
+            'billing_city' => $userinfo->getBillingCity(),
+            'billing_country' => $userinfo->getBillingCountry(),
+            'note' => $usernote->getNote(),
         ));
      }
 

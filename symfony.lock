@@ -89,6 +89,9 @@
     "guzzlehttp/psr7": {
         "version": "1.4.2"
     },
+    "jackocnr/intl-tel-input": {
+        "version": "12.1.10"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
