@@ -31,6 +31,12 @@
     }
 }
 
+.font-xs { font-size: 0.7em !important; }
+.font-sm { font-size: 0.8em !important; }
+.font-md { font-size: 1em !important; }
+.font-lg { font-size: 1.2em !important; }
+.font-xl { font-size: 1.4em !important; }
+
 .btn {
 
 	-webkit-border-radius: 2px;
@@ -94,28 +100,6 @@ ol.list-numbered li {
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 
-.font-8 { font-size: 8px; }
-.font-9 { font-size: 9px; }
-.font-10 { font-size: 10px; }
-.font-12 { font-size: 12px; }
-.font-14 { font-size: 14px; }
-.font-16 { font-size: 16px; }
-.font-18 { font-size: 18px; }
-.font-20 { font-size: 20px; }
-.font-22 { font-size: 22px; }
-.font-24 { font-size: 24px; }
-.font-26 { font-size: 26px; }
-.font-28 { font-size: 28px; }
-.font-30 { font-size: 30px; }
-.font-40 { font-size: 40px; }
-.font-50 { font-size: 50px; }
-.font-60 { font-size: 60px; }
-.font-70 { font-size: 70px; }
-.font-80 { font-size: 80px; }
-.font-90 { font-size: 90px; }
-.font-100 { font-size: 100px; }
-.font-150 { font-size: 150px; }
-.font-200 { font-size: 200px; }
 
 .one { width: 10%; }
 .two { width: 20%; }
