@@ -9,10 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 class AccountController extends Controller
 {
     /**
-     * @Route("/account", name="account_index")
-     * @Route("/{_locale}/account", name="account_index_locale")
-     * @Route("/admin/account", name="admin_account")
-     * @Route("/{_locale}/admin/account", name="admin_account_locale")
+     * @Route("/{_locale}/account", name="account_index")
+     * @Route("/{_locale}/admin/account", name="admin_account")
      */
     public function index()
     {

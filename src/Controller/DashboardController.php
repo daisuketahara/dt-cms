@@ -11,8 +11,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class DashboardController extends Controller
 {
     /**
-     * @Route("/admin", name="admin_dashboard")
-     * @Route("/{_locale}/admin", name="admin_dashboard_locale")
+     * @Route("/{_locale}/admin", name="admin_dashboard"))
      */
     public function index()
     {

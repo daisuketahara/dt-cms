@@ -20,8 +20,7 @@ use App\Service\LogService;
 class CronController extends Controller
 {
     /**
-     * @Route("/admin/cron", name="cron")
-     * @Route("/{_locale}/admin/cron", name="cron_locale")
+     * @Route("/{_locale}/admin/cron", name="cron"))
      */
      final public function list(TranslatorInterface $translator)
      {
@@ -34,8 +33,7 @@ class CronController extends Controller
      }
 
      /**
-      * @Route("/admin/cron/ajaxlist", name="cron_ajaxlist")
-      * @Route("/{_locale}/admin/cron/ajaxlist", name="cron_ajaxlist_locale")
+      * @Route("/{_locale}/admin/cron/ajaxlist", name="cron_ajaxlist"))
       */
      final public function ajaxlist(Request $request)
      {
@@ -87,10 +85,8 @@ class CronController extends Controller
      }
 
      /**
-      * @Route("/admin/cron/add", name="cron_add")
-      * @Route("/{_locale}/admin/cron/add", name="cron_add_locale")
-      * @Route("/admin/cron/edit/{id}", name="cron_edit")
-      * @Route("/{_locale}/admin/cron/edit/{id}", name="cron_edit_locale")
+      * @Route("/{_locale}/admin/cron/add", name="cron_add"))
+      * @Route("/{_locale}/admin/cron/edit/{id}", name="cron_edit"))
       */
     final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
@@ -159,8 +155,7 @@ class CronController extends Controller
      }
 
      /**
-      * @Route("/admin/cron/delete/{id}", name="cron_delete")
-      * @Route("/{_locale}/admin/cron/delete/{id}", name="cron_delete_locale")
+      * @Route("/{_locale}/admin/cron/delete/{id}", name="cron_delete"))
       */
      final public function delete($id, LogService $log)
      {

@@ -21,8 +21,7 @@ use App\Service\LogService;
 class MailController extends Controller
 {
     /**
-     * @Route("/admin/mail/queue", name="mail_queue")
-     * @Route("/{_locale}/admin/mail/queue", name="mail_queue_locale")
+     * @Route("/{_locale}/admin/mail/queue", name="mail_queue"))
      */
      final public function list(TranslatorInterface $translator)
      {
@@ -33,8 +32,7 @@ class MailController extends Controller
      }
 
      /**
-      * @Route("/admin/mail/queue/list", name="mail_queue_list")
-      * @Route("/{_locale}/admin/mail/queue/list", name="mail_queue_list_locale")
+      * @Route("/{_locale}/admin/mail/queue/list", name="mail_queue_list"))
       */
      final public function queuelist(Request $request)
      {
@@ -86,8 +84,7 @@ class MailController extends Controller
      }
 
      /**
-      * @Route("/admin/mail/queue/delete/{id}", name="mail_queue_delete")
-      * @Route("/{_locale}/admin/mail/queue/delete/{id}", name="mail_queue_delete_locale")
+      * @Route("/{_locale}/admin/mail/queue/delete/{id}", name="mail_queue_delete"))
       */
      final public function delete($id, LogService $log)
      {
@@ -177,8 +174,7 @@ class MailController extends Controller
 
 
      /**
-      * @Route("/admin/mail/template", name="mail_template")
-      * @Route("/{_locale}/admin/mail/template", name="mail_template_locale")
+      * @Route("/{_locale}/admin/mail/template", name="mail_template"))
       */
       final public function template(TranslatorInterface $translator)
       {
@@ -191,8 +187,7 @@ class MailController extends Controller
       }
 
       /**
-       * @Route("/admin/mail/template/list", name="mail_template_list")
-       * @Route("/{_locale}/admin/mail/template/list", name="mail_template_list_locale")
+       * @Route("/{_locale}/admin/mail/template/list", name="mail_template_list"))
        */
       final public function ajaxlist(Request $request)
       {
@@ -244,10 +239,8 @@ class MailController extends Controller
       }
 
       /**
-       * @Route("/admin/mail/template/add", name="mail_template_add")
-       * @Route("/{_locale}/admin/mail/template/add", name="mail_template_add_locale")
-       * @Route("/admin/mail/template/edit/{id}", name="mail_template_edit")
-       * @Route("/{_locale}/admin/mail/template/edit/{id}", name="mail_template_edit_locale")
+       * @Route("/{_locale}/admin/mail/template/add", name="mail_template_add"))
+       * @Route("/{_locale}/admin/mail/template/edit/{id}", name="mail_template_edit"))
        */
      final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
      {
@@ -314,8 +307,7 @@ class MailController extends Controller
       }
 
       /**
-       * @Route("/admin/mail/template/delete/{id}", name="mail_template_delete")
-       * @Route("/{_locale}/admin/mail/template/delete/{id}", name="mail_template_delete_locale")
+       * @Route("/{_locale}/admin/mail/template/delete/{id}", name="mail_template_delete"))
        */
       final public function delete_template($id, LogService $log)
       {

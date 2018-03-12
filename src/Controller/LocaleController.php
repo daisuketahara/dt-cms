@@ -19,8 +19,7 @@ use App\Service\LogService;
 class LocaleController extends Controller
 {
     /**
-     * @Route("/admin/locale", name="locale")
-     * @Route("/{_locale}/admin/locale", name="locale_locale")
+     * @Route("/{_locale}/admin/locale", name="locale"))
      */
      final public function list(TranslatorInterface $translator)
      {
@@ -33,8 +32,7 @@ class LocaleController extends Controller
      }
 
      /**
-      * @Route("/admin/locale/ajaxlist", name="locale_ajaxlist")
-      * @Route("/{_locale}/admin/locale/ajaxlist", name="locale_ajaxlist_locale")
+      * @Route("/{_locale}/admin/locale/ajaxlist", name="locale_ajaxlist"))
       */
      final public function ajaxlist(Request $request)
      {
@@ -86,10 +84,8 @@ class LocaleController extends Controller
      }
 
      /**
-      * @Route("/admin/locale/add", name="locale_add")
-      * @Route("/{_locale}/admin/locale/add", name="locale_add_locale")
-      * @Route("/admin/locale/edit/{id}", name="locale_edit")
-      * @Route("/{_locale}/admin/locale/edit/{id}", name="locale_edit_locale")
+      * @Route("/{_locale}/admin/locale/add", name="locale_add"))
+      * @Route("/{_locale}/admin/locale/edit/{id}", name="locale_edit"))
       */
     final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
@@ -155,8 +151,7 @@ class LocaleController extends Controller
      }
 
      /**
-      * @Route("/admin/locale/delete/{id}", name="locale_delete")
-      * @Route("/{_locale}/admin/locale/delete/{id}", name="locale_delete_locale")
+      * @Route("/{_locale}/admin/locale/delete/{id}", name="locale_delete"))
       */
      final public function delete($id, LogService $log)
      {
