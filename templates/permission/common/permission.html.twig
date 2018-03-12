@@ -1,0 +1,33 @@
+<div class="row">
+{% set current = '' %}
+{% if permissions %}
+    {% for permission in permissions %}
+        {% if current != permission.name %}
+        {% set current = permission.name %}
+        </div>
+        <h4>{{permission.name}}</h4>
+        <div class="row mb-3">
+        {% endif %}
+        <div class="col-md-3">
+            <div class="form-check">
+                <label class="form-check-label">
+                    {% set checked = '' %}
+                    {% if permissions_set %}
+                        {% for permissions_set_item in permissions_set %}
+                            {% if permission.id == permissions_set_item.permissionId %}
+                                {% set checked = ' checked="checked"' %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    <input id="form_permission_{{permission.id}}" name="form_permission[]" class="form-check-input" value="{{permission.id}}" type="checkbox" {{checked}}>
+                    {% if permission.description != '' %}
+                        {{ permission.description|e }}
+                    {% else %}
+                        {{ permission.route_name|e }}
+                    {% endif %}
+                </label>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+</div>

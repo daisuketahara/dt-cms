@@ -21,6 +21,8 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use App\Entity\User;
 use App\Entity\UserInformation;
 use App\Entity\UserNote;
+use App\Entity\Permission;
+use App\Entity\UserPermission;
 use App\Service\LogService;
 
 
@@ -204,6 +206,25 @@ class UserController extends Controller
             $em->persist($usernote);
             $em->flush();
 
+            $setPermissions = $this->getDoctrine()
+            ->getRepository(UserPermission::class)
+            ->findBy(array('userId' => $id));
+
+            foreach($setPermissions as $setPermission) {
+                $em->remove($setPermission);
+            }
+            $em->flush();
+
+            $formPermissions = $request->request->get('form_permission', '');
+
+            foreach($formPermissions as $formPermissions => $permissionId) {
+                $userPermission = new UserPermission();
+                $userPermission->setUserId($id);
+                $userPermission->setPermissionId($permissionId);
+                $em->persist($userPermission);
+            }
+            $em->flush();
+
             $log->add('User', $id, $logMessage, $logComment);
 
             $this->addFlash(
@@ -216,6 +237,14 @@ class UserController extends Controller
         if (!empty($id)) $title = $translator->trans('Edit user');
         else $title = $translator->trans('Add user');
 
+        $permissions = $this->getDoctrine()
+            ->getRepository(Permission::class)
+            ->getPermissions();
+
+        $setPermissions = $this->getDoctrine()
+            ->getRepository(UserPermission::class)
+            ->findBy(array('userId' => $id));
+
         return $this->render('user/admin/edit.html.twig', array(
             'form' => $form->createView(),
             'page_title' => $title,
@@ -224,6 +253,8 @@ class UserController extends Controller
             'email' => $user->getEmail(),
             'phone' => $user->getPhone(),
             'password' => 'passwordnotchanged',
+            'email_confirmed' => $user->getEmailConfirmed(),
+            'phone_confirmed' => $user->getPhoneConfirmed(),
             'company_name' => $userinfo->getCompanyName(),
             'website' => $userinfo->getWebsite(),
             'vat_number' => $userinfo->getVatNumber(),
@@ -239,6 +270,8 @@ class UserController extends Controller
             'billing_city' => $userinfo->getBillingCity(),
             'billing_country' => $userinfo->getBillingCountry(),
             'note' => $usernote->getNote(),
+            'permissions' => $permissions,
+            'permissions_set' => $setPermissions,
         ));
      }
 

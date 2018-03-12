@@ -44,7 +44,7 @@
 <div class="form-group">
     <div class="form-check">
         <label class="form-check-label">
-            <input id="emailConfirmed" name="emailConfirmed" class="form-check-input" value="1" type="checkbox">
+            <input id="emailConfirmed" name="emailConfirmed" class="form-check-input" value="1" type="checkbox"{% if email_confirmed %} checked="checked"{% endif %}>
             {% trans %}Email confirmed{% endtrans %}
         </label>
     </div>
@@ -52,7 +52,7 @@
 <div class="form-group">
     <div class="form-check">
         <label class="form-check-label">
-            <input id="phoneConfirmed" name="phoneConfirmed" class="form-check-input" value="1" type="checkbox">
+            <input id="phoneConfirmed" name="phoneConfirmed" class="form-check-input" value="1" type="checkbox"{% if phone_confirmed %} checked="checked"{% endif %}>
             {% trans %}Phone confirmed{% endtrans %}
         </label>
     </div>

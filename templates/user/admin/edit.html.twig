@@ -31,6 +31,9 @@
         <li class="nav-item">
             <a class="nav-link" id="note-tab" data-toggle="tab" href="#note" role="tab" aria-controls="note" aria-selected="false">{% trans %}Notes{% endtrans %}</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" id="permission-tab" data-toggle="tab" href="#permission" role="tab" aria-controls="permission" aria-selected="false">{% trans %}Custom permissions{% endtrans %}</a>
+        </li>
     </ul>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
@@ -41,6 +44,9 @@
         </div>
         <div class="tab-pane fade" id="note" role="tabpanel" aria-labelledby="note-tab">
             {{ include('user/common/note.html.twig') }}
+        </div>
+        <div class="tab-pane fade" id="permission" role="tabpanel" aria-labelledby="permission-tab">
+            {{ include('permission/common/permission.html.twig') }}
         </div>
     </div>
     <div class="form-group">

@@ -1,0 +1,47 @@
+{% extends templateservice.getAdminTemplate() %}
+
+{% block body %}
+<form name="form" method="post">
+    <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="role-tab" data-toggle="tab" href="#role" role="tab" aria-controls="role" aria-selected="true">{% trans %}Role{% endtrans %}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="permission-tab" data-toggle="tab" href="#permission" role="tab" aria-controls="permission" aria-selected="false">{% trans %}Permissions{% endtrans %}</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="role" role="tabpanel" aria-labelledby="role-tab">
+            <div class="form-group">
+                <label class="form-control-label required" for="form_name">{% trans %}Name{% endtrans %}</label>
+                <input id="form_name" name="form_name" required="required" class="form-control" type="text" value="{{name}}">
+            </div>
+            <div class="form-group">
+                <label class="form-control-label required" for="form_description">{% trans %}Description{% endtrans %}</label>
+                <input id="form_description" name="form_description" required="required" class="form-control" type="text" value="{{description}}">
+            </div>
+            <div class="form-group">
+                <label class="form-control-label required" for="form_inherit">{% trans %}Inherit{% endtrans %}</label>
+                <select id="form_inherit" name="form_inherit[]" class="form-control" multiple="multiple">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <div class="form-check">
+                    <label class="form-check-label required">
+                        <input id="form_active" name="form_active" class="form-check-input" value="1" type="checkbox"{% if active %} checked="checked"{% endif %}>
+                        {% trans %}Active{% endtrans %}
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade show" id="permission" role="tabpanel" aria-labelledby="permission-tab">
+            {{ include('permission/common/permission.html.twig') }}
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" id="form_save" name="form[save]" class="btn-secondary btn">{% trans %}Save{% endtrans %}</button>
+    </div>
+</form>
+{% endblock %}

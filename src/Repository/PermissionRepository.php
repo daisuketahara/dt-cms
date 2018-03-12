@@ -19,16 +19,18 @@ class PermissionRepository extends ServiceEntityRepository
         parent::__construct($registry, Permission::class);
     }
 
-    /*
-    public function findBySomething($value)
-    {
-        return $this->createQueryBuilder('p')
-            ->where('p.something = :value')->setParameter('value', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+    public function getPermissions() {
+
+        $sql = "SELECT p.id, p.route_name, p.description, CASE WHEN pg.name IS NULL THEN 'Other' ELSE pg.name END AS `name`, CASE WHEN pg.name IS NULL THEN 1 ELSE 0 END AS `sort` ";
+        $sql .= "FROM permission AS p ";
+        $sql .= "LEFT JOIN permission_group AS pg ON pg.id = p.group_id ";
+        $sql .= "ORDER BY sort ASC, `name` ASC, p.route_name ASC";
+
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        //$stmt->execute(['price' => 10]);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
     }
-    */
 }

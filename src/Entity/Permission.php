@@ -17,6 +17,11 @@ class Permission
     private $id;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $groupId;
+
+    /**
      * @ORM\Column(type="string", length=255, unique=true)
      */
     protected $routeName;

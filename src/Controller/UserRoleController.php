@@ -17,6 +17,8 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use App\Entity\UserRole;
+use App\Entity\Permission;
+use App\Entity\RolePermission;
 use App\Form\UserRoleForm;
 use App\Service\LogService;
 
@@ -130,17 +132,14 @@ class UserRoleController extends Controller
             ->findAll();
 
         $form = $this->createFormBuilder();
-        $form->add('name', TextType::class, array('label' => 'Name'));
-        $form->add('description', TextType::class, array('label' => 'Description'));
-        $form->add('inherit', ChoiceType::class, array('label' => 'Inherit', 'multiple' => true, 'choices' => $roles));
-        $form->add('active', CheckboxType::class, array('label' => 'Active'));
-        $form->add('save', SubmitType::class, array('label' => 'Save'));
         $form = $form->getForm();
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($request->isMethod('POST')) {
 
-            $userRole = $form->getData();
+            $userRole->setName($request->request->get('form_name', ''));
+            $userRole->setDescription($request->request->get('form_description', ''));
+            $userRole->setActive($request->request->get('form_active', ''));
 
             $logMessage .= '<i>New data:</i><br>';
             $logMessage .= $serializer->serialize($userRole, 'json');
@@ -148,7 +147,26 @@ class UserRoleController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($userRole);
             $em->flush();
-            $id = $user->getId();
+            $id = $userRole->getId();
+
+            $setPermissions = $this->getDoctrine()
+            ->getRepository(RolePermission::class)
+            ->findBy(array('roleId' => $id));
+
+            foreach($setPermissions as $setPermission) {
+                $em->remove($setPermission);
+            }
+            $em->flush();
+
+            $formPermissions = $request->request->get('form_permission', '');
+
+            foreach($formPermissions as $formPermissions => $permissionId) {
+                $rolePermission = new RolePermission();
+                $rolePermission->setRoleId($id);
+                $rolePermission->setPermissionId($permissionId);
+                $em->persist($rolePermission);
+            }
+            $em->flush();
 
             $log->add('Userrole', $id, $logMessage, $logComment);
 
@@ -162,9 +180,22 @@ class UserRoleController extends Controller
         if (!empty($id)) $title = $translator->trans('Edit userrole');
         else $title = $translator->trans('Add userrole');
 
-        return $this->render('common/form.html.twig', array(
+        $permissions = $this->getDoctrine()
+            ->getRepository(Permission::class)
+            ->getPermissions();
+
+        $setPermissions = $this->getDoctrine()
+        ->getRepository(RolePermission::class)
+        ->findBy(array('roleId' => $id));
+
+        return $this->render('userrole/admin/edit.html.twig', array(
             'form' => $form->createView(),
             'page_title' => $title,
+            'name' => $userRole->getName(),
+            'description' => $userRole->getDescription(),
+            'active' => $userRole->getActive(),
+            'permissions' => $permissions,
+            'permissions_set' => $setPermissions,
         ));
      }
 

@@ -3,6 +3,7 @@ security:
     encoders:
         App\Entity\User:
             algorithm: bcrypt
+            cost: 8
     providers:
         db_provider:
             entity:
