@@ -17,7 +17,7 @@ use App\Entity\Log;
 class LogController extends Controller
 {
     /**
-     * @Route("/{_locale}/admin/log", name="log"))
+     * @Route("/{_locale}/admin/log/", name="log"))
      */
      final public function list(TranslatorInterface $translator)
      {
@@ -30,7 +30,7 @@ class LogController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/log/ajaxlist", name="log_ajaxlist"))
+      * @Route("/{_locale}/admin/log/ajaxlist/", name="log_ajaxlist"))
       */
      final public function ajaxlist(Request $request)
      {

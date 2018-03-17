@@ -13,7 +13,7 @@ use App\Service\ValidatorService;
 class ValidatorController extends Controller
 {
     /**
-     * @Route("/validate/smscode", name="validate_smscode")
+     * @Route("/validate/smscode/", name="validate_smscode")
      */
      final public function smscode(Request $request, SmsService $sms)
      {
@@ -24,7 +24,7 @@ class ValidatorController extends Controller
      }
 
      /**
-      * @Route("/validate/iban", name="validate_iban")
+      * @Route("/validate/iban/", name="validate_iban")
       */
       final public function iban(Request $request, ValidatorService $validator)
       {
@@ -35,7 +35,7 @@ class ValidatorController extends Controller
       }
 
       /**
-       * @Route("/validate/vat", name="validate_vat")
+       * @Route("/validate/vat/", name="validate_vat")
        */
        final public function vat(Request $request, ValidatorService $validator)
        {

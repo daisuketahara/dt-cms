@@ -58,7 +58,7 @@ class PageController extends Controller
     }
 
     /**
-     * @Route("/{_locale}/admin/page", name="page_admin"))
+     * @Route("/{_locale}/admin/page/", name="page_admin"))
      */
     final public function list()
     {
@@ -70,7 +70,7 @@ class PageController extends Controller
     }
 
      /**
-      * @Route("/{_locale}/admin/page/ajaxlist", name="page_ajaxlist"))
+      * @Route("/{_locale}/admin/page/ajaxlist/", name="page_ajaxlist"))
       */
     final public function ajaxlist()
     {
@@ -123,8 +123,8 @@ class PageController extends Controller
     }
 
      /**
-      * @Route("/{_locale}/admin/page/add", name="page_add"))
-      * @Route("/{_locale}/admin/page/edit/{id}", name="page_edit"))
+      * @Route("/{_locale}/admin/page/add/", name="page_add"))
+      * @Route("/{_locale}/admin/page/edit/{id}/", name="page_edit"))
       */
     final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
@@ -236,7 +236,7 @@ class PageController extends Controller
     }
 
      /**
-      * @Route("/{_locale}/admin/page/delete/{id}", name="page_delete"))
+      * @Route("/{_locale}/admin/page/delete/{id}/", name="page_delete"))
       */
     final public function delete($id, LogService $log)
     {

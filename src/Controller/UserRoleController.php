@@ -26,7 +26,7 @@ use App\Service\LogService;
 class UserRoleController extends Controller
 {
     /**
-     * @Route("/{_locale}/admin/userrole", name="userrole")
+     * @Route("/{_locale}/admin/userrole/", name="userrole")
      */
      final public function list(TranslatorInterface $translator)
      {
@@ -39,7 +39,7 @@ class UserRoleController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/userrole/ajaxlist", name="userrole_ajaxlist")
+      * @Route("/{_locale}/admin/userrole/ajaxlist/", name="userrole_ajaxlist")
       */
      final public function ajaxlist(Request $request)
      {
@@ -91,8 +91,8 @@ class UserRoleController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/userrole/add", name="userrole_add")
-      * @Route("/{_locale}/admin/userrole/edit/{id}", name="userrole_edit")
+      * @Route("/{_locale}/admin/userrole/add/", name="userrole_add")
+      * @Route("/{_locale}/admin/userrole/edit/{id}/", name="userrole_edit")
       */
     final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
@@ -196,7 +196,7 @@ class UserRoleController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/userrole/delete/{id}", name="userrole_delete")
+      * @Route("/{_locale}/admin/userrole/delete/{id}/", name="userrole_delete")
       */
      final public function delete($id, LogService $log)
      {

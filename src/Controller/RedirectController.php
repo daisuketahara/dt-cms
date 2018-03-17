@@ -20,7 +20,7 @@ use App\Service\LogService;
 class RedirectController extends Controller
 {
     /**
-     * @Route("/{_locale}/admin/redirect", name="redirect"))
+     * @Route("/{_locale}/admin/redirect/", name="redirect"))
      */
      final public function list(TranslatorInterface $translator)
      {
@@ -33,7 +33,7 @@ class RedirectController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/redirect/ajaxlist", name="redirect_ajaxlist"))
+      * @Route("/{_locale}/admin/redirect/ajaxlist/", name="redirect_ajaxlist"))
       */
      final public function ajaxlist(Request $request)
      {
@@ -85,8 +85,8 @@ class RedirectController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/redirect/add", name="redirect_add"))
-      * @Route("/{_locale}/admin/redirect/edit/{id}", name="redirect_edit"))
+      * @Route("/{_locale}/admin/redirect/add/", name="redirect_add"))
+      * @Route("/{_locale}/admin/redirect/edit/{id}/", name="redirect_edit"))
       */
     final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
@@ -155,7 +155,7 @@ class RedirectController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/redirect/delete/{id}", name="redirect_delete"))
+      * @Route("/{_locale}/admin/redirect/delete/{id}/", name="redirect_delete"))
       */
      final public function delete($id, LogService $log)
      {

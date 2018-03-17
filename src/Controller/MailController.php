@@ -21,7 +21,7 @@ use App\Service\LogService;
 class MailController extends Controller
 {
     /**
-     * @Route("/{_locale}/admin/mail/queue", name="mail_queue"))
+     * @Route("/{_locale}/admin/mail/queue/", name="mail_queue"))
      */
      final public function list(TranslatorInterface $translator)
      {
@@ -32,7 +32,7 @@ class MailController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/mail/queue/list", name="mail_queue_list"))
+      * @Route("/{_locale}/admin/mail/queue/list/", name="mail_queue_list"))
       */
      final public function queuelist(Request $request)
      {
@@ -84,7 +84,7 @@ class MailController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/mail/queue/delete/{id}", name="mail_queue_delete"))
+      * @Route("/{_locale}/admin/mail/queue/delete/{id}/", name="mail_queue_delete"))
       */
      final public function delete($id, LogService $log)
      {
@@ -108,7 +108,7 @@ class MailController extends Controller
      }
 
      /**
-      * @Route("/cron/mail/queue/send", name="mail_queue_send")
+      * @Route("/cron/mail/queue/send/", name="mail_queue_send")
       */
      final public function send(LogService $log, \Swift_Mailer $mailer)
      {
@@ -154,7 +154,7 @@ class MailController extends Controller
      }
 
      /**
-      * @Route("/cron/mail/queue/clear", name="mail_queue_clear")
+      * @Route("/cron/mail/queue/clear/", name="mail_queue_clear")
       */
      final public function clear(LogService $log)
      {
@@ -174,7 +174,7 @@ class MailController extends Controller
 
 
      /**
-      * @Route("/{_locale}/admin/mail/template", name="mail_template"))
+      * @Route("/{_locale}/admin/mail/template/", name="mail_template"))
       */
       final public function template(TranslatorInterface $translator)
       {
@@ -187,7 +187,7 @@ class MailController extends Controller
       }
 
       /**
-       * @Route("/{_locale}/admin/mail/template/list", name="mail_template_list"))
+       * @Route("/{_locale}/admin/mail/template/list/", name="mail_template_list"))
        */
       final public function ajaxlist(Request $request)
       {
@@ -239,8 +239,8 @@ class MailController extends Controller
       }
 
       /**
-       * @Route("/{_locale}/admin/mail/template/add", name="mail_template_add"))
-       * @Route("/{_locale}/admin/mail/template/edit/{id}", name="mail_template_edit"))
+       * @Route("/{_locale}/admin/mail/template/add/", name="mail_template_add"))
+       * @Route("/{_locale}/admin/mail/template/edit/{id}/", name="mail_template_edit"))
        */
      final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
      {
@@ -307,7 +307,7 @@ class MailController extends Controller
       }
 
       /**
-       * @Route("/{_locale}/admin/mail/template/delete/{id}", name="mail_template_delete"))
+       * @Route("/{_locale}/admin/mail/template/delete/{id}/", name="mail_template_delete"))
        */
       final public function delete_template($id, LogService $log)
       {
