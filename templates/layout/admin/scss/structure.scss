@@ -1,9 +1,12 @@
-html, body {
+html {
     width: 100%;
-}
-body {
-    padding-top: 15px;
-    padding-bottom: 10px;
+    height: 100%;
+
+    body {
+        width: 100%;
+        padding-top: 15px;
+        padding-bottom: 10px;
+    }
 }
 
 .admin-container {
@@ -129,7 +132,7 @@ body {
 
 .admin-content {
     height: 100%;
-    background: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.95);
     padding: 15px;
     padding-top: 20px;
     margin-left: 255px;
