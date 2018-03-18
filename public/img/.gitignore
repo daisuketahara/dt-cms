@@ -1,0 +1,6 @@
+*
+!.gitignore
+!background/*
+!flags/*
+!default-300x169.png
+!index.html

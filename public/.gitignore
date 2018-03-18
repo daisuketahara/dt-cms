@@ -1,9 +1,5 @@
-*
+*.*
 !.htaccess
 !check.php
 !index.php
 !.gitignore
-!css/*
-!js/*
-!img/*
-!vendor/*
