@@ -11,8 +11,8 @@ Migrations/*
 !Migrations/.gitignore
 public/vendor/*
 public/css/*
-public/background/*
-!public/background/.gitignore
+public/img/background/*
+!public/img/background/.gitignore
 !public/vendor/.gitignore
 var/cache/*
 vendor/*
