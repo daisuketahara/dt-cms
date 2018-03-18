@@ -1,9 +1,0 @@
-*
-!Controller/*
-!Entity/*
-!Form/*
-!Migrations/*
-!Repository/*
-!Routing/*
-!Service/*
-!Kernel.php
