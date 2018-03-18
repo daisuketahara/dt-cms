@@ -10,6 +10,9 @@ modules/*
 Migrations/*
 !Migrations/.gitignore
 public/vendor/*
+public/css/*
+public/background/*
+!public/background/.gitignore
 !public/vendor/.gitignore
 var/cache/*
 vendor/*
