@@ -135,7 +135,7 @@ class UserRoleController extends Controller
 
             $userRole->setName($request->request->get('form_name', ''));
             $userRole->setDescription($request->request->get('form_description', ''));
-            $userRole->setActive($request->request->get('form_active', ''));
+            $userRole->setActive($request->request->get('form_active', false));
 
             $logMessage .= '<i>New data:</i><br>';
             $logMessage .= $serializer->serialize($userRole, 'json');
@@ -149,6 +149,7 @@ class UserRoleController extends Controller
             ->getRepository(RolePermission::class)
             ->findBy(array('roleId' => $id));
 
+            if ($setPermissions)
             foreach($setPermissions as $setPermission) {
                 $em->remove($setPermission);
             }
@@ -156,6 +157,7 @@ class UserRoleController extends Controller
 
             $formPermissions = $request->request->get('form_permission', '');
 
+            if ($formPermissions)
             foreach($formPermissions as $formPermissions => $permissionId) {
                 $rolePermission = new RolePermission();
                 $rolePermission->setRoleId($id);
