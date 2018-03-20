@@ -1,4 +1,6 @@
 .env
+.env*
+!.env.dist
 .DS_Store
 config/services.yaml
 config/routes.yaml
