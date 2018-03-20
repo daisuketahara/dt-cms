@@ -1,6 +1,1 @@
-
-(function($) {
-
-
-
-}( jQuery ));
+/Users/daistahara/Sites/yuna/assets/js/common.js

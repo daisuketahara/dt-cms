@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Leafo\ScssPhp\Compiler;
 
 use App\Entity\Template;
@@ -68,7 +69,7 @@ class TemplateController extends Controller
      /**
       * @Route("/{_locale}/admin/template/compile/{id}/", name="template_compile"))
       */
-    public function compile($id, TranslatorInterface $translator, LogService $log)
+    public function compile($id, TranslatorInterface $translator, LogService $log, Filesystem $fileSystem)
     {
         ini_set('max_execution_time', 300);
 
@@ -86,7 +87,7 @@ class TemplateController extends Controller
             ));
             $css = $scss->compile(file_get_contents('vendor/components/css-reset/reset.min.css'));
 
-            if(!empty($template->getAdmin())) $css .= $scss->compile('@import "admin.scss";');
+            $css .= $scss->compile('@import "build.scss";');
 
             $css .= $scss->compile(file_get_contents('vendor/daneden/animate.css/animate.min.css'));
             $css .= $scss->compile('@import "index.scss";');
@@ -110,22 +111,45 @@ class TemplateController extends Controller
             //'vendor/components/jquery/jquery.min.js' => 'public/vendor/jquery/jquery.min.js',
             //'vendor/components/jquery/jquery.min.map' => 'public/vendor/jquery/jquery.min.map',
 
-            //'vendor/components/font-awesome/fonts/fontawesome-webfont.eot' => 'public/vendor/font-awesome/fonts/fontawesome-webfont.eot',
-            //'vendor/components/font-awesome/fonts/fontawesome-webfont.svg' => 'public/vendor/font-awesome/fonts/fontawesome-webfont.svg',
-            //'vendor/components/font-awesome/fonts/fontawesome-webfont.ttf' => 'public/vendor/font-awesome/fonts/fontawesome-webfont.ttf',
-            //'vendor/components/font-awesome/fonts/fontawesome-webfont.woff' => 'public/vendor/font-awesome/fonts/fontawesome-webfont.woff',
-            //'vendor/components/font-awesome/fonts/fontawesome-webfont.woff2' => 'public/vendor/font-awesome/fonts/fontawesome-webfont.woff2',
-            //'vendor/components/font-awesome/fonts/FontAwesome.otf' => 'public/vendor/font-awesome/fonts/FontAwesome.otf',
-
-
-
+            'assets/js/admin.js' => 'public/js/admin.js',
+            'assets/js/common.js' => 'public/js/common.js',
+            'assets/js/list.js' => 'public/js/list.js',
+            'assets/js/main.js' => 'public/js/main.js',
+            'assets/js/modal.js' => 'public/js/modal.js',
+            'assets/js/paginator.js' => 'public/js/paginator.js',
+            'assets/vendor/popper.min.js' => 'public/vendor/popper.min.js',
+            'assets/vendor/edit_area' => 'public/vendor/edit_area',
+            'vendor/components/jquery/jquery.min.js' => 'public/vendor/jquery/jquery.min.js',
+            'vendor/components/jquery/jquery.min.map' => 'public/vendor/jquery/jquery.min.map',
+            'vendor/twbs/bootstrap/dist/js/bootstrap.min.js' => 'public/vendor/bootstrap/bootstrap.min.js',
+            'vendor/jackocnr/intl-tel-input/build' => 'public/vendor/intl-tel-input',
+            'vendor/tinymce/tinymce' => 'public/vendor/tinymce',
+            'vendor/components/font-awesome/webfonts/fa-brands-400.eot' => 'public/vendor/font-awesome/fonts/fa-brands-400.eot',
+            'vendor/components/font-awesome/webfonts/fa-brands-400.svg' => 'public/vendor/font-awesome/fonts/fa-brands-400.svg',
+            'vendor/components/font-awesome/webfonts/fa-brands-400.ttf' => 'public/vendor/font-awesome/fonts/fa-brands-400.ttf',
+            'vendor/components/font-awesome/webfonts/fa-brands-400.woff' => 'public/vendor/font-awesome/fonts/fa-brands-400.woff',
+            'vendor/components/font-awesome/webfonts/fa-brands-400.woff2' => 'public/vendor/font-awesome/fonts/fa-brands-400.woff2',
+            'vendor/components/font-awesome/webfonts/fa-regular-400.eot' => 'public/vendor/font-awesome/fonts/fa-regular-400.eot',
+            'vendor/components/font-awesome/webfonts/fa-regular-400.svg' => 'public/vendor/font-awesome/fonts/fa-regular-400.svg',
+            'vendor/components/font-awesome/webfonts/fa-regular-400.ttf' => 'public/vendor/font-awesome/fonts/fa-regular-400.ttf',
+            'vendor/components/font-awesome/webfonts/fa-regular-400.woff' => 'public/vendor/font-awesome/fonts/fa-regular-400.woff',
+            'vendor/components/font-awesome/webfonts/fa-regular-400.woff2' => 'public/vendor/font-awesome/fonts/fa-regular-400.woff2',
+            'vendor/components/font-awesome/webfonts/fa-solid-900.eot' => 'public/vendor/font-awesome/fonts/fa-solid-900.eot',
+            'vendor/components/font-awesome/webfonts/fa-solid-900.svg' => 'public/vendor/font-awesome/fonts/fa-solid-900.svg',
+            'vendor/components/font-awesome/webfonts/fa-solid-900.ttf' => 'public/vendor/font-awesome/fonts/fa-solid-900.ttf',
+            'vendor/components/font-awesome/webfonts/fa-solid-900.woff' => 'public/vendor/font-awesome/fonts/fa-solid-900.woff',
+            'vendor/components/font-awesome/webfonts/fa-solid-900.woff2' => 'public/vendor/font-awesome/fonts/fa-solid-900.woff2',
         );
 
+        if ($fileSystem->exists('public/js')) $fileSystem->mkdir('public/js', 0644);
+        if ($fileSystem->exists('public/vendor')) $fileSystem->mkdir('public/vendor', 0644);
+
+        $path = getcwd() . '/';
+
         if (!empty($symlinks))
-        foreach($symlinks as $target => $link)
-        {
-            if (file_exists($link)) if (is_link($link)) unlink($link);
-            if (!file_exists($link)) symlink($target, $link);
+        foreach($symlinks as $target => $link) {
+            if (file_exists($path.$link)) if (is_link($path.$link)) unlink($path.$link);
+            if (!file_exists($path.$link)) $fileSystem->symlink($path.$target, $path.$link, true);
         }
 
         $this->addFlash(

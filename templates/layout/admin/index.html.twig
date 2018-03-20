@@ -1,133 +1,89 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <link rel="profile" href="http://gmpg.org/xfn/11">
-        <title>{% block title %}{{ page_title }} - {{settingservice.getSetting('site.name')|striptags}}{% endblock %}</title>
+{% extends "layout/index.html.twig" %}
 
-        {% block stylesheets %}
-            <link href="https://fonts.googleapis.com/css?family=Ubuntu" media="screen" rel="stylesheet" type="text/css">
-            <link href="{{ asset('css/admin.css') }}" rel="stylesheet" />
-        {% endblock %}
+{% block stylesheets %}
+{{ parent() }}
+<link href="https://fonts.googleapis.com/css?family=Ubuntu" media="screen" rel="stylesheet" type="text/css">
+<link href="{{ asset('css/admin.css') }}" rel="stylesheet" />
+{% endblock %}
 
-        <script type="text/javascript" src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-
-    </head>
-    <body>
-        <div class="admin-container">
-            <div class="admin-navigation">
-                <div class="admin-logo">
-                    <a href="/{{ app.request.locale }}/admin/">
-                        {{settingservice.getSetting('site.logo')|raw}}
+{% block body %}
+<div class="admin-container">
+    <div class="admin-navigation">
+        <div class="admin-logo">
+            <a href="/{{ app.request.locale }}/admin/">
+                {{settingservice.getSetting('site.logo')|raw}}
+            </a>
+        </div>
+        {% block sidebar %}
+        <nav class="dt-admin-menu">
+            <ul>
+            {% for menuItem in menuservice.getMenu(2) %}
+                {% set submenu = menuservice.getSubMenu(menuItem.id) %}
+                <li>
+                    <a href="/{{ app.request.locale }}/{{menuItem.route}}">
+                    {{menuItem.label | raw}}
+                    {% if submenu is not empty %}<i class="fas fa-angle-right"></i>{% endif %}
                     </a>
-                </div>
-                {% block sidebar %}
-                <nav class="dt-admin-menu">
+                {% set submenu = menuservice.getSubMenu(menuItem.id) %}
+                {% if submenu is not empty %}
                     <ul>
-                    {% for menuItem in menuservice.getMenu(2) %}
-                        {% set submenu = menuservice.getSubMenu(menuItem.id) %}
-                        <li>
-                            <a href="/{{ app.request.locale }}/{{menuItem.route}}">
-                            {{menuItem.label | raw}}
-                            {% if submenu is not empty %}<i class="fas fa-angle-right"></i>{% endif %}
-                            </a>
-                        {% set submenu = menuservice.getSubMenu(menuItem.id) %}
-                        {% if submenu is not empty %}
-                            <ul>
-                                {% for subMenuItem in submenu %}
-                                <li><a href="/{{ app.request.locale }}/{{subMenuItem.route}}">{{subMenuItem.label | raw}}</a></li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                        </li>
-                    {% endfor %}
+                        {% for subMenuItem in submenu %}
+                        <li><a href="/{{ app.request.locale }}/{{subMenuItem.route}}">{{subMenuItem.label | raw}}</a></li>
+                        {% endfor %}
                     </ul>
-                </nav>
-                {% endblock %}
-            </div>
-            <div class="admin-user-menu dropdown inline-block margin-right-15">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <!-- Gravatar img -->
-                    <span class="hidden-sm-down">{{ app.user.getFirstname() }} {{ app.user.getLastname() }}</span>
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="right:0;left:auto;">
-                    <a class="dropdown-item" href="/{{ app.request.locale }}/admin/account">{% trans %}My account{% endtrans %}</a>
-                    <a class="dropdown-item" href="/{{ app.request.locale }}/admin/reset-password">{% trans %}Change password{% endtrans %}</a>
-                    <a class="dropdown-item" href="/{{ app.request.locale }}/logout">{% trans %}Logout{% endtrans %}</a>
-                </div>
-            </div>
-            <main class="admin-content">
-                {% if page_title is defined %}<h1>{{ page_title }}</h1>{% endif %}
-                <!--
-                <?php echo $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
-                -->
-                {% for message in app.flashes('error') %}
-                    <div class="alert alert-dismissible alert-danger">
-                        {{ message }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                {% endfor %}
-                {% for message in app.flashes('notice') %}
-                    <div class="alert alert-dismissible alert-info">
-                        {{ message }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                {% endfor %}
-                {% for message in app.flashes('success') %}
-                    <div class="alert alert-dismissible alert-success">
-                        {{ message }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                {% endfor %}
-                {% block body %}{% endblock %}
-            </main>
-        </div>
-        <footer class="container-fluid margin-top-10 font-12">
-                &copy; 2014 - {{ "now"|date('Y') }} by InterMention.
-                {% trans %}All rights reserved.{% endtrans %}
-                {{constant('APPLICATION_VERSION')}}
-        </footer>
-        <div class="modal fade" id="dt-modal" tabindex="-1" role="dialog" aria-labelledby="dt-modal" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body"></div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans %}Close{% endtrans %}</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% block javascripts %}
-            <script type="text/javascript" src="{{ asset('js/admin.js') }}"></script>
-            <script type="text/javascript" src="{{ asset('vendor/popper.min.js') }}"></script>
-            <script type="text/javascript" src="{{ asset('vendor/bootstrap/bootstrap.min.js') }}"></script>
-            <script type="text/javascript">
-
-                var translations = {
-                    'Close': '{% trans %}Close{% endtrans %}',
-                    'Cancel': '{% trans %}Cancel{% endtrans %}',
-                    'Delete': '{% trans %}Delete{% endtrans %}',
-                    'Error': '{% trans %}Error{% endtrans %}',
-                    'An error has occurred.': '{% trans %}An error has occurred.{% endtrans %}',
-                    'Please try again.': '{% trans %}Please try again.{% endtrans %}',
-                    'View record': '{% trans %}View record{% endtrans %}',
-                    'Confirm delete': '{% trans %}Confirm delete{% endtrans %}',
-                    'You are about to delete a record, this cannot be undone.': '{% trans %}You are about to delete a record, this cannot be undone.{% endtrans %}',
-                    'Do you want to proceed?': '{% trans %}Do you want to proceed?{% endtrans %}',
-                }
-            </script>
+                {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        </nav>
         {% endblock %}
-    </body>
-</html>
+    </div>
+    <div class="admin-user-menu dropdown inline-block margin-right-15">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <!-- Gravatar img -->
+            <span class="hidden-sm-down">{{ app.user.getFirstname() }} {{ app.user.getLastname() }}</span>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="right:0;left:auto;">
+            <a class="dropdown-item" href="/{{ app.request.locale }}/admin/account">{% trans %}My account{% endtrans %}</a>
+            <a class="dropdown-item" href="/{{ app.request.locale }}/admin/reset-password">{% trans %}Change password{% endtrans %}</a>
+            <a class="dropdown-item" href="/{{ app.request.locale }}/logout">{% trans %}Logout{% endtrans %}</a>
+        </div>
+    </div>
+    <main class="admin-content">
+        {% if page_title is defined %}<h1>{{ page_title }}</h1>{% endif %}
+        <!--
+        <?php echo $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
+        -->
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-dismissible alert-danger">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('notice') %}
+            <div class="alert alert-dismissible alert-info">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-dismissible alert-success">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+        {% block content %}{% endblock %}
+    </main>
+</div>
+<footer class="container-fluid margin-top-10 font-12">
+        &copy; 2014 - {{ "now"|date('Y') }} by InterMention.
+        {% trans %}All rights reserved.{% endtrans %}
+        {{constant('APPLICATION_VERSION')}}
+</footer>
+{% endblock %}
