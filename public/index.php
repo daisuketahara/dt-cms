@@ -20,7 +20,7 @@ if (!isset($_SERVER['APP_ENV'])) {
     if ($subdomain == 'www') $subdomain = '';
 
     if (file_exists(__DIR__.'/../.env.'.$subdomain)) $env = __DIR__.'/../.env.'.$subdomain;
-    else $env = __DIR__.'/../.env'
+    else $env = __DIR__.'/../.env';
 
     (new Dotenv())->load($env);
 }
