@@ -21,9 +21,9 @@
 
         $('.table').dtTable({
             ajaxUrl: '/{{ app.request.locale }}/admin/mail/template/list',
-            addUrl: '/{{ app.request.locale }}/admin/mail/template/add',
-            editUrl: '/{{ app.request.locale }}/admin/mail/template/edit',
-            deleteUrl: '/{{ app.request.locale }}/admin/mail/template/delete',
+            addUrl: '/{{ app.request.locale }}/admin/mail/template/add/',
+            editUrl: '/{{ app.request.locale }}/admin/mail/template/edit/',
+            deleteUrl: '/{{ app.request.locale }}/admin/mail/template/delete/',
             filter: true,
             limit: 15
         });

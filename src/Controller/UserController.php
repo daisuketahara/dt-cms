@@ -251,6 +251,7 @@ class UserController extends Controller
             'password' => 'passwordnotchanged',
             'email_confirmed' => $user->getEmailConfirmed(),
             'phone_confirmed' => $user->getPhoneConfirmed(),
+            'active' => $user->getActive(),
             'company_name' => $userinfo->getCompanyName(),
             'website' => $userinfo->getWebsite(),
             'vat_number' => $userinfo->getVatNumber(),
@@ -272,7 +273,6 @@ class UserController extends Controller
      }
 
      /**
-      * @Route("/admin/user/delete/{id}/", name="user_delete")
       * @Route("/{_locale}/admin/user/delete/{id}/", name="user_delete"))
       */
      final public function delete($id, LogService $log)

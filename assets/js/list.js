@@ -123,7 +123,7 @@
                     if (functions) {
                         tbody += '<td class="text-right">';
                         if (view) tbody += '<a class="im-table-view btn btn-secondary btn-sm text-white pointer ml-1" data-id="' + data[i]['id'] + '"><i class="fa fa-search" aria-hidden="true"></i></a>';
-                        if (editUrl != '') tbody += '<a href="' + editUrl + '/' + data[i]['id'] + '" class="im-table-edit btn btn-secondary btn-sm text-white pointer ml-1"><i class="fa fa-pencil-alt" aria-hidden="true"></i></a>';
+                        if (editUrl != '') tbody += '<a href="' + editUrl + data[i]['id'] + '" class="im-table-edit btn btn-secondary btn-sm text-white pointer ml-1"><i class="fa fa-pencil-alt" aria-hidden="true"></i></a>';
                         if (deleteUrl != '') tbody += '<a class="im-table-delete btn btn-secondary btn-sm text-white pointer ml-1" data-id="' + data[i]['id'] + '"><i class="fa fa-trash" aria-hidden="true"></i></a>';
                         tbody += '</td>';
                     }
@@ -158,6 +158,8 @@
     }
     function formatValue(value)
     {
+        if (value == null) return '';
+
         if (value === true) return '<a class="green"><i class="fas fa-check"></i></a>';
         if (value === false) return '<a class="red"><i class="fas fa-times"></i></a>';
 

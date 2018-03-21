@@ -24,7 +24,7 @@
 
         $('.table').dtTable({
             ajaxUrl: '/{{ app.request.locale }}/admin/mail/queue/list',
-            deleteUrl: '/{{ app.request.locale }}/admin/mail/queue/delete',
+            deleteUrl: '/{{ app.request.locale }}/admin/mail/queue/delete/',
             filter: true,
             limit: 15
         });
