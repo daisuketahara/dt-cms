@@ -132,7 +132,7 @@ class LocaleController extends Controller
             $em->flush();
             $id = $locale->getId();
 
-            $log->add('Setting', $id, $logMessage, $logComment);
+            $log->add('Locale', $id, $logMessage, $logComment);
 
             $this->addFlash(
                 'success',

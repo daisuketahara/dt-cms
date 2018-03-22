@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "7e1450fd3a189d06df0f51811f1716b5",
+    "content-hash": "1f75c43dedc8d0a99a8ab86f88481d94",
     "packages": [
         {
             "name": "adyen/php-api-library",
@@ -1252,6 +1252,32 @@
                 "validator"
             ],
             "time": "2017-11-15T23:40:40+00:00"
+        },
+        {
+            "name": "filsh/jquery-autocomplete",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Filsh/jquery-autocomplete.git",
+                "reference": "c598a15f508979fdf8676908408dde79cf5b152c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Filsh/jquery-autocomplete/zipball/c598a15f508979fdf8676908408dde79cf5b152c",
+                "reference": "c598a15f508979fdf8676908408dde79cf5b152c",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "This is a fork of Devbridge https://github.com/devbridge/jQuery-Autocomplete, thanks go to him for getting this thing started!",
+            "keywords": [
+                "autocomplete",
+                "jquery"
+            ],
+            "time": "2014-01-25T15:49:33+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -5598,6 +5624,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "filsh/jquery-autocomplete": 20,
         "symfony/lts": 20
     },
     "prefer-stable": false,
