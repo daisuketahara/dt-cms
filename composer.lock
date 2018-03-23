@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "23617b8680f0331e7ba14c2af8943733",
+    "content-hash": "61fee3ec3924bf02b4c5ba343deb1e89",
     "packages": [
         {
             "name": "adyen/php-api-library",
@@ -48,6 +48,42 @@
                 "adyen"
             ],
             "time": "2018-02-14T08:25:34+00:00"
+        },
+        {
+            "name": "bassjobsen/bootstrap-3-typeahead",
+            "version": "4.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bassjobsen/Bootstrap-3-Typeahead.git",
+                "reference": "7b59699d14865a3b7355c0e05f7a9cdc75f7e8e4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bassjobsen/Bootstrap-3-Typeahead/zipball/7b59699d14865a3b7355c0e05f7a9cdc75f7e8e4",
+                "reference": "7b59699d14865a3b7355c0e05f7a9cdc75f7e8e4",
+                "shasum": ""
+            },
+            "type": "component",
+            "extra": {
+                "component": {
+                    "files": [
+                        "bootstrap3-typeahead.js",
+                        "bootstrap3-typeahead.min.js"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Bass Jobsen",
+                    "email": "bass@w3masters.nl"
+                }
+            ],
+            "description": "Bootstrap 3 Typeahead",
+            "time": "2016-09-26T12:59:36+00:00"
         },
         {
             "name": "bordercloud/tether",
@@ -5094,39 +5130,6 @@
                 "templating"
             ],
             "time": "2018-03-20T04:31:17+00:00"
-        },
-        {
-            "name": "twitter/typeahead.js",
-            "version": "v0.11.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/twitter/typeahead.js.git",
-                "reference": "588440f66559714280628a4f9799f0c4eb880a4a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/twitter/typeahead.js/zipball/588440f66559714280628a4f9799f0c4eb880a4a",
-                "reference": "588440f66559714280628a4f9799f0c4eb880a4a",
-                "shasum": ""
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Twitter Inc.",
-                    "homepage": "https://twitter.com/twitteross"
-                }
-            ],
-            "description": "fast and fully-featured autocomplete library",
-            "homepage": "http://twitter.github.com/typeahead.js",
-            "keywords": [
-                "autocomplete",
-                "typeahead"
-            ],
-            "time": "2015-04-27T04:02:14+00:00"
         },
         {
             "name": "zendframework/zend-code",
