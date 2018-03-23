@@ -122,6 +122,8 @@ class TemplateController extends Controller
             'vendor/components/jquery/jquery.min.js' => 'public/vendor/jquery/jquery.min.js',
             'vendor/components/jquery/jquery.min.map' => 'public/vendor/jquery/jquery.min.map',
             'vendor/twbs/bootstrap/dist/js/bootstrap.min.js' => 'public/vendor/bootstrap/bootstrap.min.js',
+            'vendor/twitter/typeahead.js/dist/typeahead.jquery.min.js' => 'public/vendor/typeahead/typeahead.jquery.min.js',
+            'vendor/twitter/typeahead.js/dist/bloodhound.min.js' => 'public/vendor/typeahead/bloodhound.min.js',
             'vendor/jackocnr/intl-tel-input/build' => 'public/vendor/intl-tel-input',
             'vendor/tinymce/tinymce' => 'public/vendor/tinymce',
             'vendor/components/font-awesome/webfonts/fa-brands-400.eot' => 'public/vendor/font-awesome/fonts/fa-brands-400.eot',
