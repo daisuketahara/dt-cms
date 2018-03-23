@@ -124,7 +124,6 @@ class TemplateController extends Controller
             'vendor/twbs/bootstrap/dist/js/bootstrap.min.js' => 'public/vendor/bootstrap/bootstrap.min.js',
             'vendor/jackocnr/intl-tel-input/build' => 'public/vendor/intl-tel-input',
             'vendor/tinymce/tinymce' => 'public/vendor/tinymce',
-            'vendor/filsh/jquery-autocomplete/dist/jquery.autocomplete.min.js' => 'public/vendor/jquery-autocomplete/jquery.autocomplete.min.js',
             'vendor/components/font-awesome/webfonts/fa-brands-400.eot' => 'public/vendor/font-awesome/fonts/fa-brands-400.eot',
             'vendor/components/font-awesome/webfonts/fa-brands-400.svg' => 'public/vendor/font-awesome/fonts/fa-brands-400.svg',
             'vendor/components/font-awesome/webfonts/fa-brands-400.ttf' => 'public/vendor/font-awesome/fonts/fa-brands-400.ttf',
