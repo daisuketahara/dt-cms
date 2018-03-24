@@ -151,6 +151,9 @@ class UserController extends Controller
             $user->setLastname($request->request->get('lastname', ''));
             $user->setEmail($request->request->get('email', ''));
             $user->setPhone($request->request->get('phone', ''));
+            $user->setEmailConfirmed($request->request->get('emailConfirmed', false));
+            $user->setPhoneConfirmed($request->request->get('phoneConfirmed', false));
+            $user->setActive($request->request->get('active', false));
 
             $password = $request->request->get('password', '');
             if ($password != 'passwordnotchanged') {
