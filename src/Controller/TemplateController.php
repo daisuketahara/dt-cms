@@ -108,9 +108,6 @@ class TemplateController extends Controller
         // Create symlinks
         // https://symfony.com/doc/current/components/filesystem.html
         $symlinks = array(
-            //'vendor/components/jquery/jquery.min.js' => 'public/vendor/jquery/jquery.min.js',
-            //'vendor/components/jquery/jquery.min.map' => 'public/vendor/jquery/jquery.min.map',
-
             'assets/js/admin.js' => 'public/js/admin.js',
             'assets/js/common.js' => 'public/js/common.js',
             'assets/js/list.js' => 'public/js/list.js',
@@ -122,6 +119,7 @@ class TemplateController extends Controller
             'vendor/components/jquery/jquery.min.js' => 'public/vendor/jquery/jquery.min.js',
             'vendor/components/jquery/jquery.min.map' => 'public/vendor/jquery/jquery.min.map',
             'vendor/twbs/bootstrap/dist/js/bootstrap.min.js' => 'public/vendor/bootstrap/bootstrap.min.js',
+            'vendor/twbs/bootstrap/dist/js/bootstrap.min.js.map' => 'public/vendor/bootstrap/bootstrap.min.js.map',
             'vendor/bassjobsen/bootstrap-3-typeahead/bootstrap3-typeahead.min.js' => 'public/vendor/typeahead/bootstrap3-typeahead.min.js',
             'vendor/jackocnr/intl-tel-input/build' => 'public/vendor/intl-tel-input',
             'vendor/tinymce/tinymce' => 'public/vendor/tinymce',

@@ -15,15 +15,18 @@ class SmsService
 {
 
     // http://www.spryng.nl/developers/http-api/
-    public function send($recipient, $message, SettingService $setting, LogService $log) {
+    public function send($recipient, $message, $reference='', SettingService $setting, LogService $log) {
 
         $enabled = $setting->getSetting('spryng.enable');
         $username = $setting->getSetting('spryng.username');
         $password = $setting->getSetting('spryng.password');
         $route = $setting->getSetting('spryng.route');
         $long = $setting->getSetting('spryng.long');
-        $reference = $setting->getSetting('spryng.reference');
         $company = $setting->getSetting('company.name');
+
+        if (empty($reference)) $reference = $setting->getSetting('spryng.reference');
+        if (empty($reference)) $reference = $company;
+        if (empty($route)) $route = 'business';
 
         if (!empty($enabled)) {
 
@@ -32,7 +35,7 @@ class SmsService
             try {
                 $spryng->sms->send($recipient, $message, array(
                     'route' => $route,
-                    'allowlong' => $long,
+                    'allowlong' => true,
                     'reference' => $reference)
                 );
                 return true;

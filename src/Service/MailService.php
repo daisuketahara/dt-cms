@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 
 use App\Entity\MailQueue;
+use App\Service\SettingService;
 
 class MailService
 {
@@ -17,10 +18,15 @@ class MailService
         $this->em = $em;
     }
 
-    public function addToQueue($fromName, $fromEmail, $toName, $toEmail, $subject, $body)
+    public function addToQueue($toEmail, $subject, $body, $fromName='', $fromEmail='', $toName='', SettingService $setting)
     {
         $mail = new MailQueue();
         $request = Request::createFromGlobals();
+
+        if (empty($fromName)) $fromName = $setting->getSetting('email.from.name');
+        if (empty($fromName)) $fromName = $setting->getSetting('site.name');
+        if (empty($fromEmail)) $fromEmail = $setting->getSetting('email.from');
+        if (empty($toName)) $toName = $toEmail;
 
         $mail->setFromName($fromName);
         $mail->setFromEmail($fromEmail);
