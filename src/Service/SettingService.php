@@ -25,7 +25,7 @@ class SettingService
         if (!empty($setting)) return html_entity_decode($setting[0]->getSettingValue());
 
         $parameter = $this->container->getParameter($key);
-        if (!empty($setting)) return $parameter;
+        if (!empty($parameter)) return $parameter;
 
         return false;
     }

@@ -17,7 +17,7 @@ class SmsService
     // http://www.spryng.nl/developers/http-api/
     public function send($recipient, $message, $reference='', SettingService $setting, LogService $log) {
 
-        $enabled = $setting->getSetting('spryng.enable');
+        $enabled = $setting->getSetting('sms.enable');
         $username = $setting->getSetting('spryng.username');
         $password = $setting->getSetting('spryng.password');
         $route = $setting->getSetting('spryng.route');
