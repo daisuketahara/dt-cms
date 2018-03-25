@@ -13,6 +13,8 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 use App\Entity\Log;
+use App\Service\LogService;
+use App\Service\SettingService;
 
 class LogController extends Controller
 {
@@ -79,5 +81,24 @@ class LogController extends Controller
          $json = $serializer->serialize($json, 'json');
 
          return $this->json($json);
+     }
+
+     /**
+      * @Route("/cron/log/clear/", name="log_clear")
+      */
+     final public function clear(SettingService $setting, LogService $log)
+     {
+         $days = $setting->getSetting('log.history.days');
+
+         $em = $this->getDoctrine()->getManager();
+         $mail = $em->getRepository(Log::class)->deleteOldRecords($days);
+
+         $logMessage = 'Cleared log';
+
+         //$log->add('Mail Queue', 0, $logMessage, 'Clear mail queue');
+
+         return new Response(
+             'Emails cleared from queue'
+         );
      }
 }

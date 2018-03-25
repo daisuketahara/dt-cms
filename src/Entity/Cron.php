@@ -53,14 +53,19 @@ class Cron
     protected $dayOfWeek;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     protected $lastRun;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="datetime", nullable=true)
      */
-    protected $runCount;
+    protected $nextRun;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    protected $runCount = 0;
 
     /**
      * @ORM\Column(type="boolean")
@@ -283,8 +288,33 @@ class Cron
      */
     public function setLastRun($lastRun)
     {
-        if (!empty($this->lastRun)) return $this->lastRun;
-        return '';
+        $this->lastRun = $lastRun;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Next Run
+     *
+     * @return mixed
+     */
+    public function getNextRun()
+    {
+        return $this->nextRun;
+    }
+
+    /**
+     * Set the value of Next Run
+     *
+     * @param mixed nextRun
+     *
+     * @return self
+     */
+    public function setNextRun($nextRun)
+    {
+        $this->nextRun = $nextRun;
+
+        return $this;
     }
 
     /**
@@ -358,5 +388,4 @@ class Cron
 
         return $this;
     }
-
 }

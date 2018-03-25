@@ -16,6 +16,7 @@ use App\Entity\MailQueue;
 use App\Entity\MailTemplate;
 use App\Form\MailTemplateForm;
 use App\Service\LogService;
+use App\Service\SettingService;
 
 
 class MailController extends Controller
@@ -112,6 +113,7 @@ class MailController extends Controller
       */
      final public function send(LogService $log, \Swift_Mailer $mailer)
      {
+
          $em = $this->getDoctrine()->getManager();
          $mails = $em->getRepository(MailQueue::class)->findToSend();
 
@@ -122,21 +124,15 @@ class MailController extends Controller
              $message = (new \Swift_Message($mail->getSubject()))
                     ->setFrom($mail->getFromEmail())
                     ->setTo($mail->getToEmail())
-                    ->setBody(
-                        $this->renderView(
-                            'mail.html.twig',
-                            array('body' => $mail->getBody())
-                        ),
-                        'text/html'
-                    );
+                    ->setBody($mail->getBody());
              if ($mailer->send($message)) {
                 $mail->setSendDate(new \DateTime("now"));
                 $mail->setStatus(1);
-                $count++;
-            } else {
+                $success++;
+             } else {
                 $mail->setStatus(-1);
                 $fail++;
-            }
+             }
 
              $em = $this->getDoctrine()->getManager();
              $em->persist($mail);
@@ -144,34 +140,33 @@ class MailController extends Controller
          }
 
 
-         $logMessage = $count . ' send emails cleared from queue. ' . $fail . ' failed attempts.';
+         $logMessage = $success . ' send emails cleared from queue. ' . $fail . ' failed attempts.';
 
-         $log->add('Mail Queue', 0, $logMessage, 'Send mail queue');
+         if (!empty($success) || !empty($fail)) $log->add('Mail Queue', 0, $logMessage, 'Send mail queue');
 
          return new Response(
-             $count . ' send emails cleared from queue. ' . $fail . ' failed attempts.'
+             $success . ' send emails cleared from queue. ' . $fail . ' failed attempts.'
          );
      }
 
      /**
       * @Route("/cron/mail/queue/clear/", name="mail_queue_clear")
       */
-     final public function clear(LogService $log)
+     final public function clear(SettingService $setting, LogService $log)
      {
+         $days = $setting->getSetting('email.history.days');
+
          $em = $this->getDoctrine()->getManager();
-         $mail = $em->getRepository(MailQueue::class)->findToDelete();
+         $mail = $em->getRepository(MailQueue::class)->deleteOldRecords($days);
 
          $logMessage = 'Emails cleared from queue';
-         //var_dump($mail);exit;
 
-         $log->add('Mail Queue', 0, $logMessage, 'Clear mail queue');
+         //$log->add('Mail Queue', 0, $logMessage, 'Clear mail queue');
 
          return new Response(
              'Emails cleared from queue'
          );
      }
-
-
 
      /**
       * @Route("/{_locale}/admin/mail/template/", name="mail_template"))

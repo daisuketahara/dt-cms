@@ -12,6 +12,7 @@
         "components/jquery": "^3.2",
         "components/jqueryui": "^1.12",
         "daneden/animate.css": "^3.5",
+        "dragonmantank/cron-expression": "^2.0",
         "jackocnr/intl-tel-input": "^12.1",
         "leafo/scssphp": "^0.7.4",
         "mollie/mollie-api-php": "^1.9",

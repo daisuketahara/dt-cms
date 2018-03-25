@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Cron\CronExpression;
 
 use App\Entity\Cron;
 use App\Form\CronForm;
@@ -88,8 +89,8 @@ class CronController extends Controller
       * @Route("/{_locale}/admin/cron/add/", name="cron_add"))
       * @Route("/{_locale}/admin/cron/edit/{id}/", name="cron_edit"))
       */
-    final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
-    {
+     final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
+     {
         //$this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN', null, 'Unable to access this page!');
 
         $encoders = array(new XmlEncoder(), new JsonEncoder());
@@ -179,12 +180,58 @@ class CronController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/cron/run/", name="cron_run")
+      * @Route("/cron/", name="cron_run")
       */
-     final public function run($id, LogService $log)
+     final public function cron(Request $request)
      {
+         $start = time();
+
+         $crons = $this->getDoctrine()
+             ->getRepository(Cron::class)
+             ->findBy(['active' => 1]);
+
+        if ($crons) {
+            foreach($crons as $cron) {
+
+                $script = 'http://yuna.test' . $cron->getScript();
+
+                $expression = $cron->getMinute() . ' ';
+                $expression .= $cron->getHour() . ' ';
+                $expression .= $cron->getDay() . ' ';
+                $expression .= $cron->getMonth() . ' ';
+                $expression .= $cron->getDayOfWeek();
+
+                $cronExpression = CronExpression::factory($expression);
+                $count = $cron->getRunCount();
+                $lastRun = $cron->getLastRun()->format('Y-m-d H:i:s');
+                $nextRun = $cronExpression->getNextRunDate($lastRun)->format('Y-m-d H:i:s');
 
 
+                if ($start >= strtotime($nextRun)) {
 
+                    $curl = curl_init();
+                    curl_setopt($curl, CURLOPT_URL, $script);
+                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+                    // https://stackoverflow.com/questions/2190854/sending-post-requests-without-waiting-for-response
+                    //curl_setopt($curl, CURLOPT_TIMEOUT_MS, 1);
+                    //curl_setopt($curl, CURLOPT_NOSIGNAL, 1);
+                    curl_exec($curl);
+                    curl_close($curl);
+
+                    $cron->setLastRun(new \DateTime(date('Y-m-d H:i:s')));
+                    $nextRun = $cronExpression->getNextRunDate(new \DateTime(date('Y-m-d H:i:s')))->format('Y-m-d H:i:s');
+                    $cron->setNextRun(new \DateTime($nextRun));
+                    $cron->setRunCount($count+1);
+
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($cron);
+                    $em->flush();
+                }
+            }
+        }
+
+        $cronlog = 'Cron init: ' . date('Y-m-d H:i:s') . PHP_EOL;
+
+        return new Response($cronlog);
      }
 }

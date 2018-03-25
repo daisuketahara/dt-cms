@@ -24,13 +24,15 @@ class MailQueueRepository extends ServiceEntityRepository
         return $qb->setMaxResults(30)->execute();
     }
 
-    public function findToDelete()
+    public function deleteOldRecords($days)
     {
-        $qb = $this->createQueryBuilder('m')
-            ->delete()
-            ->andWhere('m.status <> 0')
-            ->getQuery();
+        $sql = "DELETE FROM mail_queue WHERE creation_date < NOW() - INTERVAL " . $days . " DAY";
 
-        $result = $qb->execute();
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        //$stmt->execute(['price' => 10]);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
     }
 }
