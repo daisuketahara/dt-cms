@@ -14,21 +14,33 @@ use App\Service\LogService;
 class SmsService
 {
 
+    private $setting;
+    private $log;
+
+    public function __construct(\App\Service\SettingService $setting, \App\Service\LogService $log)
+    {
+        $this->setting = $setting;
+        $this->log = $log;
+    }
+
     // http://www.spryng.nl/developers/http-api/
-    public function send($recipient, $message, $reference='', SettingService $setting, LogService $log) {
+    public function send($recipient, $message, $reference='') {
 
-        $enabled = $setting->getSetting('sms.enable');
-        $username = $setting->getSetting('spryng.username');
-        $password = $setting->getSetting('spryng.password');
-        $route = $setting->getSetting('spryng.route');
-        $long = $setting->getSetting('spryng.long');
-        $company = $setting->getSetting('company.name');
+        $enabled = $this->setting->getSetting('sms.enable');
+        $username = $this->setting->getSetting('spryng.username');
+        $password = $this->setting->getSetting('spryng.password');
+        $route = $this->setting->getSetting('spryng.route');
+        $long = $this->setting->getSetting('spryng.long');
+        $company = $this->setting->getSetting('company.name');
 
-        if (empty($reference)) $reference = $setting->getSetting('spryng.reference');
+        if (empty($reference)) $reference = $this->setting->getSetting('spryng.reference');
         if (empty($reference)) $reference = $company;
         if (empty($route)) $route = 'business';
 
         if (!empty($enabled)) {
+
+            $company = $this->setting->getSetting('site.name');
+            $message = $company . ' - ' . $message;
 
             $spryng = new Client($username, $password, $company);
 
@@ -44,7 +56,7 @@ class SmsService
                 $logMessage = '<i>Error:</i><br>';
                 $logMessage .= $e->getMessage();
 
-                $log->add('SMS', 0, $logMessage, 'Send');
+                $this->log->add('SMS', 0, $logMessage, 'Send');
             }
         }
         return false;
@@ -53,9 +65,7 @@ class SmsService
     public function sendSmsCode($phone, TranslatorInterface $translator) {
 
         $smsCode = $this->generateCode();
-
-        $company = $setting->getSetting('site.name');
-        $message = $company . ' - ' . $translator->trans('SMS verification code') . ': ' . $smsCode;
+        $message = $translator->trans('SMS verification code') . ': ' . $smsCode;
 
         if ($this->send($phone, $message)) return true;
         return false;

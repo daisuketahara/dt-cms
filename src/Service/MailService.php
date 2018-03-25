@@ -12,20 +12,22 @@ class MailService
 {
     protected $em;
     protected $request;
+    protected $setting;
 
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, \App\Service\SettingService $setting)
     {
         $this->em = $em;
+        $this->setting = $setting;
     }
 
-    public function addToQueue($toEmail, $subject, $body, $fromName='', $fromEmail='', $toName='', SettingService $setting)
+    public function addToQueue($toEmail, $subject, $body, $fromName='', $fromEmail='', $toName='')
     {
         $mail = new MailQueue();
         $request = Request::createFromGlobals();
 
-        if (empty($fromName)) $fromName = $setting->getSetting('email.from.name');
-        if (empty($fromName)) $fromName = $setting->getSetting('site.name');
-        if (empty($fromEmail)) $fromEmail = $setting->getSetting('email.from');
+        if (empty($fromName)) $fromName = $this->setting->getSetting('email.from.name');
+        if (empty($fromName)) $fromName = $this->setting->getSetting('site.name');
+        if (empty($fromEmail)) $fromEmail = $this->setting->getSetting('email.from');
         if (empty($toName)) $toName = $toEmail;
 
         $mail->setFromName($fromName);
