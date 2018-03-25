@@ -185,6 +185,7 @@ class CronController extends Controller
      final public function cron(Request $request)
      {
          $start = time();
+         $baseUrl = $request->getSchemeAndHttpHost();
 
          $crons = $this->getDoctrine()
              ->getRepository(Cron::class)
@@ -193,7 +194,7 @@ class CronController extends Controller
         if ($crons) {
             foreach($crons as $cron) {
 
-                $script = 'http://yuna.test' . $cron->getScript();
+                $script = $baseUrl . $cron->getScript();
 
                 $expression = $cron->getMinute() . ' ';
                 $expression .= $cron->getHour() . ' ';
