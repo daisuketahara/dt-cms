@@ -19,31 +19,5 @@ body {
 	$link-color:			#CC4422;
 	$link-color-reverse:	#ffffff;
 
-    background-image: url(/img/background/background-blue.jpg);
-    background-image: url(/img/background/background-pink.jpg);
-    background-image: url(/img/background/background-sydney.jpg);
-    background-image: url(/img/background/background-yellow-grey.jpg);
-    background-image: url(/img/background/background.jpg);
-    background-image: url(/img/background/background-melbourne.jpg);
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center center;
-    background-attachment: fixed;
-
 	@import 'theme-components';
-}
-body.night-theme {
-    background-color: rgba(102,105,104,0.9);
-    background-image: radial-gradient(farthest-side ellipse at 10% 0, rgba(102,105,104,0.9), rgba(93,112,119,0.89), rgba(160,174,150,0.9));
-    background-image: -webkit-radial-gradient(10% 0, farthest-side ellipse, rgba(102,105,104,0.9), rgba(93,112,119,0.89), rgba(160,174,150,0.9));
-    background-image: -moz-radial-gradient(10% 0, farthest-side ellipse, rgba(102,105,104,0.9), rgba(93,112,119,0.89), rgba(160,174,150,0.9));
-
-	$text-color: 			#ffffff;
-	$text-color-reverse: 	#ffffff;
-	$bg-color: 				#FFFFFF;
-	$link-color:			#ffffff;
-	$link-color-reverse:	#333333;
-
-    @import 'theme-components';
-
 }
