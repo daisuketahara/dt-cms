@@ -1,18 +1,7 @@
 {% extends templateservice.getAdminTemplate() %}
 
 {% block content %}
-<table class="table table-hover table-striped">
-    <thead class="thead-dark">
-        <tr>
-            <th class="width-100" data-column="id">{% trans %}ID{% endtrans %}</th>
-            <th data-column="creationDate">{% trans %}Date{% endtrans %}</th>
-            <th data-column="userIp">{% trans %}IP{% endtrans %}</th>
-            <th data-column="entity">{% trans %}Entity{% endtrans %}</th>
-            <th data-column="entityId">{% trans %}Entity ID{% endtrans %}</th>
-            <th data-column="comment">{% trans %}Comment{% endtrans %}</th>
-        </tr>
-    </thead>
-</table>
+<div id="dt-cards"></div>
 {% endblock %}
 
 {% block javascripts %}
@@ -22,7 +11,19 @@
     <script type="text/javascript" src="{{ asset('js/list.js') }}"></script>
     <script type="text/javascript">
 
-        $('.table').dtTable({
+        $('#dt-cards').dtCards({
+            columns: [
+                {id1: 'entity', id2: 'creationDate'},
+                {id1: 'comment'},
+                {id1: 'entityId'},
+                {id1: 'userIp'}
+            ],
+            labels: [
+                '{% trans %}Entity{% endtrans %}',
+                '{% trans %}Comment{% endtrans %}',
+                '{% trans %}Entity ID{% endtrans %}',
+                '{% trans %}User IP{% endtrans %}'
+            ],
             ajaxUrl: '/{{ app.request.locale }}/admin/log/ajaxlist/',
             filter: true,
             limit: 15

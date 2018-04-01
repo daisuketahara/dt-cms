@@ -1,9 +1,7 @@
 
 (function($) {
 
-    var columns = [];
-    var labels = [];
-    var buttons = [];
+    var columns;
     var object;
     var ajaxUrl;
     var addUrl;
@@ -19,15 +17,11 @@
     var data = '';
     var total = 0;
     var view;
-    var refresh = 0;
 
-    $.fn.dtCards = function(options){
+    $.fn.dtTable = function(options){
 
         // Default options
         var settings = $.extend({
-            columns: '',
-            labels: '',
-            buttons: '',
             functions: true,
             sorting: true,
             filter: false,
@@ -36,17 +30,13 @@
             addUrl: '',
             editUrl: '',
             deleteUrl: '',
-            limit: 15,
-            refresh: 0
+            limit: 15
         }, options );
 
         object = this;
-        columns = settings.columns;
-        labels = settings.labels;
-        buttons = settings.buttons;
+        columns = get_columns();
         filter = settings.filter;
         view = settings.view;
-        refresh = settings.refresh;
         sorting = settings.sorting;
         functions = settings.functions;
         limit = settings.limit;
@@ -55,32 +45,24 @@
         editUrl = settings.editUrl;
         deleteUrl = settings.deleteUrl;
 
-        this.wrap('<form action="" class="im-list-form" method="post"></form>');
+        this.wrap('<div class="table-responsive"></div>');
+        this.wrap('<form action="" class="im-table-form" method="post"></form>');
+        this.addClass('im-table');
 
-        if (labels.length > 0) {
 
-            var header = '<div class="dt-cards-header card text-white mb-2">';
-            header += '<div class="card-body p-3">';
+        if (settings.sorting) {
+            this.find('thead tr:first-child th').each(function() {
+                $(this).append('<a class="ml-3"><i class="fa fa-sort" aria-hidden="true"></i></a>');
+                $(this).addClass('im-table-sort pointer');
+            });
+        }
 
-            header += '<div class="row">';
-            header += '<div class="col-1"></div>';
-
-            for (i = 0; i < labels.length; i++) {
-                if (settings.sorting) headerClass = ' dt-cards-sort pointer';
-                else headerClass = '';
-                header += '<div class="col' + headerClass + '">';
-                header += labels[i];
-                if (settings.sorting) header += '<a class="ml-3"><i class="fa fa-sort" aria-hidden="true"></i></a>';
-                header += '</div>';
-            }
-
-            header += '<div class="col-2 text-right pt-2"></div>';
-            header += '</div>';
-
-            header += '</div>';
-            header += '</div>';
-
-            this.append(header);
+        // Add functions to header
+        if (settings.functions) {
+            this.find('thead tr:first-child').prepend('<th><input type="checkbox"></th>');
+            if (settings.addUrl) var addBtn = '<a href="' + settings.addUrl + '" class="table-add pointer float-right btn btn-success btn-sm"><i class="fa fa-plus"></i></a>';
+            else var addBtn = '';
+            this.find('thead tr:first-child').append('<th class="width-200">' + addBtn + '</th>');
         }
 
         if (settings.filter) {
@@ -95,8 +77,6 @@
 
             this.find('thead').append(filter);
         }
-
-        this.append('<div id="dt-cards-body"></div>');
         load_body();
 
         return this;
@@ -128,49 +108,34 @@
                 data = json['data'];
                 total = json['total'];
 
-                $('#dt-cards-body').empty();
+                object.find('tbody').remove();
+                object.find('tfoot').remove();
 
-                var card = '';
+                var tbody = '<tbody>';
+
                 for (i = 0; i < data.length; i++) {
 
-                    card += '<div id="row-' + data[i]['id'] + '" class="card mb-1">';
-                        card += '<div class="card-body p-2">';
-                            card += '<div class="row">';
-                                card += '<div class="col-1 pt-2"><input type="checkbox"> ' + data[i]['id'] + '.</div>';
-                                for (i2 = 0; i2 < columns.length; i2++) {
-
-                                    if (columns[i2]['id2'] == undefined || columns[i2]['id1'] == '') {
-                                        card += '<div class="col pt-2">' + formatValue(data[i][columns[i2]['id1']]) + '</div>';
-                                    } else {
-                                        card += '<div class="col"><span class="bold">' + formatValue(data[i][columns[i2]['id1']]) + '</span><br>';
-                                        card += '<span class="italic font-sm">' + formatValue(data[i][columns[i2]['id2']]) + '</span></div>';
-                                    }
-                                }
-
-                                card += '<div class="col-2 text-right pt-1">';
-
-                                for (i3 = 0; i3 < buttons.length; i3++) {
-                                    card += '<a ';
-                                    if (buttons[i3]['href'] != undefined && buttons[i3]['href'] != '') card += 'href="' + buttons[i3]['href'] + '/' + data[i]['id'] + '/" ';
-                                    if (buttons[i3]['id'] != undefined && buttons[i3]['id'] != '') card += 'id="' + buttons[i3]['id'] + '/' + data[i]['id'] + '/" ';
-                                    if (buttons[i3]['class'] != undefined && buttons[i3]['class'] != '') card += 'class="btn btn-sm text-white pointer ml-1 ' + buttons[i3]['class'] + '" ';
-                                    else card += 'class="btn btn-secondary btn-sm text-white pointer ml-1" ';
-                                    card += '>';
-                                    card += buttons[i3]['label'];
-                                    card += '</a>';
-                                }
-
-                                if (view) card += '<a class="im-table-view btn btn-secondary btn-sm text-white pointer ml-1" data-id="' + data[i]['id'] + '"><i class="fa fa-search" aria-hidden="true"></i></a>';
-                                if (editUrl != '') card += '<a href="' + editUrl + data[i]['id'] + '" class="im-table-edit btn btn-secondary btn-sm text-white pointer ml-1"><i class="fa fa-pencil-alt" aria-hidden="true"></i></a>';
-                                if (deleteUrl != '') card += '<a class="im-table-delete btn btn-secondary btn-sm text-white pointer ml-1" data-id="' + data[i]['id'] + '"><i class="fa fa-trash" aria-hidden="true"></i></a>';
-                                card += '</div>';
-                            card += '</div>';
-                        card += '</div>';
-                    card += '</div>';
+                    tbody += '<tr id="row-' + data[i]['id'] + '">';
+                    if (functions) tbody += '<td><input type="checkbox"></td>';
+                    for (i2 = 0; i2 < columns.length; i2++) {
+                        tbody += "<td>" + formatValue(data[i][columns[i2]]) + "</td>";
+                    }
+                    if (functions) {
+                        tbody += '<td class="text-right">';
+                        if (view) tbody += '<a class="im-table-view btn btn-secondary btn-sm text-white pointer ml-1" data-id="' + data[i]['id'] + '"><i class="fa fa-search" aria-hidden="true"></i></a>';
+                        if (editUrl != '') tbody += '<a href="' + editUrl + data[i]['id'] + '" class="im-table-edit btn btn-secondary btn-sm text-white pointer ml-1"><i class="fa fa-pencil-alt" aria-hidden="true"></i></a>';
+                        if (deleteUrl != '') tbody += '<a class="im-table-delete btn btn-secondary btn-sm text-white pointer ml-1" data-id="' + data[i]['id'] + '"><i class="fa fa-trash" aria-hidden="true"></i></a>';
+                        tbody += '</td>';
+                    }
+                    tbody += '</tr>';
                 }
 
-                $('#dt-cards-body').html(card);
-                $('#dt-cards-body').append('<div class="text-center"><div class="dt-table-paginator"></div></div>');
+                tbody += '</tbody>';
+
+                $('.table thead').after(tbody);
+
+                var colspan = object.find('thead tr:first-child th').length;
+                object.find('tbody').after('<tfoot class="text-center"><tr><td colspan="' + colspan + '"><div class="dt-table-paginator"></div></td></tr></tfoot>');
                 $('.dt-table-paginator').dtPaginator({
                     page: page,
                     lastPage: Math.ceil(total/limit),

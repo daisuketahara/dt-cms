@@ -111,6 +111,7 @@ class TemplateController extends Controller
             'assets/js/admin.js' => 'public/js/admin.js',
             'assets/js/common.js' => 'public/js/common.js',
             'assets/js/list.js' => 'public/js/list.js',
+            'assets/js/table.js' => 'public/js/table.js',
             'assets/js/main.js' => 'public/js/main.js',
             'assets/js/modal.js' => 'public/js/modal.js',
             'assets/js/paginator.js' => 'public/js/paginator.js',
