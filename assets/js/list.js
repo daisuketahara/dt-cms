@@ -188,7 +188,7 @@
                 if (refresh > 0) {
                     refreshInterval = setInterval(function() {
                         load_body()
-                    }, (refresh*1000);
+                    }, (refresh*1000));
                 }
 			}
         });
