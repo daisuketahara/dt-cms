@@ -1,7 +1,7 @@
 {% extends templateservice.getAdminTemplate() %}
 
 {% block content %}
-<div id="dt-cards"></div>
+<div id="dt-list"></div>
 {% endblock %}
 
 {% block javascripts %}
@@ -11,7 +11,7 @@
     <script type="text/javascript" src="{{ asset('js/list.js') }}"></script>
     <script type="text/javascript">
 
-        $('#dt-cards').dtCards({
+        $('#dt-list').dtList({
             columns: [
                 {id1: 'entity', id2: 'creationDate'},
                 {id1: 'comment'},

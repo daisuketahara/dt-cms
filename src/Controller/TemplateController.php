@@ -124,6 +124,7 @@ class TemplateController extends Controller
             'vendor/bassjobsen/bootstrap-3-typeahead/bootstrap3-typeahead.min.js' => 'public/vendor/typeahead/bootstrap3-typeahead.min.js',
             'vendor/jackocnr/intl-tel-input/build' => 'public/vendor/intl-tel-input',
             'vendor/tinymce/tinymce' => 'public/vendor/tinymce',
+            'vendor/moment/moment/min' => 'public/vendor/moment',
             'vendor/components/font-awesome/webfonts/fa-brands-400.eot' => 'public/vendor/font-awesome/fonts/fa-brands-400.eot',
             'vendor/components/font-awesome/webfonts/fa-brands-400.svg' => 'public/vendor/font-awesome/fonts/fa-brands-400.svg',
             'vendor/components/font-awesome/webfonts/fa-brands-400.ttf' => 'public/vendor/font-awesome/fonts/fa-brands-400.ttf',

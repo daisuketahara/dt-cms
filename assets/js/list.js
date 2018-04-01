@@ -21,7 +21,7 @@
     var view;
     var refresh = 0;
 
-    $.fn.dtCards = function(options){
+    $.fn.dtList = function(options){
 
         // Default options
         var settings = $.extend({
@@ -199,9 +199,17 @@
         if (value === false) return '<a class="red"><i class="fas fa-times"></i></a>';
 
         if (value.timestamp) {
+
+            return moment(value.timestamp * 1000).format('YYYY-MM-DD HH:mm:ss');
+
             var d = new Date(value.timestamp * 1000);
-            var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            return d.toLocaleDateString('en-US', options);
+
+            var date = d.getFullYear() + '-';
+            date += d.getFullYear() + '-';
+
+
+            //var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            //return d.toLocaleDateString('en-US', options);
         }
 
         return value;
