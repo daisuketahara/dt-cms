@@ -170,15 +170,18 @@
                 }
 
                 $('#dt-cards-body').html(card);
-                $('#dt-cards-body').append('<div class="text-center"><div class="dt-table-paginator"></div></div>');
-                $('.dt-table-paginator').dtPaginator({
-                    page: page,
-                    lastPage: Math.ceil(total/limit),
-                    showNext: true,
-                    showPrevious: true,
-                    showFirst: true,
-                    showLast: true,
-                });
+
+                if (limit != 0) {
+                    $('#dt-cards-body').append('<div class="text-center"><div class="dt-table-paginator"></div></div>');
+                    $('.dt-table-paginator').dtPaginator({
+                        page: page,
+                        lastPage: Math.ceil(total/limit),
+                        showNext: true,
+                        showPrevious: true,
+                        showFirst: true,
+                        showLast: true,
+                    });
+                }
 			}
         });
     }
