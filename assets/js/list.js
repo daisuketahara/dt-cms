@@ -20,6 +20,7 @@
     var total = 0;
     var view;
     var refresh = 0;
+    var refreshInterval;
 
     $.fn.dtList = function(options){
 
@@ -104,6 +105,8 @@
 
 	function load_body() {
 
+        clearInterval(refreshInterval);
+
         // Get filters
 
         var filter = [];
@@ -181,6 +184,11 @@
                         showFirst: true,
                         showLast: true,
                     });
+                }
+                if (refresh > 0) {
+                    refreshInterval = setInterval(function() {
+                        load_body()
+                    }, (refresh*1000);
                 }
 			}
         });
