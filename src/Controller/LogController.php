@@ -32,9 +32,9 @@ class LogController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/log/ajaxlist/", name="log_ajaxlist"))
+      * @Route("/{_locale}/admin/log/get/", name="log_get"))
       */
-     final public function ajaxlist(Request $request)
+     final public function getLog(Request $request)
      {
          $sort_column = $request->request->get('sortColumn', 'id');
          $sort_direction = strtoupper($request->request->get('sortDirection', 'desc'));

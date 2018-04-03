@@ -70,9 +70,9 @@ class PageController extends Controller
     }
 
      /**
-      * @Route("/{_locale}/admin/page/ajaxlist/", name="page_ajaxlist"))
+      * @Route("/{_locale}/admin/page/get/", name="page_get"))
       */
-    final public function ajaxlist()
+    final public function getPage()
     {
         $request = Request::createFromGlobals();
         $sort_column = $request->request->get('sortColumn', 'id');

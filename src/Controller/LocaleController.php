@@ -32,9 +32,9 @@ class LocaleController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/locale/ajaxlist/", name="locale_ajaxlist"))
+      * @Route("/{_locale}/admin/locale/get/", name="locale_get"))
       */
-     final public function ajaxlist(Request $request)
+     final public function getLocale(Request $request)
      {
          $sort_column = $request->request->get('sortColumn', 'id');
          $sort_direction = strtoupper($request->request->get('sortDirection', 'asc'));

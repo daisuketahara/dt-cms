@@ -33,7 +33,7 @@ class MailController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/mail/queue/list/", name="mail_queue_list"))
+      * @Route("/{_locale}/admin/mail/queue/get/", name="mail_queue_get"))
       */
      final public function queuelist(Request $request)
      {
@@ -182,9 +182,9 @@ class MailController extends Controller
       }
 
       /**
-       * @Route("/{_locale}/admin/mail/template/list/", name="mail_template_list"))
+       * @Route("/{_locale}/admin/mail/template/get/", name="mail_template_get"))
        */
-      final public function ajaxlist(Request $request)
+      final public function getTemplate(Request $request)
       {
           $sort_column = $request->request->get('sortColumn', 'id');
           $sort_direction = strtoupper($request->request->get('sortDirection', 'desc'));

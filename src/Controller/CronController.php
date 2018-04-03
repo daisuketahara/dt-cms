@@ -34,9 +34,9 @@ class CronController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/cron/ajaxlist/", name="cron_ajaxlist"))
+      * @Route("/{_locale}/admin/cron/get/", name="cron_get"))
       */
-     final public function ajaxlist(Request $request)
+     final public function getCron(Request $request)
      {
          $sort_column = $request->request->get('sortColumn', 'id');
          $sort_direction = strtoupper($request->request->get('sortDirection', 'desc'));

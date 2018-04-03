@@ -37,9 +37,9 @@ class TranslationController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/translation/ajaxlist/", name="translation_ajaxlist"))
+      * @Route("/{_locale}/admin/translation/get/", name="translation_get"))
       */
-     final public function ajaxlist(Request $request)
+     final public function getTranslation(Request $request)
      {
          $sort_column = $request->request->get('sortColumn', 'id');
          $sort_direction = strtoupper($request->request->get('sortDirection', 'desc'));
