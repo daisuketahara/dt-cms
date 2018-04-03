@@ -61,7 +61,7 @@
         if (labels.length > 0) {
 
             var header = '<div class="dt-cards-header card text-white mb-2">';
-            header += '<div class="card-body p-3">';
+            header += '<div class="card-body p-2">';
 
             header += '<div class="row">';
             header += '<div class="col-1"></div>';
@@ -69,13 +69,15 @@
             for (i = 0; i < labels.length; i++) {
                 if (settings.sorting) headerClass = ' dt-cards-sort pointer';
                 else headerClass = '';
-                header += '<div class="col' + headerClass + '">';
+                header += '<div class="col' + headerClass + ' pt-1">';
                 header += labels[i];
                 if (settings.sorting) header += '<a class="ml-3"><i class="fa fa-sort" aria-hidden="true"></i></a>';
                 header += '</div>';
             }
 
-            header += '<div class="col-2 text-right pt-2"></div>';
+            header += '<div class="col-2 text-right">';
+            if (settings.addUrl != '') header += '<a href="' + settings.addUrl + '" class="table-add pointer float-right btn btn-success btn-sm"><i class="fa fa-plus"></i></a>';
+            header += '</div>';
             header += '</div>';
 
             header += '</div>';
