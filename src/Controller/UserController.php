@@ -39,7 +39,7 @@ class UserController extends Controller
      /**
       * @Route("/{_locale}/admin/user/get/", name="user_get"))
       */
-     final public function getUser(Request $request)
+     final public function getUsers(Request $request)
      {
          $sort_column = $request->request->get('sortColumn', 'id');
          $sort_direction = strtoupper($request->request->get('sortDirection', 'desc'));
