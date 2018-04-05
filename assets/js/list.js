@@ -156,7 +156,7 @@
 
                                 for (i3 = 0; i3 < buttons.length; i3++) {
                                     card += '<a ';
-                                    if (buttons[i3]['href'] != undefined && buttons[i3]['href'] != '') card += 'href="' + buttons[i3]['href'] + '/' + data[i]['id'] + '/" ';
+                                    if (buttons[i3]['href'] != undefined && buttons[i3]['href'] != '') card += 'href="' + buttons[i3]['href'] + data[i]['id'] + '/" ';
                                     if (buttons[i3]['id'] != undefined && buttons[i3]['id'] != '') card += 'id="' + buttons[i3]['id'] + '/' + data[i]['id'] + '/" ';
                                     if (buttons[i3]['class'] != undefined && buttons[i3]['class'] != '') card += 'class="btn btn-sm text-white pointer ml-1 ' + buttons[i3]['class'] + '" ';
                                     else card += 'class="btn btn-secondary btn-sm text-white pointer ml-1" ';
