@@ -160,7 +160,7 @@
                                     if (buttons[i3]['id'] != undefined && buttons[i3]['id'] != '') card += 'id="' + buttons[i3]['id'] + '/' + data[i]['id'] + '/" ';
                                     if (buttons[i3]['class'] != undefined && buttons[i3]['class'] != '') card += 'class="btn btn-sm text-white pointer ml-1 ' + buttons[i3]['class'] + '" ';
                                     else card += 'class="btn btn-secondary btn-sm text-white pointer ml-1" ';
-                                    card += '>';
+                                    card += ' data-id="' + data[i]['id'] + '">';
                                     card += buttons[i3]['label'];
                                     card += '</a>';
                                 }
