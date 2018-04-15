@@ -28,7 +28,7 @@
 
         label = dymo.label.framework.openLabelXml(xml);
 
-        if (label) {
+        if (!label) {
 
             object.append('Label not loaded!');
             return;
@@ -70,8 +70,7 @@
     }
 
     $(document).on('click', '#dt-dymo-print', function() {
-
-
+        label.print(printer);
     });
 
 }( jQuery ));
