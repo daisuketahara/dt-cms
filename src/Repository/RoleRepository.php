@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\UserRole;
+use App\Entity\Role;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -12,10 +12,10 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method UserRole[]    findAll()
  * @method UserRole[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class UserRoleRepository extends ServiceEntityRepository
+class RoleRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, UserRole::class);
+        parent::__construct($registry, Role::class);
     }
 }

@@ -16,21 +16,21 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-use App\Entity\UserRole;
+use App\Entity\Role;
 use App\Entity\Permission;
 use App\Entity\RolePermission;
-use App\Form\UserRoleForm;
+use App\Form\RoleForm;
 use App\Service\LogService;
 
 
-class UserRoleController extends Controller
+class RoleController extends Controller
 {
     /**
-     * @Route("/{_locale}/admin/userrole/", name="userrole")
+     * @Route("/{_locale}/admin/role/", name="role")
      */
      final public function list(TranslatorInterface $translator)
      {
-         return $this->render('userrole/admin/list.html.twig', array(
+         return $this->render('role/admin/list.html.twig', array(
              'page_title' => $translator->trans('User roles'),
              'can_add' => true,
              'can_edit' => true,
@@ -39,9 +39,9 @@ class UserRoleController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/userrole/get/", name="userrole_get")
+      * @Route("/{_locale}/admin/role/get/", name="role_get")
       */
-     final public function getUserrole(Request $request)
+     final public function getRole(Request $request)
      {
          $sort_column = $request->request->get('sortColumn', 'id');
          $sort_direction = strtoupper($request->request->get('sortDirection', 'desc'));
@@ -61,18 +61,18 @@ class UserRoleController extends Controller
              }
          }
 
-         $qb = $this->getDoctrine()->getRepository(UserRole::class)->createQueryBuilder('u');
+         $qb = $this->getDoctrine()->getRepository(Role::class)->createQueryBuilder('u');
          $qb->select('count(u.id)');
          $qb->where($whereString);
          $count = $qb->getQuery()->getSingleScalarResult();
 
          if (empty($limit)) {
-             $userRoles = $this->getDoctrine()
-                 ->getRepository(UserRole::class)
+             $roles = $this->getDoctrine()
+                 ->getRepository(Role::class)
                  ->findBy($where, array($sort_column => $sort_direction));
          } else {
-             $userRoles = $this->getDoctrine()
-                 ->getRepository(UserRole::class)
+             $roles = $this->getDoctrine()
+                 ->getRepository(Role::class)
                  ->findBy($where, array($sort_column => $sort_direction), $limit, $offset);
          }
 
@@ -82,7 +82,7 @@ class UserRoleController extends Controller
 
          $json = array(
              'total' => 6,
-             'data' => $userRoles
+             'data' => $roles
          );
 
          $json = $serializer->serialize($json, 'json');
@@ -91,8 +91,8 @@ class UserRoleController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/userrole/add/", name="userrole_add")
-      * @Route("/{_locale}/admin/userrole/edit/{id}/", name="userrole_edit")
+      * @Route("/{_locale}/admin/role/add/", name="role_add")
+      * @Route("/{_locale}/admin/role/edit/{id}/", name="role_edit")
       */
     final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
@@ -103,28 +103,28 @@ class UserRoleController extends Controller
         $logComment = 'Insert';
 
         if (!empty($id)) {
-            $userRole = $this->getDoctrine()
-                ->getRepository(UserRole::class)
+            $role = $this->getDoctrine()
+                ->getRepository(Role::class)
                 ->find($id);
-            if (!$userRole) {
-                $userRole = new UserRole();
+            if (!$role) {
+                $role = new Role();
                 $this->addFlash(
                     'error',
-                    $translator->trans('The requested userrole does not exist!')
+                    $translator->trans('The requested role does not exist!')
                 );
             } else {
                 $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $serializer->serialize($userRole, 'json');
+                $logMessage .= $serializer->serialize($role, 'json');
                 $logMessage .= '<br><br>';
                 $logComment = 'Update';
 
             }
         } else {
-            $userRole = new UserRole();
+            $role = new Role();
         }
 
         $roles = $this->getDoctrine()
-            ->getRepository(UserRole::class)
+            ->getRepository(Role::class)
             ->findAll();
 
         $form = $this->createFormBuilder();
@@ -133,17 +133,17 @@ class UserRoleController extends Controller
 
         if ($request->isMethod('POST')) {
 
-            $userRole->setName($request->request->get('form_name', ''));
-            $userRole->setDescription($request->request->get('form_description', ''));
-            $userRole->setActive($request->request->get('form_active', false));
+            $role->setName($request->request->get('form_name', ''));
+            $role->setDescription($request->request->get('form_description', ''));
+            $role->setActive($request->request->get('form_active', false));
 
             $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $serializer->serialize($userRole, 'json');
+            $logMessage .= $serializer->serialize($role, 'json');
 
             $em = $this->getDoctrine()->getManager();
-            $em->persist($userRole);
+            $em->persist($role);
             $em->flush();
-            $id = $userRole->getId();
+            $id = $role->getId();
 
             $setPermissions = $this->getDoctrine()
             ->getRepository(RolePermission::class)
@@ -166,17 +166,17 @@ class UserRoleController extends Controller
             }
             $em->flush();
 
-            $log->add('Userrole', $id, $logMessage, $logComment);
+            $log->add('Role', $id, $logMessage, $logComment);
 
             $this->addFlash(
                 'success',
                 $translator->trans('Your changes were saved!')
             );
-            return $this->redirectToRoute('userrole_edit', array('id' => $id));
+            return $this->redirectToRoute('role_edit', array('id' => $id));
         }
 
-        if (!empty($id)) $title = $translator->trans('Edit userrole');
-        else $title = $translator->trans('Add userrole');
+        if (!empty($id)) $title = $translator->trans('Edit role');
+        else $title = $translator->trans('Add role');
 
         $permissions = $this->getDoctrine()
             ->getRepository(Permission::class)
@@ -186,34 +186,34 @@ class UserRoleController extends Controller
         ->getRepository(RolePermission::class)
         ->findBy(array('roleId' => $id));
 
-        return $this->render('userrole/admin/edit.html.twig', array(
+        return $this->render('role/admin/edit.html.twig', array(
             'form' => $form->createView(),
             'page_title' => $title,
-            'name' => $userRole->getName(),
-            'description' => $userRole->getDescription(),
-            'active' => $userRole->getActive(),
+            'name' => $role->getName(),
+            'description' => $role->getDescription(),
+            'active' => $role->getActive(),
             'permissions' => $permissions,
             'permissions_set' => $setPermissions,
         ));
      }
 
      /**
-      * @Route("/{_locale}/admin/userrole/delete/{id}/", name="userrole_delete")
+      * @Route("/{_locale}/admin/role/delete/{id}/", name="role_delete")
       */
      final public function delete($id, LogService $log)
      {
          $em = $this->getDoctrine()->getManager();
-         $userRole = $em->getRepository(UserRole::class)->find($id);
+         $role = $em->getRepository(Role::class)->find($id);
 
          $encoders = array(new XmlEncoder(), new JsonEncoder());
          $normalizers = array(new ObjectNormalizer());
          $serializer = new Serializer($normalizers, $encoders);
          $logMessage = '<i>Data:</i><br>';
-         $logMessage .= $serializer->serialize($userRole, 'json');
+         $logMessage .= $serializer->serialize($role, 'json');
 
-         $log->add('Userrole', $id, $logMessage, 'Delete');
+         $log->add('Role', $id, $logMessage, 'Delete');
 
-         $em->remove($userRole);
+         $em->remove($role);
          $em->flush();
 
          return new Response(
