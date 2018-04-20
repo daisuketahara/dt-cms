@@ -7,4 +7,5 @@ twig:
         settingservice: '@App\Service\SettingService'
         fileservice: '@App\Service\FileService'
         templateservice: '@App\Service\TemplateService'
+        permissionservice: '@App\Service\UserPermissionService'
     form_themes: ['bootstrap_4_layout.html.twig']

@@ -16,7 +16,9 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use App\Entity\User;
 use App\Entity\UserInformation;
 use App\Entity\UserNote;
+use App\Entity\Role;
 use App\Entity\Permission;
+use App\Entity\UserRole;
 use App\Entity\UserPermission;
 use App\Service\LogService;
 
@@ -211,11 +213,30 @@ class UserController extends Controller
 
             $formPermissions = $request->request->get('form_permission', '');
 
-            foreach($formPermissions as $formPermissions => $permissionId) {
+            foreach($formPermissions as $formPermission => $permissionId) {
                 $userPermission = new UserPermission();
                 $userPermission->setUserId($id);
                 $userPermission->setPermissionId($permissionId);
                 $em->persist($userPermission);
+            }
+            $em->flush();
+
+            $setRoles = $this->getDoctrine()
+            ->getRepository(UserRole::class)
+            ->findBy(array('userId' => $id));
+
+            foreach($setRoles as $setRole) {
+                $em->remove($setRole);
+            }
+            $em->flush();
+
+            $formRoles = $request->request->get('form_role', '');
+
+            foreach($formRoles as $formRole => $roleId) {
+                $userRole = new UserRole();
+                $userRole->setUserId($id);
+                $userRole->setRoleId($roleId);
+                $em->persist($userRole);
             }
             $em->flush();
 
@@ -230,6 +251,14 @@ class UserController extends Controller
 
         if (!empty($id)) $title = $translator->trans('Edit user');
         else $title = $translator->trans('Add user');
+
+        $roles = $this->getDoctrine()
+            ->getRepository(Role::class)
+            ->findAll();
+
+        $setRoles = $this->getDoctrine()
+            ->getRepository(UserRole::class)
+            ->findBy(array('userId' => $id));
 
         $permissions = $this->getDoctrine()
             ->getRepository(Permission::class)
@@ -265,6 +294,8 @@ class UserController extends Controller
             'billing_city' => $userinfo->getBillingCity(),
             'billing_country' => $userinfo->getBillingCountry(),
             'note' => $usernote->getNote(),
+            'roles' => $roles,
+            'roles_set' => $setRoles,
             'permissions' => $permissions,
             'permissions_set' => $setPermissions,
         ));

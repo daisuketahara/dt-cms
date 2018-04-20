@@ -40,7 +40,7 @@ class ExtraLoader extends Loader
             $route = new Route($path, $defaults, $requirements);
 
             // add the new route to the route collection
-            $routeName = strtolower(str_replace('/', '_', $page->getPageRoute()));
+            $routeName = 'page_' . strtolower(str_replace('/', '_', $page->getPageRoute()));
             $routes->add($routeName, $route);
         }
 
@@ -57,7 +57,7 @@ class ExtraLoader extends Loader
             $route = new Route($path, $defaults, $requirements);
 
             // add the new route to the route collection
-            $routeName = strtolower(str_replace('/', '_', $redirect->getOldPageRoute()));
+            $routeName = 'dtredirect_' . strtolower(str_replace('/', '_', $redirect->getOldPageRoute()));
             $routes->add($routeName, $route);
         }
 

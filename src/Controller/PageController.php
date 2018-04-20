@@ -14,6 +14,10 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 use App\Entity\Page;
+use App\Entity\Permission;
+use App\Entity\PermissionGroup;
+use App\Entity\Role;
+use App\Entity\RolePermission;
 use App\Service\LogService;
 use App\Service\RedirectService;
 
@@ -155,6 +159,21 @@ class PageController extends Controller
             $page = new Page();
         }
 
+        // Get anonymous role
+        $role = $this->getDoctrine()
+            ->getRepository(Role::class)
+            ->findBy(array('name' => 'Anonymous'));
+
+        // Create anonymous role
+        if (!$role) {
+            $role = new PermissionGroup();
+            $role->setName('Anonymous');
+            $role->setDescription('Anonymous');
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($role);
+            $em->flush();
+        }
+
         $form = $this->createFormBuilder();
         $form = $form->getForm();
         $form->handleRequest($request);
@@ -177,8 +196,6 @@ class PageController extends Controller
             if (!empty($expireDate)) $page->setExpireDate(new \DateTime($expireDate));
             else $page->setExpireDate(NULL);
 
-
-
             $page->setStatus($request->request->get('page-status', 1));
             $page->setPageWidth($request->request->get('page-width', ''));
             $page->setDisableLayout($request->request->get('disable-layout', 0));
@@ -196,6 +213,59 @@ class PageController extends Controller
 
             $log->add('Page', $id, $logMessage, $logComment);
 
+            // Get permission group
+            $permissionGroup = $this->getDoctrine()
+                ->getRepository(PermissionGroup::class)
+                ->findOneBy(array('name' => 'Pages'));
+
+            // Create permission group
+            if (!$permissionGroup) {
+                $permissionGroup = new PermissionGroup();
+                $permissionGroup->setName('Pages');
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($permissionGroup);
+                $em->flush();
+            }
+
+            $permissionGroupId = $permissionGroup->getId();
+
+            // Check permission
+            $permission = $this->getDoctrine()
+                ->getRepository(Permission::class)
+                ->findOneBy(array('pageId' => $id));
+
+            // Create permission group
+            if (!$permission) $permission = new Permission();
+
+            $permission->setRouteName('page_' . strtolower(str_replace('/', '_', $page->getPageRoute())));
+            $permission->setDescription($page->getPageTitle());
+            $permission->setGroupId($permissionGroupId);
+            $permission->setPageId($id);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($permission);
+            $em->flush();
+
+            $permissionId = $permission->getId();
+
+            $setRoles = $this->getDoctrine()
+                ->getRepository(RolePermission::class)
+                ->findBy(array('permissionId' => $permission->getId()));
+
+            foreach($setRoles as $setRole) {
+                $em->remove($setRole);
+            }
+            $em->flush();
+
+            $formRoles = $request->request->get('form_role', '');
+
+            foreach($formRoles as $formRole => $roleId) {
+                $userRole = new RolePermission();
+                $userRole->setPermissionId($permissionId);
+                $userRole->setRoleId($roleId);
+                $em->persist($userRole);
+            }
+            $em->flush();
+
             $this->addFlash(
                 'success',
                 $translator->trans('Your changes were saved!')
@@ -209,6 +279,17 @@ class PageController extends Controller
         //}
 
 
+        $permission = $this->getDoctrine()
+            ->getRepository(Permission::class)
+            ->findBy(array('pageId' => $id));
+
+        $roles = $this->getDoctrine()
+            ->getRepository(Role::class)
+            ->findAll();
+
+        $setRoles = $this->getDoctrine()
+            ->getRepository(RolePermission::class)
+            ->findBy(array('permissionId' => $permission[0]->getId()));
 
         if (!empty($id)) $title = $translator->trans('Edit page');
         else $title = $translator->trans('Add page');
@@ -232,6 +313,8 @@ class PageController extends Controller
             'main_image' => $page->getMainImage(),
             'custom_css' => $page->getCustomCss(),
             'custom_js' => $page->getCustomJs(),
+            'roles' => $roles,
+            'roles_set' => $setRoles,
         ));
     }
 
@@ -257,5 +340,21 @@ class PageController extends Controller
         return new Response(
             '1'
         );
+    }
+
+    /**
+     * @Route("/{_locale}/page-not-found/", name="page_not_found"))
+     */
+    public function pageNotFound(Request $request)
+    {
+        return $this->render('page/404.html.twig');
+    }
+
+    /**
+     * @Route("/{_locale}/access-denied/", name="page_access_denied"))
+     */
+    public function accessDenied(Request $request)
+    {
+        return $this->render('page/401.html.twig');
     }
 }

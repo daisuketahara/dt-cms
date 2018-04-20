@@ -5,6 +5,13 @@ parameters:
     app.locales: en|nl
     files_directory: '%kernel.project_dir%/files'
 
+    spryng.enable: 0
+    spryng.username: ''
+    spryng.password: ''
+    spryng.route: 'business'
+    spryng.long: true
+    spryng.reference: ''
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -20,15 +27,26 @@ services:
         resource: '../src/*'
         exclude: '../src/{Entity,Migrations,Tests,Kernel.php}'
 
+    App\EventListener\RequestListener:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'
+            $t: '@security.token_storage'
+            $r: '@router'
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
 
-
     # inject dependencies into services
     App\Service\FileService:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'
+
+    App\Service\UserPermissionService:
         arguments:
             $em: '@doctrine.orm.entity_manager'
 
@@ -56,3 +74,8 @@ services:
     App\Service\MailService:
         arguments:
             $em: '@doctrine.orm.entity_manager'
+
+    App\Routing\ExtraLoader:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'
+        tags: [routing.loader]

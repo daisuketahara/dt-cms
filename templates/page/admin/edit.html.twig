@@ -144,6 +144,29 @@
                             </div>
                         </div>
                     </div>
+                    <label>{% trans %}Grant access to role{% endtrans %}</label>
+                    <div class="row">
+                    {% if roles %}
+                        {% for role in roles %}
+                        <div class="col-md-2">
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    {% set checked = '' %}
+                                    {% if roles_set %}
+                                        {% for roles_set_item in roles_set %}
+                                            {% if role.id == roles_set_item.roleId %}
+                                                {% set checked = ' checked="checked"' %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    <input id="form_role_{{role.id}}" name="form_role[]" class="form-check-input" value="{{role.id}}" type="checkbox" {{checked}}>
+                                    {{ role.name|e }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
