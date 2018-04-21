@@ -10,8 +10,10 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    {{custom_css}}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+    {{custom_js}}
 {% endblock %}
