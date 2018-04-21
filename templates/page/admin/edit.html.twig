@@ -196,9 +196,14 @@
         </div>
     </div>
 </form>
+<style>
+    #EditAreaArroundInfos_page-content { display: none;}
+</style>
 <script type="text/javascript">
 
     jQuery(document).ready(function() {
+
+        var content_area;
 
         jQuery(document).on('blur', '#post-title', function() {
 
@@ -220,17 +225,20 @@
 
         });
         jQuery(document).on('click', '#im-set-visual', function() {
+            jQuery('#edit_area_toggle_checkbox_page-content').trigger('click');
             jQuery('#im-post-editor-html').hide();
             jQuery('#im-post-editor-components').addClass('active').show();
             jQuery('.im-set-switch ').removeClass('btn-info').addClass('btn-secondary');
             jQuery(this).removeClass('btn-default').addClass('btn-info');
             disableEditor();
+            editAreaLoader.delete_instance('page-content');
         });
         jQuery(document).on('click', '#im-set-editor', function() {
             jQuery('#im-post-editor-html').show();
             jQuery('#im-post-editor-components').removeClass('active').hide();
             jQuery('.im-set-switch ').removeClass('btn-info').addClass('btn-secondary');
             jQuery(this).removeClass('btn-default').addClass('btn-info');
+            editAreaLoader.delete_instance('page-content');
             enableEditor();
         });
         jQuery(document).on('click', '#im-set-html', function() {
@@ -239,6 +247,19 @@
             jQuery('.im-set-switch ').removeClass('btn-info').addClass('btn-secondary');
             jQuery(this).removeClass('btn-default').addClass('btn-info');
             disableEditor();
+
+    		 editAreaLoader.init({
+    			id: "page-content"	// id of the textarea to transform
+    			//,start_highlight: true	// if start with highlight
+    			//,font_size: "10"
+    			,allow_resize: "no"
+    			,allow_toggle: true
+    			,syntax: "html"
+    			//,display: "later"
+    			,replace_tab_by_spaces: 4
+    			,min_height: 350
+    		});
+
         });
 
      	editAreaLoader.init({
