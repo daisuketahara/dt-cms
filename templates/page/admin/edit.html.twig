@@ -249,15 +249,13 @@
             disableEditor();
 
     		 editAreaLoader.init({
-    			id: "page-content"	// id of the textarea to transform
-    			//,start_highlight: true	// if start with highlight
-    			//,font_size: "10"
-    			,allow_resize: "no"
-    			,allow_toggle: true
-    			,syntax: "html"
-    			//,display: "later"
-    			,replace_tab_by_spaces: 4
-    			,min_height: 350
+    			id: "page-content"
+    			allow_resize: "no"
+    			allow_toggle: true
+                toolbar: "undo, redo",
+    			syntax: "html"
+    			min_height: 350,
+         		show_line_colors: true
     		});
 
         });
@@ -271,7 +269,7 @@
      		toolbar: "undo, redo",
      		syntax_selection_allow: "css",
      		min_height: 300,
-     		show_line_colors: true,
+     		show_line_colors: true
      	});
         editAreaLoader.init({
             id: "custom-js",
@@ -283,7 +281,7 @@
             toolbar: "undo, redo",
             syntax_selection_allow: "js",
             min_height: 300,
-            show_line_colors: true,
+            show_line_colors: true
         });
 
         enableEditor();
