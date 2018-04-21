@@ -31,7 +31,8 @@ class ExtraLoader extends Loader
 
         foreach($pages as $page) {
             // prepare a new route
-            $path = '/' . $page->getPageRoute() . '/';
+            if (!empty($page->getPageRoute())) $path = '/' . $page->getPageRoute() . '/';
+            else $path = '';
             $defaults = array(
                 '_controller' => 'App\Controller\PageController::loadPage',
             );

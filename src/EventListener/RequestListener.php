@@ -7,6 +7,7 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RequestListener
 {
@@ -78,8 +79,7 @@ class RequestListener
         //var_dump($currentRoute);exit;
 
         if (empty($currentRoute)) {
-            $response = new RedirectResponse($this->router->generate('page_not_found'));
-            $event->setResponse($response);
+            throw new NotFoundHttpException('The page does not exist');
         } elseif (!in_array($currentRoute, $permissions) && $redirectpos === false) {
             $response = new RedirectResponse($this->router->generate('page_access_denied'));
             $event->setResponse($response);

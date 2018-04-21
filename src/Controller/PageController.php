@@ -26,17 +26,14 @@ class PageController extends Controller
     public function loadPage(Request $request, RedirectService $redirect)
     {
         $route = $request->attributes->get('_route');
+        $route = str_replace('page_', '', $route);
 
         $page = $this->getDoctrine()
             ->getRepository(Page::class)
             ->findByRoute($route);
 
         if (!$page) {
-
-            $newRoute = $redirect->getRedirect($route);
-            if ($newRoute) return $this->redirect($newRoute->getNewPageRoute(), $newRoute->getRedirectType());
-
-            return $this->render('page/404.html.twig');
+            throw $this->createNotFoundException('The page does not exist');
         }
 
         return $this->render('page/page.html.twig', array(
@@ -281,15 +278,19 @@ class PageController extends Controller
 
         $permission = $this->getDoctrine()
             ->getRepository(Permission::class)
-            ->findBy(array('pageId' => $id));
+            ->findOneBy(array('pageId' => $id));
 
         $roles = $this->getDoctrine()
             ->getRepository(Role::class)
             ->findAll();
 
-        $setRoles = $this->getDoctrine()
-            ->getRepository(RolePermission::class)
-            ->findBy(array('permissionId' => $permission[0]->getId()));
+        if ($permission) {
+            $setRoles = $this->getDoctrine()
+                ->getRepository(RolePermission::class)
+                ->findBy(array('permissionId' => $permission->getId()));
+        } else {
+            $setRoles = array();
+        }
 
         if (!empty($id)) $title = $translator->trans('Edit page');
         else $title = $translator->trans('Add page');
