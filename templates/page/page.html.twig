@@ -10,10 +10,18 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <style>
+    {% if custom_css %}
     {{custom_css}}
+    {% endif %}
+    </style>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+    {% if custom_js %}
+    <script type="text/javascript">
     {{custom_js}}
+    </script>
+    {% endif %}
 {% endblock %}
