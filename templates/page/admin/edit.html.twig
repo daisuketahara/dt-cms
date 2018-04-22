@@ -206,13 +206,8 @@
         var content_area;
 
         jQuery(document).on('blur', '#post-title', function() {
-
             var url = jQuery('#post-url').val();
-
             if (url == '') jQuery('#post-url').val(encodeURIComponent(jQuery('#post-title').val()));
-
-
-
         });
 
         jQuery('#im-post-collapse').on('show.bs.collapse','.collapse', function() {
@@ -220,44 +215,22 @@
         });
 
         jQuery(document).on('click', '.im-post-editor-card', function() {
-
             jQuery(this).find('i').toggleClass('fa-chevron-left').toggleClass('fa-chevron-down');
-
         });
         jQuery(document).on('click', '#im-set-visual', function() {
-            jQuery('#edit_area_toggle_checkbox_page-content').trigger('click');
-            jQuery('#im-post-editor-html').hide();
-            jQuery('#im-post-editor-components').addClass('active').show();
-            jQuery('.im-set-switch ').removeClass('btn-info').addClass('btn-secondary');
-            jQuery(this).removeClass('btn-default').addClass('btn-info');
+            disableHtmlEditor();
             disableEditor();
-            editAreaLoader.delete_instance('page-content');
+            enableVisualEditor();
         });
         jQuery(document).on('click', '#im-set-editor', function() {
-            jQuery('#im-post-editor-html').show();
-            jQuery('#im-post-editor-components').removeClass('active').hide();
-            jQuery('.im-set-switch ').removeClass('btn-info').addClass('btn-secondary');
-            jQuery(this).removeClass('btn-default').addClass('btn-info');
-            editAreaLoader.delete_instance('page-content');
+            disableHtmlEditor();
+            disableVisualEditor();
             enableEditor();
         });
         jQuery(document).on('click', '#im-set-html', function() {
-            jQuery('#im-post-editor-html').show();
-            jQuery('#im-post-editor-components').removeClass('active').hide();
-            jQuery('.im-set-switch ').removeClass('btn-info').addClass('btn-secondary');
-            jQuery(this).removeClass('btn-default').addClass('btn-info');
+            disableVisualEditor();
             disableEditor();
-
-    		 editAreaLoader.init({
-    			id: "page-content",
-    			allow_resize: "no",
-    			allow_toggle: true,
-                toolbar: "undo, redo",
-    			syntax: "html",
-    			min_height: 350,
-         		show_line_colors: true
-    		});
-
+            enableHtmlEditor();
         });
 
         $('#custom-css-collapse').on('show.bs.collapse', function () {
@@ -271,11 +244,9 @@
          		show_line_colors: true
          	});
         });
-
         $('#custom-css-collapse').on('hidden.bs.collapse', function () {
             editAreaLoader.delete_instance('custom-css');
         });
-
         $('#custom-js-collapse').on('show.bs.collapse', function () {
             editAreaLoader.init({
                 id: "custom-js",
@@ -288,14 +259,18 @@
                 show_line_colors: true
             });
         });
-
         $('#custom-js-collapse').on('hidden.bs.collapse', function () {
             editAreaLoader.delete_instance('custom-js');
         });
 
+        if (readCookie('page-editor') == 'html') enableHtmlEditor();
+        if (readCookie('page-editor') == 'visual') enableVisualEditor();
+        if (readCookie('page-editor') == 'editor') enableEditor();
+        if (readCookie('page-editor') == null) enableEditor();
 
-        enableEditor();
         function enableEditor() {
+            eraseCookie('page-editor');
+            createCookie('page-editor','editor',30);
 
             tinymce.init({
                 selector: '#page-content',
@@ -323,10 +298,60 @@
             });
         }
         function disableEditor() {
-
             tinyMCE.remove();
-
         }
+        function enableHtmlEditor() {
+            eraseCookie('page-editor');
+            createCookie('page-editor','html',30);
+            editAreaLoader.init({
+    			id: "page-content",
+    			allow_resize: "no",
+    			allow_toggle: true,
+                toolbar: "undo, redo",
+    			syntax: "html",
+    			min_height: 350,
+         		show_line_colors: true
+    		});
+        }
+        function disableHtmlEditor() {
+            editAreaLoader.delete_instance('page-content');
+        }
+        function enableVisualEditor() {
+            eraseCookie('page-editor');
+            createCookie('page-editor','visual',30);
+            jQuery('#im-post-editor-html').hide();
+            jQuery('#im-post-editor-components').addClass('active').show();
+        }
+        function disableVisualEditor() {
+
+            jQuery('#im-post-editor-html').show();
+            jQuery('#im-post-editor-components').removeClass('active').hide();
+        }
+
+    	function createCookie(name, value, days) {
+    		var expires;
+    		if (days) {
+    			var date = new Date();
+    			date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    			expires = "; expires=" + date.toGMTString();
+    		} else {
+    			expires = "";
+    		}
+    		document.cookie = escape(name) + "=" + escape(value) + expires + "; path=/;";
+    	}
+    	function readCookie(name) {
+    	    var nameEQ = escape(name) + "=";
+    	    var ca = document.cookie.split(';');
+    	    for (var i = 0; i < ca.length; i++) {
+    	        var c = ca[i];
+    	        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+    	        if (c.indexOf(nameEQ) === 0) return unescape(c.substring(nameEQ.length, c.length));
+    	    }
+    	    return null;
+    	}
+    	function eraseCookie(name) {
+    		document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    	}
     });
 
 </script>
