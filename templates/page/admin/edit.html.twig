@@ -260,29 +260,39 @@
 
         });
 
-     	editAreaLoader.init({
-     		id: "custom-css",
-     		allow_toggle: true,
-            display: 'later',
-     		language: "en",
-     		syntax: "css",
-     		toolbar: "undo, redo",
-     		syntax_selection_allow: "css",
-     		min_height: 300,
-     		show_line_colors: true
-     	});
-        editAreaLoader.init({
-            id: "custom-js",
-            start_highlight: true,
-            allow_toggle: true,
-            display: 'later',
-            language: "en",
-            syntax: "js",
-            toolbar: "undo, redo",
-            syntax_selection_allow: "js",
-            min_height: 300,
-            show_line_colors: true
+        $('#custom-css-collapse').on('show.bs.collapse', function () {
+         	editAreaLoader.init({
+         		id: "custom-css",
+         		language: "en",
+         		syntax: "css",
+         		toolbar: "undo, redo",
+         		syntax_selection_allow: "css",
+         		min_height: 300,
+         		show_line_colors: true
+         	});
         });
+
+        $('#custom-css-collapse').on('hidden.bs.collapse', function () {
+            editAreaLoader.delete_instance('custom-css');
+        });
+
+        $('#custom-js-collapse').on('show.bs.collapse', function () {
+            editAreaLoader.init({
+                id: "custom-js",
+                start_highlight: true,
+                language: "en",
+                syntax: "js",
+                toolbar: "undo, redo",
+                syntax_selection_allow: "js",
+                min_height: 300,
+                show_line_colors: true
+            });
+        });
+
+        $('#custom-js-collapse').on('hidden.bs.collapse', function () {
+            editAreaLoader.delete_instance('custom-js');
+        });
+
 
         enableEditor();
         function enableEditor() {
