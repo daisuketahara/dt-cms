@@ -21,6 +21,7 @@
     var view;
     var refresh = 0;
     var refreshInterval;
+    var json;
 
     $.fn.dtList = function(options){
 
@@ -129,7 +130,7 @@
 			dataType: 'json',
 			success: function(json) {
 
-                var json = JSON.parse(json);
+                json = JSON.parse(json);
                 data = json['data'];
                 total = json['total'];
 
