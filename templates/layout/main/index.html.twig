@@ -15,7 +15,6 @@
                 .page-loading { position: fixed; top: 0; width: 100%; height: 100%; background-color: #ffffff; z-index: 9999; }
                 .page-loading-text { height: 100%; padding-top: 22%; margin: 0 auto; text-align: center; font-size: 1.6rem; letter-spacing: 0.1rem; line-height: 2rem;}
             </style>
-            <link href="https://fonts.googleapis.com/css?family=Ubuntu" media="screen" rel="stylesheet" type="text/css">
             <link href="{{ asset('css/main.css') }}" rel="stylesheet" />
         {% endblock %}
 
@@ -29,7 +28,7 @@
             </div>
         </div>
         <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
-            <a class="navbar-brand" href="#">{{settingservice.getSetting('site.name')}}</a>
+            <a class="navbar-brand" href="#">{{settingservice.getSetting('site.logo')|raw}}</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
