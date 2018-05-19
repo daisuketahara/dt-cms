@@ -13,7 +13,9 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 use App\Entity\File;
+use App\Entity\FileGroup;
 use App\Form\FileForm;
+use App\Service\FileService;
 use App\Service\LogService;
 
 
@@ -24,16 +26,16 @@ class FileController extends Controller
      */
      final public function list(TranslatorInterface $translator)
      {
-         return $this->render('file/admin/list.html.twig', array(
+         $fileGroups = $this->getDoctrine()->getRepository(FileGroup::class)->findAll();
+
+         return $this->render('file/admin/index.html.twig', array(
              'page_title' => $translator->trans('Files'),
-             'can_add' => true,
-             'can_edit' => true,
-             'can_delete' => true,
+             'file_groups' => $fileGroups,
          ));
      }
 
      /**
-      * @Route("/{_locale}/admin/file/get/", name="file_get"))
+      * @Route("/ajax/file/get/", name="file_get"))
       */
      final public function getFile(Request $request)
      {
@@ -84,74 +86,21 @@ class FileController extends Controller
          return $this->json($json);
      }
 
-     /**
-      * @Route("/{_locale}/admin/file/add/", name="file_add"))
-      * @Route("/{_locale}/admin/file/edit/{id}/", name="file_edit"))
-      */
-    final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    /**
+     * @Route("/ajax/file/upload/", name="file_upload"))
+     */
+    final public function processFileUpload(Request $request, FileService $fileService)
     {
-        //$this->denyAccessUnlessGranted('ROLE_SUPER_ADMIN', null, 'Unable to access this page!');
+        $group = $request->request->get('file-group', '');
+        $hide = $request->request->get('file-hide', 0);
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-        $logMessage = '';
-        $logComment = 'Insert';
-
-        if (!empty($id)) {
-            $file = $this->getDoctrine()
-                ->getRepository(File::class)
-                ->find($id);
-            if (!$file) {
-                $file = new File();
-                $this->addFlash(
-                    'error',
-                    $translator->trans('The requested file does not exist!')
-                );
-            } else {
-                $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $serializer->serialize($file, 'json');
-                $logMessage .= '<br><br>';
-                $logComment = 'Update';
-
-            }
-        } else {
-            $file = new File();
+        foreach($request->files as $file) {
+            $fileId = $fileService->upload($file[0], $group, $hide);
         }
 
-        $form = $this->createForm(FileForm::class, $file);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            // perform some action...
-            $file = $form->getData();
-
-            $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $serializer->serialize($file, 'json');
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($file);
-            $em->flush();
-            $id = $file->getId();
-
-            $log->add('File', $id, $logMessage, $logComment);
-
-            $this->addFlash(
-                'success',
-                $translator->trans('Your changes were saved!')
-            );
-            return $this->redirectToRoute('file_edit', array('id' => $id));
-        }
-
-        if (!empty($id)) $title = $translator->trans('Edit file');
-        else $title = $translator->trans('Add file');
-
-        return $this->render('common/form.html.twig', array(
-            'form' => $form->createView(),
-            'page_title' => $title,
-        ));
+        return new Response(
+            '<html><body>Lucky number:</body></html>'
+        );
      }
 
      /**

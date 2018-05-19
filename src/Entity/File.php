@@ -19,10 +19,15 @@ class File
     /**
      * @ORM\Column(type="integer")
      */
-    protected $account_id;
+    protected $groupId;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    protected $userId;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     protected $name;
 
@@ -49,6 +54,11 @@ class File
     /**
      * @ORM\Column(type="boolean")
      */
+    protected $hidden;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
     protected $active;
 
     /**
@@ -71,6 +81,54 @@ class File
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Group Id
+     *
+     * @return mixed
+     */
+    public function getGroupId()
+    {
+        return $this->groupId;
+    }
+
+    /**
+     * Set the value of Group Id
+     *
+     * @param mixed groupId
+     *
+     * @return self
+     */
+    public function setGroupId($groupId)
+    {
+        $this->groupId = $groupId;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of User Id
+     *
+     * @return mixed
+     */
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    /**
+     * Set the value of User Id
+     *
+     * @param mixed userId
+     *
+     * @return self
+     */
+    public function setUserId($userId)
+    {
+        $this->userId = $userId;
 
         return $this;
     }
@@ -191,6 +249,30 @@ class File
     public function setFileType($fileType)
     {
         $this->fileType = $fileType;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Hidden
+     *
+     * @return mixed
+     */
+    public function getHidden()
+    {
+        return $this->hidden;
+    }
+
+    /**
+     * Set the value of Hidden
+     *
+     * @param mixed hidden
+     *
+     * @return self
+     */
+    public function setHidden($hidden)
+    {
+        $this->hidden = $hidden;
 
         return $this;
     }

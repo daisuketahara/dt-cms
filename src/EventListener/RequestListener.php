@@ -24,6 +24,7 @@ class RequestListener
 
     public function onKernelRequest(GetResponseEvent $event)
     {
+        return;
         $permissions = array(
             '_twig_error_test',
             '_wdt',
