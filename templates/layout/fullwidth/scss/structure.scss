@@ -8,9 +8,17 @@ html {
     }
 }
 
+.navbar {
+    .navbar-brand {
+            width: 220px;
+    }
+}
+
 .main-content {
     height: 100%;
     padding-top: 90px;
+    padding-left: 15px;
+    padding-right: 15px;
     -webkit-border-radius: 0.1rem;
     -moz-border-radius: 0.1rem;
     border-radius: 0.1rem;
