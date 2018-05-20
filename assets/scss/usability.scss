@@ -1,18 +1,32 @@
 #site-scroll-down {
     position: fixed;
-    bottom: 20px;
+    bottom: 150px;
     left: 50%;
     margin-left: -1.5rem;
     font-size: 3rem;
+    z-index: 9000;
+    color: #333;
+    background: white;
+    width: 3.2rem;
+    height: 3.2rem;
+    line-height: 3.2rem;
+    border-radius: 1.5rem;
 }
 
 #site-scroll-to-top {
     position: fixed;
-    bottom: 20px;
-    right: 40px;
+    bottom: 1rem;
+    right: 3rem;
     font-size: 3rem;
     opacity: 0.5;
     filter: alpha(opacity=50);
+    z-index: 9000;
+    color: #333;
+    background: white;
+    width: 3.2rem;
+    height: 3.2rem;
+    line-height: 3.2rem;
+    border-radius: 1.5rem;
 }
 
 #site-scroll-to-top:hover {
