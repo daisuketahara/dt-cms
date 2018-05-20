@@ -37,7 +37,7 @@
                 {% for menuItem in menuservice.getMenu(1) %}
                     {% set submenu = menuservice.getSubMenu(menuItem.id) %}
                     <li class="nav-item">
-                        <a href="/{{ app.request.locale }}/{{menuItem.route}}" class="nav-link">
+                        <a href="/{{menuItem.route}}" class="nav-link">
                         {{menuItem.label | raw}}
                         {% if submenu is not empty %}<i class="fas fa-angle-down"></i>{% endif %}
                         </a>
@@ -45,7 +45,7 @@
                     {% if submenu is not empty %}
                         <ul>
                             {% for subMenuItem in submenu %}
-                            <li><a href="/{{ app.request.locale }}/{{subMenuItem.route}}">{{subMenuItem.label | raw}}</a></li>
+                            <li><a href="/{{subMenuItem.route}}">{{subMenuItem.label | raw}}</a></li>
                             {% endfor %}
                         </ul>
                     {% endif %}
@@ -103,7 +103,7 @@
             </div>
         </div>
         {% block javascripts %}
-            <script type="text/javascript" src="{{ asset('js/admin.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('js/usability.js') }}"></script>
             <script type="text/javascript" src="{{ asset('vendor/popper.min.js') }}"></script>
             <script type="text/javascript" src="{{ asset('vendor/bootstrap/bootstrap.min.js') }}"></script>
             <script type="text/javascript">
