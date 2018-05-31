@@ -122,6 +122,7 @@ class TemplateController extends Controller
             'assets/vendor/datetimepicker/build' => 'public/vendor/datetimepicker',
             'assets/vendor/signature_pad/docs/js/signature_pad.umd.js' => 'public/vendor/signature-pad/signature-pad.js',
             'assets/vendor/dymo/DYMO.Label.Framework.2.0.2.js' => 'public/vendor/dymo-framework.js',
+            'assets/vendor/JsBarcode.all.min.js' => 'public/vendor/JsBarcode.all.min.js',
             'vendor/components/jquery/jquery.min.js' => 'public/vendor/jquery/jquery.min.js',
             'vendor/components/jquery/jquery.min.map' => 'public/vendor/jquery/jquery.min.map',
             'vendor/twbs/bootstrap/dist/js/bootstrap.min.js' => 'public/vendor/bootstrap/bootstrap.min.js',
