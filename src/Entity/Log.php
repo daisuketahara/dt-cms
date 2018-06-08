@@ -42,7 +42,7 @@ class Log
     protected $comment;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      */
     protected $userIp;
 
