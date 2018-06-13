@@ -25,7 +25,7 @@
         <meta name="twitter:card" content="summary" />
         {% endblock %}
         {% block stylesheets %}{% endblock %}
-        <script type="text/javascript" src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+        <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
     </head>
     <body>
         {% block body %}{% endblock %}
@@ -46,10 +46,10 @@
             </div>
         </div>
         {% block javascripts %}
-            <script type="text/javascript" src="{{ asset('js/admin.js') }}"></script>
-            <script type="text/javascript" src="{{ asset('vendor/popper.min.js') }}"></script>
-            <script type="text/javascript" src="{{ asset('vendor/moment/moment.min.js') }}"></script>
-            <script type="text/javascript" src="{{ asset('vendor/bootstrap/bootstrap.min.js') }}"></script>
+            <script src="{{ asset('js/admin.js') }}"></script>
+            <script src="{{ asset('vendor/popper.min.js') }}"></script>
+            <script src="{{ asset('vendor/moment/moment.min.js') }}"></script>
+            <script src="{{ asset('vendor/bootstrap/bootstrap.min.js') }}"></script>
             <script type="text/javascript">
 
                 var translations = {

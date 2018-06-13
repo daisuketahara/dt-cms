@@ -3,7 +3,7 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script type="text/javascript" src="{{ asset('vendor/intl-tel-input/js/intlTelInput.min.js') }}"></script>
+    <script src="{{ asset('vendor/intl-tel-input/js/intlTelInput.min.js') }}"></script>
     <script type="text/javascript">
         jQuery('#phone').intlTelInput({
               nationalMode: true,
