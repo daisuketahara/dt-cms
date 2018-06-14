@@ -10,17 +10,8 @@
 
     jQuery(window).scroll(function (event) {
         scroll = jQuery(window).scrollTop();
-
-        if (scroll == 0) {
-            jQuery('#site-scroll-down').fadeIn();
-            jQuery('body').addClass('position-top');
-        } else {
-            jQuery('#site-scroll-down').fadeOut();
-            jQuery('body').removeClass('position-top');
-        }
-
-        if (scroll > 0) jQuery('#site-scroll-to-top').fadeIn();
-        else jQuery('#site-scroll-to-top').fadeOut();
+        if (scroll == 0) jQuery('body').addClass('position-top');
+        else jQuery('body').removeClass('position-top');
     });
 
     jQuery('body').on('click', '#site-scroll-down', function() {

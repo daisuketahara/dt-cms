@@ -1,3 +1,13 @@
+:not(.position-top) #site-scroll-down {
+    display: none;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+.position-top #site-scroll-down {
+    display: block;
+    opacity: 0.8;
+    filter: alpha(opacity=80);
+}
 #site-scroll-down {
     position: fixed;
     bottom: 150px;
@@ -12,6 +22,24 @@
     line-height: 3.3rem;
     border-radius: 1.5rem;
     text-align: center;
+    overflow: visible;
+    -webkit-transition: opacity 0.3s ease-out;
+    -moz-transition: opacity 0.3s ease-out;
+    -ms-transition: opacity 0.3s ease-out;
+    -o-transition: opacity 0.3s ease-out;
+    transition: opacity 0.3s ease-out;
+}
+#site-scroll-down i {
+    margin-top: 2px;
+}
+
+.position-top #site-scroll-to-top {
+    display: none;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+:not(.position-top) #site-scroll-to-top {
+    display: block;
 }
 
 #site-scroll-to-top {
@@ -29,6 +57,14 @@
     line-height: 3.3rem;
     border-radius: 1.5rem;
     text-align: center;
+    -webkit-transition: opacity 0.3s ease-out;
+    -moz-transition: opacity 0.3s ease-out;
+    -ms-transition: opacity 0.3s ease-out;
+    -o-transition: opacity 0.3s ease-out;
+    transition: opacity 0.3s ease-out;
+}
+#site-scroll-to-top i {
+    margin-top: 2px;
 }
 
 #site-scroll-to-top:hover {
