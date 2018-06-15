@@ -36,10 +36,13 @@ class PageController extends Controller
             throw $this->createNotFoundException('The page does not exist');
         }
 
+        $metaTitle = $page->getMetaTitle();
+        if (empty($metaTitle)) $metaTitle = $page->getPageTitle();
+
         return $this->render('page/page.html.twig', array(
             'page_title' => $page->getPageTitle(),
             'content' => $page->getContent(),
-            'meta_title' => $page->getMetaTitle(),
+            'meta_title' => $metaTitle,
             'meta_keywords' => $page->getMetaKeywords(),
             'meta_description' => $page->getMetaDescription(),
             'meta_custom' => $page->getMetaCustom(),
