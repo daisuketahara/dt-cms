@@ -13,6 +13,7 @@
     .admin-logo {
 
         width: 100%;
+        overflow: hidden;
 
         a {
             display: block;
@@ -25,6 +26,11 @@
         }
         a:hover {
             text-decoration: none;
+        }
+
+        img {
+            width: 100%;
+            max-width: 240px;
         }
     }
 
