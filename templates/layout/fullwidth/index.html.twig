@@ -98,9 +98,8 @@
             {% block content %}{% endblock %}
         </main>
         <footer class="container-fluid margin-top-10 font-12">
-                &copy; 2014 - {{ "now"|date('Y') }} by InterMention.
+                &copy; {{ "now"|date('Y') }} by {{settingservice.getSetting('site.name')|striptags}}.
                 {% trans %}All rights reserved.{% endtrans %}
-                {{constant('APPLICATION_VERSION')}}
         </footer>
         <div class="modal fade" id="dt-modal" tabindex="-1" role="dialog" aria-labelledby="dt-modal" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
