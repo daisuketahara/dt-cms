@@ -1,161 +1,89 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <link rel="profile" href="http://gmpg.org/xfn/11">
-        <title>{% block title %}{{ meta_title }} - {{settingservice.getSetting('site.name')|striptags}}{% endblock %}</title>
-        {% block tracking %}
+{% extends "layout/index.html.twig" %}
 
-        {% endblock %}
-        {% block meta %}
-        <meta name="HandheldFriendly" content="True" />
-        <meta name="MobileOptimized" content="320" />
-        <meta name="keywords" content="Nieuws, NU.nl" />
-        <meta name="description" content="Het laatste nieuws het eerst op NU.nl" />
+{% block stylesheets %}
+{{ parent() }}
+    <link href="{{ asset('css/main.css') }}" rel="stylesheet" />
+{% endblock %}
 
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="{{ meta_title }}" />
-        <meta property="og:description" content="{{ meta_description }}" />
-        <meta property="og:url" content="https://intermention.com/" />
-        <meta property="og:site_name" content="{{settingservice.getSetting('site.name')|striptags}}" />
-        <meta property="og:image" content="https://intermention.com/wp-content/uploads/2016/11/opencart-logo.png" />
-        <meta property="og:image:width" content="293" />
-        <meta property="og:image:height" content="220" />
-        <meta property="og:locale" content="en_US" />
-        <meta name="twitter:text:title" content="{{ meta_title }}" />
-        <meta name="twitter:card" content="summary" />
-        {% endblock %}
-
-        {% block stylesheets %}
-            <style>
-                .page-loading { position: fixed; top: 0; width: 100%; height: 100%; background-color: #ffffff; z-index: 9999; }
-                .page-loading-text { height: 100%; padding-top: 22%; margin: 0 auto; text-align: center; font-size: 1.6rem; letter-spacing: 0.1rem; line-height: 2rem;}
-            </style>
-            <link href="{{ asset('css/main.css') }}" rel="stylesheet" />
-        {% endblock %}
-
-        <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-
-    </head>
-    <body>
-        <div class="page-loading">
-            <div class="page-loading-text">
-                <img src="/img/loader.gif" alt="Loading page"> LOADING...
-            </div>
+{% block body %}
+    <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">{{settingservice.getSetting('site.logo')|raw}}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+            {% for menuItem in menuservice.getMenu(1) %}
+                {% set submenu = menuservice.getSubMenu(menuItem.id) %}
+                <li class="nav-item">
+                    <a href="/{{ app.request.locale }}/{{menuItem.route}}" class="nav-link">
+                    {{menuItem.label | raw}}
+                    {% if submenu is not empty %}<i class="fas fa-angle-down"></i>{% endif %}
+                    </a>
+                {% set submenu = menuservice.getSubMenu(menuItem.id) %}
+                {% if submenu is not empty %}
+                    <ul>
+                        {% for subMenuItem in submenu %}
+                        <li><a href="/{{ app.request.locale }}/{{subMenuItem.route}}">{{subMenuItem.label | raw}}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
         </div>
-        <nav class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
-            <a class="navbar-brand" href="#">{{settingservice.getSetting('site.logo')|raw}}</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                {% for menuItem in menuservice.getMenu(1) %}
-                    {% set submenu = menuservice.getSubMenu(menuItem.id) %}
-                    <li class="nav-item">
-                        <a href="/{{ app.request.locale }}/{{menuItem.route}}" class="nav-link">
-                        {{menuItem.label | raw}}
-                        {% if submenu is not empty %}<i class="fas fa-angle-down"></i>{% endif %}
-                        </a>
-                    {% set submenu = menuservice.getSubMenu(menuItem.id) %}
-                    {% if submenu is not empty %}
-                        <ul>
-                            {% for subMenuItem in submenu %}
-                            <li><a href="/{{ app.request.locale }}/{{subMenuItem.route}}">{{subMenuItem.label | raw}}</a></li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                    </li>
-                {% endfor %}
-                </ul>
-            </div>
-        </nav>
-        <div class="main-container">
-            <main class="main-content">
-                {% for message in app.flashes('error') %}
-                    <div class="alert alert-dismissible alert-danger">
-                        {{ message }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                {% endfor %}
-                {% for message in app.flashes('notice') %}
-                    <div class="alert alert-dismissible alert-info">
-                        {{ message }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                {% endfor %}
-                {% for message in app.flashes('success') %}
-                    <div class="alert alert-dismissible alert-success">
-                        {{ message }}
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                {% endfor %}
-                {% block content %}{% endblock %}
-            </main>
-        </div>
-        <footer class="container-fluid margin-top-10 font-12">
-                &copy; 2014 - {{ "now"|date('Y') }} by InterMention.
-                {% trans %}All rights reserved.{% endtrans %}
-                {{constant('APPLICATION_VERSION')}}
-        </footer>
-        <div class="modal fade" id="dt-modal" tabindex="-1" role="dialog" aria-labelledby="dt-modal" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title"></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body"></div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans %}Close{% endtrans %}</button>
-                    </div>
+    </nav>
+    <div class="main-container">
+        <main class="main-content">
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-dismissible alert-danger">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+            {% for message in app.flashes('notice') %}
+                <div class="alert alert-dismissible alert-info">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-dismissible alert-success">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    <footer class="container-fluid margin-top-10 font-12">
+            &copy; {{ "now"|date('Y') }} {{settingservice.getSetting('company.name')}}.
+            {% trans %}All rights reserved.{% endtrans %}
+    </footer>
+    <div class="modal fade" id="dt-modal" tabindex="-1" role="dialog" aria-labelledby="dt-modal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans %}Close{% endtrans %}</button>
                 </div>
             </div>
         </div>
-        {% block javascripts %}
-            <script src="{{ asset('js/usability.js') }}"></script>
-            <script src="{{ asset('vendor/popper.min.js') }}"></script>
-            <script src="{{ asset('vendor/bootstrap/bootstrap.min.js') }}"></script>
-            <script type="text/javascript">
+    </div>
+{% endblock %}
 
-                jQuery(document).ready(function () {
-
-                    setTimeout(function() {
-                        jQuery('.page-loading').fadeOut(400);
-                    }, 300);
-
-                    jQuery(document).on('click', 'a', function(e) {
-                        var href = jQuery(this).attr('href');
-                        if (href != '' && href != undefined) {
-                            e.preventDefault();
-                            jQuery('.page-loading').fadeIn(100, function() {
-                                window.location.href = href;
-                            });
-                        }
-                    });
-                });
-
-                var translations = {
-                    'Close': '{% trans %}Close{% endtrans %}',
-                    'Cancel': '{% trans %}Cancel{% endtrans %}',
-                    'Delete': '{% trans %}Delete{% endtrans %}',
-                    'Error': '{% trans %}Error{% endtrans %}',
-                    'An error has occurred.': '{% trans %}An error has occurred.{% endtrans %}',
-                    'Please try again.': '{% trans %}Please try again.{% endtrans %}',
-                    'View record': '{% trans %}View record{% endtrans %}',
-                    'Confirm delete': '{% trans %}Confirm delete{% endtrans %}',
-                    'You are about to delete a record, this cannot be undone.': '{% trans %}You are about to delete a record, this cannot be undone.{% endtrans %}',
-                    'Do you want to proceed?': '{% trans %}Do you want to proceed?{% endtrans %}',
-                }
-            </script>
-        {% endblock %}
-    </body>
-</html>
+{% block javascripts %}
+{{ parent() }}
+{% endblock %}
