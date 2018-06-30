@@ -29,7 +29,6 @@ $env = $_SERVER['APP_ENV'] ?? 'dev';
 $debug = $_SERVER['APP_DEBUG'] ?? ('prod' !== $env);
 
 if (!defined('APPLICATION_VERSION')) define('APPLICATION_VERSION', '0.0.1-dev');
-if (!defined('PUBLIC_PATH')) define('PUBLIC_PATH', 'http://yuna.test');
 
 if ($debug) {
     umask(0000);
