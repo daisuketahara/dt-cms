@@ -12,7 +12,7 @@
     {{ parent() }}
     <style>
     {% if custom_css %}
-    {{custom_css}}
+    {{custom_css|raw}}
     {% endif %}
     </style>
 {% endblock %}
