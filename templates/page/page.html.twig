@@ -21,7 +21,9 @@
     {{ parent() }}
     {% if custom_js %}
     <script type="text/javascript">
-    {{custom_js}}
+    {% if custom_js %}
+    {{custom_js|raw}}
+    {% endif %}
     </script>
     {% endif %}
 {% endblock %}

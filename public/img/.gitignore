@@ -1,6 +1,8 @@
 /*.*
+/*
 !.gitignore
-!background/*
+!background/.gitignore
+!background/index.html
 !flags/*
 !default-300x169.png
 !index.html

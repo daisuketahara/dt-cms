@@ -3,6 +3,7 @@
 {% block stylesheets %}
 {{ parent() }}
 <link href="{{ asset('css/fullwidth.css') }}" rel="stylesheet" />
+<link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon" />
 {% endblock %}
 
 {% block body %}
@@ -12,7 +13,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
+            <ul class="navbar-nav ml-auto">
             {% for menuItem in menuservice.getMenu(1) %}
                 {% set submenu = menuservice.getSubMenu(menuItem.id) %}
                 <li class="nav-item">
@@ -60,7 +61,7 @@
         {% endfor %}
         {% block content %}{% endblock %}
     </main>
-    <footer class="container-fluid margin-top-10 font-12">
+    <footer class="container-fluid font-12">
             &copy; {{ "now"|date('Y') }} {{settingservice.getSetting('company.name')}}.
             {% trans %}All rights reserved.{% endtrans %}
     </footer>
