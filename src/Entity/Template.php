@@ -54,6 +54,11 @@ class Template
     /**
      * @ORM\Column(type="text", nullable=true)
      */
+    protected $footer;
+
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
     protected $customCss;
 
     /**
@@ -269,6 +274,30 @@ class Template
     }
 
     /**
+     * Get the value of Footer
+     *
+     * @return mixed
+     */
+    public function getFooter()
+    {
+        return $this->footer;
+    }
+
+    /**
+     * Set the value of Footer
+     *
+     * @param mixed footer
+     *
+     * @return self
+     */
+    public function setFooter($footer)
+    {
+        $this->footer = $footer;
+
+        return $this;
+    }
+
+    /**
      * Get the value of Custom Css
      *
      * @return mixed
@@ -387,5 +416,4 @@ class Template
 
         return $this;
     }
-
 }

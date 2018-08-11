@@ -32,4 +32,12 @@ class TemplateService
 
         return 'layout/' . $template[0]->getTag() . '/index.html.twig';
     }
+
+    public function getFooter()
+    {
+        $template = $this->em->getRepository(Template::class)
+            ->findBy(array('frontend' => 1), array());
+
+        return $template[0]->getFooter();
+    }
 }
