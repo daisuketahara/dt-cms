@@ -118,6 +118,7 @@ class TemplateController extends Controller
             'assets/js/modal.js' => 'public/js/modal.js',
             'assets/js/dymo-print.js' => 'public/js/dymo-print.js',
             'assets/js/paginator.js' => 'public/js/paginator.js',
+            'assets/js/simple-cookie-bar.js' => 'public/js/simple-cookie-bar.js',
             'assets/js/usability.js' => 'public/js/usability.js',
             'assets/vendor/popper.min.js' => 'public/vendor/popper.min.js',
             'assets/vendor/edit_area' => 'public/vendor/edit_area',
