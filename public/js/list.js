@@ -1,1 +1,0 @@
-/Users/daistahara/Sites/yuna/assets/js/list.js
