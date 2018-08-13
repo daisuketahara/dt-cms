@@ -31,11 +31,22 @@
     }
 }
 
-.font-xs { font-size: 0.7rem !important; }
-.font-sm { font-size: 0.8rem !important; }
-.font-md { font-size: 1rem !important; }
-.font-lg { font-size: 1.2rem !important; }
-.font-xl { font-size: 1.4rem !important; }
+.font-xxs { font-size: 0.7rem; }
+.font-xs { font-size: 0.8rem; }
+.font-md { font-size: 1rem; }
+.font-lg { font-size: 1rem; }
+.font-xl { font-size: 1.6rem; }
+.font-xxl { font-size: 2.2rem; }
+
+@media screen and (min-width: 768px) {
+
+	.font-xxs { font-size: 0.7rem; }
+	.font-xs { font-size: 0.8rem; }
+	.font-md { font-size: 1.2rem; }
+	.font-lg { font-size: 1.8rem; }
+	.font-xl { font-size: 2.2rem; }
+	.font-xxl { font-size: 4.6rem; }
+}
 
 .btn {
 
@@ -574,81 +585,6 @@ ol.list-numbered li {
 .transparent-3 { -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)"; filter: alpha(opacity=30); -moz-opacity: 0.3; -khtml-opacity: 0.3; opacity: 0.3; }
 .transparent-2 { -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)"; filter: alpha(opacity=20); -moz-opacity: 0.2; -khtml-opacity: 0.2; opacity: 0.2; }
 .transparent-1 { -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=10)"; filter: alpha(opacity=10); -moz-opacity: 0.1; -khtml-opacity: 0.1; opacity: 0.1; }
-
-
-	.text-xs-left { text-align: left; }
-	.text-xs-center { text-align: center; }
-	.text-xs-right { text-align: right; }
-
-	.text-sm-left { text-align: left; }
-	.text-sm-center { text-align: center; }
-	.text-sm-right { text-align: right; }
-
-	.text-md-left { text-align: left; }
-	.text-md-center { text-align: center; }
-	.text-md-right { text-align: right; }
-
-	.text-lg-left { text-align: left; }
-	.text-lg-center { text-align: center; }
-	.text-lg-right { text-align: right; }
-
-/* Small devices (tablets, 768px and up) */
-@media (min-width: 768px) {
-
-	.text-xs-left { text-align: inherit; }
-	.text-xs-center { text-align: inherit; }
-	.text-xs-right { text-align: inherit; }
-
-	.text-sm-left { text-align: left; }
-	.text-sm-center { text-align: center; }
-	.text-sm-right { text-align: right; }
-
-	.text-md-left { text-align: left; }
-	.text-md-center { text-align: center; }
-	.text-md-right { text-align: right; }
-
-	.text-lg-left { text-align: left; }
-	.text-lg-center { text-align: center; }
-	.text-lg-right { text-align: right; }
-}
-
-/* Medium devices (desktops, 992px and up) */
-@media (min-width: 992px) {
-	.text-xs-left { text-align: inherit; }
-	.text-xs-center { text-align: inherit; }
-	.text-xs-right { text-align: inherit; }
-
-	.text-sm-left { text-align: inherit; }
-	.text-sm-center { text-align: inherit; }
-	.text-sm-right { text-align: inherit; }
-
-	.text-md-left { text-align: left; }
-	.text-md-center { text-align: center; }
-	.text-md-right { text-align: right; }
-
-	.text-lg-left { text-align: left; }
-	.text-lg-center { text-align: center; }
-	.text-lg-right { text-align: right; }
-}
-
-/* Large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) {
-	.text-xs-left { text-align: inherit; }
-	.text-xs-center { text-align: inherit; }
-	.text-xs-right { text-align: right; }
-
-	.text-sm-left { text-align: inherit; }
-	.text-sm-center { text-align: inherit; }
-	.text-sm-right { text-align: inherit; }
-
-	.text-md-left { text-align: inherit; }
-	.text-md-center { text-align: inherit; }
-	.text-md-right { text-align: inherit; }
-
-	.text-lg-left { text-align: left; }
-	.text-lg-center { text-align: center; }
-	.text-lg-right { text-align: right; }
-}
 
 .checkbox {
   padding-left: 20px; }

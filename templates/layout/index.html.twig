@@ -8,28 +8,28 @@
 {% block tracking %}{% endblock %}
 
 {% block meta %}
-        <meta name="HandheldFriendly" content="True" />
-        <meta name="MobileOptimized" content="320" />
-        {% if meta_keywords is defined %}<meta name="keywords" content="{{ meta_keywords }}" />{% endif %}
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        {% if meta_keywords is defined %}<meta name="keywords" content="{{ meta_keywords }}">{% endif %}
 
-        {% if meta_description is defined %}<meta name="description" content="{{ meta_description }}" />{% endif %}
+        {% if meta_description is defined %}<meta name="description" content="{{ meta_description }}">{% endif %}
 
-        <meta property="og:type" content="website" />
-        {% if meta_title is defined %}<meta property="og:title" content="{{ meta_title }}" />{% endif %}
+        <meta property="og:type" content="website">
+        {% if meta_title is defined %}<meta property="og:title" content="{{ meta_title }}">{% endif %}
 
-        {% if meta_description is defined %}<meta property="og:description" content="{{ meta_description }}" />{% endif %}
+        {% if meta_description is defined %}<meta property="og:description" content="{{ meta_description }}">{% endif %}
 
-        <meta property="og:url" content="{{settingservice.getSetting('site.url')}}" />
-        <meta property="og:site_name" content="{{settingservice.getSetting('site.name')|striptags}}" />
+        <meta property="og:url" content="{{settingservice.getSetting('site.url')}}">
+        <meta property="og:site_name" content="{{settingservice.getSetting('site.name')|striptags}}">
         {% if page_image is defined %}
-        <meta property="og:image" content="{{page_image.url}}" />
-        <meta property="og:image:width" content="{{page_image.width}}" />
-        <meta property="og:image:height" content="{{page_image.height}}" />
+        <meta property="og:image" content="{{page_image.url}}">
+        <meta property="og:image:width" content="{{page_image.width}}">
+        <meta property="og:image:height" content="{{page_image.height}}">
         {% endif %}
-        <meta property="og:locale" content="en_US" />
-        {% if meta_title is defined %}<meta name="twitter:text:title" content="{{ meta_title }}" />{% endif %}
+        <meta property="og:locale" content="en_US">
+        {% if meta_title is defined %}<meta name="twitter:text:title" content="{{ meta_title }}">{% endif %}
 
-        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:card" content="summary">
 {% endblock %}
 {% block stylesheets %}
         <style>
