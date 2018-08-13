@@ -10,7 +10,7 @@
 }
 #site-scroll-down {
     position: fixed;
-    bottom: 150px;
+    bottom: 1vh;
     left: 50%;
     margin-left: -1.5rem;
     font-size: 3rem;
@@ -44,7 +44,7 @@
 
 #site-scroll-to-top {
     position: fixed;
-    bottom: 1rem;
+    bottom: 1vh;
     right: 3rem;
     font-size: 3rem;
     opacity: 0.5;
