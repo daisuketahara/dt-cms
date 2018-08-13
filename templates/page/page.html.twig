@@ -20,7 +20,7 @@
 {% block javascripts %}
     {{ parent() }}
     {% if custom_js %}
-    <script type="text/javascript">
+    <script>
     {% if custom_js %}
     {{custom_js|raw}}
     {% endif %}
