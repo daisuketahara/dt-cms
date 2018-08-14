@@ -21,12 +21,16 @@ DirectoryIndex index.php
     RewriteEngine On
 
     # Force www to non-www
-    #RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
-    #RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
+    # RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+    # RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
 
     # Force non-www to www
-    #RewriteCond %{HTTP_HOST} !^www\.
-    #RewriteRule ^(.*)$ http://www.%{HTTP_HOST}/$1 [R=301,L]
+    # RewriteCond %{HTTP_HOST} !^www\.
+    # RewriteRule ^(.*)$ http://www.%{HTTP_HOST}/$1 [R=301,L]
+
+    # Force SSL
+	# RewriteCond %{HTTPS} !=on
+	# RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
 
     # Determine the RewriteBase automatically and set it as environment variable.
     # If you are using Apache aliases to do mass virtual hosting or installed the
