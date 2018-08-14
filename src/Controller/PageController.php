@@ -11,7 +11,8 @@ use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;;
+use Leafo\ScssPhp\Compiler;
 
 use App\Entity\Page;
 use App\Entity\Permission;
@@ -39,6 +40,15 @@ class PageController extends Controller
         $metaTitle = $page->getMetaTitle();
         if (empty($metaTitle)) $metaTitle = $page->getPageTitle();
 
+        $customCss = $page->getCustomCss();
+        try {
+    		$scss = new Compiler();
+            $scss->setFormatter('Leafo\\ScssPhp\\Formatter\\Crunched');
+            $css = $scss->compile($customCss);
+        } catch(Exception $e) {
+        	$css = $customCss;
+        }
+
         return $this->render('page/page.html.twig', array(
             'page_title' => $page->getPageTitle(),
             'content' => $page->getContent(),
@@ -50,7 +60,7 @@ class PageController extends Controller
             'page_width' => $page->getPageWidth(),
             'disable_layout' => $page->getDisableLayout(),
             'main_image' => $page->getMainImage(),
-            'custom_css' => $page->getCustomCss(),
+            'custom_css' => $css,
             'custom_js' => $page->getCustomJs(),
         ));
     }
