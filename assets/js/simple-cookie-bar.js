@@ -31,6 +31,7 @@
         barCss += "border-bottom: 1px solid #cccccc;";
         barCss += "border-top: 1px solid #cccccc;";
         barCss += "line-height:42px;";
+        barCss += "z-index: 99999;";
         barCss += "background: #ffffff;";
         barCss += "background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%);";
         barCss += "background: -webkit-linear-gradient(top, #ffffff 0%,#e5e5e5 100%);";
