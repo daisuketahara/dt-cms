@@ -74,13 +74,13 @@
 
             jQuery(document).ready(function () {
 
-                setTimeout(function() {
+                //setTimeout(function() {
                     jQuery('.page-loading').fadeOut(400);
-                }, 300);
+                //}, 300);
 
                 jQuery(document).on('click', 'a', function(e) {
                     var href = jQuery(this).attr('href');
-                    if (href != '' && href != undefined) {
+                    if (href != '' && href != undefined && href.indexOf('#') != 0) {
                         e.preventDefault();
                         jQuery('.page-loading').fadeIn(100, function() {
                             window.location.href = href;
