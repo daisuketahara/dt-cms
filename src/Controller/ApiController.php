@@ -2,17 +2,18 @@
 
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
 
-class ApiController extends Controller
+class ApiController extends AbstractController
 {
-    public function index()
+    /**
+     * @Route("/api/gettoken/", name="api_gettoken")
+     */
+    public function getToken()
     {
-        $number = mt_rand(0, 100);
-
-        return $this->render('contact/index.html.twig', array(
-            'page_title' => 'Contact',
-        ));
+        return $this->render('api/index.html.twig', [
+            'controller_name' => 'ApiController',
+        ]);
     }
 }

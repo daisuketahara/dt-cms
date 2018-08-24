@@ -20,6 +20,7 @@ use App\Entity\Role;
 use App\Entity\Permission;
 use App\Entity\UserRole;
 use App\Entity\UserPermission;
+use App\Entity\UserApiKey;
 use App\Service\LogService;
 
 
@@ -268,6 +269,10 @@ class UserController extends Controller
             ->getRepository(UserPermission::class)
             ->findBy(array('userId' => $id));
 
+        $apiKeys = $this->getDoctrine()
+            ->getRepository(UserApiKey::class)
+            ->findBy(array('userId' => $id));
+
         return $this->render('user/admin/edit.html.twig', array(
             'form' => $form->createView(),
             'page_title' => $title,
@@ -298,6 +303,7 @@ class UserController extends Controller
             'roles_set' => $setRoles,
             'permissions' => $permissions,
             'permissions_set' => $setPermissions,
+            'api_keys' => $apiKeys,
         ));
      }
 

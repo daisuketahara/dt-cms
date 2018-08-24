@@ -34,23 +34,38 @@
         <li class="nav-item">
             <a class="nav-link" id="permission-tab" data-toggle="tab" href="#permission" role="tab" aria-controls="permission" aria-selected="false">{% trans %}Custom permissions{% endtrans %}</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" id="api-tab" data-toggle="tab" href="#api" role="tab" aria-controls="api" aria-selected="false">{% trans %}API{% endtrans %}</a>
+        </li>
     </ul>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
             {{ include('user/common/account.html.twig') }}
+            <div class="form-group">
+                <button type="submit" id="save-account" name="save" class="btn-secondary btn">{% trans %}Save{% endtrans %}</button>
+            </div>
         </div>
         <div class="tab-pane fade" id="information" role="tabpanel" aria-labelledby="information-tab">
             {{ include('user/common/information.html.twig') }}
+            <div class="form-group">
+                <button type="submit" id="save-information" name="save" class="btn-secondary btn">{% trans %}Save{% endtrans %}</button>
+            </div>
         </div>
         <div class="tab-pane fade" id="note" role="tabpanel" aria-labelledby="note-tab">
             {{ include('user/common/note.html.twig') }}
+            <div class="form-group">
+                <button type="submit" id="save-note" name="save" class="btn-secondary btn">{% trans %}Save{% endtrans %}</button>
+            </div>
         </div>
         <div class="tab-pane fade" id="permission" role="tabpanel" aria-labelledby="permission-tab">
             {{ include('permission/common/permission.html.twig') }}
+            <div class="form-group">
+                <button type="submit" id="save-permission" name="save" class="btn-secondary btn">{% trans %}Save{% endtrans %}</button>
+            </div>
         </div>
-    </div>
-    <div class="form-group">
-        <button type="submit" id="save" name="save" class="btn-secondary btn">{% trans %}Save{% endtrans %}</button>
+        <div class="tab-pane fade" id="api" role="tabpanel" aria-labelledby="api-tab">
+            {{ include('user/common/api.html.twig') }}
+        </div>
     </div>
 </form>
 {% endblock %}

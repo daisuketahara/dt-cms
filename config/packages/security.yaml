@@ -10,10 +10,18 @@ security:
                 class: App\Entity\User
                 # if you're using multiple entity managers
                 # manager_name: customer
+        api_key_user_provider:
+            id: App\Security\ApiKeyUserProvider
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        api_main:
+            pattern: ^/api
+            stateless: true
+            simple_preauth:
+                authenticator: App\Security\ApiKeyAuthenticator
+            provider: api_key_user_provider
         main:
             anonymous: ~
             provider: db_provider
@@ -27,10 +35,10 @@ security:
                 path: logout
                 target: /en/login
 
-
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/(en|nl)/admin, roles: ROLE_ADMIN }
+        - { path: ^/api, roles: [ROLE_API,ROLE_ADMIN]  }
 
             # activate different ways to authenticate
 
