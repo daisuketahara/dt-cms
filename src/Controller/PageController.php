@@ -14,6 +14,13 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;;
 use Leafo\ScssPhp\Compiler;
 
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\HttpKernel\KernelInterface;
+
+use App\Entity\Locale;
 use App\Entity\Page;
 use App\Entity\Permission;
 use App\Entity\PermissionGroup;
@@ -27,11 +34,19 @@ class PageController extends Controller
     public function loadPage(Request $request, RedirectService $redirect)
     {
         $route = $request->attributes->get('_route');
-        $route = str_replace('page_', '', $route);
+        //var_dump($route);exit;
+        $route = explode('_', $route);
+        $locale = $route[1];
+        $routeName = $route[2];
+
+        $request->setLocale($locale);
+        $localeEntity = $this->getDoctrine()
+            ->getRepository(Locale::class)
+            ->findOneBy(array('locale' => $locale));
 
         $page = $this->getDoctrine()
             ->getRepository(Page::class)
-            ->findByRoute($route);
+            ->findOneBy(array('locale' => $localeEntity->getId(), 'pageRoute' => $routeName));
 
         if (!$page) {
             throw $this->createNotFoundException('The page does not exist');
@@ -140,7 +155,7 @@ class PageController extends Controller
       * @Route("/{_locale}/admin/page/add/", name="page_add"))
       * @Route("/{_locale}/admin/page/edit/{id}/", name="page_edit"))
       */
-    final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log, KernelInterface $kernel)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -197,6 +212,12 @@ class PageController extends Controller
             $page->setMetaKeywords($request->request->get('page-meta-keywords', ''));
             $page->setMetaDescription($request->request->get('page-meta-description', ''));
             $page->setMetaCustom($request->request->get('page-meta-custom', ''));
+
+            $localeId = $request->request->get('page-locale', $this->container->getParameter('kernel.default_locale'));
+            $locale = $this->getDoctrine()
+                ->getRepository(Locale::class)
+                ->findOneBy(array('id' => $localeId));
+            $page->setLocale($locale);
 
             // Image
 
@@ -280,6 +301,14 @@ class PageController extends Controller
                 'success',
                 $translator->trans('Your changes were saved!')
             );
+
+            $application = new Application($kernel);
+            $application->setAutoExit(false);
+
+            $input = new ArrayInput(array('command' => 'cache:clear'));
+            $output = new NullOutput();
+            $application->run($input, $output);
+
             return $this->redirectToRoute('page_edit', array('id' => $id));
         }
 
@@ -297,6 +326,10 @@ class PageController extends Controller
             ->getRepository(Role::class)
             ->findAll();
 
+        $locales = $this->getDoctrine()
+            ->getRepository(Locale::class)
+            ->findAll();
+
         if ($permission) {
             $setRoles = $this->getDoctrine()
                 ->getRepository(RolePermission::class)
@@ -304,6 +337,8 @@ class PageController extends Controller
         } else {
             $setRoles = array();
         }
+
+
 
         if (!empty($id)) $title = $translator->trans('Edit page');
         else $title = $translator->trans('Add page');
@@ -320,7 +355,7 @@ class PageController extends Controller
             'publish_date' => $page->getPublishDate(),
             'expire_date' => $page->getExpireDate(),
             'status' => $page->getStatus(),
-            'locale' => '',
+            'locale' => $page->getLocale(),
             'page_width' => $page->getPageWidth(),
             'disable_layout' => $page->getDisableLayout(),
             'authorization' => '',
@@ -329,6 +364,8 @@ class PageController extends Controller
             'custom_js' => $page->getCustomJs(),
             'roles' => $roles,
             'roles_set' => $setRoles,
+            'default_locale' => $this->container->getParameter('kernel.default_locale'),
+            'locales' => $locales,
         ));
     }
 

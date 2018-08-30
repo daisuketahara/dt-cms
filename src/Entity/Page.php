@@ -24,7 +24,12 @@ class Page
     protected $pageTitle;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\ManyToOne(targetEntity="App\Entity\Locale")
+     */
+    protected $locale;
+
+    /**
+     * @ORM\Column(type="string", length=255)
      */
     protected $pageRoute;
 
@@ -67,11 +72,6 @@ class Page
      * @ORM\Column(type="boolean")
      */
     protected $status = 0;
-
-    /**
-     * @ORM\Column(type="string", length=5, nullable=true)
-     */
-    protected $locale;
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true)
@@ -147,7 +147,31 @@ class Page
     }
 
     /**
-     * Get the value of PageRoute
+     * Get the value of Locale
+     *
+     * @return mixed
+     */
+    public function getLocale()
+    {
+        return $this->locale;
+    }
+
+    /**
+     * Set the value of Locale
+     *
+     * @param mixed locale
+     *
+     * @return self
+     */
+    public function setLocale($locale)
+    {
+        $this->locale = $locale;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Page Route
      *
      * @return mixed
      */
@@ -157,7 +181,7 @@ class Page
     }
 
     /**
-     * Set the value of PageRoute
+     * Set the value of Page Route
      *
      * @param mixed pageRoute
      *
@@ -363,30 +387,6 @@ class Page
     }
 
     /**
-     * Get the value of Locale
-     *
-     * @return mixed
-     */
-    public function getLocale()
-    {
-        return $this->locale;
-    }
-
-    /**
-     * Set the value of Locale
-     *
-     * @param mixed locale
-     *
-     * @return self
-     */
-    public function setLocale($locale)
-    {
-        $this->locale = $locale;
-
-        return $this;
-    }
-
-    /**
      * Get the value of Page Width
      *
      * @return mixed
@@ -505,4 +505,5 @@ class Page
 
         return $this;
     }
+
 }

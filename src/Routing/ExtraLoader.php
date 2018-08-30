@@ -3,6 +3,7 @@ namespace App\Routing;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Config\Loader\Loader;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -30,9 +31,14 @@ class ExtraLoader extends Loader
         $pages = $this->em->getRepository(Page::class)->findAll();
 
         foreach($pages as $page) {
+
+            if ($page->getLocale()->getDefault()) $locale = '';
+            else $locale = $page->getLocale()->getLocale() . '/';
+
             // prepare a new route
-            if (!empty($page->getPageRoute())) $path = '/' . $page->getPageRoute() . '/';
-            else $path = '';
+            $path = '/' . $locale . $page->getPageRoute();
+            if (!empty($page->getPageRoute())) $path .= '/';
+
             $defaults = array(
                 '_controller' => 'App\Controller\PageController::loadPage',
             );
@@ -41,7 +47,7 @@ class ExtraLoader extends Loader
             $route = new Route($path, $defaults, $requirements);
 
             // add the new route to the route collection
-            $routeName = 'page_' . strtolower(str_replace('/', '_', $page->getPageRoute()));
+            $routeName = 'page_' . $page->getLocale()->getLocale() . '_' . strtolower(str_replace('/', '_', $page->getPageRoute()));
             $routes->add($routeName, $route);
         }
 
