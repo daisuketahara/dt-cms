@@ -21,14 +21,14 @@
                 {% set submenu = menuservice.getSubMenu(menuItem.id) %}
                 <li>
                     <a href="/{{ app.request.locale }}/{{menuItem.route}}">
-                    {{menuItem.label | raw}}
-                    {% if submenu is not empty %}<i class="fas fa-angle-right"></i>{% endif %}
+                    {{menuItem.label|trans|raw}}
+                    {% if submenu is not empty %}<i class="fas fa-angle-right float-right"></i>{% endif %}
                     </a>
                 {% set submenu = menuservice.getSubMenu(menuItem.id) %}
                 {% if submenu is not empty %}
                     <ul>
                         {% for subMenuItem in submenu %}
-                        <li><a href="/{{ app.request.locale }}/{{subMenuItem.route}}">{{subMenuItem.label | raw}}</a></li>
+                        <li><a href="/{{ app.request.locale }}/{{subMenuItem.route}}">{{subMenuItem.label|trans|raw}}</a></li>
                         {% endfor %}
                     </ul>
                 {% endif %}
@@ -50,7 +50,7 @@
         </div>
     </div>
     <main class="admin-content">
-        {% if page_title is defined %}<h1>{{ page_title }}</h1>{% endif %}
+        {% if page_title is defined %}<h1>{{ page_title|trans|raw }}</h1>{% endif %}
         <!--
         <?php echo $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
         -->
