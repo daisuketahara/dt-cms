@@ -104,13 +104,17 @@ class PageController extends Controller
     final public function getPage()
     {
         $request = Request::createFromGlobals();
-        $sort_column = $request->request->get('sortColumn', 'id');
-        $sort_direction = strtoupper($request->request->get('sortDirection', 'desc'));
+        $sort_column = $request->request->get('sortColumn', 'pageTitle');
+        $sort_direction = strtoupper($request->request->get('sortDirection', 'asc'));
         $limit = $request->request->get('limit', 15);
         $offset = $request->request->get('offset', 0);
         $filter = $request->request->get('filter', '');
 
-        $where = array();
+        $locale = $this->getDoctrine()
+            ->getRepository(Locale::class)
+            ->findOneBy(array('locale' => $this->container->getParameter('kernel.default_locale')));
+
+        $where = array('locale' => $locale->getId());
         $whereString = '1=1';
         $filter = explode('&', $filter);
         if (!empty($filter))
@@ -154,35 +158,72 @@ class PageController extends Controller
      /**
       * @Route("/{_locale}/admin/page/add/", name="page_add"))
       * @Route("/{_locale}/admin/page/edit/{id}/", name="page_edit"))
+      * @Route("/{_locale}/admin/page/edit/{id}/translate/{localeId}/", name="page_edit_translate"))
       */
-    final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log, KernelInterface $kernel)
+    final public function edit($id=0, $localeId=0, Request $request, TranslatorInterface $translator, LogService $log, KernelInterface $kernel)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
         $serializer = new Serializer($normalizers, $encoders);
         $logMessage = '';
         $logComment = 'Insert';
+        $urlLocale = '';
+
+        if (empty($localeId)) {
+            $localeSlug = $this->container->getParameter('kernel.default_locale');
+            $locale = $this->getDoctrine()
+                ->getRepository(Locale::class)
+                ->findOneBy(array('locale' => $localeSlug));
+            if ($locale) $localeId = $locale->getId();
+        }
+
+        if (empty($locale)) {
+            $locale = $this->getDoctrine()
+                ->getRepository(Locale::class)
+                ->find($localeId);
+        }
+
+        if (empty($locale->getDefault())) $urlLocale = $locale->getLocale() . '/';
 
         if (!empty($id)) {
-            $page = $this->getDoctrine()
-                ->getRepository(Page::class)
-                ->find($id);
 
-            if (!$page) {
-                $page = new Page();
-                $this->addFlash(
-                    'error',
-                    $translator->trans('The requested page does not exist!')
-                );
+            if (!$locale->getDefault()) {
+
+                $page = $this->getDoctrine()
+                    ->getRepository(Page::class)
+                    ->findOneBy(array('defaultId' => $id, 'locale' => $localeId));
+
+                if (!$page) $page = new Page();
+
+                $page->setDefaultId($id);
+
             } else {
+
+                $page = $this->getDoctrine()
+                    ->getRepository(Page::class)
+                    ->find($id);
+
+                if (!$page) {
+                    $page = new Page();
+                    $this->addFlash(
+                        'error',
+                        $translator->trans('The requested page does not exist!')
+                    );
+                }
+            }
+
+            if ($page) {
                 $logMessage .= '<i>Old data:</i><br>';
                 $logMessage .= $serializer->serialize($page, 'json');
                 $logMessage .= '<br><br>';
                 $logComment = 'Update';
             }
+
         } else {
             $page = new Page();
         }
+
+        $page->setLocale($locale);
 
         // Get anonymous role
         $role = $this->getDoctrine()
@@ -205,6 +246,40 @@ class PageController extends Controller
 
         if ($request->isMethod('POST')) {
 
+            if (!$locale->getDefault()) {
+
+                $localeSlugDefault = $this->container->getParameter('kernel.default_locale');
+                $localeDefault = $this->getDoctrine()
+                    ->getRepository(Locale::class)
+                    ->findOneBy(array('locale' => $localeSlugDefault));
+                $pageDefault = new Page();
+                $pageDefault->setLocale($localeDefault);
+                $pageDefault->setPageTitle($request->request->get('page-title', ''));
+                $pageDefault->setPageRoute($request->request->get('page-route', ''));
+                $pageDefault->setContent($request->request->get('page-content', ''));
+                $pageDefault->setMetaTitle($request->request->get('page-meta-title', ''));
+                $pageDefault->setMetaKeywords($request->request->get('page-meta-keywords', ''));
+                $pageDefault->setMetaDescription($request->request->get('page-meta-description', ''));
+                $pageDefault->setMetaCustom($request->request->get('page-meta-custom', ''));
+                $pageDefault->setPublishDate(new \DateTime($request->request->get('page-publish-date', '')));
+
+                $expireDate = $request->request->get('page-expire-date', '');
+                if (!empty($expireDate)) $pageDefault->setExpireDate(new \DateTime($expireDate));
+                else $pageDefault->setExpireDate(NULL);
+
+                $pageDefault->setStatus($request->request->get('page-status', 1));
+                $pageDefault->setPageWidth($request->request->get('page-width', ''));
+                $pageDefault->setDisableLayout($request->request->get('disable-layout', 0));
+
+                $pageDefault->setCustomCss($request->request->get('custom-css', ''));
+                $pageDefault->setCustomJs($request->request->get('custom-js', ''));
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($pageDefault);
+                $em->flush();
+                $id = $pageDefault->getId();
+                $page->setDefaultId($id);
+            }
+
             $page->setPageTitle($request->request->get('page-title', ''));
             $page->setPageRoute($request->request->get('page-route', ''));
             $page->setContent($request->request->get('page-content', ''));
@@ -212,12 +287,6 @@ class PageController extends Controller
             $page->setMetaKeywords($request->request->get('page-meta-keywords', ''));
             $page->setMetaDescription($request->request->get('page-meta-description', ''));
             $page->setMetaCustom($request->request->get('page-meta-custom', ''));
-
-            $localeId = $request->request->get('page-locale', $this->container->getParameter('kernel.default_locale'));
-            $locale = $this->getDoctrine()
-                ->getRepository(Locale::class)
-                ->findOneBy(array('id' => $localeId));
-            $page->setLocale($locale);
 
             // Image
 
@@ -240,9 +309,8 @@ class PageController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($page);
             $em->flush();
-            $id = $page->getId();
 
-            $log->add('Page', $id, $logMessage, $logComment);
+            $log->add('Page', $page->getId(), $logMessage, $logComment);
 
             // Get permission group
             $permissionGroup = $this->getDoctrine()
@@ -263,7 +331,7 @@ class PageController extends Controller
             // Check permission
             $permission = $this->getDoctrine()
                 ->getRepository(Permission::class)
-                ->findOneBy(array('pageId' => $id));
+                ->findOneBy(array('pageId' => $page->getId()));
 
             // Create permission group
             if (!$permission) $permission = new Permission();
@@ -271,7 +339,7 @@ class PageController extends Controller
             $permission->setRouteName('page_' . strtolower(str_replace('/', '_', $page->getPageRoute())));
             $permission->setDescription($page->getPageTitle());
             $permission->setGroupId($permissionGroupId);
-            $permission->setPageId($id);
+            $permission->setPageId($page->getId());
             $em = $this->getDoctrine()->getManager();
             $em->persist($permission);
             $em->flush();
@@ -289,13 +357,15 @@ class PageController extends Controller
 
             $formRoles = $request->request->get('form_role', '');
 
-            foreach($formRoles as $formRole => $roleId) {
-                $userRole = new RolePermission();
-                $userRole->setPermissionId($permissionId);
-                $userRole->setRoleId($roleId);
-                $em->persist($userRole);
+            if (!empty($formRoles)) {
+                foreach($formRoles as $formRole => $roleId) {
+                    $userRole = new RolePermission();
+                    $userRole->setPermissionId($permissionId);
+                    $userRole->setRoleId($roleId);
+                    $em->persist($userRole);
+                }
+                $em->flush();
             }
-            $em->flush();
 
             $this->addFlash(
                 'success',
@@ -309,7 +379,8 @@ class PageController extends Controller
             $output = new NullOutput();
             $application->run($input, $output);
 
-            return $this->redirectToRoute('page_edit', array('id' => $id));
+            if (!empty($localeId)) return $this->redirectToRoute('page_edit_translate', array('id' => $id, 'localeId' => $localeId));
+            else return $this->redirectToRoute('page_edit', array('id' => $id));
         }
 
         // https://symfony.com/doc/current/security/csrf.html
@@ -338,13 +409,12 @@ class PageController extends Controller
             $setRoles = array();
         }
 
-
-
         if (!empty($id)) $title = $translator->trans('Edit page');
         else $title = $translator->trans('Add page');
 
         return $this->render('page/admin/edit.html.twig', array(
             'page_title' => $title,
+            'id' => $id,
             'edit_page_title' => $page->getPageTitle(),
             'page_route' => $page->getPageRoute(),
             'content' => $page->getContent(),
@@ -355,7 +425,8 @@ class PageController extends Controller
             'publish_date' => $page->getPublishDate(),
             'expire_date' => $page->getExpireDate(),
             'status' => $page->getStatus(),
-            'locale' => $page->getLocale(),
+            'locale' => $locale,
+            'url_locale' => $urlLocale,
             'page_width' => $page->getPageWidth(),
             'disable_layout' => $page->getDisableLayout(),
             'authorization' => '',

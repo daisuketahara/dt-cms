@@ -19,6 +19,11 @@ class Page
     private $id;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    protected $defaultId = 0;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     protected $pageTitle;
@@ -118,6 +123,30 @@ class Page
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Default Id
+     *
+     * @return mixed
+     */
+    public function getDefaultId()
+    {
+        return $this->defaultId;
+    }
+
+    /**
+     * Set the value of Default Id
+     *
+     * @param mixed defaultId
+     *
+     * @return self
+     */
+    public function setDefaultId($defaultId)
+    {
+        $this->defaultId = $defaultId;
 
         return $this;
     }
@@ -505,5 +534,4 @@ class Page
 
         return $this;
     }
-
 }

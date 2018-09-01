@@ -8,6 +8,16 @@
 {% endblock %}
 
 {% block content %}
+
+<ul class="nav nav-tabs mb-3">
+    {% if locales %}
+        {% for localeItem in locales %}
+        <li class="nav-item">
+            <a class="nav-link{% if locale %}{% if localeItem.id == locale.id %} active{% endif %}{% endif %}" href="/en/admin/page/edit/{{id}}/translate/{{localeItem.id}}/">{{localeItem.name}}</a>
+        </li>
+        {% endfor %}
+    {% endif %}
+</ul>
 <form action="" method="post">
     <input type="hidden" name="token" value="{{ csrf_token('edit-page') }}" />
     <div class="form-group">
@@ -17,15 +27,7 @@
         <div class="col">
             <div class="input-group">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="basic-addon3">{{settingservice.getSetting('site.url')}}/</span>
-                    <select id="page-locale" name="page-locale" class="form-controld" style="padding-left: 5px; width:50px !important; background-color: #e9ecef; border: 1px solid #ced4da;">
-                        {% if locales %}
-                            {% for localeItem in locales %}
-                            <option value="{{localeItem.id}}"{% if localeItem.id == locale.id %} selected{% endif %}>{{localeItem.locale}}</option>
-                            {% endfor %}
-                        {% endif %}
-                    </select>
-                    <span class="input-group-text" id="basic-addon3">/</span>
+                    <span class="input-group-text" id="basic-addon3">{{settingservice.getSetting('site.url')}}/{{url_locale}}</span>
                 </div>
                 <input type="text" class="form-control" id="page-route" name="page-route" value="{{page_route}}" aria-describedby="basic-addon3">
             </div>
