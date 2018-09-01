@@ -28,7 +28,7 @@ class ExtraLoader extends Loader
 
         $routes = new RouteCollection();
 
-        $pages = $this->em->getRepository(Page::class)->findAll();
+        $pages = $this->em->getRepository(Page::class)->getActivePages();
 
         foreach($pages as $page) {
 

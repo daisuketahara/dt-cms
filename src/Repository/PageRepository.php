@@ -23,4 +23,16 @@ class PageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function getActivePages()
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->andWhere('p.status = :status')
+            ->andWhere('p.publishDate <= :publishDate')
+            ->setParameter('status', 1)
+            ->setParameter('publishDate', date('Y-m-d'))
+            ->getQuery();
+
+        return $qb->execute();
+    }
 }
