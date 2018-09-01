@@ -30,19 +30,6 @@ jQuery(document).ready(function() {
 		}
     }
 
-	function setContainerHeight() {
-
-		var window_height = jQuery(window).height();
-		var body_height = jQuery('body').height();
-		var main_height = jQuery('.admin-content').height();
-
-		jQuery('body').css('min-height', window_height);
-		jQuery('.admin-navigation').css('min-height', window_height - 53);
-		jQuery('.admin-content').css('min-height', window_height - 53);
-	}
-
-	setContainerHeight();
-
 	function createCookie(name, value, days) {
 		var expires;
 		if (days) {
