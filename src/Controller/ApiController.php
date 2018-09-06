@@ -12,6 +12,8 @@ class ApiController extends AbstractController
      */
     public function getToken()
     {
+
+        var_dump('test');exit;
         return $this->render('api/index.html.twig', [
             'controller_name' => 'ApiController',
         ]);

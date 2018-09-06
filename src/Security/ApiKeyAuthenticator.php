@@ -4,7 +4,6 @@
 
 namespace App\Security;
 
-use App\Security\ApiKeyUserProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -13,17 +12,59 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationExc
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterface;
+use Doctrine\ORM\EntityManager;
+
+use App\Security\ApiKeyUserProvider;
+use App\Entity\UserApiKey;
+use App\Entity\User;
 
 class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
 {
+    protected $em;
+
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     public function createToken(Request $request, $providerKey)
     {
+        if ($request->getPathInfo() == '/api/gettoken/') {
 
-        $targetUrl = '/api/gettoken/';
-        if ($request->getPathInfo() !== $targetUrl) {
-            return;
+            $username = $request->query->get('username', '');
+            $password = $request->query->get('password', '');
+
+            $user = $this->em->getRepository(User::class)
+                ->findOneBy(array('email' => $username));
+
+            if ($user) {
+                $hash = $user->getPassword();
+
+                if (password_verify($password, $hash)) {
+
+                    $token = md5($user->getEmail().rand(0,9999).time());
+                    $expire = date('Y-m-d H:i:s', strtotime('+ 30 minutes'));
+
+                    $userApiKey = new UserApiKey();
+                    $userApiKey->setUserId($user->getId());
+                    $userApiKey->setKeyName('Request token by API');
+                    $userApiKey->setToken($token);
+                    $userApiKey->setExpire(new \DateTime($expire));
+                    $userApiKey->setActive(true);
+                    $this->em->persist($userApiKey);
+                    $this->em->flush();
+
+                    $response = array(
+                        'token' => $token,
+                        'expire' => $expire,
+                    );
+
+                    header('Content-Type: application/json');
+                    echo json_encode($response);
+                    exit;
+                }
+            }
         }
-
 
         $authHeader = $request->headers->get('Authorization');
         $token = $request->query->get('token');

@@ -32,9 +32,15 @@ class UserApiKey
     protected $token;
 
     /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $expire;
+
+    /**
      * @ORM\Column(name="active", type="boolean")
      */
     private $active;
+
 
     /**
      * Get the value of Id
@@ -133,6 +139,30 @@ class UserApiKey
     }
 
     /**
+     * Get the value of Expire
+     *
+     * @return mixed
+     */
+    public function getExpire()
+    {
+        return $this->expire;
+    }
+
+    /**
+     * Set the value of Expire
+     *
+     * @param mixed expire
+     *
+     * @return self
+     */
+    public function setExpire($expire)
+    {
+        $this->expire = $expire;
+
+        return $this;
+    }
+
+    /**
      * Get the value of Active
      *
      * @return mixed
@@ -155,4 +185,5 @@ class UserApiKey
 
         return $this;
     }
+
 }

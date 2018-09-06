@@ -79,3 +79,11 @@ services:
         arguments:
             $em: '@doctrine.orm.entity_manager'
         tags: [routing.loader]
+
+    App\Security\ApiKeyUserProvider:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'
+
+    App\Security\ApiKeyAuthenticator:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'

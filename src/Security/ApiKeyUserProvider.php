@@ -14,7 +14,7 @@ use App\Service\UserService;
 
 class ApiKeyUserProvider implements UserProviderInterface
 {
-    protected $container;
+    protected $em;
 
     public function __construct(EntityManager $em)
     {
