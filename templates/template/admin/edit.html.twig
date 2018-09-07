@@ -1,9 +1,8 @@
 {% extends templateservice.getAdminTemplate() %}
 
 {% block javascripts %}
-    {{ parent() }}
-    <script src="{{ asset('vendor/tinymce/tinymce.min.js') }}"></script>
     <script src="{{ asset('vendor/edit_area/edit_area_full.js') }}"></script>
+        {{ parent() }}
 {% endblock %}
 
 {% block content %}

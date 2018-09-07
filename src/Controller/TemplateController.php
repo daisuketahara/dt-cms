@@ -132,7 +132,7 @@ class TemplateController extends Controller
             'vendor/twbs/bootstrap/dist/js/bootstrap.min.js.map' => 'public/vendor/bootstrap/bootstrap.min.js.map',
             'vendor/bassjobsen/bootstrap-3-typeahead/bootstrap3-typeahead.min.js' => 'public/vendor/typeahead/bootstrap3-typeahead.min.js',
             'vendor/jackocnr/intl-tel-input/build' => 'public/vendor/intl-tel-input',
-            'vendor/tinymce/tinymce' => 'public/vendor/tinymce',
+            'vendor/summernote/summernote/dist' => 'public/vendor/summernote',
             'vendor/moment/moment/min' => 'public/vendor/moment',
             'vendor/nnnick/chartjs/dist' => 'public/vendor/chartjs',
             'vendor/components/font-awesome/webfonts/fa-brands-400.eot' => 'public/vendor/font-awesome/fonts/fa-brands-400.eot',

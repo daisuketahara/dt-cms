@@ -3,8 +3,13 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('vendor/tinymce/tinymce.min.js') }}"></script>
+    <script src="{{ asset('vendor/summernote/summernote-bs4.min.js') }}"></script>
     <script src="{{ asset('vendor/edit_area/edit_area_full.js') }}"></script>
+{% endblock %}
+
+{% block stylesheets %}
+    <link href="{{ asset('vendor/summernote/summernote-bs4.css') }}" rel="stylesheet" />
+    {{ parent() }}
 {% endblock %}
 
 {% block content %}
@@ -206,7 +211,7 @@
     </div>
 </form>
 <style>
-    #EditAreaArroundInfos_page-content { display: none;}
+    #EditAreaArroundInfos_page-content { display: none; }
 </style>
 <script>
 
@@ -281,36 +286,21 @@
             eraseCookie('page-editor');
             createCookie('page-editor','editor',30);
 
-            tinymce.init({
-                selector: '#page-content',
-                height: 400,
-                theme: 'modern',
-                menubar: false,
-                verify_html: false,
-                relative_urls: false,
-                convert_urls: false,
-                remove_script_host : false,
-                plugins: [
-                    'advlist autolink lists link image charmap print preview hr anchor pagebreak',
-                    'searchreplace wordcount visualblocks visualchars code fullscreen',
-                    'insertdatetime media nonbreaking save table contextmenu directionality',
-                    'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc help'
-                ],
-                toolbar1: 'undo redo | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-                image_advtab: true,
-                templates: [
-                    { title: 'Test template 1', content: 'Test 1' },
-                    { title: 'Test template 2', content: 'Test 2' }
-                ],
-                content_css: [
-                    '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
-                    '//www.tinymce.com/css/codepen.min.css'
-                ],
-                branding: false
+            jQuery('#page-content').summernote({
+                minHeight: 400,
+                toolbar: [
+                // [groupName, [list of button]]
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough', 'superscript', 'subscript']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']]
+                ]
             });
         }
         function disableEditor() {
-            tinyMCE.remove();
+            jQuery('#page-content').summernote('destroy');
         }
         function enableHtmlEditor() {
             eraseCookie('page-editor');
