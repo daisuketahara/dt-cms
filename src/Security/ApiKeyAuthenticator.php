@@ -55,7 +55,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
                     $this->em->flush();
 
                     $response = array(
-                        'response' => 'valid',
+                        'result' => 'valid',
                         'token' => $token,
                         'expire' => $expire,
                     );
@@ -64,7 +64,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
 
             if (empty($response)) {
                 $response = array(
-                    'response' => 'invalid',
+                    'result' => 'invalid',
                 );
             }
 
