@@ -55,15 +55,23 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
                     $this->em->flush();
 
                     $response = array(
+                        'response' => 'valid',
                         'token' => $token,
                         'expire' => $expire,
                     );
-                    header('Access-Control-Allow-Origin: *');
-                    header('Content-Type: application/json');
-                    echo json_encode($response);
-                    exit;
                 }
             }
+
+            if (empty($response)) {
+                $response = array(
+                    'response' => 'invalid',
+                );
+            }
+
+            header('Access-Control-Allow-Origin: *');
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit;
         }
 
         $authHeader = $request->headers->get('Authorization');
