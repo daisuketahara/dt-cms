@@ -33,6 +33,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
 
             $username = $request->query->get('username', '');
             $password = $request->query->get('password', '');
+            $callback = $request->query->get('callback', '');
 
             $user = $this->em->getRepository(User::class)
                 ->findOneBy(array('email' => $username));
@@ -70,7 +71,9 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
 
             header('Access-Control-Allow-Origin: *');
             header('Content-Type: application/json');
-            echo json_encode($response);
+            $json = json_encode($response);
+            if (!empty($callback)) echo $callback . '(' . $json . ')';
+            else echo $json;
             exit;
         }
 
