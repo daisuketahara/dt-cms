@@ -61,7 +61,7 @@
 
         if (labels.length > 0) {
 
-            var header = '<div class="dt-cards-header card text-white mb-2">';
+            var header = '<div class="dt-cards-header card text-white mb-1">';
             header += '<div class="card-body p-2">';
 
             header += '<div class="row">';
@@ -139,7 +139,7 @@
                 var card = '';
                 for (i = 0; i < data.length; i++) {
 
-                    card += '<div id="row-' + data[i]['id'] + '" class="card mb-1" data-id="' + data[i]['id'] + '">';
+                    card += '<div id="row-' + data[i]['id'] + '" class="card" data-id="' + data[i]['id'] + '">';
                         card += '<div class="card-body p-2">';
                             card += '<div class="row">';
                                 card += '<div class="col-1 pt-2"><input type="checkbox"> ' + data[i]['id'] + '.</div>';

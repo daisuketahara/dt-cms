@@ -4,19 +4,18 @@ html {
     body {
         width: 100%;
         min-height: 100vh;
-        padding-top: 2vh;
     }
 }
 
 .admin-container {
-    width: 90%;
-    min-height: 96vh;
+    width: 100%;
+    min-height: 100vh;
     margin: 0 auto;
     position: relative;
 }
 
 .admin-action-menu {
-    padding-left: 290px;
+    padding-left: 270px;
 
     .admin-menu-icon {
     	position: relative;
@@ -131,18 +130,16 @@ html {
 }
 
 .admin-content {
-    min-height: 96vh;
-    background: rgba(255,255,255,0.95);
-    padding: 15px;
-    padding-top: 20px;
-    margin-left: 275px;
-    -webkit-border-radius: 0.1rem;
-    -moz-border-radius: 0.1rem;
-    border-radius: 0.2rem;
+    min-height: 100vh;
+    padding: 4vh 2vh 2vh 4vh;
+    margin-left: 255px;
 
     h1 {
         font-size: 1.8rem;
         letter-spacing: 0.1rem;
+        margin-bottom: 1.1rem;
+        font-weight: 300;
+        color: white;
     }
 
     label {

@@ -3,36 +3,17 @@
 {% block stylesheets %}
 {{ parent() }}
 <link href="https://fonts.googleapis.com/css?family=Ubuntu" media="screen" rel="stylesheet" type="text/css">
-<link href="{{ asset('css/admin.css') }}" rel="stylesheet" />
+<link href="{{ asset('css/admin-dark.css') }}" rel="stylesheet" />
 {% endblock %}
 
 {% block body %}
 <div class="admin-container">
     <div class="admin-navigation">
-        <div class="text-center mb-3 mt-4">
-            <div class="im-user-profile-picture mb-3"></div>
-            <div class="im-user-profile-name mb-3">{{ app.user.getFirstname() }} {{ app.user.getLastname() }}</div>
-            <a class="btn btn-secondary btn-sm" href="/{{ app.request.locale }}/admin/account">{% trans %}My account{% endtrans %}</a>
-            <a class="btn btn-secondary btn-sm" href="/{{ app.request.locale }}/logout">{% trans %}Logout{% endtrans %}</a>
+        <div class="admin-logo">
+            <a href="/{{ app.request.locale }}/admin/">
+                {{settingservice.getSetting('site.logo')|raw}}
+            </a>
         </div>
-        <style>
-            .im-user-profile-picture {
-                width: 140px;
-                height: 140px;
-                margin: 0 auto;
-                border-radius: 80px;
-                background-color: white;
-                border: 2px solid white;
-                background-image: url(/img/im-logo-2018.png);
-                background-position: center center;
-                background-repeat: no-repeat;
-                background-size: cover;
-            }
-            .im-user-profile-name {
-                letter-spacing: 0.1rem;
-                text-transform: uppercase;
-            }
-        </style>
         {% block sidebar %}
         <nav class="dt-admin-menu">
             <ul>
@@ -56,6 +37,17 @@
             </ul>
         </nav>
         {% endblock %}
+    </div>
+    <div class="admin-user-menu dropdown inline-block margin-right-15">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <!-- Gravatar img -->
+            <span class="hidden-sm-down">{{ app.user.getFirstname() }} {{ app.user.getLastname() }}</span>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="right:0;left:auto;">
+            <a class="dropdown-item" href="/{{ app.request.locale }}/admin/account">{% trans %}My account{% endtrans %}</a>
+            <a class="dropdown-item" href="/{{ app.request.locale }}/admin/reset-password">{% trans %}Change password{% endtrans %}</a>
+            <a class="dropdown-item" href="/{{ app.request.locale }}/logout">{% trans %}Logout{% endtrans %}</a>
+        </div>
     </div>
     <main class="admin-content">
         {% if page_title is defined %}<h1>{{ page_title|trans|raw }}</h1>{% endif %}
@@ -88,10 +80,10 @@
         {% endfor %}
         {% block content %}{% endblock %}
     </main>
+    <footer class="container-fluid">
+            &copy; 2014 - {{ "now"|date('Y') }} by InterMention.
+            {% trans %}All rights reserved.{% endtrans %}
+            {{constant('APPLICATION_VERSION')}}
+    </footer>
 </div>
-<footer class="container-fluid">
-        &copy; 2014 - {{ "now"|date('Y') }} by InterMention.
-        {% trans %}All rights reserved.{% endtrans %}
-        {{constant('APPLICATION_VERSION')}}
-</footer>
 {% endblock %}

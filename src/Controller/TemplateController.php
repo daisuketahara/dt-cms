@@ -84,15 +84,12 @@ class TemplateController extends Controller
             $scss->setFormatter('Leafo\\ScssPhp\\Formatter\\Crunched');
             $scss->setImportPaths(array(
                 'assets/scss/',
+                'vendor',
                 'vendor/twbs/bootstrap/scss',
                 'templates/layout/' . $template->getTag() . '/scss',
             ));
-            $css = $scss->compile(file_get_contents('vendor/components/css-reset/reset.min.css'));
 
-            $css .= $scss->compile('@import "build.scss";');
-
-            $css .= $scss->compile(file_get_contents('vendor/daneden/animate.css/animate.min.css'));
-            $css .= $scss->compile('@import "index.scss";');
+            $css = $scss->compile('@import "index.scss";');
             $css .= $scss->compile($template->getCustomCss());
 
             if (file_exists('public/css/' . $template->getTag() . '.css')) unlink('public/css/' . $template->getTag() . '.css');
