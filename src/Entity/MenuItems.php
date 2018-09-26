@@ -29,6 +29,11 @@ class MenuItems
     /**
      * @ORM\Column(type="string", length=255)
      */
+    protected $icon;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     protected $label;
 
     /**
@@ -124,6 +129,30 @@ class MenuItems
     public function setParentId($parentId)
     {
         $this->parentId = $parentId;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Icon
+     *
+     * @return mixed
+     */
+    public function getIcon()
+    {
+        return $this->icon;
+    }
+
+    /**
+     * Set the value of Icon
+     *
+     * @param mixed icon
+     *
+     * @return self
+     */
+    public function setIcon($icon)
+    {
+        $this->icon = $icon;
 
         return $this;
     }
@@ -271,5 +300,4 @@ class MenuItems
 
         return $this;
     }
-
 }

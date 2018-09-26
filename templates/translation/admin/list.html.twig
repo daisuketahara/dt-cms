@@ -10,7 +10,13 @@
         </tr>
     </thead>
 </table>
-<a href="/{{ app.request.locale }}/admin/translation/generate" class="btn btn-secondary">{% trans %}Generate translation files{% endtrans %}</a>
+<a href="/{{ app.request.locale }}/admin/translation/generate/" class="btn btn-secondary">{% trans %}Generate translation files{% endtrans %}</a>
+<a href="/{{ app.request.locale }}/admin/translation/populate/" class="btn btn-secondary">{% trans %}Get missing translations{% endtrans %}</a>
+<a href="/{{ app.request.locale }}/admin/translation/export/" class="btn btn-secondary" data-disable-loader="1">{% trans %}Export{% endtrans %}</a>
+<form action="/{{ app.request.locale }}/admin/translation/import/" class="form-inline d-inline-block">
+    <input type="file" class="d-none">
+    <button type="submit" name="submit" class="btn btn-secondary">{% trans %}Import{% endtrans %}</button>
+</form>
 {% endblock %}
 
 {% block javascripts %}

@@ -6,6 +6,8 @@ use App\Entity\Translation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
+use App\Entity\Locale;
+
 class TranslationRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
@@ -50,5 +52,35 @@ class TranslationRepository extends ServiceEntityRepository
             ->getQuery();
 
         return $qb->setMaxResults(1)->getOneOrNullResult();
+    }
+
+    public function getExport()
+    {
+        $locales = $this->getEntityManager()->getRepository(Locale::class)->findAll();
+
+        $sql = "SELECT t1.id, t1.original";
+        $i = 2;
+        if (!empty($locales)) {
+            foreach($locales as $locale) {
+                $sql .= ", t" . $i . ".translation AS " . $locale->getLocale() . " ";
+                $i++;
+            }
+        }
+        $sql .= " FROM translation AS t1 ";
+        $i = 2;
+        if (!empty($locales)) {
+            foreach($locales as $locale) {
+                if ($locale->getDefault()) $sql .= "LEFT JOIN translation AS t" . $i . " ON t" . $i . ".original = t1.original AND t" . $i . ".locale_id = " . $locale->getId() . " ";
+                else $sql .= "LEFT JOIN translation AS t" . $i . " ON t" . $i . ".parent_id = t1.id AND t" . $i . ".locale_id = " . $locale->getId() . " ";
+                $i++;
+            }
+        }
+
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        //$stmt->execute(['price' => 10]);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
     }
 }

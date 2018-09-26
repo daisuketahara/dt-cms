@@ -22,6 +22,11 @@ class Translation
     protected $localeId;
 
     /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    protected $parentId;
+
+    /**
      * @ORM\Column(type="text")
      */
     protected $original;
@@ -80,6 +85,30 @@ class Translation
     }
 
     /**
+     * Get the value of Parent Id
+     *
+     * @return mixed
+     */
+    public function getParentId()
+    {
+        return $this->parentId;
+    }
+
+    /**
+     * Set the value of Parent Id
+     *
+     * @param mixed parentId
+     *
+     * @return self
+     */
+    public function setParentId($parentId)
+    {
+        $this->parentId = $parentId;
+
+        return $this;
+    }
+
+    /**
      * Get the value of Original
      *
      * @return mixed
@@ -126,5 +155,4 @@ class Translation
 
         return $this;
     }
-
 }

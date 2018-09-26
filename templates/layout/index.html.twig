@@ -80,7 +80,8 @@
 
                 jQuery(document).on('click', 'a', function(e) {
                     var href = jQuery(this).attr('href');
-                    if (href != '' && href != undefined && href.indexOf('#') != 0) {
+                    var disable = jQuery(this).data('disable-loader');
+                    if (href != '' && href != undefined && href.indexOf('#') != 0 && disable != 1) {
                         e.preventDefault();
                         jQuery('.page-loading').fadeIn(100, function() {
                             window.location.href = href;
