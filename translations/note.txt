@@ -5,3 +5,4 @@ php bin/console translation:update --dump-messages --force nl
 
 # Updates the NL translation file with the missing string found in the AppBundle
 php bin/console translation:update --dump-messages --force nl AppBundle
+ 
