@@ -158,6 +158,10 @@ class UserController extends Controller
             $user->setPhoneConfirmed($request->request->get('phoneConfirmed', false));
             $user->setActive($request->request->get('active', false));
 
+            if (empty($user->getId())) {
+                $user->setCreationDate(new \DateTime());
+            }
+
             $password = $request->request->get('password', '');
             if ($password != 'passwordnotchanged') {
                 $encoded = $encoder->encodePassword($user, $password);
