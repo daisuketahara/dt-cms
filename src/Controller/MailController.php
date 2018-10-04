@@ -12,6 +12,7 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
+use App\Entity\Locale;
 use App\Entity\MailQueue;
 use App\Entity\MailTemplate;
 use App\Form\MailTemplateForm;
@@ -192,7 +193,11 @@ class MailController extends Controller
           $offset = $request->request->get('offset', 0);
           $filter = $request->request->get('filter', '');
 
-          $where = array();
+          $locale = $this->getDoctrine()
+              ->getRepository(Locale::class)
+              ->findOneBy(array('locale' => $this->container->getParameter('kernel.default_locale')));
+
+          $where = array('locale' => $locale->getId());
           $whereString = '1=1';
           $filter = explode('&', $filter);
           if (!empty($filter))
@@ -233,29 +238,59 @@ class MailController extends Controller
           return $this->json($json);
       }
 
-      /**
-       * @Route("/{_locale}/admin/mail/template/add/", name="mail_template_add"))
-       * @Route("/{_locale}/admin/mail/template/edit/{id}/", name="mail_template_edit"))
-       */
-     final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
-     {
-         $encoders = array(new XmlEncoder(), new JsonEncoder());
-         $normalizers = array(new ObjectNormalizer());
-         $serializer = new Serializer($normalizers, $encoders);
-         $logMessage = '';
-         $logComment = 'Insert';
+    /**
+     * @Route("/{_locale}/admin/mail/template/edit/{id}/", name="mail_template_edit"))
+     * @Route("/{_locale}/admin/mail/template/edit/{id}/translate/{localeId}/", name="mail_template_edit_translate"))
+     */
+    final public function edit($id=0, $localeId=0, Request $request, TranslatorInterface $translator, LogService $log)
+    {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $serializer = new Serializer($normalizers, $encoders);
+        $logMessage = '';
+        $logComment = 'Insert';
+
+         if (empty($localeId)) {
+             $localeSlug = $this->container->getParameter('kernel.default_locale');
+             $locale = $this->getDoctrine()
+                 ->getRepository(Locale::class)
+                 ->findOneBy(array('locale' => $localeSlug));
+             if ($locale) $localeId = $locale->getId();
+         }
+
+         if (empty($locale)) {
+             $locale = $this->getDoctrine()
+                 ->getRepository(Locale::class)
+                 ->find($localeId);
+         }
 
          if (!empty($id)) {
-             $template = $this->getDoctrine()
-                 ->getRepository(MailTemplate::class)
-                 ->find($id);
-             if (!$template) {
-                 $template = new MailTemplate();
-                 $this->addFlash(
-                     'error',
-                     $translator->trans('The requested mail template does not exist!')
-                 );
+
+             if (!$locale->getDefault()) {
+
+                 $template = $this->getDoctrine()
+                     ->getRepository(MailTemplate::class)
+                     ->findOneBy(array('defaultId' => $id, 'locale' => $localeId));
+
+                 if (!$template) $template = new MailTemplate();
+
+                 $template->setDefaultId($id);
+
              } else {
+
+                 $template = $this->getDoctrine()
+                     ->getRepository(MailTemplate::class)
+                     ->find($id);
+
+                 if (!$template) {
+                     $template = new MailTemplate();
+                     $this->addFlash(
+                         'error',
+                         $translator->trans('The requested mail template does not exist!')
+                     );
+                 }
+             }
+             if ($template) {
                  $logMessage .= '<i>Old data:</i><br>';
                  $logMessage .= $serializer->serialize($template, 'json');
                  $logMessage .= '<br><br>';
@@ -266,38 +301,70 @@ class MailController extends Controller
              $template = new MailTemplate();
          }
 
-         $form = $this->createForm(MailTemplateForm::class, $template);
-
+         $form = $this->createFormBuilder();
+         $form = $form->getForm();
          $form->handleRequest($request);
 
-         if ($form->isSubmitted() && $form->isValid()) {
+         if ($request->isMethod('POST')) {
 
-             // perform some action...
-             $template = $form->getData();
+            if (!$locale->getDefault() && empty($id)) {
 
-             $logMessage .= '<i>New data:</i><br>';
-             $logMessage .= $serializer->serialize($template, 'json');
+                $localeSlugDefault = $this->container->getParameter('kernel.default_locale');
+                $localeDefault = $this->getDoctrine()
+                    ->getRepository(Locale::class)
+                    ->findOneBy(array('locale' => $localeSlugDefault));
+                $templateDefault = new MailTemplate();
 
-             $em = $this->getDoctrine()->getManager();
-             $em->persist($template);
-             $em->flush();
-             $id = $template->getId();
+                $templateDefault->setName($request->request->get('mail-name', ''));
+                $templateDefault->setSubject($request->request->get('mail-subject', ''));
+                $templateDefault->setBody($request->request->get('mail-body', ''));
 
-             $log->add('Mail template', $id, $logMessage, $logComment);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($templateDefault);
+                $em->flush();
+                $id = $pageDefault->getId();
+                $template->setDefaultId($id);
+            }
+
+            $template->setName($request->request->get('mail-name', ''));
+            $template->setSubject($request->request->get('mail-subject', ''));
+            $template->setBody($request->request->get('mail-body', ''));
+
+            $logMessage .= '<i>New data:</i><br>';
+            $logMessage .= $serializer->serialize($template, 'json');
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($template);
+            $em->flush();
+
+            $log->add('Mail template', $id, $logMessage, $logComment);
 
              $this->addFlash(
                  'success',
                  $translator->trans('Your changes were saved!')
              );
-             return $this->redirectToRoute('mail_template_edit', array('id' => $id));
+
+             if (!empty($localeId)) return $this->redirectToRoute('mail_template_edit_translate', array('id' => $id, 'localeId' => $localeId));
+             else return $this->redirectToRoute('mail_template_edit', array('id' => $id));
          }
 
          if (!empty($id)) $title = $translator->trans('Edit mail template');
          else $title = $translator->trans('Add mail template');
 
-         return $this->render('common/form.html.twig', array(
-             'form' => $form->createView(),
+         $locales = $this->getDoctrine()
+             ->getRepository(Locale::class)
+             ->findAll();
+
+         return $this->render('mail/admin/edit.html.twig', array(
              'page_title' => $title,
+             'id' => $id,
+             'name' => $template->getName(),
+             'subject' => $template->getSubject(),
+             'body' => $template->getBody(),
+             'variables' => explode(',', $template->getVariables()),
+             'locale' => $locale,
+             'default_locale' => $this->container->getParameter('kernel.default_locale'),
+             'locales' => $locales,
          ));
       }
 

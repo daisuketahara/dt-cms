@@ -1,0 +1,71 @@
+{% extends templateservice.getAdminTemplate() %}
+
+{% block content %}
+
+<ul class="nav nav-tabs mb-3">
+    {% if locales %}
+        {% for localeItem in locales %}
+        <li class="nav-item">
+            <a class="nav-link{% if locale %}{% if localeItem.id == locale.id %} active{% endif %}{% endif %}" href="/en/admin/mail/template/edit/{{id}}/translate/{{localeItem.id}}/">{{localeItem.name}}</a>
+        </li>
+        {% endfor %}
+    {% endif %}
+</ul>
+<div class="row">
+    <div class="col-md-9">
+        <form action="" method="post">
+            <div class="form-group">
+                <label>{% trans %}Name{% endtrans %}</label>
+                <input type="input" id="mail-name" name="mail-name" class="form-control" value="{{name}}">
+            </div>
+            <div class="form-group">
+                <label>{% trans %}Subject{% endtrans %}</label>
+                <input type="input" id="mail-subject" name="mail-subject" class="form-control" value="{{subject}}">
+            </div>
+            <div class="form-group">
+                <label>{% trans %}Body{% endtrans %}</label>
+                <textarea id="mail-body" name="mail-body" class="form-control">{{body}}</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">{% trans %}Save{% endtrans %}</button>
+        </form>
+    </div>
+    <div class="col-md-3">
+        <h3>{% trans %}Variables{% endtrans %}</h3>
+        <p>{% trans %}The system will replace the following variables in the email template.{% endtrans %}</p>
+        <ul class="list-unstyled">
+            {% if variables %}
+                {% for variable in variables %}
+                <li class="nav-item">{{variable}}</li>
+                {% endfor %}
+            {% endif %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('vendor/summernote/summernote-bs4.min.js') }}"></script>
+    <script src="{{ asset('vendor/edit_area/edit_area_full.js') }}"></script>
+    <script>
+
+        jQuery('#mail-body').summernote({
+            minHeight: 400,
+            toolbar: [
+            // [groupName, [list of button]]
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough', 'superscript', 'subscript']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+            ['height', ['height']]
+            ]
+        });
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    <link href="{{ asset('vendor/summernote/summernote-bs4.css') }}" rel="stylesheet" />
+    {{ parent() }}
+{% endblock %}

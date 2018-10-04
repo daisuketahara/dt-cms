@@ -246,7 +246,7 @@ class PageController extends Controller
 
         if ($request->isMethod('POST')) {
 
-            if (!$locale->getDefault()) {
+            if (!$locale->getDefault() && empty($id)) {
 
                 $localeSlugDefault = $this->container->getParameter('kernel.default_locale');
                 $localeDefault = $this->getDoctrine()

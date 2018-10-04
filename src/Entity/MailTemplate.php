@@ -17,6 +17,21 @@ class MailTemplate
     private $id;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    protected $defaultId = 0;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Locale")
+     */
+    protected $locale;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    protected $tag;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     protected $name;
@@ -30,6 +45,11 @@ class MailTemplate
      * @ORM\Column(type="text")
      */
     protected $body;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    protected $variables;
 
     /**
      * Get the value of Id
@@ -51,6 +71,54 @@ class MailTemplate
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Default Id
+     *
+     * @return mixed
+     */
+    public function getDefaultId()
+    {
+        return $this->defaultId;
+    }
+
+    /**
+     * Set the value of Default Id
+     *
+     * @param mixed defaultId
+     *
+     * @return self
+     */
+    public function setDefaultId($defaultId)
+    {
+        $this->defaultId = $defaultId;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Locale
+     *
+     * @return mixed
+     */
+    public function getLocale()
+    {
+        return $this->locale;
+    }
+
+    /**
+     * Set the value of Locale
+     *
+     * @param mixed locale
+     *
+     * @return self
+     */
+    public function setLocale($locale)
+    {
+        $this->locale = $locale;
 
         return $this;
     }
@@ -127,4 +195,27 @@ class MailTemplate
         return $this;
     }
 
+    /**
+     * Get the value of Variables
+     *
+     * @return mixed
+     */
+    public function getVariables()
+    {
+        return $this->variables;
+    }
+
+    /**
+     * Set the value of Variables
+     *
+     * @param mixed variables
+     *
+     * @return self
+     */
+    public function setVariables($variables)
+    {
+        $this->variables = $variables;
+
+        return $this;
+    }
 }
