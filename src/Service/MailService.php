@@ -57,6 +57,4 @@ class MailService
 
         return false;
     }
-
-    public function
 }
