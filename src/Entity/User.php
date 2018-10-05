@@ -175,6 +175,16 @@ class User implements AdvancedUserInterface, \Serializable
     }
 
     /**
+     * Get the value of Lastname
+     *
+     * @return mixed
+     */
+    public function getFullname()
+    {
+        return $this->firstname . ' ' . $this->lastname;
+    }
+
+    /**
      * Get the value of Phone
      *
      * @return mixed
