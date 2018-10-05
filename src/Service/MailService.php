@@ -26,8 +26,7 @@ class MailService
         $mail = new MailQueue();
         $request = Request::createFromGlobals();
 
-        $template = $this->getDoctrine()
-            ->getRepository(MailTemplate::class)
+        $template = $this->em->getRepository(MailTemplate::class)
             ->findOneBy(array('tag' => $tag, 'locale' => $localeId));
 
         $body = $template->getBody();
