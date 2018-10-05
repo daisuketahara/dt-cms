@@ -33,8 +33,8 @@ class MailService
         $subject = $template->getSubject();
         if ($variables) {
             foreach($variables as $search => $replace) {
-                $body = str_replace($search, $replace, $body);
-                $subject = str_replace($search, $replace, $subject);
+                $body = str_replace('{'.$search.'}', $replace, $body);
+                $subject = str_replace('{'.$search.'}', $replace, $subject);
             }
         }
 
