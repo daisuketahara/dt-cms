@@ -50,6 +50,10 @@ services:
         arguments:
             $em: '@doctrine.orm.entity_manager'
 
+    App\Service\BlockService:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'
+
     App\Service\MenuService:
         arguments:
             $em: '@doctrine.orm.entity_manager'

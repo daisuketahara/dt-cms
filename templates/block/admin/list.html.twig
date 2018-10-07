@@ -1,0 +1,30 @@
+{% extends templateservice.getAdminTemplate() %}
+
+{% block content %}
+<table class="table table-hover table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th class="width-100" data-column="id">{% trans %}ID{% endtrans %}</th>
+            <th data-column="name">{% trans %}Name{% endtrans %}</th>
+            <th data-column="description">{% trans %}Description{% endtrans %}</th>
+        </tr>
+    </thead>
+</table>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/paginator.js') }}"></script>
+    <script src="{{ asset('js/modal.js') }}"></script>
+    <script src="{{ asset('js/table.js') }}"></script>
+    <script>
+
+        $('.table').dtTable({
+            ajaxUrl: '/{{ app.request.locale }}/admin/block/get/',
+            editUrl: '/{{ app.request.locale }}/admin/block/edit/',
+            filter: true,
+            limit: 15
+        });
+
+    </script>
+{% endblock %}

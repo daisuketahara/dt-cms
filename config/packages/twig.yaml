@@ -3,6 +3,7 @@ twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
     globals:
+        blockservice: '@App\Service\BlockService'
         menuservice: '@App\Service\MenuService'
         settingservice: '@App\Service\SettingService'
         fileservice: '@App\Service\FileService'

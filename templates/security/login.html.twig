@@ -6,6 +6,7 @@
     {% endif %}
     <div class="login-container">
         <div class="site-logo">{{settingservice.getSetting('site.logo')|raw}}</div>
+        {{blockservice.getBlock('login')|raw}}
         <form action="{{ path('login') }}" method="post">
             <div class="form-group">
                 <label for="username">{% trans %}Email{% endtrans %}</label>
