@@ -5,9 +5,9 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\TranslationRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\AppTranslationRepository")
  */
-class Translation
+class AppTranslation
 {
     /**
      * @ORM\Id
@@ -77,7 +77,7 @@ class Translation
      *
      * @return self
      */
-    public function setLocaleId($locale)
+    public function setLocale($locale)
     {
         $this->locale = $locale;
 

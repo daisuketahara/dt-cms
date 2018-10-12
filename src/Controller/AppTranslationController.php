@@ -21,28 +21,28 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
-use App\Entity\Translation;
+use App\Entity\AppTranslation;
 use App\Form\TranslationForm;
 use App\Entity\Locale;
 use App\Service\LogService;
 
-class TranslationController extends Controller
+class AppTranslationController extends Controller
 {
     /**
-     * @Route("/{_locale}/admin/translation/", name="translation"))
+     * @Route("/{_locale}/admin/apptranslation/", name="apptranslation"))
      */
      final public function list(TranslatorInterface $translator)
      {
 
-         return $this->render('translation/admin/list.html.twig', array(
-             'page_title' => $translator->trans('Translations'),
+         return $this->render('apptranslation/admin/list.html.twig', array(
+             'page_title' => $translator->trans('App Translations'),
              'can_add' => true,
              'can_edit' => true,
          ));
      }
 
      /**
-      * @Route("/{_locale}/admin/translation/get/", name="translation_get"))
+      * @Route("/{_locale}/admin/apptranslation/get/", name="apptranslation_get"))
       */
      final public function getTranslation(Request $request)
      {
@@ -64,18 +64,18 @@ class TranslationController extends Controller
              }
          }
 
-         $qb = $this->getDoctrine()->getRepository(Translation::class)->createQueryBuilder('t');
+         $qb = $this->getDoctrine()->getRepository(AppTranslation::class)->createQueryBuilder('t');
          $qb->select('count(t.id)');
          $qb->where($whereString);
          $count = $qb->getQuery()->getSingleScalarResult();
 
          if (empty($limit)) {
              $pages = $this->getDoctrine()
-                 ->getRepository(Translation::class)
+                 ->getRepository(AppTranslation::class)
                  ->findTranslationsList();
          } else {
              $pages = $this->getDoctrine()
-                 ->getRepository(Translation::class)
+                 ->getRepository(AppTranslation::class)
                  ->findTranslationsList($where, array($sort_column => $sort_direction), $limit, $offset);
          }
 
@@ -94,8 +94,8 @@ class TranslationController extends Controller
      }
 
      /**
-      * @Route("/{_locale}/admin/translation/add/", name="translation_add"))
-      * @Route("/{_locale}/admin/translation/edit/{id}/", name="translation_edit"))
+      * @Route("/{_locale}/admin/apptranslation/add/", name="apptranslation_add"))
+      * @Route("/{_locale}/admin/apptranslation/edit/{id}/", name="apptranslation_edit"))
       */
     final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
@@ -109,10 +109,10 @@ class TranslationController extends Controller
 
         if (!empty($id)) {
             $translation = $this->getDoctrine()
-                ->getRepository(Translation::class)
+                ->getRepository(AppTranslation::class)
                 ->find($id);
             if (!$translation) {
-                $translation = new Translation();
+                $translation = new AppTranslation();
                 $this->addFlash(
                     'error',
                     $translator->trans('The requested setting does not exist!')
@@ -126,7 +126,7 @@ class TranslationController extends Controller
 
             }
         } else {
-            $translation = new Translation();
+            $translation = new AppTranslation();
         }
 
         $locales = $this->getDoctrine()
@@ -144,7 +144,7 @@ class TranslationController extends Controller
             if (empty($locale->getDefault())) $fieldId = 'translation_' . $locale->getLocale();
 
             $fieldTranslation = $this->getDoctrine()
-                ->getRepository(Translation::class)
+                ->getRepository(AppTranslation::class)
                 ->findTranslation($translation->getOriginal(), $locale->getId());
 
             $fieldValue = '';
@@ -165,7 +165,7 @@ class TranslationController extends Controller
 
             if (!empty($id)) {
                 $fieldTranslation = $this->getDoctrine()
-                    ->getRepository(Translation::class)
+                    ->getRepository(AppTranslation::class)
                     ->find($id);
                 $original = $fieldTranslation->getOriginal();
             } else {
@@ -175,11 +175,11 @@ class TranslationController extends Controller
             foreach($locales as $locale) {
 
                 $fieldTranslation = $this->getDoctrine()
-                    ->getRepository(Translation::class)
+                    ->getRepository(AppTranslation::class)
                     ->findTranslation($translation->getOriginal(), $locale->getId());
 
                 if (!$fieldTranslation) {
-                    $fieldTranslation = new Translation();
+                    $fieldTranslation = new AppTranslation();
                 }
 
                 $fieldId = 'translation';
@@ -196,14 +196,14 @@ class TranslationController extends Controller
 
             $logMessage .= '<i>New data:</i><br>';
             $logMessage .= $serializer->serialize($translation, 'json');
-            $log->add('Translation', $id, $logMessage, $logComment);
+            $log->add('AppTranslation', $id, $logMessage, $logComment);
 
             $this->addFlash(
                 'success',
                 $translator->trans('Your changes were saved!')
             );
 
-            return $this->redirectToRoute('translation_edit', array('id' => $id));
+            return $this->redirectToRoute('apptranslation_edit', array('id' => $id));
         }
 
         if (!empty($id)) $title = $translator->trans('Edit translation');
@@ -216,151 +216,12 @@ class TranslationController extends Controller
      }
 
     /**
-     * @Route("/{_locale}/admin/translation/generate/", name="translation_generate"))
-     */
-    final public function generate(TranslatorInterface $translator, LogService $log)
-    {
-        $fs = new Filesystem();
-
-        $path = 'translations';
-
-        if (!$fs->exists($path)) $fs->mkdir($path);
-
-        $locales = $this->getDoctrine()
-        ->getRepository(Locale::class)
-        ->findActiveLocales();
-
-        $logMessage = '<i>Translation files created:</i><br>';
-
-        foreach($locales as $locale) {
-
-            $file = $path. '/messages.' . $locale->getLocale() . '.yml';
-            $logMessage .= 'messages.' . $locale->getLocale() . '.yml' . '<br>';
-
-            $fs->remove(array($file));
-            $fs->touch($file);
-
-            $translations = $this->getDoctrine()
-                ->getRepository(Translation::class)
-                ->findTranslationsByLocaleId($locale->getId());
-
-            foreach($translations as $translation) {
-                $fs->appendToFile($file, "'" . addslashes($translation->getOriginal()) . "': '" . addslashes($translation->getTranslation()) . "'" . PHP_EOL);
-            }
-
-        }
-
-        $log->add('Translation', 0, $logMessage, 'Generate translation files');
-
-        $this->addFlash(
-            'success',
-            $translator->trans('The translation files have been generated!')
-        );
-
-        return $this->redirectToRoute('translation');
-    }
-
-    /**
-     * @Route("/{_locale}/admin/translation/populate/", name="translation_populate"))
-     */
-    final public function populate(TranslatorInterface $translator, LogService $log, KernelInterface $kernel) {
-
-       $application = new Application($kernel);
-       $application->setAutoExit(false);
-
-        $input = new ArrayInput(array(
-           'command' => 'debug:translation',
-           'locale' => 'en',
-        ));
-        $output = new BufferedOutput();
-        $application->run($input, $output);
-
-        // return the output, don't use if you used NullOutput()
-        $content = $output->fetch();
-        $fieldLengths = array();
-        $translations = array();
-
-        $i = 0;
-        $count = 0;
-        $lines = preg_split("/((\r?\n)|(\n?\r))/", $content);
-        foreach($lines as $line){
-            if (empty($i)) {
-                $fields = explode(' ', $line);
-                foreach($fields as $field) {
-                    $fieldLengths[] = strlen($field);
-                }
-            } elseif ($i < 3) {
-                $i++;
-                continue;
-            } elseif ($i > (count($lines)-4)) {
-                $i++;
-                continue;
-            } else {
-                $state = trim(substr($line, 1, $fieldLengths[1]));
-                $domain = trim(substr($line, ($fieldLengths[1]+2), $fieldLengths[2]));
-                $translationId = trim(substr($line, ($fieldLengths[1]+$fieldLengths[2]+3), $fieldLengths[3]));
-
-                if (!empty($domain)) {
-                    $translations[] = array(
-                        'state' => $state,
-                        'domain' => $domain,
-                        'id' => $translationId,
-                    );
-                } else {
-                    $last = count($translations) - 1;
-                    $translations[$last]['id'] .= PHP_EOL . $translationId;
-                }
-            }
-            $i++;
-        }
-
-        if (!empty($translations)) {
-
-            $locales = $this->getDoctrine()
-                ->getRepository(Locale::class)
-                ->findActiveLocales();
-
-            foreach ($translations as $key => $translation) {
-
-                $translationDb = $this->getDoctrine()
-                    ->getRepository(Translation::class)
-                    ->findBy(array('original' => $translation['id']));
-
-                if (!$translationDb) {
-
-                    foreach($locales as $locale) {
-
-                        $translationDb = new Translation();
-                        $translationDb->setLocaleId($locale->getId());
-                        $translationDb->setOriginal($translation['id']);
-                        $translationDb->setTranslation('');
-
-                        $em = $this->getDoctrine()->getManager();
-                        $em->persist($translationDb);
-                        $em->flush();
-                    }
-                }
-            }
-        }
-
-        $log->add('Translation', 0, '<i>Translations table populated:</i><br>', 'Translation populate');
-
-        $this->addFlash(
-            'success',
-            $translator->trans('The translation table has been populated with missing translations!')
-        );
-
-        return $this->redirectToRoute('translation');
-   }
-
-
-    /**
-     * @Route("/{_locale}/admin/translation/export/", name="translation_export"))
+     * @Route("/{_locale}/admin/apptranslation/export/", name="apptranslation_export"))
      */
     final public function export(TranslatorInterface $translator, LogService $log)
     {
         $translations = $this->getDoctrine()
-                ->getRepository(Translation::class)
+                ->getRepository(AppTranslation::class)
                 ->getExport();
 
         $locales = $this->getDoctrine()

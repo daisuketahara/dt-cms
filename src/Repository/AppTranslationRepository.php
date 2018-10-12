@@ -6,13 +6,13 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 use App\Entity\Locale;
-use App\Entity\Translation;
+use App\Entity\AppTranslation;
 
-class TranslationRepository extends ServiceEntityRepository
+class AppTranslationRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, Translation::class);
+        parent::__construct($registry, AppTranslation::class);
     }
 
     public function findTranslationsList($where='', $order='', $limit=0, $offset=0) {
@@ -20,8 +20,8 @@ class TranslationRepository extends ServiceEntityRepository
         $sql = "SELECT
             	t.id,
             	t.original,
-            	CONCAT(CAST(ROUND(((SELECT COUNT(*) FROM translation AS t2 WHERE t2.translation <> '' AND t2.translation IS NOT NULL AND t2.original=t.original)/(SELECT COUNT(*) FROM locale AS l WHERE l.active=1))*100) AS CHAR(3)),'%') AS complete
-            FROM translation AS t
+            	CONCAT(CAST(ROUND(((SELECT COUNT(*) FROM app_translation AS t2 WHERE t2.translation <> '' AND t2.translation IS NOT NULL AND t2.original=t.original)/(SELECT COUNT(*) FROM locale AS l WHERE l.active=1))*100) AS CHAR(3)),'%') AS complete
+            FROM app_translation AS t
             WHERE t.locale_id=(SELECT id FROM locale AS l2 WHERE `default`=1)";
 
         $conn = $this->getEntityManager()->getConnection();
@@ -66,12 +66,12 @@ class TranslationRepository extends ServiceEntityRepository
                 $i++;
             }
         }
-        $sql .= " FROM translation AS t1 ";
+        $sql .= " FROM app_translation AS t1 ";
         $i = 2;
         if (!empty($locales)) {
             foreach($locales as $locale) {
-                if ($locale->getDefault()) $sql .= "LEFT JOIN translation AS t" . $i . " ON t" . $i . ".original = t1.original AND t" . $i . ".locale_id = " . $locale->getId() . " ";
-                else $sql .= "LEFT JOIN translation AS t" . $i . " ON t" . $i . ".parent_id = t1.id AND t" . $i . ".locale_id = " . $locale->getId() . " ";
+                if ($locale->getDefault()) $sql .= "LEFT JOIN app_translation AS t" . $i . " ON t" . $i . ".original = t1.original AND t" . $i . ".locale_id = " . $locale->getId() . " ";
+                else $sql .= "LEFT JOIN app_translation AS t" . $i . " ON t" . $i . ".parent_id = t1.id AND t" . $i . ".locale_id = " . $locale->getId() . " ";
                 $i++;
             }
         }
