@@ -86,7 +86,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
             $apiKey = $token;
         }
 
-        if (!$apiKey) {
+        if (empty($apiKey)) {
             throw new BadCredentialsException();
 
             // or to just skip api key authentication
