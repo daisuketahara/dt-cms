@@ -252,7 +252,7 @@ class AppTranslationController extends Controller
 
             $columnNames = array(
                 $translator->trans('ID'),
-                $translator->trans('Original'),
+                $translator->trans('Tag'),
             );
 
             if ($locales) {
@@ -267,7 +267,7 @@ class AppTranslationController extends Controller
 
                 $row = array();
                 $row[] = $translation['id'];
-                $row[] = $translation['original'];
+                $row[] = $translation['tag'];
 
                 if ($locales) {
                     foreach($locales as $locale) {
@@ -283,7 +283,7 @@ class AppTranslationController extends Controller
 
         $response->setStatusCode(200);
         $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
-        $response->headers->set('Content-Disposition', 'attachment; filename="translation_export_' . date('YmdHis') . '.csv"');
+        $response->headers->set('Content-Disposition', 'attachment; filename="app_translation_export_' . date('YmdHis') . '.csv"');
 
         return $response;
 
