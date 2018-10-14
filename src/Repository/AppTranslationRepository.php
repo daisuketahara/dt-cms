@@ -19,8 +19,8 @@ class AppTranslationRepository extends ServiceEntityRepository
 
         $sql = "SELECT
             	t.id,
-            	t.original,
-            	CONCAT(CAST(ROUND(((SELECT COUNT(*) FROM app_translation AS t2 WHERE t2.translation <> '' AND t2.translation IS NOT NULL AND t2.original=t.original)/(SELECT COUNT(*) FROM locale AS l WHERE l.active=1))*100) AS CHAR(3)),'%') AS complete
+            	t.tag,
+            	CONCAT(CAST(ROUND(((SELECT COUNT(*) FROM app_translation AS t2 WHERE t2.translation <> '' AND t2.translation IS NOT NULL AND t2.tag=t.tag)/(SELECT COUNT(*) FROM locale AS l WHERE l.active=1))*100) AS CHAR(3)),'%') AS complete
             FROM app_translation AS t
             WHERE t.locale_id=(SELECT id FROM locale AS l2 WHERE `default`=1)";
 
@@ -42,12 +42,12 @@ class AppTranslationRepository extends ServiceEntityRepository
         return $qb->execute();
     }
 
-    public function findTranslation($original, $localeId)
+    public function findTranslation($tag, $localeId)
     {
         $qb = $this->createQueryBuilder('t')
-            ->andWhere('t.original = :original')
+            ->andWhere('t.tag = :tag')
             ->andWhere('t.locale = :locale')
-            ->setParameter('original', $original)
+            ->setParameter('tag', $tag)
             ->setParameter('locale', $localeId)
             ->getQuery();
 
@@ -58,7 +58,7 @@ class AppTranslationRepository extends ServiceEntityRepository
     {
         $locales = $this->getEntityManager()->getRepository(Locale::class)->findAll();
 
-        $sql = "SELECT t1.id, t1.original";
+        $sql = "SELECT t1.id, t1.tag";
         $i = 2;
         if (!empty($locales)) {
             foreach($locales as $locale) {
@@ -70,7 +70,7 @@ class AppTranslationRepository extends ServiceEntityRepository
         $i = 2;
         if (!empty($locales)) {
             foreach($locales as $locale) {
-                if ($locale->getDefault()) $sql .= "LEFT JOIN app_translation AS t" . $i . " ON t" . $i . ".original = t1.original AND t" . $i . ".locale_id = " . $locale->getId() . " ";
+                if ($locale->getDefault()) $sql .= "LEFT JOIN app_translation AS t" . $i . " ON t" . $i . ".tag = t1.tag AND t" . $i . ".locale_id = " . $locale->getId() . " ";
                 else $sql .= "LEFT JOIN app_translation AS t" . $i . " ON t" . $i . ".parent_id = t1.id AND t" . $i . ".locale_id = " . $locale->getId() . " ";
                 $i++;
             }

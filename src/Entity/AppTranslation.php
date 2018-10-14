@@ -27,9 +27,9 @@ class AppTranslation
     protected $parentId;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="string", length=255)
      */
-    protected $original;
+    protected $tag;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -109,25 +109,25 @@ class AppTranslation
     }
 
     /**
-     * Get the value of Original
+     * Get the value of Tag
      *
      * @return mixed
      */
-    public function getOriginal()
+    public function getTag()
     {
-        return $this->original;
+        return $this->tag;
     }
 
     /**
-     * Set the value of Original
+     * Set the value of Tag
      *
-     * @param mixed original
+     * @param mixed tag
      *
      * @return self
      */
-    public function setOriginal($original)
+    public function setTag($tag)
     {
-        $this->original = $original;
+        $this->tag = $tag;
 
         return $this;
     }

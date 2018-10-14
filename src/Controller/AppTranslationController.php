@@ -135,8 +135,8 @@ class AppTranslationController extends Controller
 
         $form = $this->createFormBuilder();
         $disabled = false;
-        if (!empty($translation->getOriginal())) $disabled = true;
-        $form->add('original', TextType::class, array('label' => 'Original text', 'data' => $translation->getOriginal(), 'disabled' => $disabled));
+        if (!empty($translation->getTag())) $disabled = true;
+        $form->add('tag', TextType::class, array('label' => 'Tag', 'data' => $translation->getTag()));
 
         foreach($locales as $locale) {
 
@@ -145,7 +145,7 @@ class AppTranslationController extends Controller
 
             $fieldTranslation = $this->getDoctrine()
                 ->getRepository(AppTranslation::class)
-                ->findTranslation($translation->getOriginal(), $locale->getId());
+                ->findTranslation($translation->getTag(), $locale->getId());
 
             $fieldValue = '';
             if ($fieldTranslation && !empty($fieldTranslation->getTranslation())) $fieldValue = $fieldTranslation->getTranslation();
@@ -167,16 +167,16 @@ class AppTranslationController extends Controller
                 $fieldTranslation = $this->getDoctrine()
                     ->getRepository(AppTranslation::class)
                     ->find($id);
-                $original = $fieldTranslation->getOriginal();
+                $tag = $fieldTranslation->getTag();
             } else {
-                $original = $formData['original'];
+                $tag = $formData['tag'];
             }
 
             foreach($locales as $locale) {
 
                 $fieldTranslation = $this->getDoctrine()
                     ->getRepository(AppTranslation::class)
-                    ->findTranslation($translation->getOriginal(), $locale->getId());
+                    ->findTranslation($translation->getTag(), $locale->getId());
 
                 if (!$fieldTranslation) {
                     $fieldTranslation = new AppTranslation();
@@ -184,14 +184,31 @@ class AppTranslationController extends Controller
 
                 $fieldId = 'translation';
                 if (empty($locale->getDefault())) $fieldId = 'translation_' . $locale->getLocale();
+                $parentId =
 
                 $fieldTranslation->setLocale($locale);
-                $fieldTranslation->setOriginal($original);
+                $fieldTranslation->setTag($tag);
                 $fieldTranslation->setTranslation($formData[$fieldId]);
 
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($fieldTranslation);
                 $em->flush();
+
+                if (!empty($locale->getDefault()) && empty($id)) $id = $fieldTranslation->getId();
+            }
+
+            foreach($locales as $locale) {
+                if (empty($locale->getDefault())) {
+                    $fieldTranslation = $this->getDoctrine()
+                        ->getRepository(AppTranslation::class)
+                        ->findTranslation($translation->getTag(), $locale->getId());
+
+                    $fieldTranslation->setParentId($id);
+
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($fieldTranslation);
+                    $em->flush();
+                }
             }
 
             $logMessage .= '<i>New data:</i><br>';
