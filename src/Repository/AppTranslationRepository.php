@@ -75,6 +75,7 @@ class AppTranslationRepository extends ServiceEntityRepository
                 $i++;
             }
         }
+        $sql .= "WHERE t1.parent_id IS NULL OR t1.parent_id = 0";
 
         $conn = $this->getEntityManager()->getConnection();
         $stmt = $conn->prepare($sql);
