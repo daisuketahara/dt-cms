@@ -309,6 +309,7 @@ class PageController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($page);
             $em->flush();
+            if (empty($id)) $id = $page->getId();
 
             $log->add('Page', $page->getId(), $logMessage, $logComment);
 
