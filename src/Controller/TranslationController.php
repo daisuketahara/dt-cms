@@ -331,7 +331,7 @@ class TranslationController extends Controller
                     foreach($locales as $locale) {
 
                         $translationDb = new Translation();
-                        $translationDb->setLocaleId($locale->getId());
+                        $translationDb->setLocaleId($locale);
                         $translationDb->setOriginal($translation['id']);
                         $translationDb->setTranslation('');
 

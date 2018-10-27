@@ -13,21 +13,11 @@
     .step-blocks > .row:last-child .step-block-text {
         padding: 7rem 1rem 4rem 1rem;
     }
+    .step-blocks > .row {
+        margin-top: -50px;
+    }
     .step-blocks > .row:first-child {
-        position: relative;
-        top: 50px;
-    }
-    .step-blocks > .row:nth-child(3) {
-        position: relative;
-        top: -50px;
-    }
-    .step-blocks > .row:nth-child(4) {
-        position: relative;
-        top: -100px;
-    }
-    .step-blocks > .row:nth-child(5) {
-        position: relative;
-        top: -150px;
+        margin-top: 0;
     }
 }
 
@@ -44,15 +34,10 @@
 }
 
 .step-block-bg {
-    height: 200px;
+    min-height: 200px;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
     border-radius: 10px;
     border: 7px solid white;
-}
-
-@media screen and (min-width: 768px) {
-    height: auto;
-    min-height: 200px;
 }

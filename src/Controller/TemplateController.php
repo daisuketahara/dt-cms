@@ -109,6 +109,7 @@ class TemplateController extends Controller
         $symlinks = array(
             'assets/js/admin.min.js' => 'public/js/admin.js',
             'assets/js/common.min.js' => 'public/js/common.js',
+            'assets/js/contact-form.min.js' => 'public/js/contact-form.js',
             'assets/js/list.min.js' => 'public/js/list.js',
             'assets/js/table.min.js' => 'public/js/table.js',
             'assets/js/main.min.js' => 'public/js/main.js',
