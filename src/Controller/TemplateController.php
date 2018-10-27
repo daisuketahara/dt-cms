@@ -84,6 +84,7 @@ class TemplateController extends Controller
             $scss->setFormatter('Leafo\\ScssPhp\\Formatter\\Crunched');
             $scss->setImportPaths(array(
                 'assets/scss/',
+                'assets/vendor/',
                 'vendor',
                 'vendor/twbs/bootstrap/scss',
                 'templates/layout/' . $template->getTag() . '/scss',
@@ -125,6 +126,7 @@ class TemplateController extends Controller
             'assets/vendor/dymo/DYMO.Label.Framework.2.0.2.js' => 'public/vendor/dymo-framework.js',
             'assets/vendor/JsBarcode.all.min.js' => 'public/vendor/JsBarcode.all.min.js',
             'assets/vendor/google-places.js' => 'public/vendor/google-places.js',
+            'assets/vendor/fontawesome/webfonts' => 'public/vendor/fontawesome/webfonts',
             'vendor/components/jquery/jquery.min.js' => 'public/vendor/jquery/jquery.min.js',
             'vendor/components/jquery/jquery.min.map' => 'public/vendor/jquery/jquery.min.map',
             'vendor/twbs/bootstrap/dist/js/bootstrap.min.js' => 'public/vendor/bootstrap/bootstrap.min.js',
@@ -134,21 +136,6 @@ class TemplateController extends Controller
             'vendor/summernote/summernote/dist' => 'public/vendor/summernote',
             'vendor/moment/moment/min' => 'public/vendor/moment',
             'vendor/nnnick/chartjs/dist' => 'public/vendor/chartjs',
-            'vendor/components/font-awesome/webfonts/fa-brands-400.eot' => 'public/vendor/font-awesome/fonts/fa-brands-400.eot',
-            'vendor/components/font-awesome/webfonts/fa-brands-400.svg' => 'public/vendor/font-awesome/fonts/fa-brands-400.svg',
-            'vendor/components/font-awesome/webfonts/fa-brands-400.ttf' => 'public/vendor/font-awesome/fonts/fa-brands-400.ttf',
-            'vendor/components/font-awesome/webfonts/fa-brands-400.woff' => 'public/vendor/font-awesome/fonts/fa-brands-400.woff',
-            'vendor/components/font-awesome/webfonts/fa-brands-400.woff2' => 'public/vendor/font-awesome/fonts/fa-brands-400.woff2',
-            'vendor/components/font-awesome/webfonts/fa-regular-400.eot' => 'public/vendor/font-awesome/fonts/fa-regular-400.eot',
-            'vendor/components/font-awesome/webfonts/fa-regular-400.svg' => 'public/vendor/font-awesome/fonts/fa-regular-400.svg',
-            'vendor/components/font-awesome/webfonts/fa-regular-400.ttf' => 'public/vendor/font-awesome/fonts/fa-regular-400.ttf',
-            'vendor/components/font-awesome/webfonts/fa-regular-400.woff' => 'public/vendor/font-awesome/fonts/fa-regular-400.woff',
-            'vendor/components/font-awesome/webfonts/fa-regular-400.woff2' => 'public/vendor/font-awesome/fonts/fa-regular-400.woff2',
-            'vendor/components/font-awesome/webfonts/fa-solid-900.eot' => 'public/vendor/font-awesome/fonts/fa-solid-900.eot',
-            'vendor/components/font-awesome/webfonts/fa-solid-900.svg' => 'public/vendor/font-awesome/fonts/fa-solid-900.svg',
-            'vendor/components/font-awesome/webfonts/fa-solid-900.ttf' => 'public/vendor/font-awesome/fonts/fa-solid-900.ttf',
-            'vendor/components/font-awesome/webfonts/fa-solid-900.woff' => 'public/vendor/font-awesome/fonts/fa-solid-900.woff',
-            'vendor/components/font-awesome/webfonts/fa-solid-900.woff2' => 'public/vendor/font-awesome/fonts/fa-solid-900.woff2',
         );
 
         if ($fileSystem->exists('public/js')) $fileSystem->mkdir('public/js', 0644);
