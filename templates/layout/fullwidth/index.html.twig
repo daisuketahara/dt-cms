@@ -82,5 +82,5 @@
 
 {% block tracking %}
     {% set trackingCode = settingservice.getSetting('site.tracking') %}
-    {{trackingCode}}
+    {{trackingCode|raw}}
 {% endblock %}
