@@ -33,20 +33,10 @@
 
         <meta name="twitter:card" content="summary">
 {% endblock %}
-{% block stylesheets %}
-        <style>
-            .page-loading { position: fixed; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); z-index: 9999; color: white; }
-            .page-loading-text { height: 100%; padding-top: 22%; margin: 0 auto; text-align: center; font-size: 1.6rem; letter-spacing: 0.1rem; line-height: 2rem; color: white;}
-        </style>
-{% endblock %}
+{% block stylesheets %}{% endblock %}
         <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
     </head>
     <body>
-        <div class="page-loading">
-            <div class="page-loading-text">
-                <i class="fas fa-spinner animated rotateIn infinite"></i> LOADING...
-            </div>
-        </div>
 {% block body %}{% endblock %}
         <div class="modal fade" id="dt-modal" tabindex="-1" role="dialog" aria-labelledby="dt-modal" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -71,24 +61,6 @@
         <script src="{{ asset('vendor/moment/moment.min.js') }}"></script>
         <script src="{{ asset('vendor/bootstrap/bootstrap.min.js') }}"></script>
         <script>
-
-            jQuery(document).ready(function () {
-
-                //setTimeout(function() {
-                    jQuery('.page-loading').fadeOut(400);
-                //}, 300);
-
-                jQuery(document).on('click', 'a', function(e) {
-                    var href = jQuery(this).attr('href');
-                    var disable = jQuery(this).data('disable-loader');
-                    if (href != '' && href != undefined && href.indexOf('#') != 0 && disable != 1) {
-                        e.preventDefault();
-                        jQuery('.page-loading').fadeIn(100, function() {
-                            window.location.href = href;
-                        });
-                    }
-                });
-            });
 
             var translations = {
                 'Close': '{% trans %}Close{% endtrans %}',

@@ -4,9 +4,10 @@ twig:
     strict_variables: '%kernel.debug%'
     globals:
         blockservice: '@App\Service\BlockService'
+        fileservice: '@App\Service\FileService'
+        localeservice: '@App\Service\LocaleService'
         menuservice: '@App\Service\MenuService'
         settingservice: '@App\Service\SettingService'
-        fileservice: '@App\Service\FileService'
         templateservice: '@App\Service\TemplateService'
         permissionservice: '@App\Service\UserPermissionService'
     form_themes: ['bootstrap_4_layout.html.twig']

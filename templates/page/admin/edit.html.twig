@@ -254,8 +254,9 @@
          		syntax: "css",
          		toolbar: "undo, redo",
          		syntax_selection_allow: "css",
-         		min_height: 300,
-         		show_line_colors: true
+         		min_height: 400,
+         		show_line_colors: true,
+                replace_tab_by_spaces: 4
          	});
         });
         $('#custom-css-collapse').on('hidden.bs.collapse', function () {
@@ -269,8 +270,9 @@
                 syntax: "js",
                 toolbar: "undo, redo",
                 syntax_selection_allow: "js",
-                min_height: 300,
-                show_line_colors: true
+                min_height: 400,
+                show_line_colors: true,
+                replace_tab_by_spaces: 4
             });
         });
         $('#custom-js-collapse').on('hidden.bs.collapse', function () {
@@ -312,7 +314,8 @@
                 toolbar: "undo, redo",
     			syntax: "html",
     			min_height: 350,
-         		show_line_colors: true
+         		show_line_colors: true,
+                replace_tab_by_spaces: 4
     		});
         }
         function disableHtmlEditor() {

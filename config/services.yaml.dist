@@ -35,6 +35,9 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
+    App\EventListener\LocaleSubscriber:
+        arguments: ['%kernel.default_locale%']
+
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
     App\Controller\:
@@ -42,31 +45,16 @@ services:
         tags: ['controller.service_arguments']
 
     # inject dependencies into services
-    App\Service\FileService:
-        arguments:
-            $em: '@doctrine.orm.entity_manager'
-
-    App\Service\UserPermissionService:
-        arguments:
-            $em: '@doctrine.orm.entity_manager'
 
     App\Service\BlockService:
         arguments:
             $em: '@doctrine.orm.entity_manager'
 
-    App\Service\MenuService:
+    App\Service\FileService:
         arguments:
             $em: '@doctrine.orm.entity_manager'
 
-    App\Service\SettingService:
-        arguments:
-            $em: '@doctrine.orm.entity_manager'
-
-    App\Service\TemplateService:
-        arguments:
-            $em: '@doctrine.orm.entity_manager'
-
-    App\Service\RedirectService:
+    App\Service\LocaleService:
         arguments:
             $em: '@doctrine.orm.entity_manager'
 
@@ -79,10 +67,34 @@ services:
         arguments:
             $em: '@doctrine.orm.entity_manager'
 
+    App\Service\MenuService:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'
+
+    App\Service\RedirectService:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'
+
+    App\Service\SettingService:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'
+
+    App\Service\TemplateService:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'
+
+    App\Service\UserPermissionService:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'
+
+    # inject dependencies into routing
+
     App\Routing\ExtraLoader:
         arguments:
             $em: '@doctrine.orm.entity_manager'
         tags: [routing.loader]
+
+    # inject dependencies into security
 
     App\Security\ApiKeyUserProvider:
         arguments:

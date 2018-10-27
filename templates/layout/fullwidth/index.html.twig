@@ -18,19 +18,27 @@
                 {% set submenu = menuservice.getSubMenu(menuItem.id) %}
                 <li class="nav-item">
                     <a href="/{{menuItem.route}}" class="nav-link">
-                    {{menuItem.label | raw}}
+                    {{menuItem.label|raw}}
                     {% if submenu is not empty %}<i class="fas fa-angle-down"></i>{% endif %}
                     </a>
                 {% set submenu = menuservice.getSubMenu(menuItem.id) %}
                 {% if submenu is not empty %}
                     <ul>
                         {% for subMenuItem in submenu %}
-                        <li><a href="/{{subMenuItem.route}}">{{subMenuItem.label | raw}}</a></li>
+                        <li><a href="/{{subMenuItem.route}}">{{subMenuItem.label|raw}}</a></li>
                         {% endfor %}
                     </ul>
                 {% endif %}
                 </li>
             {% endfor %}
+            {% set activeLocales = localeservice.getActiveLocales() %}
+            {% if activeLocales is not empty %}
+                {% for activeLocale in activeLocales %}
+                <li>
+                    <a href="{% if activeLocale.default is not empty %}/{% else %}/{{activeLocale.locale}}/{% endif %}" class="nav-link">[{{activeLocale.isoCode}}]</a>
+                </li>
+                {% endfor %}
+            {% endif %}
             </ul>
         </div>
     </nav>

@@ -37,6 +37,11 @@ class MenuItems
     protected $label;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Page")
+     */
+    protected $page;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     protected $route;
@@ -177,6 +182,30 @@ class MenuItems
     public function setLabel($label)
     {
         $this->label = $label;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Page
+     *
+     * @return mixed
+     */
+    public function getPage()
+    {
+        return $this->page;
+    }
+
+    /**
+     * Set the value of Page
+     *
+     * @param mixed page
+     *
+     * @return self
+     */
+    public function setPage($page)
+    {
+        $this->page = $page;
 
         return $this;
     }

@@ -1,0 +1,72 @@
+#schema {
+    text-align: center;
+}
+.review-item {
+    display: inline-block;
+    width: 100%;
+    padding: 1.6rem 2rem;
+}
+@media screen and (min-width: 768px) {
+    .review-item {
+        width: 50%;
+    }
+}
+@media screen and (min-width: 992px) {
+    .review-item {
+        width: 25%;
+    }
+}
+
+.review-author {
+    display: block;
+    text-align: center;
+    font-size: 1.4rem;
+}
+.review-author span {
+    font-size: 0.7rem;
+    display: block;
+}
+
+.review-text {
+    font-size: 0.7rem;
+    display: block;
+    height: 120px;
+    overflow: hidden;
+    text-align: left;
+}
+@media screen and (min-width: 768px) {
+    .review-text {
+        height: 120px;
+    }
+}
+@media screen and (min-width: 992px) {
+    .review-text {
+        height: 185px;
+    }
+}
+
+.review-stars ul {
+    display: block;
+    list-style: none;
+    text-align: center;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+.review-stars ul li {
+    display: inline-block;
+    margin-left: 2px;
+    margin-right: 2px;
+}
+
+.review-stars ul li i {
+    color: #E4B248;
+    font-size: 1.4rem;
+    font-style: normal;
+}
+.review-stars ul li i.inactive {
+    color: #c6c6c6;
+}
+.star:after {
+    content: "\2605";
+}

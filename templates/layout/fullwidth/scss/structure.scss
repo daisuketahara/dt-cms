@@ -16,6 +16,13 @@ html {
             }
     }
 }
+.navbar-expand-md .navbar-nav .nav-link {
+    padding-right: 0.8rem;
+    padding-left: 0/8rem;
+}
+.navbar-expand-md .navbar-nav .nav-link:hover {
+    color: #4fc4e8;
+}
 
 .main-content {
     height: 100%;
