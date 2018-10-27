@@ -79,3 +79,8 @@
 {% block javascripts %}
 {{ parent() }}
 {% endblock %}
+
+{% block tracking %}
+    {% set trackingCode = settingservice.getSetting('site.tracking') %}
+    {{trackingCode}}
+{% endblock %}
