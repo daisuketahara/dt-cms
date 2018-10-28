@@ -1,0 +1,51 @@
+{% extends "layout/index.html.twig" %}
+
+{% block stylesheets %}
+{{ parent() }}
+<link href="{{ asset('css/no-design.css') }}" rel="stylesheet">
+<link rel="shortcut icon" href="{{ asset('favicon.png') }}" type="image/png">
+{% endblock %}
+
+{% block body %}
+    <main class="main-content">
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-dismissible alert-danger">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('notice') %}
+            <div class="alert alert-dismissible alert-info">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-dismissible alert-success">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+        {% block content %}{% endblock %}
+    </main>
+    {{ templateservice.getFooter()|raw }}
+    <footer class="container-fluid font-12">
+            &copy; {{ "now"|date('Y') }} {{settingservice.getSetting('company.name')}}.
+            {% trans %}All rights reserved.{% endtrans %}
+    </footer>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+{% endblock %}
+
+{% block tracking %}
+    {% set trackingCode = settingservice.getSetting('site.tracking') %}
+    {{trackingCode|raw}}
+{% endblock %}
