@@ -544,7 +544,7 @@ class PageController extends Controller
                         }
                     }
                 }
-                $xml .= '</url' . PHP_EOL;
+                $xml .= '</url>' . PHP_EOL;
             }
         }
         $xml .= '</urlset>';
