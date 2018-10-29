@@ -79,6 +79,11 @@ class Page
     protected $status = 0;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    protected $pageWeight = 0;
+
+    /**
      * @ORM\Column(type="string", length=20, nullable=true)
      */
     protected $pageWidth;
@@ -102,6 +107,11 @@ class Page
      * @ORM\Column(type="text", nullable=true)
      */
     protected $customJs;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    protected $lastModified;
 
     /**
      * Get the value of Id
@@ -416,6 +426,30 @@ class Page
     }
 
     /**
+     * Get the value of Page Weight
+     *
+     * @return mixed
+     */
+    public function getPageWeight()
+    {
+        return $this->pageWeight;
+    }
+
+    /**
+     * Set the value of Page Weight
+     *
+     * @param mixed pageWeight
+     *
+     * @return self
+     */
+    public function setPageWeight($pageWeight)
+    {
+        $this->pageWeight = $pageWeight;
+
+        return $this;
+    }
+
+    /**
      * Get the value of Page Width
      *
      * @return mixed
@@ -531,6 +565,30 @@ class Page
     public function setCustomJs($customJs)
     {
         $this->customJs = $customJs;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Last Modified
+     *
+     * @return mixed
+     */
+    public function getLastModified()
+    {
+        return $this->lastModified;
+    }
+
+    /**
+     * Set the value of Last Modified
+     *
+     * @param mixed lastModified
+     *
+     * @return self
+     */
+    public function setLastModified($lastModified)
+    {
+        $this->lastModified = $lastModified;
 
         return $this;
     }

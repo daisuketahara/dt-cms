@@ -24,6 +24,7 @@ use App\Entity\Locale;
 use App\Entity\Page;
 use App\Entity\Permission;
 use App\Entity\PermissionGroup;
+use App\Entity\Setting;
 use App\Entity\Role;
 use App\Entity\RolePermission;
 use App\Service\LogService;
@@ -268,11 +269,13 @@ class PageController extends Controller
                 else $pageDefault->setExpireDate(NULL);
 
                 $pageDefault->setStatus($request->request->get('page-status', 1));
+                $pageDefault->setPageWeight($request->request->get('page-weight', 1));
                 $pageDefault->setPageWidth($request->request->get('page-width', ''));
                 $pageDefault->setDisableLayout($request->request->get('disable-layout', 0));
 
                 $pageDefault->setCustomCss($request->request->get('custom-css', ''));
                 $pageDefault->setCustomJs($request->request->get('custom-js', ''));
+                $pageDefault->setLastModified(new \DateTime());
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($pageDefault);
                 $em->flush();
@@ -297,11 +300,13 @@ class PageController extends Controller
             else $page->setExpireDate(NULL);
 
             $page->setStatus($request->request->get('page-status', 1));
+            $page->setPageWeight($request->request->get('page-weight', 1));
             $page->setPageWidth($request->request->get('page-width', ''));
             $page->setDisableLayout($request->request->get('disable-layout', 0));
 
             $page->setCustomCss($request->request->get('custom-css', ''));
             $page->setCustomJs($request->request->get('custom-js', ''));
+            $page->setLastModified(new \DateTime());
 
             $logMessage .= '<i>New data:</i><br>';
             $logMessage .= $serializer->serialize($page, 'json');
@@ -429,6 +434,7 @@ class PageController extends Controller
             'locale' => $locale,
             'url_locale' => $urlLocale,
             'page_width' => $page->getPageWidth(),
+            'page_weight' => $page->getPageWeight(),
             'disable_layout' => $page->getDisableLayout(),
             'authorization' => '',
             'main_image' => $page->getMainImage(),
@@ -479,5 +485,76 @@ class PageController extends Controller
     public function accessDenied(Request $request)
     {
         return $this->render('page/401.html.twig');
+    }
+
+    /**
+     * @Route("/cron/generate-sitemap/", name="page_generate_sitemap"))
+     */
+    public function generateSitemap(Request $request)
+    {
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">' . PHP_EOL;
+
+        $defaultLocale = $this->getDoctrine()
+            ->getRepository(Locale::class)
+            ->findBy(array('default' => true));
+
+        $locales = $this->getDoctrine()
+            ->getRepository(Locale::class)
+            ->findAll();
+
+        $pages = $this->getDoctrine()
+            ->getRepository(Page::class)
+            ->findBy(array('status' => 1, 'locale' => $defaultLocale));
+
+        $setting = $this->getDoctrine()
+            ->getRepository(Setting::class)
+            ->findOneBy(array('settingKey' => 'site.url'));
+        $domain = $setting->getSettingValue();
+
+        if ($pages) {
+            foreach($pages as $page) {
+
+                $pageRoute = $page->getPageRoute();
+                if (!empty($pageRoute)) $pageRoute .= '/';
+
+                $xml .= '<url>' . PHP_EOL;
+                $xml .= '<loc>' . $domain . '/' . $pageRoute . '</loc>' . PHP_EOL;
+                $xml .= '<lastmod>' . $page->getLastModified()->format('Y-m-d') . '</lastmod>' . PHP_EOL;
+                $xml .= '<changefreq>monthly</changefreq>' . PHP_EOL;
+                $xml .= '<priority>' . round(($page->getPageWeight()/10),1) . '</priority>' . PHP_EOL;
+
+                if ($locales) {
+                    foreach($locales as $locale) {
+
+                        if (empty($locale->getDefault())) {
+
+                            $translatedPage = $this->getDoctrine()
+                                ->getRepository(Page::class)
+                                ->findOneBy(array('defaultId' => $page->getId(), 'status' => 1, 'locale' => $locale));
+
+                            if ($translatedPage) {
+                                $translatedPageRoute = $translatedPage->getPageRoute();
+                                if (!empty($pageRoute)) $translatedPageRoute .= '/';
+                                $xml .= '<xhtml:link rel="alternate" hreflang="' . $locale->getLocale() . '" href="' . $domain . '/' . $locale->getLocale()  . '/' . $translatedPageRoute . '"/>' . PHP_EOL;
+                            }
+
+                        } else {
+                            $xml .= '<xhtml:link rel="alternate" hreflang="' . $locale->getLocale() . '" href="' . $domain . '/' . $pageRoute . '"/>' . PHP_EOL;
+                        }
+                    }
+                }
+                $xml .= '</url' . PHP_EOL;
+            }
+        }
+        $xml .= '</urlset>';
+
+        if (file_exists('public/sitemap.xml')) unlink('public/sitemap.xml');
+		$sitemap = fopen('public/sitemap.xml', 'w');
+		fwrite($sitemap, $xml);
+		fclose($sitemap);
+
+        echo '1';
+        exit;
     }
 }

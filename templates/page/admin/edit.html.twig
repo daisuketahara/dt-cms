@@ -153,8 +153,19 @@
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label>{% trans %}Authorization{% endtrans %}</label>
-                                <input type="text" name="authorization" class="form-control">
+                                <label for="page-weight">{% trans %}Page Weight{% endtrans %}</label>
+                                <select id="page-weight" name="page-weight" class="form-control">
+                                    <option value="10"{% if page_weight == '10' %} selected="selected"{% endif %}>1.0</option>
+                                    <option value="9"{% if page_weight == '9' %} selected="selected"{% endif %}>0.9</option>
+                                    <option value="8"{% if page_weight == '8' %} selected="selected"{% endif %}>0.8</option>
+                                    <option value="7"{% if page_weight == '7' %} selected="selected"{% endif %}>0.7</option>
+                                    <option value="6"{% if page_weight == '6' %} selected="selected"{% endif %}>0.6</option>
+                                    <option value="5"{% if page_weight == '5' %} selected="selected"{% endif %}>0.5</option>
+                                    <option value="4"{% if page_weight == '4' %} selected="selected"{% endif %}>0.4</option>
+                                    <option value="3"{% if page_weight == '3' %} selected="selected"{% endif %}>0.3</option>
+                                    <option value="2"{% if page_weight == '2' %} selected="selected"{% endif %}>0.2</option>
+                                    <option value="1"{% if page_weight == '1' %} selected="selected"{% endif %}>0.1</option>
+                                </select>
                             </div>
                         </div>
                     </div>
