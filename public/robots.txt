@@ -1,5 +1,4 @@
 User-agent: *
 Disallow: /files/
-Disallow: /vendor/
 Disallow: /install.php
 Disallow: /check.php
