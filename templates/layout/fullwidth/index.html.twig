@@ -69,7 +69,7 @@
         {% endfor %}
         {% block content %}{% endblock %}
     </main>
-    {{ templateservice.getFooter()|raw }}
+    {{blockservice.getBlock('footer')|raw}}
     <footer class="container-fluid font-12">
             &copy; {{ "now"|date('Y') }} {{settingservice.getSetting('company.name')}}.
             {% trans %}All rights reserved.{% endtrans %}

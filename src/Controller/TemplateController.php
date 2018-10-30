@@ -45,7 +45,6 @@ class TemplateController extends Controller
 
         if ($request->isMethod('POST')) {
 
-            $template->setFooter($request->request->get('template-footer', ''));
             $template->setCustomCss($request->request->get('custom-css', ''));
             $template->setCustomJs($request->request->get('custom-js', ''));
 
@@ -62,7 +61,6 @@ class TemplateController extends Controller
         return $this->render('template/admin/edit.html.twig', array(
             'page_title' => $translator->trans('Edit template'),
             'templateId' => $template->getId(),
-            'template_footer' => $template->getFooter(),
             'custom_css' => $template->getCustomCss(),
             'custom_js' => $template->getCustomJs(),
         ));

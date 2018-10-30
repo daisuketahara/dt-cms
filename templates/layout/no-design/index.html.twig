@@ -34,7 +34,7 @@
         {% endfor %}
         {% block content %}{% endblock %}
     </main>
-    {{ templateservice.getFooter()|raw }}
+    {{blockservice.getBlock('error-404')|raw}}
     <footer class="container-fluid font-12">
             &copy; {{ "now"|date('Y') }} {{settingservice.getSetting('company.name')}}.
             {% trans %}All rights reserved.{% endtrans %}

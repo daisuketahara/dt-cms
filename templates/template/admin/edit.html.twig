@@ -8,11 +8,6 @@
 {% block content %}
 
 <form action="" method="post">
-
-    <div class="form-group">
-        <label for="template-footer">{% trans %}Footer{% endtrans %}</label>
-        <textarea id="template-footer" name="template-footer" class="form-control">{{template_footer}}</textarea>
-    </div>
     <div class="form-group">
         <label for="custom-css">{% trans %}Custom CSS{% endtrans %}</label>
         <textarea id="custom-css" name="custom-css" class="form-control">{{custom_css}}</textarea>
@@ -29,16 +24,6 @@
 
     jQuery(document).ready(function() {
 
-     	editAreaLoader.init({
-     		id: "template-footer",
-     		allow_toggle: true,
-     		language: "en",
-     		syntax: "html",
-     		toolbar: "undo, redo",
-     		syntax_selection_allow: "css",
-     		min_height: 300,
-     		show_line_colors: true,
-     	});
      	editAreaLoader.init({
      		id: "custom-css",
      		allow_toggle: true,

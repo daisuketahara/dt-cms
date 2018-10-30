@@ -2,27 +2,35 @@
 
 namespace App\Service;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Doctrine\ORM\EntityManager;
+
 use App\Entity\Block;
+use App\Entity\Locale;
 
 class BlockService
 {
     protected $em;
-    protected $container;
+    protected $requestStack;
 
-    public function __construct(EntityManager $em, ContainerInterface $container)
+    public function __construct(EntityManager $em, RequestStack $requestStack)
     {
         $this->em = $em;
-        $this->container = $container;
+        $this->requestStack = $requestStack;
     }
 
     public function getBlock($key)
     {
-        $block = $this->em->getRepository(Block::class)
-            ->findBy(array('tag' => $key), array());
+        $localeTag = $this->requestStack->getCurrentRequest()->getLocale();
+        error_log($localeTag);
+        $locale = $this->em->getRepository(Locale::class)
+            ->findOneBy(array('locale' => $localeTag), array());
 
-        if (!empty($block)) return html_entity_decode($block[0]->getContent());
+        $block = $this->em->getRepository(Block::class)
+            ->findOneBy(array('tag' => $key, 'locale' => $locale), array());
+
+        if (!empty($block)) return html_entity_decode($block->getContent());
         return false;
     }
 }

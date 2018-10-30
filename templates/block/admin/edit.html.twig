@@ -33,17 +33,8 @@
     <script src="{{ asset('vendor/edit_area/edit_area_full.js') }}"></script>
     <script>
 
-        jQuery('#mail-body').summernote({
-            minHeight: 400,
-            toolbar: [
-            // [groupName, [list of button]]
-                ['style', ['bold', 'italic', 'underline', 'clear']],
-                ['font', ['strikethrough', 'superscript', 'subscript']],
-                ['fontsize', ['fontsize']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-            ['height', ['height']]
-            ]
+        jQuery('#block-content').summernote({
+            minHeight: 400
         });
     </script>
 {% endblock %}
