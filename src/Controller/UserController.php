@@ -16,6 +16,7 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use App\Entity\User;
 use App\Entity\UserInformation;
 use App\Entity\UserNote;
+use App\Entity\Locale;
 use App\Entity\Role;
 use App\Entity\Permission;
 use App\Entity\UserRole;
@@ -150,10 +151,17 @@ class UserController extends Controller
 
         if ($request->isMethod('POST')) {
 
+
+            $localeId = $request->request->get('user-locale', '');
+            $locale = $this->getDoctrine()
+                ->getRepository(Locale::class)
+                ->find($localeId);
+
             $user->setFirstname($request->request->get('firstname', ''));
             $user->setLastname($request->request->get('lastname', ''));
             $user->setEmail($request->request->get('email', ''));
             $user->setPhone($request->request->get('phone', ''));
+            $user->setLocale($locale);
             $user->setEmailConfirmed($request->request->get('emailConfirmed', false));
             $user->setPhoneConfirmed($request->request->get('phoneConfirmed', false));
             $user->setActive($request->request->get('active', false));
@@ -218,6 +226,7 @@ class UserController extends Controller
 
             $formPermissions = $request->request->get('form_permission', '');
 
+            if (!empty($formPermissions))
             foreach($formPermissions as $formPermission => $permissionId) {
                 $userPermission = new UserPermission();
                 $userPermission->setUserId($id);
@@ -237,6 +246,7 @@ class UserController extends Controller
 
             $formRoles = $request->request->get('form_role', '');
 
+            if (!empty($formRoles))
             foreach($formRoles as $formRole => $roleId) {
                 $userRole = new UserRole();
                 $userRole->setUserId($id);
@@ -259,6 +269,10 @@ class UserController extends Controller
 
         $roles = $this->getDoctrine()
             ->getRepository(Role::class)
+            ->findAll();
+
+        $locales = $this->getDoctrine()
+            ->getRepository(Locale::class)
             ->findAll();
 
         $setRoles = $this->getDoctrine()
@@ -284,6 +298,8 @@ class UserController extends Controller
             'lastname' => $user->getLastname(),
             'email' => $user->getEmail(),
             'phone' => $user->getPhone(),
+            'locale_id' => $user->getLocale()->getId(),
+            'locales' => $locales,
             'password' => 'passwordnotchanged',
             'email_confirmed' => $user->getEmailConfirmed(),
             'phone_confirmed' => $user->getPhoneConfirmed(),

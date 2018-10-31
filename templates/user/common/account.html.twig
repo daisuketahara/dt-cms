@@ -35,6 +35,18 @@
             <input id="password_confirm" name="password-confirm" class="form-control" type="password" value="{{password}}">
         </div>
     </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label class="form-control-label" for="user-locale">{% trans %}Language{% endtrans %}</label>
+            <select name="user-locale" class="user-locale form-control">
+                {% if locales %}
+                {% for locale in locales %}
+                <option value="{{locale.id}}"{% if locale_id == locale.id %} selected="selected"{% endif %}>{{locale.name}}</option>
+                {% endfor %}
+                {% endif %}
+            </select>
+        </div>
+    </div>
 </div>
 <div class="form-group mb-4">
     <h4>{% trans %}User roles{% endtrans %}</h4>

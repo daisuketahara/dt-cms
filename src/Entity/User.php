@@ -47,6 +47,11 @@ class User implements AdvancedUserInterface, \Serializable
     private $phone;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Locale")
+     */
+    protected $locale;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     private $emailConfirmed = false;
@@ -204,6 +209,30 @@ class User implements AdvancedUserInterface, \Serializable
     public function setPhone($phone)
     {
         $this->phone = $phone;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Locale
+     *
+     * @return mixed
+     */
+    public function getLocale()
+    {
+        return $this->locale;
+    }
+
+    /**
+     * Set the value of Locale
+     *
+     * @param mixed locale
+     *
+     * @return self
+     */
+    public function setLocale($locale)
+    {
+        $this->locale = $locale;
 
         return $this;
     }
