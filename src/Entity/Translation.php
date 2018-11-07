@@ -77,7 +77,7 @@ class Translation
      *
      * @return self
      */
-    public function setLocaleId($locale)
+    public function setLocale($locale)
     {
         $this->locale = $locale;
 

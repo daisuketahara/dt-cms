@@ -315,6 +315,7 @@ class MailController extends Controller
                     ->findOneBy(array('locale' => $localeSlugDefault));
                 $templateDefault = new MailTemplate();
 
+                $templateDefault->setLocale($localeDefault);
                 $templateDefault->setName($request->request->get('mail-name', ''));
                 $templateDefault->setSubject($request->request->get('mail-subject', ''));
                 $templateDefault->setBody($request->request->get('mail-body', ''));
@@ -322,10 +323,11 @@ class MailController extends Controller
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($templateDefault);
                 $em->flush();
-                $id = $pageDefault->getId();
+                $id = $templateDefault->getId();
                 $template->setDefaultId($id);
             }
 
+            $template->setLocale($locale);
             $template->setName($request->request->get('mail-name', ''));
             $template->setSubject($request->request->get('mail-subject', ''));
             $template->setBody($request->request->get('mail-body', ''));
