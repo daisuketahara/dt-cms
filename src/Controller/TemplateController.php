@@ -120,6 +120,7 @@ class TemplateController extends Controller
             'assets/js/usability.min.js' => 'public/js/usability.js',
             'assets/vendor/popper.min.js' => 'public/vendor/popper.min.js',
             'assets/vendor/edit_area' => 'public/vendor/edit_area',
+            'assets/vendor/onsen-ui' => 'public/vendor/onsen-ui',
             'assets/vendor/datetimepicker/build' => 'public/vendor/datetimepicker',
             'assets/vendor/signature_pad/docs/js/signature_pad.umd.js' => 'public/vendor/signature-pad/signature-pad.js',
             'assets/vendor/dymo/DYMO.Label.Framework.2.0.2.js' => 'public/vendor/dymo-framework.js',
