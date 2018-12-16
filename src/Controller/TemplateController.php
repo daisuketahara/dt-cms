@@ -106,6 +106,7 @@ class TemplateController extends Controller
         // Create symlinks
         // https://symfony.com/doc/current/components/filesystem.html
         $symlinks = array(
+            'assets/js/app.min.js' => 'public/js/app.js',
             'assets/js/admin.min.js' => 'public/js/admin.js',
             'assets/js/common.min.js' => 'public/js/common.js',
             'assets/js/contact-form.min.js' => 'public/js/contact-form.js',
