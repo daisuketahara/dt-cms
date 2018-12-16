@@ -129,6 +129,7 @@ class TemplateController extends Controller
             'assets/vendor/fontawesome/webfonts' => 'public/vendor/fontawesome/webfonts',
             'vendor/components/jquery/jquery.min.js' => 'public/vendor/jquery/jquery.min.js',
             'vendor/components/jquery/jquery.min.map' => 'public/vendor/jquery/jquery.min.map',
+            'vendor/daneden/animate.css/animate.min.css' => 'public/vendor/animate.min.css',
             'vendor/twbs/bootstrap/dist/js/bootstrap.min.js' => 'public/vendor/bootstrap/bootstrap.min.js',
             'vendor/twbs/bootstrap/dist/js/bootstrap.min.js.map' => 'public/vendor/bootstrap/bootstrap.min.js.map',
             'vendor/bassjobsen/bootstrap-3-typeahead/bootstrap3-typeahead.min.js' => 'public/vendor/typeahead/bootstrap3-typeahead.min.js',
