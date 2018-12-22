@@ -17,11 +17,6 @@ class UserInformation
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $userId;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     protected $companyName;
@@ -91,7 +86,6 @@ class UserInformation
      */
     protected $billingCountry;
 
-
     /**
      * Get the value of Id
      *
@@ -112,30 +106,6 @@ class UserInformation
     public function setId($id)
     {
         $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of User Id
-     *
-     * @return mixed
-     */
-    public function getUserId()
-    {
-        return $this->userId;
-    }
-
-    /**
-     * Set the value of User Id
-     *
-     * @param mixed userId
-     *
-     * @return self
-     */
-    public function setUserId($userId)
-    {
-        $this->userId = $userId;
 
         return $this;
     }

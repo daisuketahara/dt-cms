@@ -18,4 +18,18 @@ class RoleRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Role::class);
     }
+
+    public function findByRolesByPermissionId($permission_id)
+    {
+        $sql = "SELECT r.id FROM role_permission AS rp ";
+        $sql .= "LEFT JOIN role AS r ON rp.role_id=r.id ";
+        $sql .= "WHERE rp.permission_id=" . $permission_id;
+
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        //$stmt->execute(['price' => 10]);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
 }

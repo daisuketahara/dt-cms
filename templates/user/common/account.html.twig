@@ -58,8 +58,8 @@
                 <label class="form-check-label">
                     {% set checked = '' %}
                     {% if roles_set %}
-                        {% for roles_set_item in roles_set %}
-                            {% if role.id == roles_set_item.roleId %}
+                        {% for role_set in roles_set %}
+                            {% if role.id == role_set.id %}
                                 {% set checked = ' checked="checked"' %}
                             {% endif %}
                         {% endfor %}

@@ -27,6 +27,11 @@ class Role
     protected $description;
 
     /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Permission")
+     */
+    protected $permissions;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     protected $active;
@@ -101,6 +106,52 @@ class Role
         $this->description = $description;
 
         return $this;
+    }
+
+    /**
+     * Get the value of Permissions
+     *
+     * @return mixed
+     */
+    public function getPermissions()
+    {
+        return $this->permissions;
+    }
+
+    /**
+     * Set the value of Permissions
+     *
+     * @param mixed permissions
+     *
+     * @return self
+     */
+    public function setPermissions($permissions)
+    {
+        $this->permissions = $permissions;
+
+        return $this;
+    }
+
+    /**
+     * @param Permission $permission
+     */
+    public function addPermission(Permission $permission)
+    {
+        if ($this->permissions->contains($permission)) {
+            return;
+        }
+        $this->permissions->add($permission);
+    }
+
+    /**
+     * @param Permission $permission
+     */
+    public function removePermission(Permission $permission)
+    {
+        if (!$this->permissions->contains($permission)) {
+            return;
+        }
+        $this->permissions->removeElement($permission);
     }
 
     /**

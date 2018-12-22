@@ -145,25 +145,25 @@ class RoleController extends Controller
             $em->flush();
             $id = $role->getId();
 
-            $setPermissions = $this->getDoctrine()
-            ->getRepository(RolePermission::class)
-            ->findBy(array('roleId' => $id));
+            $setPermissions = $role->getPermissions();
 
             if ($setPermissions)
             foreach($setPermissions as $setPermission) {
-                $em->remove($setPermission);
+                $role->removePermission($setPermission);
             }
+            $em->persist($role);
             $em->flush();
 
             $formPermissions = $request->request->get('form_permission', '');
 
             if ($formPermissions)
-            foreach($formPermissions as $formPermissions => $permissionId) {
-                $rolePermission = new RolePermission();
-                $rolePermission->setRoleId($id);
-                $rolePermission->setPermissionId($permissionId);
-                $em->persist($rolePermission);
+            foreach($formPermissions as $permissionId) {
+                $permission = $this->getDoctrine()
+                ->getRepository(Permission::class)
+                ->find($permissionId);
+                if ($permission) $role->addPermission($permission);
             }
+            $em->persist($role);
             $em->flush();
 
             $log->add('Role', $id, $logMessage, $logComment);
@@ -182,10 +182,6 @@ class RoleController extends Controller
             ->getRepository(Permission::class)
             ->getPermissions();
 
-        $setPermissions = $this->getDoctrine()
-        ->getRepository(RolePermission::class)
-        ->findBy(array('roleId' => $id));
-
         return $this->render('role/admin/edit.html.twig', array(
             'form' => $form->createView(),
             'page_title' => $title,
@@ -193,7 +189,7 @@ class RoleController extends Controller
             'description' => $role->getDescription(),
             'active' => $role->getActive(),
             'permissions' => $permissions,
-            'permissions_set' => $setPermissions,
+            'permissions_set' => $role->getPermissions(),
         ));
      }
 

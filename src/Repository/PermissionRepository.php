@@ -23,7 +23,7 @@ class PermissionRepository extends ServiceEntityRepository
 
         $sql = "SELECT p.id, p.route_name, p.description, CASE WHEN pg.name IS NULL THEN 'Other' ELSE pg.name END AS `name`, CASE WHEN pg.name IS NULL THEN 1 ELSE 0 END AS `sort` ";
         $sql .= "FROM permission AS p ";
-        $sql .= "LEFT JOIN permission_group AS pg ON pg.id = p.group_id ";
+        $sql .= "LEFT JOIN permission_group AS pg ON pg.id = p.permission_group ";
         $sql .= "ORDER BY sort ASC, `name` ASC, p.route_name ASC";
 
         $conn = $this->getEntityManager()->getConnection();

@@ -15,8 +15,8 @@
                 <label class="form-check-label">
                     {% set checked = '' %}
                     {% if permissions_set %}
-                        {% for permissions_set_item in permissions_set %}
-                            {% if permission.id == permissions_set_item.permissionId %}
+                        {% for permission_set in permissions_set %}
+                            {% if permission.id == permission_set.id %}
                                 {% set checked = ' checked="checked"' %}
                             {% endif %}
                         {% endfor %}

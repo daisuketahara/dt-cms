@@ -332,46 +332,38 @@ class PageController extends Controller
                 $em->flush();
             }
 
-            $permissionGroupId = $permissionGroup->getId();
-
             // Check permission
             $permission = $this->getDoctrine()
                 ->getRepository(Permission::class)
-                ->findOneBy(array('pageId' => $page->getId()));
+                ->findOneBy(array('page' => $page));
 
             // Create permission group
             if (!$permission) $permission = new Permission();
 
             $permission->setRouteName('page_' . strtolower(str_replace('/', '_', $page->getPageRoute())));
             $permission->setDescription($page->getPageTitle());
-            $permission->setGroupId($permissionGroupId);
-            $permission->setPageId($page->getId());
+            $permission->setPermissionGroup($permissionGroup);
+            $permission->setPage($page);
             $em = $this->getDoctrine()->getManager();
             $em->persist($permission);
             $em->flush();
 
-            $permissionId = $permission->getId();
+            $formRoles = $request->request->get('form_role', '');
+            $roles = $this->getDoctrine()
+                ->getRepository(Role::class)
+                ->findAll();
 
-            $setRoles = $this->getDoctrine()
-                ->getRepository(RolePermission::class)
-                ->findBy(array('permissionId' => $permission->getId()));
+            foreach($roles as $role) {
 
-            foreach($setRoles as $setRole) {
-                $em->remove($setRole);
+                if (!empty($formRoles) && in_array($role->getId(), $formRoles)) {
+                    $role->addPermission($permission);
+                    $em->persist($role);
+                } else {
+                    $role->removePermission($permission);
+                    $em->persist($role);
+                }
             }
             $em->flush();
-
-            $formRoles = $request->request->get('form_role', '');
-
-            if (!empty($formRoles)) {
-                foreach($formRoles as $formRole => $roleId) {
-                    $userRole = new RolePermission();
-                    $userRole->setPermissionId($permissionId);
-                    $userRole->setRoleId($roleId);
-                    $em->persist($userRole);
-                }
-                $em->flush();
-            }
 
             $this->addFlash(
                 'success',
@@ -397,7 +389,7 @@ class PageController extends Controller
 
         $permission = $this->getDoctrine()
             ->getRepository(Permission::class)
-            ->findOneBy(array('pageId' => $id));
+            ->findOneBy(array('page' => $page));
 
         $roles = $this->getDoctrine()
             ->getRepository(Role::class)
@@ -409,8 +401,8 @@ class PageController extends Controller
 
         if ($permission) {
             $setRoles = $this->getDoctrine()
-                ->getRepository(RolePermission::class)
-                ->findBy(array('permissionId' => $permission->getId()));
+                ->getRepository(Role::class)
+                ->findByRolesByPermissionId($permission->getId());
         } else {
             $setRoles = array();
         }

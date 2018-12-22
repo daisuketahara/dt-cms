@@ -44,7 +44,7 @@ class FileService extends Controller
         $uploadedFile->move($filePath . $path, $fileName);
 
         $file = new File();
-        $file->setGroupId($group);
+        //$file->setGroup($group);
         $file->setUserId(0);
         $file->setName($uploadedFile->getClientOriginalName());
         $file->setFileName($fileName);

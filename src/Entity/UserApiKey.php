@@ -17,9 +17,9 @@ class UserApiKey
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
      */
-    private $userId;
+    private $user;
 
     /**
      * @ORM\Column(type="string", length=255)

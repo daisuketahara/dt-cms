@@ -17,14 +17,14 @@ class File
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="App\Entity\FileGroup")
      */
-    protected $groupId;
+    protected $fileGroup;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\OneToOne(targetEntity="App\Entity\User")
      */
-    protected $userId;
+    protected $user;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -86,37 +86,37 @@ class File
     }
 
     /**
-     * Get the value of Group Id
+     * Get the value of File Group
      *
      * @return mixed
      */
-    public function getGroupId()
+    public function getFileGroup()
     {
-        return $this->groupId;
+        return $this->fileGroup;
     }
 
     /**
-     * Set the value of Group Id
+     * Set the value of File Group
      *
-     * @param mixed groupId
+     * @param mixed fileGroup
      *
      * @return self
      */
-    public function setGroupId($groupId)
+    public function setFileGroup($fileGroup)
     {
-        $this->groupId = $groupId;
+        $this->fileGroup = $fileGroup;
 
         return $this;
     }
 
     /**
-     * Get the value of User Id
+     * Get the value of User
      *
      * @return mixed
      */
-    public function getUserId()
+    public function getUser()
     {
-        return $this->userId;
+        return $this->user;
     }
 
     /**

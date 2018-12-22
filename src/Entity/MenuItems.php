@@ -17,9 +17,9 @@ class MenuItems
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Menu")
      */
-    protected $menuId;
+    protected $menu;
 
     /**
      * @ORM\Column(type="integer")

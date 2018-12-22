@@ -116,29 +116,17 @@ class UserController extends Controller
                 );
             } else {
                 $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $serializer->serialize($user, 'json');
+                //s$logMessage .= $serializer->serialize($user, 'json');
                 $logMessage .= '<br><br>';
                 $logComment = 'Update';
 
             }
-            $userinfo = $this->getDoctrine()
-                ->getRepository(UserInformation::class)
-                ->findOneBy(['userId' => $id]);
-            if (!$userinfo) {
-                $userinfo = new UserInformation();
-            } else {
-                $logMessage .= $serializer->serialize($userinfo, 'json');
-                $logMessage .= '<br><br>';
-            }
-            $usernote = $this->getDoctrine()
-                ->getRepository(UserNote::class)
-                ->findOneBy(['userId' => $id]);
-            if (!$usernote) {
-                $usernote = new UserNote();
-            } else {
-                $logMessage .= $serializer->serialize($usernote, 'json');
-                $logMessage .= '<br><br>';
-            }
+            $userinfo = $user->getInformation();
+            if (!$userinfo) $userinfo = new UserInformation();
+
+            $usernote = $user->getNote();
+            if (!$usernote) $usernote = new UserNote();
+
         } else {
             $user = new User();
             $userinfo = new UserInformation();
@@ -176,15 +164,9 @@ class UserController extends Controller
                 $user->setPassword($encoded);
             }
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($user);
-            $em->flush();
-            $id = $user->getId();
-
             $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $serializer->serialize($user, 'json');
+            //$logMessage .= $serializer->serialize($user, 'json');
 
-            $userinfo->setUserId($id);
             $userinfo->setCompanyName($request->request->get('form_company_name', ''));
             $userinfo->setWebsite($request->request->get('form_website', ''));
             $userinfo->setVatNumber($request->request->get('form_vat_number', ''));
@@ -199,61 +181,37 @@ class UserController extends Controller
             $userinfo->setBillingZipcode($request->request->get('form_billing_zipcode', ''));
             $userinfo->setBillingCity($request->request->get('form_billing_city', ''));
             $userinfo->setBillingCountry($request->request->get('form_billing_country', ''));
-
+            $user->setInformation($userinfo);
             $logMessage .= $serializer->serialize($userinfo, 'json');
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($userinfo);
-            $em->flush();
-
-            $usernote->setUserId($id);
             $usernote->setNote($request->request->get('form_note', ''));
-
+            $user->setNote($usernote);
             $logMessage .= $serializer->serialize($usernote, 'json');
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($usernote);
-            $em->flush();
-
-            $setPermissions = $this->getDoctrine()
-            ->getRepository(UserPermission::class)
-            ->findBy(array('userId' => $id));
-
-            foreach($setPermissions as $setPermission) {
-                $em->remove($setPermission);
-            }
-            $em->flush();
-
             $formPermissions = $request->request->get('form_permission', '');
-
             if (!empty($formPermissions))
             foreach($formPermissions as $formPermission => $permissionId) {
-                $userPermission = new UserPermission();
-                $userPermission->setUserId($id);
-                $userPermission->setPermissionId($permissionId);
-                $em->persist($userPermission);
+                $permission = $this->getDoctrine()
+                    ->getRepository(Permission::class)
+                    ->find($permissionId);
+                $user->addPermission($permission);
             }
-            $em->flush();
-
-            $setRoles = $this->getDoctrine()
-            ->getRepository(UserRole::class)
-            ->findBy(array('userId' => $id));
-
-            foreach($setRoles as $setRole) {
-                $em->remove($setRole);
-            }
-            $em->flush();
+            //$user->setPermissions($userPermissions);
 
             $formRoles = $request->request->get('form_role', '');
-
             if (!empty($formRoles))
             foreach($formRoles as $formRole => $roleId) {
-                $userRole = new UserRole();
-                $userRole->setUserId($id);
-                $userRole->setRoleId($roleId);
-                $em->persist($userRole);
+                $role = $this->getDoctrine()
+                    ->getRepository(Role::class)
+                    ->find($roleId);
+                $user->addRole($role);
             }
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
             $em->flush();
+            $id = $user->getId();
+
 
             $log->add('User', $id, $logMessage, $logComment);
 
@@ -275,21 +233,13 @@ class UserController extends Controller
             ->getRepository(Locale::class)
             ->findAll();
 
-        $setRoles = $this->getDoctrine()
-            ->getRepository(UserRole::class)
-            ->findBy(array('userId' => $id));
-
         $permissions = $this->getDoctrine()
             ->getRepository(Permission::class)
             ->getPermissions();
 
-        $setPermissions = $this->getDoctrine()
-            ->getRepository(UserPermission::class)
-            ->findBy(array('userId' => $id));
-
         $apiKeys = $this->getDoctrine()
             ->getRepository(UserApiKey::class)
-            ->findBy(array('userId' => $id));
+            ->findBy(array('user' => $user));
 
         return $this->render('user/admin/edit.html.twig', array(
             'form' => $form->createView(),
@@ -304,25 +254,25 @@ class UserController extends Controller
             'email_confirmed' => $user->getEmailConfirmed(),
             'phone_confirmed' => $user->getPhoneConfirmed(),
             'active' => $user->getActive(),
-            'company_name' => $userinfo->getCompanyName(),
-            'website' => $userinfo->getWebsite(),
-            'vat_number' => $userinfo->getVatNumber(),
-            'registration_number' => $userinfo->getRegistrationNumber(),
-            'mail_address_1' => $userinfo->getMailAddress1(),
-            'mail_address_2' => $userinfo->getMailAddress2(),
-            'mail_zipcode' => $userinfo->getMailZipcode(),
-            'mail_city' => $userinfo->getMailCity(),
-            'mail_country' => $userinfo->getMailCountry(),
-            'billing_address_1' => $userinfo->getBillingAddress1(),
-            'billing_address_2' => $userinfo->getBillingAddress2(),
-            'billing_zipcode' => $userinfo->getBillingZipcode(),
-            'billing_city' => $userinfo->getBillingCity(),
-            'billing_country' => $userinfo->getBillingCountry(),
-            'note' => $usernote->getNote(),
+            'company_name' => $user->getInformation()->getCompanyName(),
+            'website' => $user->getInformation()->getWebsite(),
+            'vat_number' => $user->getInformation()->getVatNumber(),
+            'registration_number' => $user->getInformation()->getRegistrationNumber(),
+            'mail_address_1' => $user->getInformation()->getMailAddress1(),
+            'mail_address_2' => $user->getInformation()->getMailAddress2(),
+            'mail_zipcode' => $user->getInformation()->getMailZipcode(),
+            'mail_city' => $user->getInformation()->getMailCity(),
+            'mail_country' => $user->getInformation()->getMailCountry(),
+            'billing_address_1' => $user->getInformation()->getBillingAddress1(),
+            'billing_address_2' => $user->getInformation()->getBillingAddress2(),
+            'billing_zipcode' => $user->getInformation()->getBillingZipcode(),
+            'billing_city' => $user->getInformation()->getBillingCity(),
+            'billing_country' => $user->getInformation()->getBillingCountry(),
+            'note' => $user->getNote()->getNote(),
             'roles' => $roles,
-            'roles_set' => $setRoles,
+            'roles_set' => $user->getUserRoles(),
             'permissions' => $permissions,
-            'permissions_set' => $setPermissions,
+            'permissions_set' => $user->getPermissions(),
             'api_keys' => $apiKeys,
         ));
      }

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -12,6 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class User implements AdvancedUserInterface, \Serializable
 {
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -52,6 +54,26 @@ class User implements AdvancedUserInterface, \Serializable
     protected $locale;
 
     /**
+     * @ORM\OneToOne(targetEntity="App\Entity\UserInformation", cascade={"persist", "remove"})
+     */
+    private $information;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\UserNote", cascade={"persist", "remove"})
+     */
+    private $note;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Permission")
+     */
+    protected $permissions;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Role")
+     */
+    protected $roles;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     private $emailConfirmed = false;
@@ -79,6 +101,8 @@ class User implements AdvancedUserInterface, \Serializable
     public function __construct()
     {
         $this->active = true;
+        $this->permissions = new ArrayCollection();
+        $this->roles = new ArrayCollection();
         // may not be needed, see section on salt below
         // $this->salt = md5(uniqid('', true));
     }
@@ -394,11 +418,6 @@ class User implements AdvancedUserInterface, \Serializable
         return $this;
     }
 
-    public function getRoles()
-    {
-        return array('ROLE_ADMIN', 'ROLE_SUPER_ADMIN');
-    }
-
     public function eraseCredentials()
     {
     }
@@ -449,5 +468,143 @@ class User implements AdvancedUserInterface, \Serializable
             // see section on salt below
             // $this->salt
         ) = unserialize($serialized);
+    }
+
+    /**
+     * Get the value of Information
+     *
+     * @return mixed
+     */
+    public function getInformation()
+    {
+        return $this->information;
+    }
+
+    /**
+     * Set the value of Information
+     *
+     * @param mixed information
+     *
+     * @return self
+     */
+    public function setInformation($information)
+    {
+        $this->information = $information;
+
+        return $this;
+    }
+
+
+    /**
+     * Get the value of Note
+     *
+     * @return mixed
+     */
+    public function getNote()
+    {
+        return $this->note;
+    }
+
+    /**
+     * Set the value of Note
+     *
+     * @param mixed note
+     *
+     * @return self
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Permissions
+     *
+     * @return mixed
+     */
+    public function getPermissions()
+    {
+        return $this->permissions;
+    }
+
+    /**
+     * Set the value of Permissions
+     *
+     * @param mixed permissions
+     *
+     * @return self
+     */
+    public function setPermissions($permissions)
+    {
+        $this->permissions = $permissions;
+
+        return $this;
+    }
+
+    /**
+     * @param Permission $permission
+     */
+    public function addPermission(Permission $permission)
+    {
+        if ($this->permissions->contains($permission)) {
+            return;
+        }
+        $this->permissions->add($permission);
+    }
+
+    /**
+     * @param Permission $permission
+     */
+    public function removePermission(Permission $permission)
+    {
+        if (!$this->permissions->contains($permission)) {
+            return;
+        }
+        $this->permissions->removeElement($permission);
+    }
+
+    /**
+     * Get the value of roles
+     *
+     * @return mixed
+     */
+    public function getRoles()
+    {
+        //return $this->roles;
+        return array('ROLE_ADMIN', 'ROLE_SUPER_ADMIN');
+    }
+
+    /**
+     * Get the value of roles
+     *
+     * @return mixed
+     */
+    public function getUserRoles()
+    {
+        return $this->roles;
+    }
+
+    /**
+     * @param Role $role
+     */
+    public function addRole(Role $role)
+    {
+        if ($this->roles->contains($role)) {
+            return;
+        }
+        $this->roles->add($role);
+    }
+
+    /**
+     * @param Role $role
+     */
+    public function removeRole(Role $role)
+    {
+        if (!$this->roles->contains($role)) {
+            return;
+        }
+        $this->roles->removeElement($role);
     }
 }

@@ -17,11 +17,6 @@ class UserNote
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $userId;
-
-    /**
      * @ORM\Column(type="text")
      */
     protected $note;
@@ -51,30 +46,6 @@ class UserNote
     }
 
     /**
-     * Get the value of User Id
-     *
-     * @return mixed
-     */
-    public function getUserId()
-    {
-        return $this->userId;
-    }
-
-    /**
-     * Set the value of User Id
-     *
-     * @param mixed userId
-     *
-     * @return self
-     */
-    public function setUserId($userId)
-    {
-        $this->userId = $userId;
-
-        return $this;
-    }
-
-    /**
      * Get the value of Note
      *
      * @return mixed
@@ -97,5 +68,4 @@ class UserNote
 
         return $this;
     }
-
 }

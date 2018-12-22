@@ -17,14 +17,14 @@ class Permission
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity="App\Entity\PermissionGroup")
      */
-    private $groupId;
+    private $permissionGroup;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\OneToOne(targetEntity="App\Entity\Page", cascade={"persist"})
      */
-    private $pageId;
+    private $page;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -56,54 +56,6 @@ class Permission
     public function setId($id)
     {
         $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of Group Id
-     *
-     * @return mixed
-     */
-    public function getGroupId()
-    {
-        return $this->groupId;
-    }
-
-    /**
-     * Set the value of Group Id
-     *
-     * @param mixed groupId
-     *
-     * @return self
-     */
-    public function setGroupId($groupId)
-    {
-        $this->groupId = $groupId;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of Page Id
-     *
-     * @return mixed
-     */
-    public function getPageId()
-    {
-        return $this->pageId;
-    }
-
-    /**
-     * Set the value of Page Id
-     *
-     * @param mixed pageId
-     *
-     * @return self
-     */
-    public function setPageId($pageId)
-    {
-        $this->pageId = $pageId;
 
         return $this;
     }
@@ -155,4 +107,53 @@ class Permission
 
         return $this;
     }
+
+    /**
+     * Get the value of Permission Group
+     *
+     * @return mixed
+     */
+    public function getPermissionGroup()
+    {
+        return $this->permissionGroup;
+    }
+
+    /**
+     * Set the value of Permission Group
+     *
+     * @param mixed permissionGroup
+     *
+     * @return self
+     */
+    public function setPermissionGroup($permissionGroup)
+    {
+        $this->permissionGroup = $permissionGroup;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Page
+     *
+     * @return mixed
+     */
+    public function getPage()
+    {
+        return $this->page;
+    }
+
+    /**
+     * Set the value of Page
+     *
+     * @param mixed page
+     *
+     * @return self
+     */
+    public function setPage($page)
+    {
+        $this->page = $page;
+
+        return $this;
+    }
+
 }
