@@ -47,7 +47,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
                     $expire = date('Y-m-d H:i:s', strtotime('+ 30 minutes'));
 
                     $userApiKey = new UserApiKey();
-                    $userApiKey->setUserId($user->getId());
+                    $userApiKey->setUser($user);
                     $userApiKey->setKeyName('Request token by API');
                     $userApiKey->setToken($token);
                     $userApiKey->setExpire(new \DateTime($expire));
