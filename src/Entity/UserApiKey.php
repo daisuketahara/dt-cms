@@ -67,25 +67,25 @@ class UserApiKey
     }
 
     /**
-     * Get the value of User Id
+     * Get the value of User
      *
      * @return mixed
      */
-    public function getUserId()
+    public function getUser()
     {
-        return $this->userId;
+        return $this->user;
     }
 
     /**
-     * Set the value of User Id
+     * Set the value of User
      *
-     * @param mixed userId
+     * @param mixed user
      *
      * @return self
      */
-    public function setUserId($userId)
+    public function setUser($user)
     {
-        $this->userId = $userId;
+        $this->user = $user;
 
         return $this;
     }
