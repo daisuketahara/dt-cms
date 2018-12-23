@@ -3,9 +3,10 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('vendor/intl-tel-input/js/intlTelInput.min.js') }}"></script>
+    <script src="{{ asset('vendor/intlTelInput/js/intlTelInput.min.js') }}"></script>
     <script>
-        jQuery('#phone').intlTelInput({
+        var phone = document.querySelector("#phone");
+        window.intlTelInput(phone, {
               nationalMode: true,
               initialCountry: "nl",
               preferredCountries: ['nl', 'be'],
@@ -16,7 +17,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('vendor/intl-tel-input/css/intlTelInput.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/intlTelInput/css/intlTelInput.css') }}">
 {% endblock %}
 
 {% block content %}

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "e1a34051a182884823965df9ea1261a3",
+    "content-hash": "b855dc553441ad32dabed267904712bf",
     "packages": [
         {
             "name": "adyen/php-api-library",
@@ -1896,48 +1896,6 @@
                 "url"
             ],
             "time": "2018-12-04T20:46:45+00:00"
-        },
-        {
-            "name": "jackocnr/intl-tel-input",
-            "version": "12.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jackocnr/intl-tel-input.git",
-                "reference": "2afde58af3d7db953ba505946a5aac3c3176ed0b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jackocnr/intl-tel-input/zipball/2afde58af3d7db953ba505946a5aac3c3176ed0b",
-                "reference": "2afde58af3d7db953ba505946a5aac3c3176ed0b",
-                "shasum": ""
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jack O'Connor",
-                    "homepage": "http://jackocnr.com"
-                }
-            ],
-            "description": "A jQuery plugin for entering international telephone numbers",
-            "homepage": "https://github.com/jackocnr/intl-tel-input",
-            "keywords": [
-                "code",
-                "country",
-                "dial",
-                "flag",
-                "i18n",
-                "input",
-                "international",
-                "mobile",
-                "number",
-                "tel",
-                "telephone"
-            ],
-            "time": "2018-06-24T12:54:03+00:00"
         },
         {
             "name": "jdorn/sql-formatter",
