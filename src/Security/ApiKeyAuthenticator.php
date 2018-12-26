@@ -79,6 +79,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
 
         $authHeader = $request->headers->get('Authorization');
         $token = $request->query->get('token');
+        if (empty($token) )$request->request->get('token');
 
         if (!empty($authHeader) && strpos($authHeader, 'Bearer ') !== false) {
             $apiKey = substr($authHeader, 7);
