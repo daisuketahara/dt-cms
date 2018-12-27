@@ -31,7 +31,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
     {
         if ($request->getPathInfo() == '/api/gettoken/') {
 
-            $username = $request->query->get('username', '');
+            $username = strtolower($request->query->get('username', ''));
             $password = $request->query->get('password', '');
             $callback = $request->query->get('callback', '');
 
