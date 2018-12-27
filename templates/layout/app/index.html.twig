@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' data:* gap://* tel:* https://*.safe-in.com http://*.safe-in.test https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+        <title>{{settingservice.getSetting('site.name')|striptags}} App</title>
+
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}">
+        {% block stylesheets %}{% endblock %}
+
+        <script src="{{ asset('vendor/onsen-ui/js/onsenui.min.js') }}"></script>
+        <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+        <script src="{{ asset('js/app.js') }}"></script>
+        {% block javascripts %}{% endblock %}
+    </head>
+    <body>
+        <div id="splash-container">
+            <div id="splash">
+                <div id="deviceready" class="blink">
+                    <div class="event listening">Connecting Device</div>
+                    <div class="event received">Device is Ready</div>
+                </div>
+            </div>
+        </div>
+        {% if enableMenu == true %}
+        <div id="menu-container">
+            <a id="menu-toggle" data-status="0"><i class="fas fa-bars"></i></a>
+            <div id="menu">
+                <div class="menu-title">MENU</div>
+                {% block menu %}{% endblock %}
+            </div>
+        </div>
+        {% endif %}
+        <div id="app-logo" class="mt-2 mb-2">
+            <img src="/img/Safe-In-Logo.png" alt="Safe-In">
+        </div>
+        <div id="pages">
+            {% block content %}{% endblock %}
+        </div>
+        <ons-modal id="modal" direction="up">
+            <div style="text-align: center">
+                <p>
+                    <ons-icon icon="md-spinner" size="28px" spin></ons-icon> Loading...
+                </p>
+            </div>
+        </ons-modal>
+    </body>
+</html>
