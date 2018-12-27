@@ -6,5 +6,5 @@ bundles
 !install.php
 !.gitignore
 !robots.txt
-!manifest.json
-!service-worker.js
+!manifest.json.dist
+!service-worker.js.dist
