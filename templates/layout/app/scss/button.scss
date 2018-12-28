@@ -18,6 +18,7 @@
     font-size: 1.2rem;
     text-decoration: none !important;
     text-align: center;
+    text-transform: uppercase;
 
     cursor: pointer;
 
@@ -44,7 +45,7 @@
 }
 
 @media only screen and (max-width: 600px) {
-    .btn-touch-big span i {
+    .btn-touch span i {
         display: none;
     }
 }
