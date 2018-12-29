@@ -112,7 +112,7 @@ class MailController extends Controller
      /**
       * @Route("/cron/mail/queue/send/", name="mail_queue_send")
       */
-     final public function send(LogService $log, \Swift_Mailer $mailer)
+     final public function send(LogService $log, SettingService $setting, \Swift_Mailer $mailer)
      {
 
          $em = $this->getDoctrine()->getManager();
@@ -122,8 +122,11 @@ class MailController extends Controller
          $fail = 0;
          foreach($mails as $mail) {
 
+             $from = $mail->getFromEmail();
+             if (!$from) $from = $setting->getSetting('site.email.from');
+
              $message = (new \Swift_Message($mail->getSubject()))
-                    ->setFrom($mail->getFromEmail())
+                    ->setFrom($from)
                     ->setTo($mail->getToEmail())
                     ->setBody($mail->getBody());
              if ($mailer->send($message)) {
