@@ -128,7 +128,7 @@ class MailController extends Controller
              $message = (new \Swift_Message($mail->getSubject()))
                     ->setFrom($from)
                     ->setTo($mail->getToEmail())
-                    ->setBody($mail->getBody());
+                    ->setBody($mail->getBody(), 'text/html');
              if ($mailer->send($message)) {
                 $mail->setSendDate(new \DateTime("now"));
                 $mail->setStatus(1);
