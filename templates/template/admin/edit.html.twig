@@ -1,10 +1,5 @@
 {% extends templateservice.getAdminTemplate() %}
 
-{% block javascripts %}
-    <script src="{{ asset('vendor/edit_area/edit_area_full.js') }}"></script>
-        {{ parent() }}
-{% endblock %}
-
 {% block content %}
 
 <form action="" method="post">
@@ -20,33 +15,38 @@
     <a href="/{{ app.request.locale }}/admin/template/compile/{{templateId}}" class="btn btn-secondary">{% trans %}Compile{% endtrans %}</a>
 </form>
 
-<script>
 
-    $(document).ready(function() {
+{% endblock %}
 
-     	editAreaLoader.init({
-     		id: "custom-css",
-     		allow_toggle: true,
-     		language: "en",
-     		syntax: "css",
-     		toolbar: "undo, redo",
-     		syntax_selection_allow: "css",
-     		min_height: 300,
-     		show_line_colors: true,
-     	});
-        editAreaLoader.init({
-            id: "custom-js",
-            start_highlight: true,
-            allow_toggle: true,
-            language: "en",
-            syntax: "js",
-            toolbar: "undo, redo",
-            syntax_selection_allow: "js",
-            min_height: 300,
-            show_line_colors: true,
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('vendor/edit_area/edit_area_full.js') }}"></script>
+    <script>
+
+        $(document).ready(function() {
+
+         	editAreaLoader.init({
+         		id: "custom-css",
+         		allow_toggle: true,
+         		language: "en",
+         		syntax: "css",
+         		toolbar: "undo, redo",
+         		syntax_selection_allow: "css",
+         		min_height: 300,
+         		show_line_colors: true,
+         	});
+            editAreaLoader.init({
+                id: "custom-js",
+                start_highlight: true,
+                allow_toggle: true,
+                language: "en",
+                syntax: "js",
+                toolbar: "undo, redo",
+                syntax_selection_allow: "js",
+                min_height: 300,
+                show_line_colors: true,
+            });
         });
-    });
 
-</script>
-
+    </script>
 {% endblock %}
