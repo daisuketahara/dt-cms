@@ -1,9 +1,15 @@
 {% extends "layout/index.html.twig" %}
 
 {% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('app') }}
+    <link href="{{ asset('css/no-design.css') }}" rel="stylesheet">
+    <link rel="shortcut icon" href="{{ asset('favicon.png') }}" type="image/png">
+{% endblock %}
+
+{% block javascripts %}
 {{ parent() }}
-<link href="{{ asset('css/no-design.css') }}" rel="stylesheet">
-<link rel="shortcut icon" href="{{ asset('favicon.png') }}" type="image/png">
+    {{ encore_entry_script_tags('app') }}
 {% endblock %}
 
 {% block body %}
@@ -39,10 +45,6 @@
             &copy; {{ "now"|date('Y') }} {{settingservice.getSetting('company.name')}}.
             {% trans %}All rights reserved.{% endtrans %}
     </footer>
-{% endblock %}
-
-{% block javascripts %}
-{{ parent() }}
 {% endblock %}
 
 {% block tracking %}

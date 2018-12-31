@@ -2,8 +2,14 @@
 
 {% block stylesheets %}
 {{ parent() }}
+    {{ encore_entry_link_tags('app') }}
     <link href="{{ asset('css/main.css') }}" rel="stylesheet">
     <link rel="shortcut icon" href="{{ asset('favicon.png') }}" type="image/png">
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+    {{ encore_entry_script_tags('app') }}
 {% endblock %}
 
 {% block body %}
@@ -84,8 +90,4 @@
             </div>
         </div>
     </div>
-{% endblock %}
-
-{% block javascripts %}
-{{ parent() }}
 {% endblock %}

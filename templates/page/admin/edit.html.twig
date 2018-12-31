@@ -1,11 +1,6 @@
 {% extends templateservice.getAdminTemplate() %}
 
 
-{% block javascripts %}
-    {{ parent() }}
-    <script src="{{ asset('vendor/summernote/summernote-bs4.min.js') }}"></script>
-    <script src="{{ asset('vendor/edit_area/edit_area_full.js') }}"></script>
-{% endblock %}
 
 {% block stylesheets %}
     <link href="{{ asset('vendor/summernote/summernote-bs4.css') }}" rel="stylesheet" />
@@ -224,152 +219,157 @@
 <style>
     #EditAreaArroundInfos_page-content { display: none; }
 </style>
-<script>
+{% endblock %}
 
-    jQuery(document).ready(function() {
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('vendor/summernote/summernote-bs4.min.js') }}"></script>
+    <script src="{{ asset('vendor/edit_area/edit_area_full.js') }}"></script>
+    <script>
 
-        var content_area;
+        $(document).ready(function() {
 
-        jQuery(document).on('blur', '#post-title', function() {
-            var url = jQuery('#post-url').val();
-            if (url == '') jQuery('#post-url').val(encodeURIComponent(jQuery('#post-title').val()));
-        });
+            var content_area;
 
-        jQuery('#im-post-collapse').on('show.bs.collapse','.collapse', function() {
-            jQuery('#im-post-collapse').find('.collapse.show').collapse('hide');
-        });
-
-        jQuery(document).on('click', '.im-post-editor-card', function() {
-            jQuery(this).find('i').toggleClass('fa-chevron-left').toggleClass('fa-chevron-down');
-        });
-        jQuery(document).on('click', '#im-set-visual', function() {
-            disableHtmlEditor();
-            disableEditor();
-            enableVisualEditor();
-        });
-        jQuery(document).on('click', '#im-set-editor', function() {
-            disableHtmlEditor();
-            disableVisualEditor();
-            enableEditor();
-        });
-        jQuery(document).on('click', '#im-set-html', function() {
-            disableVisualEditor();
-            disableEditor();
-            enableHtmlEditor();
-        });
-
-        $('#custom-css-collapse').on('show.bs.collapse', function () {
-         	editAreaLoader.init({
-         		id: "custom-css",
-         		language: "en",
-         		syntax: "css",
-         		toolbar: "undo, redo",
-         		syntax_selection_allow: "css",
-         		min_height: 400,
-         		show_line_colors: true,
-                replace_tab_by_spaces: 4
-         	});
-        });
-        $('#custom-css-collapse').on('hidden.bs.collapse', function () {
-            editAreaLoader.delete_instance('custom-css');
-        });
-        $('#custom-js-collapse').on('show.bs.collapse', function () {
-            editAreaLoader.init({
-                id: "custom-js",
-                start_highlight: true,
-                language: "en",
-                syntax: "js",
-                toolbar: "undo, redo",
-                syntax_selection_allow: "js",
-                min_height: 400,
-                show_line_colors: true,
-                replace_tab_by_spaces: 4
+            $(document).on('blur', '#post-title', function() {
+                var url = $('#post-url').val();
+                if (url == '') $('#post-url').val(encodeURIComponent($('#post-title').val()));
             });
-        });
-        $('#custom-js-collapse').on('hidden.bs.collapse', function () {
-            editAreaLoader.delete_instance('custom-js');
-        });
 
-        if (readCookie('page-editor') == 'html') enableHtmlEditor();
-        if (readCookie('page-editor') == 'visual') enableVisualEditor();
-        if (readCookie('page-editor') == 'editor') enableEditor();
-        if (readCookie('page-editor') == null) enableEditor();
-
-        function enableEditor() {
-            eraseCookie('page-editor');
-            createCookie('page-editor','editor',30);
-
-            jQuery('#page-content').summernote({
-                minHeight: 400,
-                toolbar: [
-                // [groupName, [list of button]]
-                    ['style', ['bold', 'italic', 'underline', 'clear']],
-                    ['font', ['strikethrough', 'superscript', 'subscript']],
-                    ['fontsize', ['fontsize']],
-                    ['color', ['color']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                ['height', ['height']]
-                ]
+            $('#im-post-collapse').on('show.bs.collapse','.collapse', function() {
+                $('#im-post-collapse').find('.collapse.show').collapse('hide');
             });
-        }
-        function disableEditor() {
-            jQuery('#page-content').summernote('destroy');
-        }
-        function enableHtmlEditor() {
-            eraseCookie('page-editor');
-            createCookie('page-editor','html',30);
-            editAreaLoader.init({
-    			id: "page-content",
-    			allow_resize: "no",
-    			allow_toggle: true,
-                toolbar: "undo, redo",
-    			syntax: "html",
-    			min_height: 350,
-         		show_line_colors: true,
-                replace_tab_by_spaces: 4
-    		});
-        }
-        function disableHtmlEditor() {
-            editAreaLoader.delete_instance('page-content');
-        }
-        function enableVisualEditor() {
-            eraseCookie('page-editor');
-            createCookie('page-editor','visual',30);
-            jQuery('#im-post-editor-html').hide();
-            jQuery('#im-post-editor-components').addClass('active').show();
-        }
-        function disableVisualEditor() {
 
-            jQuery('#im-post-editor-html').show();
-            jQuery('#im-post-editor-components').removeClass('active').hide();
-        }
+            $(document).on('click', '.im-post-editor-card', function() {
+                $(this).find('i').toggleClass('fa-chevron-left').toggleClass('fa-chevron-down');
+            });
+            $(document).on('click', '#im-set-visual', function() {
+                disableHtmlEditor();
+                disableEditor();
+                enableVisualEditor();
+            });
+            $(document).on('click', '#im-set-editor', function() {
+                disableHtmlEditor();
+                disableVisualEditor();
+                enableEditor();
+            });
+            $(document).on('click', '#im-set-html', function() {
+                disableVisualEditor();
+                disableEditor();
+                enableHtmlEditor();
+            });
 
-    	function createCookie(name, value, days) {
-    		var expires;
-    		if (days) {
-    			var date = new Date();
-    			date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    			expires = "; expires=" + date.toGMTString();
-    		} else {
-    			expires = "";
-    		}
-    		document.cookie = escape(name) + "=" + escape(value) + expires + "; path=/;";
-    	}
-    	function readCookie(name) {
-    	    var nameEQ = escape(name) + "=";
-    	    var ca = document.cookie.split(';');
-    	    for (var i = 0; i < ca.length; i++) {
-    	        var c = ca[i];
-    	        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-    	        if (c.indexOf(nameEQ) === 0) return unescape(c.substring(nameEQ.length, c.length));
-    	    }
-    	    return null;
-    	}
-    	function eraseCookie(name) {
-    		document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    	}
-    });
+            $('#custom-css-collapse').on('show.bs.collapse', function () {
+             	editAreaLoader.init({
+             		id: "custom-css",
+             		language: "en",
+             		syntax: "css",
+             		toolbar: "undo, redo",
+             		syntax_selection_allow: "css",
+             		min_height: 400,
+             		show_line_colors: true,
+                    replace_tab_by_spaces: 4
+             	});
+            });
+            $('#custom-css-collapse').on('hidden.bs.collapse', function () {
+                editAreaLoader.delete_instance('custom-css');
+            });
+            $('#custom-js-collapse').on('show.bs.collapse', function () {
+                editAreaLoader.init({
+                    id: "custom-js",
+                    start_highlight: true,
+                    language: "en",
+                    syntax: "js",
+                    toolbar: "undo, redo",
+                    syntax_selection_allow: "js",
+                    min_height: 400,
+                    show_line_colors: true,
+                    replace_tab_by_spaces: 4
+                });
+            });
+            $('#custom-js-collapse').on('hidden.bs.collapse', function () {
+                editAreaLoader.delete_instance('custom-js');
+            });
 
-</script>
+            if (readCookie('page-editor') == 'html') enableHtmlEditor();
+            if (readCookie('page-editor') == 'visual') enableVisualEditor();
+            if (readCookie('page-editor') == 'editor') enableEditor();
+            if (readCookie('page-editor') == null) enableEditor();
 
+            function enableEditor() {
+                eraseCookie('page-editor');
+                createCookie('page-editor','editor',30);
+
+                $('#page-content').summernote({
+                    minHeight: 400,
+                    toolbar: [
+                    // [groupName, [list of button]]
+                        ['style', ['bold', 'italic', 'underline', 'clear']],
+                        ['font', ['strikethrough', 'superscript', 'subscript']],
+                        ['fontsize', ['fontsize']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                    ['height', ['height']]
+                    ]
+                });
+            }
+            function disableEditor() {
+                $('#page-content').summernote('destroy');
+            }
+            function enableHtmlEditor() {
+                eraseCookie('page-editor');
+                createCookie('page-editor','html',30);
+                editAreaLoader.init({
+        			id: "page-content",
+        			allow_resize: "no",
+        			allow_toggle: true,
+                    toolbar: "undo, redo",
+        			syntax: "html",
+        			min_height: 350,
+             		show_line_colors: true,
+                    replace_tab_by_spaces: 4
+        		});
+            }
+            function disableHtmlEditor() {
+                editAreaLoader.delete_instance('page-content');
+            }
+            function enableVisualEditor() {
+                eraseCookie('page-editor');
+                createCookie('page-editor','visual',30);
+                $('#im-post-editor-html').hide();
+                $('#im-post-editor-components').addClass('active').show();
+            }
+            function disableVisualEditor() {
+
+                $('#im-post-editor-html').show();
+                $('#im-post-editor-components').removeClass('active').hide();
+            }
+
+        	function createCookie(name, value, days) {
+        		var expires;
+        		if (days) {
+        			var date = new Date();
+        			date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        			expires = "; expires=" + date.toGMTString();
+        		} else {
+        			expires = "";
+        		}
+        		document.cookie = escape(name) + "=" + escape(value) + expires + "; path=/;";
+        	}
+        	function readCookie(name) {
+        	    var nameEQ = escape(name) + "=";
+        	    var ca = document.cookie.split(';');
+        	    for (var i = 0; i < ca.length; i++) {
+        	        var c = ca[i];
+        	        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        	        if (c.indexOf(nameEQ) === 0) return unescape(c.substring(nameEQ.length, c.length));
+        	    }
+        	    return null;
+        	}
+        	function eraseCookie(name) {
+        		document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        	}
+        });
+
+    </script>
 {% endblock %}

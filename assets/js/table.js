@@ -1,4 +1,6 @@
 
+require('../scss/table.scss');
+
 (function($) {
 
     var columns;

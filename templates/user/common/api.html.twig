@@ -34,11 +34,11 @@
 <button id="create-new-api-key" class="btn btn-primary">{% trans %}Create{% endtrans %}</button>
 
 <script>
-    jQuery(document).ready(function() {
+    $(document).ready(function() {
 
-        jQuery('#create-new-api-key').click(function() {
+        $('#create-new-api-key').click(function() {
 
-            var name = jQuery('#form_api_key_name').val();
+            var name = $('#form_api_key_name').val();
 
 
 
@@ -48,15 +48,15 @@
 
         });
 
-        jQuery('.delete-api-key').click(function() {
+        $('.delete-api-key').click(function() {
 
-            var id = jQuery(this).data('id');
-
-
+            var id = $(this).data('id');
 
 
 
-            jQuery(this).parent().parent().hide();
+
+
+            $(this).parent().parent().hide();
 
         });
     });

@@ -65,40 +65,40 @@
     {{ parent() }}
     <script>
 
-        jQuery(document).ready(function() {
+        $(document).ready(function() {
 
             var data;
             var cards;
 
-            jQuery(document).on('change', '#form-file-filter input, #form-file-filter select', function() {
+            $(document).on('change', '#form-file-filter input, #form-file-filter select', function() {
                 loadFiles();
             });
-            jQuery(document).on('click', '.file-item', function() {
-                var id = jQuery(this).data('id');
+            $(document).on('click', '.file-item', function() {
+                var id = $(this).data('id');
                 loadFileDetail(id);
             });
-            jQuery(document).on('click', '#back-to-list', function() {
-                jQuery('#files-container').fadeOut(200, function() {
-                    jQuery('#files-container').html(cards);
-                    jQuery('#files-container').fadeIn(200);
+            $(document).on('click', '#back-to-list', function() {
+                $('#files-container').fadeOut(200, function() {
+                    $('#files-container').html(cards);
+                    $('#files-container').fadeIn(200);
                 });
             });
-            jQuery(document).on('click', '#btn-file-upload', function(e) {
+            $(document).on('click', '#btn-file-upload', function(e) {
                 e.preventDefault();
-                jQuery('#files-container').fadeOut(200, function() {
-                    jQuery('#file-upload-container').fadeIn(200);
+                $('#files-container').fadeOut(200, function() {
+                    $('#file-upload-container').fadeIn(200);
                 });
             });
-            jQuery(document).on('click', '#btn-upload-cancel', function(e) {
+            $(document).on('click', '#btn-upload-cancel', function(e) {
                 e.preventDefault();
-                jQuery('#file-upload-container').fadeOut(200, function() {
-                    jQuery('#files-container').fadeIn(200);
+                $('#file-upload-container').fadeOut(200, function() {
+                    $('#files-container').fadeIn(200);
                 });
             });
-            jQuery(document).on('click', '#file-upload-drop, #btn-file-select', function(e) {
-                jQuery('#file-field').click();
+            $(document).on('click', '#file-upload-drop, #btn-file-select', function(e) {
+                $('#file-field').click();
             });
-            jQuery('html').bind("drop", function(e) {
+            $('html').bind("drop", function(e) {
                 e.preventDefault();
                 e.stopPropagation();
             });
@@ -106,7 +106,7 @@
                 e.preventDefault();
                 e.stopPropagation();
             });
-            jQuery('#file-upload-drop').bind("drop", function(e) {
+            $('#file-upload-drop').bind("drop", function(e) {
                 e.preventDefault();
                 e.stopPropagation();
                 var files = e.originalEvent.dataTransfer.files;
@@ -118,8 +118,8 @@
 
             function loadFiles()
             {
-                jQuery('#files-container').fadeOut(200, function() {
-                    jQuery('#files-container').empty();
+                $('#files-container').fadeOut(200, function() {
+                    $('#files-container').empty();
                     $.ajax({
                         url: '/ajax/file/get/',
                         type: 'POST',
@@ -134,8 +134,8 @@
                             for (i = 0; i < data.length; i++) {
                                 cards += createFileCard(data[i]);
                             }
-                            jQuery('#files-container').html(cards);
-                            jQuery('#files-container').fadeIn(200);
+                            $('#files-container').html(cards);
+                            $('#files-container').fadeIn(200);
                         }
                     });
                 });
@@ -155,8 +155,8 @@
             }
             function loadFileDetail(id)
             {
-                jQuery('#files-container').fadeOut(200, function() {
-                    jQuery('#files-container').empty();
+                $('#files-container').fadeOut(200, function() {
+                    $('#files-container').empty();
 
                     for (i = 0; i < data.length; i++) {
                         if (data[i]['id'] == id) file = data[i];
@@ -169,8 +169,8 @@
                     fileDetail += '<h3>' + file['name'] + '</h3>';
                     fileDetail += '<a id="back-to-list" class="ten btn btn-secondary pointer">{% trans %}Back to list{% endtrans %}</a>';
                     fileDetail += '</div>';
-                    jQuery('#files-container').html(fileDetail);
-                    jQuery('#files-container').fadeIn(200);
+                    $('#files-container').html(fileDetail);
+                    $('#files-container').fadeIn(200);
                 });
             }
             function processFileUpload(droppedFiles)
@@ -182,7 +182,7 @@
                     }
                 }
 
-                jQuery.ajax({
+                $.ajax({
                     url : "/ajax/file/upload/",
                     type : "POST",
                     data : uploadFormData,

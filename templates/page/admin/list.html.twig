@@ -8,11 +8,7 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="{{ asset('js/paginator.js') }}"></script>
-    <script src="{{ asset('js/modal.js') }}"></script>
-    <script src="{{ asset('js/list.js') }}"></script>
     <script>
-
         $('#dt-list').dtList({
             columns: [
                 {id1: 'pageTitle', id2: 'pageRoute'},

@@ -2,8 +2,14 @@
 
 {% block stylesheets %}
 {{ parent() }}
-<link href="https://fonts.googleapis.com/css?family=Ubuntu" media="screen" rel="stylesheet" type="text/css">
-<link href="{{ asset('css/admin.css') }}" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" media="screen" rel="stylesheet" type="text/css">
+    {{ encore_entry_link_tags('admin') }}
+    <link href="{{ asset('css/admin.css') }}" rel="stylesheet" />
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+    {{ encore_entry_script_tags('admin') }}
 {% endblock %}
 
 {% block body %}

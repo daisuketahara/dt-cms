@@ -1,4 +1,6 @@
 
+require('../scss/list.scss');
+
 (function($) {
 
     var columns = [];
@@ -360,4 +362,4 @@
 			}
         });
     });
-}( jQuery ));
+}(jQuery));

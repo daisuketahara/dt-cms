@@ -20,15 +20,6 @@
     "bordercloud/tether": {
         "version": "1.1.1"
     },
-    "components/css-reset": {
-        "version": "2.5"
-    },
-    "components/jquery": {
-        "version": "3.2.1"
-    },
-    "components/jqueryui": {
-        "version": "1.12.1"
-    },
     "daneden/animate.css": {
         "version": "3.5.3"
     },
@@ -120,7 +111,7 @@
         "version": "v1.4.0"
     },
     "leafo/scssphp": {
-        "version": "v0.7.4"
+        "version": "v0.7.7"
     },
     "league/oauth2-client": {
         "version": "2.3.0"
@@ -296,9 +287,6 @@
     "symfony/intl": {
         "version": "v4.0.4"
     },
-    "symfony/lts": {
-        "version": "4-dev"
-    },
     "symfony/maker-bundle": {
         "version": "1.0",
         "recipe": {
@@ -440,11 +428,17 @@
             "ref": "6bdfa1a95f6b2e677ab985cd1af2eae35d62e0f6"
         }
     },
+    "symfony/webpack-encore-bundle": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "248c29c070dcd79e8333c676b0c5e284e3b365b5"
+        }
+    },
     "symfony/yaml": {
         "version": "v4.0.4"
-    },
-    "twbs/bootstrap": {
-        "version": "v4.0.0"
     },
     "twig/twig": {
         "version": "v2.4.4"
