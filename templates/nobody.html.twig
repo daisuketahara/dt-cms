@@ -3,9 +3,10 @@
     <head>
         <meta charset="UTF-8">
         <link rel="profile" href="http://gmpg.org/xfn/11">
-        <title>{% block title %}Test Application{% endblock %}</title>
+        <title>{{settingservice.getSetting('site.name')|striptags}} Admin</title>
 
         {% block stylesheets %}
+            {{ encore_entry_link_tags('admin') }}
             <link href="{{ asset('css/admin.css') }}" rel="stylesheet" />
         {% endblock %}
 
