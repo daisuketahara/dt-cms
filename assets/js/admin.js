@@ -2,7 +2,6 @@
 
 require('../scss/admin.scss');
 require('../scss/bootstrap-extended.scss');
-require('../scss/font-awesome-variables.scss');
 
 require('./list.js');
 require('./paginator.js');
@@ -11,6 +10,7 @@ require('./table.js');
 const $ = require('jquery');
 global.$ = global.jQuery = $;
 
+require('animate.css');
 require('bootstrap');
 import '@fortawesome/fontawesome-free/js/all'
 

@@ -1,5 +1,16 @@
 // assets/js/pwa.js
 
+require('../scss/pwa.scss');
+require('../vendor/onsen-ui/css/onsenui.min.css');
+require('../vendor/onsen-ui/css/onsen-css-components.min.css');
+require('animate.css');
+import '@fortawesome/fontawesome-free/js/all';
+
+// var $ = require('jquery');
+const $ = require('jquery');
+global.$ = global.jQuery = $;
+
+var contactForm = require('./contact-form.js');
 var setLocale;
 
 var app = {

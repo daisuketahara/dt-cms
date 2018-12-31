@@ -3,7 +3,7 @@
 {% block stylesheets %}
 {{ parent() }}
     {{ encore_entry_link_tags('app') }}
-    <link href="{{ asset('css/main.css') }}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/main.css?v={{settingservice.getSetting('template.assets.version')}}">
     <link rel="shortcut icon" href="{{ asset('favicon.png') }}" type="image/png">
 {% endblock %}
 

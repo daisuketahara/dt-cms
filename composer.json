@@ -8,7 +8,6 @@
         "api-platform/api-pack": "^1.1",
         "bassjobsen/bootstrap-3-typeahead": "^4.0",
         "bordercloud/tether": "^1.1",
-        "daneden/animate.css": "^3.5",
         "dragonmantank/cron-expression": "^2.0",
         "leafo/scssphp": "^0.7.7",
         "mollie/mollie-api-php": "^1.9",

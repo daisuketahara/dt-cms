@@ -4,7 +4,7 @@
 {{ parent() }}
     <link href="https://fonts.googleapis.com/css?family=Ubuntu" media="screen" rel="stylesheet" type="text/css">
     {{ encore_entry_link_tags('admin') }}
-    <link href="{{ asset('css/admin.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="/css/admin.css?v={{settingservice.getSetting('template.assets.version')}}">
 {% endblock %}
 
 {% block javascripts %}
@@ -18,8 +18,8 @@
         <div class="text-center mb-3 mt-4">
             <div class="im-user-profile-picture mb-3"></div>
             <div class="im-user-profile-name mb-3">{{ app.user.getFirstname() }} {{ app.user.getLastname() }}</div>
-            <a class="btn btn-secondary btn-sm" href="/{{ app.request.locale }}/admin/account">{% trans %}My account{% endtrans %}</a>
-            <a class="btn btn-secondary btn-sm" href="/{{ app.request.locale }}/logout">{% trans %}Logout{% endtrans %}</a>
+            <a class="btn btn-secondary btn-sm" href="/{{ app.request.locale }}/admin/account/">{% trans %}My account{% endtrans %}</a>
+            <a class="btn btn-secondary btn-sm" href="/{{ app.request.locale }}/logout/">{% trans %}Logout{% endtrans %}</a>
         </div>
         <style>
             .im-user-profile-picture {
