@@ -2,9 +2,6 @@
 .env*
 !.env.dist
 .DS_Store
-config/services.yaml
-config/routes.yaml
-config/bundles.php
 modules/*
 !modules/note.txt
 !modules/Background
