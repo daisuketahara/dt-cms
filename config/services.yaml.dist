@@ -5,13 +5,6 @@ parameters:
     app.locales: en|nl
     files_directory: '%kernel.project_dir%/files'
 
-    spryng.enable: 0
-    spryng.username: ''
-    spryng.password: ''
-    spryng.route: 'business'
-    spryng.long: true
-    spryng.reference: ''
-
 services:
     # default configuration for services in *this* file
     _defaults:
