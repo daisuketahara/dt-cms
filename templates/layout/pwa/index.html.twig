@@ -19,8 +19,9 @@
         <link rel="stylesheet" type="text/css" href="/css/pwa.css?v={{settingservice.getSetting('template.assets.version')}}">
         {% block stylesheets %}{% endblock %}
 
-        <script src="{{ asset('js/pwa.js') }}"></script>
-        {% block javascripts %}{% endblock %}
+        {% block javascripts %}
+            {{ encore_entry_script_tags('pwa') }}
+        {% endblock %}
 
     </head>
     <body>
