@@ -123,8 +123,6 @@ var app = {
     }
 };
 
-global app = app;
-
 jQuery(document).on('click', '#menu-toggle', function() {
 
     var status = jQuery(this).data('status');
