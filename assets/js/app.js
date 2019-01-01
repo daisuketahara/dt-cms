@@ -9,12 +9,13 @@ require('../scss/bootstrap-extended.scss');
 require('../scss/font-awesome-variables.scss');
 
 require('./simple-cookie-bar.js');
+require('./usability.js');
+require('./contact-form.js');
 
 // var $ = require('jquery');
 const $ = require('jquery');
 global.$ = global.jQuery = $;
 
-var contactForm = require('./contact-form.js');
 
 require('bootstrap');
 import '@fortawesome/fontawesome-free/js/all';
