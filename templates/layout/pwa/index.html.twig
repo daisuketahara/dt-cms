@@ -15,14 +15,14 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="msapplication-starturl" content="/">
         {% endblock %}
-        {{ encore_entry_link_tags('pwa') }}
-        <link rel="stylesheet" type="text/css" href="/css/pwa.css?v={{settingservice.getSetting('template.assets.version')}}">
+            {{ encore_entry_link_tags('pwa') }}
+            <link rel="stylesheet" type="text/css" href="/css/pwa.css?v={{settingservice.getSetting('template.assets.version')}}">
         {% block stylesheets %}{% endblock %}
 
         {% block javascripts %}
             {{ encore_entry_script_tags('pwa') }}
+            <script src="{{ asset('vendor/onsen-ui/js/onsenui.min.js') }}"></script>
         {% endblock %}
-
     </head>
     <body>
         <div id="splash-container">
