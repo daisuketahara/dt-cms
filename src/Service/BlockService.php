@@ -23,7 +23,6 @@ class BlockService
     public function getBlock($key)
     {
         $localeTag = $this->requestStack->getCurrentRequest()->getLocale();
-        error_log($localeTag);
         $locale = $this->em->getRepository(Locale::class)
             ->findOneBy(array('locale' => $localeTag), array());
 
