@@ -328,10 +328,14 @@ class TranslationController extends Controller
 
                 if (!$translationDb) {
 
-                    foreach($locales as $locale) {
+                    foreach($locales as $localeId) {
+
+                        $locale = $this->getDoctrine()
+                            ->getRepository(Locale::class)
+                            ->find($localeId);
 
                         $translationDb = new Translation();
-                        $translationDb->setLocaleId($locale);
+                        $translationDb->setLocale($locale);
                         $translationDb->setOriginal($translation['id']);
                         $translationDb->setTranslation('');
 
