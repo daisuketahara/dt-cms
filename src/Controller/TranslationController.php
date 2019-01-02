@@ -245,7 +245,7 @@ class TranslationController extends Controller
                 ->findTranslationsByLocaleId($locale->getId());
 
             foreach($translations as $translation) {
-                $fs->appendToFile($file, "'" . htmlentities($translation->getOriginal()) . "': '" . htmlentities($translation->getTranslation()) . "'" . PHP_EOL);
+                if (!empty($translation->getTranslation())) $fs->appendToFile($file, "'" . htmlentities($translation->getOriginal()) . "': '" . htmlentities($translation->getTranslation()) . "'" . PHP_EOL);
             }
 
         }
