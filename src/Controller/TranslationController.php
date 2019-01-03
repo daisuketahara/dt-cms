@@ -192,6 +192,8 @@ class TranslationController extends Controller
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($fieldTranslation);
                 $em->flush();
+
+                if (empty($id)) $id = $fieldTranslation->getId();
             }
 
             $logMessage .= '<i>New data:</i><br>';

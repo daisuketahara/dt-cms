@@ -5,6 +5,7 @@ namespace App\Service;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 
+use App\Entity\Locale;
 use App\Entity\MailQueue;
 use App\Entity\MailTemplate;
 use App\Service\SettingService;
@@ -26,8 +27,11 @@ class MailService
         $mail = new MailQueue();
         $request = Request::createFromGlobals();
 
+        $locale = $this->em->getRepository(Locale::class)
+            ->find($localeId);
+
         $template = $this->em->getRepository(MailTemplate::class)
-            ->findOneBy(array('tag' => $tag, 'locale' => $localeId));
+            ->findOneBy(array('tag' => $tag, 'locale' => $locale));
 
         $body = $template->getBody();
         $subject = $template->getSubject();
