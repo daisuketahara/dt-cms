@@ -317,17 +317,23 @@ window.onload = function() {
                 else elem.style.top = '-' + elem.clientHeight + 'px';
 
                 var cookieSetting = 4;
-
-                if (trackingInput.checked && socialInput.checked) {
-                    cookieSetting = 1;
-                    enableCookies('tracking');
-                    enableCookies('social');
-                } else if (trackingInput.checked) {
-                    cookieSetting = 2;
-                    enableCookies('tracking');
-                } else if (socialInput.checked) {
-                    cookieSetting = 3;
-                    enableCookies('social');
+                if (typeof socialInput !== typeof undefined && socialInput !== false) {
+                    if (trackingInput.checked && socialInput.checked) {
+                        cookieSetting = 1;
+                        enableCookies('tracking');
+                        enableCookies('social');
+                    } else if (trackingInput.checked) {
+                        cookieSetting = 2;
+                        enableCookies('tracking');
+                    } else if (socialInput.checked) {
+                        cookieSetting = 3;
+                        enableCookies('social');
+                    }
+                } else {
+                    if (trackingInput.checked) {
+                        cookieSetting = 2;
+                        enableCookies('tracking');
+                    }
                 }
 
         		createCookie('scb-agree-cookie', cookieSetting, 365);
