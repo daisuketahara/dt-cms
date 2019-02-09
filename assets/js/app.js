@@ -7,6 +7,7 @@ require('../scss/step-blocks.scss');
 require('../scss/usability.scss');
 require('../scss/bootstrap-extended.scss');
 require('../scss/font-awesome-variables.scss');
+require('animate.css');
 
 require('./simple-cookie-bar.js');
 require('./usability.js');
@@ -16,10 +17,4 @@ require('./contact-form.js');
 const $ = require('jquery');
 global.$ = global.jQuery = $;
 
-
-require('bootstrap');
 import '@fortawesome/fontawesome-free/js/all';
-
-$(document).ready(function() {
-    $('[data-toggle="popover"]').popover();
-});

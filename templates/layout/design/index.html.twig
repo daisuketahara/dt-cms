@@ -1,0 +1,173 @@
+{% extends "layout/index.html.twig" %}
+
+{% block stylesheets %}
+{{ parent() }}
+{{ encore_entry_link_tags('app') }}
+<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="/css/design.css?v={{settingservice.getSetting('template.assets.version')}}">
+<link rel="shortcut icon" href="{{ asset('favicon.png') }}" type="image/png">
+{% endblock %}
+
+{% block body %}
+    <div id="logo">
+        <a href="/">
+        {{settingservice.getSetting('site.logo')|raw}}
+        </a>
+    </div>
+    <div id="menu-button">
+        <button class="hamburger hamburger--elastic" type="button" aria-label="Menu" aria-controls="navigation">
+            <span class="hamburger-box">
+                <span class="hamburger-inner"></span>
+            </span>
+        </button>
+        <div class="menu-text">Menu</div>
+    </div>
+    <main class="main-content">
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-dismissible alert-danger">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('notice') %}
+            <div class="alert alert-dismissible alert-info">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-dismissible alert-success">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="container-fluid font-12">
+        {{blockservice.getBlock('footer')|raw}}
+    </footer>
+    <nav id="navigation" style="display: none;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 align-middle">
+                    <span class="align-helper"></span>
+                    <ul class="navbar-nav align-middle d-inline-block">
+                    {% for menuItem in menuservice.getMenu(1) %}
+                        {% set submenu = menuservice.getSubMenu(menuItem.id) %}
+                        <li class="nav-item">
+                            <a href="/{{menuItem.route}}" class="nav-link">
+                            {{menuItem.label|raw}}
+                            {% if submenu is not empty %}<i class="fas fa-angle-down"></i>{% endif %}
+                            </a>
+                        {% set submenu = menuservice.getSubMenu(menuItem.id) %}
+                        {% if submenu is not empty %}
+                            <ul>
+                                {% for subMenuItem in submenu %}
+                                <li><a href="/{{subMenuItem.route}}">{{subMenuItem.label|raw}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-lg-6">
+                    <span class="align-helper"></span>
+                    <div id="navigation-functions" class="d-inline-block align-middle">
+                        <h3>{% trans %}Contactdetails{% endtrans %}</h3>
+                        <ul id="contact-info" class="list-unstyled">
+        					<li><i class="fas fa-phone"></i> +31 (0)85 0600 700</li>
+        					<li><i class="fab fa-whatsapp"></i> +31 (0)6 2114 6320</li>
+        					<li><i class="fas fa-at"></i> <a href="mailto:info@intermention.com">info@intermention.com</a></li>
+        				</ul>
+                        <h3>{% trans %}Switch language{% endtrans %}</h3>
+                        <ul id="language-switcher" class="list-inline">
+                        {% set activeLocales = localeservice.getActiveLocales() %}
+                        {% if activeLocales is not empty %}
+                            {% for activeLocale in activeLocales %}
+                            <li class="list-inline-item">
+                                <a href="{% if activeLocale.default is not empty %}/{% else %}/{{activeLocale.locale}}/{% endif %}">
+                                    <img src="/img/flags/{{activeLocale.lcid}}.png" alt="{{activeLocale.name}}">
+                                </a>
+                            </li>
+                            {% endfor %}
+                        {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+{% block javascripts %}
+{{ parent() }}
+    {{ encore_entry_script_tags('app') }}
+    <script>
+        jQuery(document).ready(function() {
+
+            jQuery('#menu-button button').click(function() {
+
+                if (jQuery(this).hasClass('is-active')) {
+                    jQuery(this).removeClass('is-active');
+                    jQuery('#navigation').fadeOut();
+                    jQuery('body').removeClass('menu-open');
+                    jQuery('#navigation .navbar-nav').removeClass('bounceInDown animated');
+                    jQuery('#navigation-functions').removeClass('bounceInUp animated');
+                } else {
+                    jQuery(this).addClass('is-active');
+                    jQuery('#navigation').fadeIn();
+                    jQuery('body').addClass('menu-open');
+                    jQuery('#navigation .navbar-nav').addClass('bounceInDown animated');
+                    jQuery('#navigation-functions').addClass('bounceInUp animated');
+                }
+            });
+
+            jQuery(window).scroll(function() {
+                setParalaxElements();
+            });
+            setParalaxElements();
+            function setParalaxElements() {
+
+                var position = jQuery(window).scrollTop();
+                var wHeight = jQuery(window).height();
+
+                jQuery('#hero-slider').css('top', (Math.floor(position/2)+'px'));
+                jQuery('#hero-content').css('top', (Math.floor(position/3)+'px'));
+
+                var pos_block_1 = jQuery('#step-block-bg-1').offset().top;
+                if (position >= pos_block_1-(wHeight*0.7)) jQuery('#step-block-bg-1').addClass('rubberBand animated');
+
+                var pos_block_2 = jQuery('#step-block-bg-2').offset().top;
+                if (position >= pos_block_2-(wHeight*0.7)) jQuery('#step-block-bg-2').addClass('rubberBand animated');
+
+                var pos_block_3 = jQuery('#step-block-bg-3').offset().top;
+                if (position >= pos_block_3-(wHeight*0.7)) jQuery('#step-block-bg-3').addClass('rubberBand animated');
+
+                var pos_skills = jQuery('#skills').offset().top;
+                if (position >= pos_skills-(wHeight*0.4)) jQuery('#skills').find('img').each(function() {
+                    jQuery(jQuery('#skills .row .skill:first-child img')).removeClass('flip').addClass('flip');
+                    setTimeout(function() { jQuery(jQuery('#skills .row .skill:nth-child(2) img')).removeClass('flip animated').addClass('flip animated'); }, 200);
+                    setTimeout(function() { jQuery(jQuery('#skills .row .skill:nth-child(3) img')).removeClass('flip animated').addClass('flip animated'); }, 400);
+                    setTimeout(function() { jQuery(jQuery('#skills .row .skill:nth-child(4) img')).removeClass('flip animated').addClass('flip animated'); }, 600);
+                    setTimeout(function() { jQuery(jQuery('#skills .row .skill:nth-child(5) img')).removeClass('flip animated').addClass('flip animated'); }, 800);
+                    setTimeout(function() { jQuery(jQuery('#skills .row .skill:nth-child(6) img')).removeClass('flip animated').addClass('flip animated'); }, 1000);
+                    setTimeout(function() { jQuery(jQuery('#skills .row .skill:nth-child(7) img')).removeClass('flip animated').addClass('flip animated'); }, 1200);
+                    setTimeout(function() { jQuery(jQuery('#skills .row .skill:nth-child(8) img')).removeClass('flip animated').addClass('flip animated'); }, 1400);
+                    setTimeout(function() { jQuery(jQuery('#skills .row .skill:last-child  img')).removeClass('flip animated').addClass('flip animated'); }, 1600);
+                });
+
+            }
+
+        });
+    </script>
+{% endblock %}
+{% block tracking %}
+    {% set trackingCode = settingservice.getSetting('site.tracking') %}
+    {{trackingCode|raw}}
+{% endblock %}

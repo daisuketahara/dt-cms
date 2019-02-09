@@ -1,9 +1,8 @@
 // https://symfony.com/doc/current/frontend/encore/installation.html
 
 yarn encore dev
-
-
 yarn encore dev --watch
-
-
 yarn encore production
+
+# Hamburgers
+https://jonsuh.com/hamburgers/

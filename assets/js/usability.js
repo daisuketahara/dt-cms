@@ -33,7 +33,8 @@
     function addScrollToTop() {
         if (body_height > window_height) {
             var button = '<a id="site-scroll-to-top" class="pointer">';
-            button += '<i class="fas fa-arrow-circle-up"></i>';
+            button += '<i class="fas fa-angle-up"></i>';
+            button += '<span>Back to top</span>';
             button += '</a>';
             jQuery('body').append(button);
         } else {
@@ -43,8 +44,7 @@
 
     function addScrollDown() {
         if (body_height > window_height) {
-            var button = '<a id="site-scroll-down" class="animated infinite pulse pointer">';
-            button += '<i class="fas fa-arrow-circle-down"></i>';
+            var button = '<a id="site-scroll-down" class="animated infinite rubberBand pointer">';
             button += '</a>';
             jQuery('body').append(button);
         } else {
