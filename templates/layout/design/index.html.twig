@@ -3,7 +3,6 @@
 {% block stylesheets %}
 {{ parent() }}
 {{ encore_entry_link_tags('app') }}
-<link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="/css/design.css?v={{settingservice.getSetting('template.assets.version')}}">
 <link rel="shortcut icon" href="{{ asset('favicon.png') }}" type="image/png">
 {% endblock %}
