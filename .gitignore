@@ -5,6 +5,7 @@
 config/services.yaml
 config/routes.yaml
 config/bundles.php
+config/packages/twig.yaml
 modules/*
 !modules/note.txt
 !modules/Background
