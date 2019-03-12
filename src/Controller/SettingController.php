@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Cache\Simple\FilesystemCache;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -137,6 +138,9 @@ class SettingController extends Controller
             $id = $setting->getId();
 
             $log->add('Setting', $id, $logMessage, $logComment);
+
+            $cache = new FilesystemCache();
+            $cache->delete('setting.'.$setting->getSettingKey());
 
             $this->addFlash(
                 'success',

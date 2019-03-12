@@ -21,19 +21,19 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
             {% for menuItem in menuservice.getMenu(1) %}
-                {% set submenu = menuservice.getSubMenu(menuItem.id) %}
                 <li class="nav-item">
                     <a href="/{{menuItem.route}}" class="nav-link">
                     {{menuItem.label|raw}}
-                    {% if submenu is not empty %}<i class="fas fa-angle-down"></i>{% endif %}
+                    {% if menuItem.submenu is defined %}<i class="fas fa-angle-down"></i>{% endif %}
                     </a>
-                {% set submenu = menuservice.getSubMenu(menuItem.id) %}
-                {% if submenu is not empty %}
+                {% if menuItem.submenu is defined %}
+                    {% if menuItem.submenu is iterable %}
                     <ul>
-                        {% for subMenuItem in submenu %}
-                        <li><a href="/{{subMenuItem.route}}">{{subMenuItem.label|raw}}</a></li>
+                        {% for submenu in menuItem.submenu %}
+                        <li><a href="/{{submenu.route}}">{{submenu.label|raw}}</a></li>
                         {% endfor %}
                     </ul>
+                    {% endif %}
                 {% endif %}
                 </li>
             {% endfor %}

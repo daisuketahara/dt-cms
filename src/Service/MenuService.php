@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Cache\Simple\FilesystemCache;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -23,6 +24,7 @@ class MenuService
 
     public function getMenu($menuId)
     {
+        $cache = new FilesystemCache();
         $session = new Session();
         $_locale = $this->requestStack->getCurrentRequest()->getLocale();
 
@@ -32,6 +34,11 @@ class MenuService
         if (!$locale) {
             $locale = $this->em->getRepository(Locale::class)
                 ->findOneBy(array('default' => true));
+        }
+
+        if ($cache->has('menu.' . $locale->getId() . '.' . $menuId)) {
+            $value = $cache->get('menu.' . $locale->getId() . '.' . $menuId);
+            return $value;
         }
 
         $sql = "SELECT
@@ -54,8 +61,39 @@ class MenuService
         $conn = $this->em->getConnection();
         $stmt = $conn->prepare($sql);
         $stmt->execute();
-        $menu = $stmt->fetchAll();
+        $mainMenu = $stmt->fetchAll();
 
+        $menu = array();
+
+        foreach($mainMenu as $mainMenuItem) {
+
+            $menuItem = array();
+            $menuItem['id'] = $mainMenuItem['id'];
+            $menuItem['icon'] = $mainMenuItem['icon'];
+            $menuItem['label'] = $mainMenuItem['label'];
+            $menuItem['route'] = $mainMenuItem['route'];
+
+            $mainMenuSub = $this->getSubMenu($mainMenuItem['id']);
+
+            $subMenu = array();
+
+            if ($mainMenuSub) {
+                foreach($mainMenuSub as $mainMenuSubItem) {
+
+                    $subMenuItem = array();
+                    $subMenuItem['id'] = $mainMenuSubItem['id'];
+                    $subMenuItem['icon'] = $mainMenuSubItem['icon'];
+                    $subMenuItem['label'] = $mainMenuSubItem['label'];
+                    $subMenuItem['route'] = $mainMenuSubItem['route'];
+                    $subMenu[] = $subMenuItem;
+                }
+                if (!empty($subMenu)) $menuItem['submenu'] = $subMenu;
+            }
+
+            $menu[] = $menuItem;
+        }
+
+        $cache->set('menu.' . $locale->getId() . '.' . $menuId, $menu);
         return $menu;
     }
 

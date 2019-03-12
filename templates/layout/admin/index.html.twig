@@ -43,19 +43,19 @@
         <nav class="dt-admin-menu">
             <ul>
             {% for menuItem in menuservice.getMenu(2) %}
-                {% set submenu = menuservice.getSubMenu(menuItem.id) %}
                 <li>
                     <a href="/{{ app.request.locale }}/{{menuItem.route}}">
                     {{menuItem.icon|raw}}{{menuItem.label|trans|raw}}
-                    {% if submenu is not empty %}<i class="fas fa-angle-right float-right"></i>{% endif %}
+                    {% if menuItem.submenu is defined %}<i class="fas fa-angle-right float-right"></i>{% endif %}
                     </a>
-                {% set submenu = menuservice.getSubMenu(menuItem.id) %}
-                {% if submenu is not empty %}
+                {% if menuItem.submenu is defined %}
+                    {% if menuItem.submenu is iterable %}
                     <ul>
-                        {% for subMenuItem in submenu %}
-                        <li><a href="/{{ app.request.locale }}/{{subMenuItem.route}}">{{subMenuItem.icon}}{{subMenuItem.label|trans|raw}}</a></li>
+                        {% for submenu in menuItem.submenu %}
+                        <li><a href="/{{ app.request.locale }}/{{submenu.route}}">{{submenu.icon}}{{submenu.label|trans|raw}}</a></li>
                         {% endfor %}
                     </ul>
+                    {% endif %}
                 {% endif %}
                 </li>
             {% endfor %}

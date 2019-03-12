@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use Symfony\Component\Cache\Simple\FilesystemCache;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\ORM\EntityManager;
 use App\Entity\Setting;
@@ -19,14 +20,21 @@ class SettingService
 
     public function getSetting($key)
     {
+        $cache = new FilesystemCache();
+
+        if ($cache->has('setting.'.$key)) {
+            $value = $cache->get('setting.'.$key);
+            return $value;
+        }
+
         $setting = $this->em->getRepository(Setting::class)
             ->findBy(array('settingKey' => $key), array());
 
-        if (!empty($setting)) return html_entity_decode($setting[0]->getSettingValue());
-
-        $parameter = $this->container->getParameter($key);
-        if (!empty($parameter)) return $parameter;
-
+        if (!empty($setting)) {
+            $value = html_entity_decode($setting[0]->getSettingValue());
+            $cache->set('setting.'.$key, $value);
+            return $value;
+        }
         return false;
     }
 }

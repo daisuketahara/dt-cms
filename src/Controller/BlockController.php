@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Cache\Simple\FilesystemCache;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -181,6 +182,9 @@ class BlockController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($block);
             $em->flush();
+
+            $cache = new FilesystemCache();
+            $cache->delete('block.' . $locale->getId() . '.' . $block->getTag());
 
             $log->add('Text block', $id, $logMessage, $logComment);
 
