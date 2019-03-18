@@ -1,0 +1,14 @@
+{% extends templateservice.getAdminTemplate() %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block content %}
+
+<form action="" method="post">
+    <input type="submit" name="submit" class="btn btn-primary" value="{% trans %}Clear Cache{% endtrans %}">
+</form>
+
+{% endblock %}
