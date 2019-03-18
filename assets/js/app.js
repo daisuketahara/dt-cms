@@ -1,5 +1,4 @@
 // assets/js/app.js
-// ...
 
 require('../scss/app.scss');
 require('animate.css');
@@ -11,3 +10,9 @@ require('./contact-form.js');
 // var $ = require('jquery');
 const $ = require('jquery');
 global.$ = global.jQuery = $;
+
+require('bootstrap');
+
+$(document).ready(function() {
+    $('[data-toggle="popover"]').popover();
+});

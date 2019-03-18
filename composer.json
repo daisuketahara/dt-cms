@@ -12,7 +12,7 @@
         "leafo/scssphp": "^0.7.7",
         "mollie/mollie-api-php": "^1.9",
         "mollie/oauth2-mollie-php": "^1.0",
-        "moment/moment": "^2.22",
+        "moment/moment": "^2.24",
         "nnnick/chartjs": "^2.7",
         "sensio/framework-extra-bundle": "^5.1",
         "spryng/spryng-api-http-php": "^1.3",

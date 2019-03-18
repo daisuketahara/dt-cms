@@ -106,19 +106,7 @@ class TemplateController extends Controller
         // Create symlinks
         // https://symfony.com/doc/current/components/filesystem.html
         $symlinks = array(
-            'assets/js/app.min.js' => 'public/js/app.js',
-            'assets/js/admin.min.js' => 'public/js/admin.js',
-            'assets/js/common.min.js' => 'public/js/common.js',
-            'assets/js/contact-form.min.js' => 'public/js/contact-form.js',
-            'assets/js/list.min.js' => 'public/js/list.js',
-            'assets/js/table.min.js' => 'public/js/table.js',
-            'assets/js/main.min.js' => 'public/js/main.js',
-            'assets/js/modal.min.js' => 'public/js/modal.js',
             'assets/js/dymo-print.min.js' => 'public/js/dymo-print.js',
-            'assets/js/paginator.min.js' => 'public/js/paginator.js',
-            'assets/js/simple-cookie-bar.min.js' => 'public/js/simple-cookie-bar.js',
-            'assets/js/usability.min.js' => 'public/js/usability.js',
-            'assets/vendor/popper.min.js' => 'public/vendor/popper.min.js',
             'assets/vendor/edit_area' => 'public/vendor/edit_area',
             'assets/vendor/onsen-ui' => 'public/vendor/onsen-ui',
             'assets/vendor/datetimepicker/build' => 'public/vendor/datetimepicker',
@@ -128,15 +116,10 @@ class TemplateController extends Controller
             'assets/vendor/JsBarcode.all.min.js' => 'public/vendor/JsBarcode.all.min.js',
             'assets/vendor/google-places.js' => 'public/vendor/google-places.js',
             'assets/vendor/intl-tel-input-14.0.0/build' => 'public/vendor/intl-tel-input',
-            'vendor/components/jquery/jquery.min.js' => 'public/vendor/jquery/jquery.min.js',
-            'vendor/components/jquery/jquery.min.map' => 'public/vendor/jquery/jquery.min.map',
-            'vendor/twbs/bootstrap/dist/js/bootstrap.min.js' => 'public/vendor/bootstrap/bootstrap.min.js',
-            'vendor/twbs/bootstrap/dist/js/bootstrap.min.js.map' => 'public/vendor/bootstrap/bootstrap.min.js.map',
             'vendor/bassjobsen/bootstrap-3-typeahead/bootstrap3-typeahead.min.js' => 'public/vendor/typeahead/bootstrap3-typeahead.min.js',
             'vendor/jackocnr/intl-tel-input/build' => 'public/vendor/intl-tel-input',
-            'vendor/summernote/summernote/dist' => 'public/vendor/summernote',
-            'vendor/moment/moment/min' => 'public/vendor/moment',
             'vendor/nnnick/chartjs/dist' => 'public/vendor/chartjs',
+            'vendor/moment/moment/min' => 'public/vendor/moment',
         );
 
         if ($fileSystem->exists('public/js')) $fileSystem->mkdir('public/js', 0644);

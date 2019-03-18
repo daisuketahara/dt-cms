@@ -10,6 +10,7 @@
 {% block javascripts %}
 {{ parent() }}
     {{ encore_entry_script_tags('admin') }}
+    <script src="{{ asset('vendor/moment/moment.min.js') }}"></script>
 {% endblock %}
 
 {% block body %}
