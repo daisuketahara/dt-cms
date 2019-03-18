@@ -1,0 +1,13 @@
+*
+!.gitignore
+!Kernel.php
+!Controller/*
+!Entity/*
+!EventListener/*
+!Form/*
+!Migrations/*
+!Repository/*
+!Routing/*
+!Security/*
+!Service/*
+!Routing/*
