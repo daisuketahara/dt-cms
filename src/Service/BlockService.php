@@ -2,13 +2,13 @@
 
 namespace App\Service;
 
-use Symfony\Component\Cache\Simple\FilesystemCache;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Doctrine\ORM\EntityManager;
 
 use App\Entity\Block;
 use App\Entity\Locale;
+use App\Service\CacheService;
 
 class BlockService
 {
@@ -23,7 +23,7 @@ class BlockService
 
     public function getBlock($key)
     {
-        $cache = new FilesystemCache();
+        $cache = new CacheService();
 
         $localeTag = $this->requestStack->getCurrentRequest()->getLocale();
         $locale = $this->em->getRepository(Locale::class)

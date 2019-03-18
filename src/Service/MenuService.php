@@ -3,13 +3,13 @@
 namespace App\Service;
 
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\Cache\Simple\FilesystemCache;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 use App\Entity\Locale;
 use App\Entity\MenuItems;
+use App\Service\CacheService;
 
 class MenuService
 {
@@ -24,7 +24,7 @@ class MenuService
 
     public function getMenu($menuId)
     {
-        $cache = new FilesystemCache();
+        $cache = new CacheService();
         $session = new Session();
         $_locale = $this->requestStack->getCurrentRequest()->getLocale();
 

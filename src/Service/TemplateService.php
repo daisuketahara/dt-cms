@@ -2,10 +2,11 @@
 
 namespace App\Service;
 
-use Symfony\Component\Cache\Simple\FilesystemCache;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\ORM\EntityManager;
+
 use App\Entity\Template;
+use App\Service\CacheService;
 
 class TemplateService
 {
@@ -20,7 +21,7 @@ class TemplateService
 
     public function getTemplate()
     {
-        $cache = new FilesystemCache();
+        $cache = new CacheService();
 
         if ($cache->has('template.front')) {
             $templateFile = $cache->get('template.front');
@@ -38,7 +39,7 @@ class TemplateService
 
     public function getAdminTemplate()
     {
-        $cache = new FilesystemCache();
+        $cache = new CacheService();
 
         if ($cache->has('template.admin')) {
             $templateFile = $cache->get('template.admin');

@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
 
+use App\Service\CacheService;
 
 class CacheController extends Controller
 {
@@ -20,7 +21,7 @@ class CacheController extends Controller
     final public function index(Request $request, TranslatorInterface $translator)
     {
         if ($request->isMethod('POST')) {
-            $cache = new FilesystemCache();
+            $cache = new CacheService();
             $cache->clear();
 
             $this->addFlash(
