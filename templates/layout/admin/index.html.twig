@@ -3,14 +3,18 @@
 {% block stylesheets %}
 {{ parent() }}
     <link href="https://fonts.googleapis.com/css?family=Ubuntu" media="screen" rel="stylesheet" type="text/css">
-    {{ encore_entry_link_tags('admin') }}
     <link rel="stylesheet" type="text/css" href="/css/admin.css?v={{settingservice.getSetting('template.assets.version')}}">
+    {{ encore_entry_link_tags('admin') }}
 {% endblock %}
 
 {% block javascripts %}
 {{ parent() }}
     {{ encore_entry_script_tags('admin') }}
     <script src="{{ asset('vendor/moment/moment.min.js') }}"></script>
+    <script>
+        jQuery('body').addClass('admin-nav-collapsed');
+
+    </script>
 {% endblock %}
 
 {% block body %}
@@ -22,31 +26,14 @@
             <a class="btn btn-secondary btn-sm" href="/{{ app.request.locale }}/admin/account/">{% trans %}My account{% endtrans %}</a>
             <a class="btn btn-secondary btn-sm" href="/{{ app.request.locale }}/logout/">{% trans %}Logout{% endtrans %}</a>
         </div>
-        <style>
-            .im-user-profile-picture {
-                width: 140px;
-                height: 140px;
-                margin: 0 auto;
-                border-radius: 80px;
-                background-color: white;
-                border: 2px solid white;
-                background-image: url(/img/im-logo-2018.png);
-                background-position: center center;
-                background-repeat: no-repeat;
-                background-size: cover;
-            }
-            .im-user-profile-name {
-                letter-spacing: 0.1rem;
-                text-transform: uppercase;
-            }
-        </style>
         {% block sidebar %}
         <nav class="dt-admin-menu">
             <ul>
             {% for menuItem in menuservice.getMenu(2) %}
                 <li>
                     <a href="/{{ app.request.locale }}/{{menuItem.route}}">
-                    {{menuItem.icon|raw}}{{menuItem.label|trans|raw}}
+                    {{menuItem.icon|raw}}
+                    <span>{{menuItem.label|trans|raw}}</span>
                     {% if menuItem.submenu is defined %}<i class="fas fa-angle-right float-right"></i>{% endif %}
                     </a>
                 {% if menuItem.submenu is defined %}
@@ -65,7 +52,11 @@
         {% endblock %}
     </div>
     <main class="admin-content">
-        {% if page_title is defined %}<h1>{{ page_title|trans|raw }}</h1>{% endif %}
+        <div class="row">
+            <div class="col">{% if page_title is defined %}<h1>{{ page_title|trans|raw }}</h1>{% endif %}</div>
+            <div class="col-auto">{% block topbar %}{% endblock %}</div>
+        </div>
+
         <!--
         <?php echo $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
         -->
