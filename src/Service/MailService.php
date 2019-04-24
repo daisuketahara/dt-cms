@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Locale;
 use App\Entity\MailQueue;
 use App\Entity\MailTemplate;
+use App\Entity\MailTemplateContent;
 use App\Service\SettingService;
 
 class MailService
@@ -28,13 +29,16 @@ class MailService
         $request = Request::createFromGlobals();
 
         $locale = $this->em->getRepository(Locale::class)
-            ->find($localeId);
+        ->find($localeId);
 
         $template = $this->em->getRepository(MailTemplate::class)
-            ->findOneBy(array('tag' => $tag, 'locale' => $locale));
+        ->findOneBy(array('tag' => $tag, 'locale' => $locale));
 
-        $body = $template->getBody();
-        $subject = $template->getSubject();
+        $templateContent = $this->em->getRepository(MailTemplateContent::class)
+        ->findOneBy(['mailTemplate' => $template, 'locale' => $locale]);
+
+        $body = $templateContent->getBody();
+        $subject = $templateContent->getSubject();
         if ($variables) {
             foreach($variables as $search => $replace) {
                 $body = str_replace('{'.$search.'}', $replace, $body);

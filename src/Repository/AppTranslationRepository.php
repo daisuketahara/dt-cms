@@ -15,14 +15,13 @@ class AppTranslationRepository extends ServiceEntityRepository
         parent::__construct($registry, AppTranslation::class);
     }
 
-    public function findTranslationsList($where='', $order='', $limit=0, $offset=0) {
+    public function findTranslationsList($where='', $order='', $limit=0, $offset=0)
+    {
 
-        $sql = "SELECT
-            	t.id,
-            	t.tag,
-            	CONCAT(CAST(ROUND(((SELECT COUNT(*) FROM app_translation AS t2 WHERE t2.translation <> '' AND t2.translation IS NOT NULL AND t2.tag=t.tag)/(SELECT COUNT(*) FROM locale AS l WHERE l.active=1))*100) AS CHAR(3)),'%') AS complete
-            FROM app_translation AS t
-            WHERE t.locale_id=(SELECT id FROM locale AS l2 WHERE `default`=1)";
+        $sql = "SELECT t.id, t.tag, ";
+        $sql .= "CONCAT(CAST(ROUND(((SELECT COUNT(*) FROM app_translation AS t2 WHERE t2.translation <> '' AND t2.translation IS NOT NULL AND t2.tag=t.tag)/(SELECT COUNT(*) FROM locale AS l WHERE l.active=1))*100) AS CHAR(3)),'%') AS complete ";
+        $sql .= "FROM app_translation AS t ";
+        $sql .= "WHERE t.locale_id=(SELECT id FROM locale AS l2 WHERE `default`=1)";
 
         $conn = $this->getEntityManager()->getConnection();
         $stmt = $conn->prepare($sql);
@@ -32,12 +31,28 @@ class AppTranslationRepository extends ServiceEntityRepository
         return $stmt->fetchAll();
     }
 
+    public function countTranslationsList($where='')
+    {
+
+        $sql = "SELECT COUNT(*) AS amount FROM app_translation AS t
+        WHERE t.locale_id=(SELECT id FROM locale AS l2 WHERE `default`=1)";
+
+        if (!empty($where)) $sql .= " AND " . $where;
+
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        //$stmt->execute(['price' => 10]);
+        $stmt->execute();
+
+        return $stmt->fetch()['amount'];
+    }
+
     public function findTranslationsByLocaleId($localeId)
     {
         $qb = $this->createQueryBuilder('t')
-            ->andWhere('t.locale = :locale')
-            ->setParameter('locale', $localeId)
-            ->getQuery();
+        ->andWhere('t.locale = :locale')
+        ->setParameter('locale', $localeId)
+        ->getQuery();
 
         return $qb->execute();
     }
@@ -45,11 +60,11 @@ class AppTranslationRepository extends ServiceEntityRepository
     public function findTranslation($tag, $localeId)
     {
         $qb = $this->createQueryBuilder('t')
-            ->andWhere('t.tag = :tag')
-            ->andWhere('t.locale = :locale')
-            ->setParameter('tag', $tag)
-            ->setParameter('locale', $localeId)
-            ->getQuery();
+        ->andWhere('t.tag = :tag')
+        ->andWhere('t.locale = :locale')
+        ->setParameter('tag', $tag)
+        ->setParameter('locale', $localeId)
+        ->getQuery();
 
         return $qb->setMaxResults(1)->getOneOrNullResult();
     }

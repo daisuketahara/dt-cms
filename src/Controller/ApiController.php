@@ -8,8 +8,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class ApiController extends AbstractController
 {
     /**
-     * @Route("/api/gettoken/", name="api_gettoken")
-     */
+    * @Route("/api/gettoken/", name="api_gettoken")
+    */
     public function getToken()
     {
 

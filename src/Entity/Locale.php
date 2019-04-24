@@ -6,68 +6,68 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\LocaleRepository")
- */
+* @ORM\Entity(repositoryClass="App\Repository\LocaleRepository")
+*/
 class Locale
 {
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    * @ORM\Id
+    * @ORM\GeneratedValue
+    * @ORM\Column(type="integer")
+    */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
-     */
+    * @ORM\Column(type="string", length=255)
+    * @Assert\NotBlank()
+    */
     protected $name;
 
     /**
-     * @ORM\Column(type="string", length=5, unique=true)
-     * @Assert\NotBlank()
-     */
+    * @ORM\Column(type="string", length=5, unique=true)
+    * @Assert\NotBlank()
+    */
     protected $locale;
 
     /**
-     * @ORM\Column(type="string", length=5, unique=true)
-     * @Assert\NotBlank()
-     */
+    * @ORM\Column(type="string", length=5, unique=true)
+    * @Assert\NotBlank()
+    */
     protected $lcid;
 
     /**
-     * @ORM\Column(type="string", length=5, unique=true)
-     * @Assert\NotBlank()
-     */
+    * @ORM\Column(type="string", length=5, unique=true)
+    * @Assert\NotBlank()
+    */
     protected $isoCode;
 
     /**
-     * @ORM\Column(type="boolean", unique=true)
-     */
+    * @ORM\Column(type="boolean", unique=true)
+    */
     protected $default;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
+    * @ORM\Column(type="boolean")
+    */
     protected $active;
 
     /**
-     * Get the value of Id
-     *
-     * @return mixed
-     */
+    * Get the value of Id
+    *
+    * @return mixed
+    */
     public function getId()
     {
         return $this->id;
     }
 
     /**
-     * Set the value of Id
-     *
-     * @param mixed id
-     *
-     * @return self
-     */
+    * Set the value of Id
+    *
+    * @param mixed id
+    *
+    * @return self
+    */
     public function setId($id)
     {
         $this->id = $id;
@@ -76,22 +76,22 @@ class Locale
     }
 
     /**
-     * Get the value of Name
-     *
-     * @return mixed
-     */
+    * Get the value of Name
+    *
+    * @return mixed
+    */
     public function getName()
     {
         return $this->name;
     }
 
     /**
-     * Set the value of Name
-     *
-     * @param mixed name
-     *
-     * @return self
-     */
+    * Set the value of Name
+    *
+    * @param mixed name
+    *
+    * @return self
+    */
     public function setName($name)
     {
         $this->name = $name;
@@ -100,22 +100,22 @@ class Locale
     }
 
     /**
-     * Get the value of Locale
-     *
-     * @return mixed
-     */
+    * Get the value of Locale
+    *
+    * @return mixed
+    */
     public function getLocale()
     {
         return $this->locale;
     }
 
     /**
-     * Set the value of Locale
-     *
-     * @param mixed locale
-     *
-     * @return self
-     */
+    * Set the value of Locale
+    *
+    * @param mixed locale
+    *
+    * @return self
+    */
     public function setLocale($locale)
     {
         $this->locale = $locale;
@@ -124,22 +124,22 @@ class Locale
     }
 
     /**
-     * Get the value of Lcid
-     *
-     * @return mixed
-     */
+    * Get the value of Lcid
+    *
+    * @return mixed
+    */
     public function getLcid()
     {
         return $this->lcid;
     }
 
     /**
-     * Set the value of Lcid
-     *
-     * @param mixed lcid
-     *
-     * @return self
-     */
+    * Set the value of Lcid
+    *
+    * @param mixed lcid
+    *
+    * @return self
+    */
     public function setLcid($lcid)
     {
         $this->lcid = $lcid;
@@ -148,22 +148,22 @@ class Locale
     }
 
     /**
-     * Get the value of Iso Code
-     *
-     * @return mixed
-     */
+    * Get the value of Iso Code
+    *
+    * @return mixed
+    */
     public function getIsoCode()
     {
         return $this->isoCode;
     }
 
     /**
-     * Set the value of Iso Code
-     *
-     * @param mixed isoCode
-     *
-     * @return self
-     */
+    * Set the value of Iso Code
+    *
+    * @param mixed isoCode
+    *
+    * @return self
+    */
     public function setIsoCode($isoCode)
     {
         $this->isoCode = $isoCode;
@@ -172,22 +172,22 @@ class Locale
     }
 
     /**
-     * Get the value of Default
-     *
-     * @return mixed
-     */
+    * Get the value of Default
+    *
+    * @return mixed
+    */
     public function getDefault()
     {
         return $this->default;
     }
 
     /**
-     * Set the value of Default
-     *
-     * @param mixed default
-     *
-     * @return self
-     */
+    * Set the value of Default
+    *
+    * @param mixed default
+    *
+    * @return self
+    */
     public function setDefault($default)
     {
         $this->default = $default;
@@ -196,22 +196,22 @@ class Locale
     }
 
     /**
-     * Get the value of Active
-     *
-     * @return mixed
-     */
+    * Get the value of Active
+    *
+    * @return mixed
+    */
     public function getActive()
     {
         return $this->active;
     }
 
     /**
-     * Set the value of Active
-     *
-     * @param mixed active
-     *
-     * @return self
-     */
+    * Set the value of Active
+    *
+    * @param mixed active
+    *
+    * @return self
+    */
     public function setActive($active)
     {
         $this->active = $active;

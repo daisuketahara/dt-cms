@@ -1,32 +1,138 @@
 {% extends templateservice.getAdminTemplate() %}
 
 {% block content %}
-<table class="table table-hover table-striped">
-    <thead class="thead-dark">
-        <tr>
-            <th class="width-100" data-column="id">{% trans %}ID{% endtrans %}</th>
-            <th data-column="name">{% trans %}Name{% endtrans %}</th>
-            <th data-column="runCount">{% trans %}Run count{% endtrans %}</th>
-            <th data-column="lastRun">{% trans %}Last run{% endtrans %}</th>
-            <th data-column="nextRun">{% trans %}Next run{% endtrans %}</th>
-            <th data-column="active">{% trans %}Active{% endtrans %}</th>
-        </tr>
-    </thead>
-</table>
+<datamanager></datamanager>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+    {{ encore_entry_link_tags('data-manager') }}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
+        var apikey = '{{apikey}}';
 
-        $('.table').dtTable({
-            ajaxUrl: '/{{ app.request.locale }}/admin/cron/get/',
-            addUrl: '/{{ app.request.locale }}/admin/cron/add/',
-            editUrl: '/{{ app.request.locale }}/admin/cron/edit/',
-            deleteUrl: '/{{ app.request.locale }}/admin/cron/delete/',
-            filter: true,
-            limit: 15
-        });
+        var api = {
+            list: '/cron/list/',
+            get: '/cron/get/',
+            insert: '/cron/insert/',
+            update: '/cron/update/',
+            delete: '/cron/delete/'
+        };
+
+        var columns = [
+            {
+                id: 'id',
+                label: '{% trans %}ID{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: false,
+                show_list: true,
+                show_form: false,
+            },
+            {
+                id: 'name',
+                label: '{% trans %}Name{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            },
+            {
+                id: 'script',
+                label: '{% trans %}Script{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: false,
+                show_form: true,
+            },
+            {
+                id: 'minute',
+                label: '{% trans %}Minute{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: false,
+                show_form: true,
+            },
+            {
+                id: 'hour',
+                label: '{% trans %}Hour{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: false,
+                show_form: true,
+            },
+            {
+                id: 'day',
+                label: '{% trans %}Day{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: false,
+                show_form: true,
+            },
+            {
+                id: 'month',
+                label: '{% trans %}Month{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: false,
+                show_form: true,
+            },
+            {
+                id: 'day_of_week',
+                label: '{% trans %}Day of week{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: false,
+                show_form: true,
+            },
+            {
+                id: 'last_run',
+                label: '{% trans %}Last run{% endtrans %}',
+                type: 'datetime',
+                required: false,
+                editable: false,
+                show_list: true,
+                show_form: false,
+            },
+            {
+                id: 'next_run',
+                label: '{% trans %}Next run{% endtrans %}',
+                type: 'datetime',
+                required: false,
+                editable: false,
+                show_list: true,
+                show_form: false,
+            },
+            {
+                id: 'run_count',
+                label: '{% trans %}Run count{% endtrans %}',
+                type: 'text',
+                required: false,
+                editable: false,
+                show_list: true,
+                show_form: false,
+            },
+            {
+                id: 'active',
+                label: '{% trans %}Active{% endtrans %}',
+                type: 'checkbox',
+                required: false,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            }
+        ];
 
     </script>
+    {{ encore_entry_script_tags('data-manager') }}
 {% endblock %}

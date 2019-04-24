@@ -7,95 +7,97 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
+use App\Entity\Locale;
+
 /**
- * @ORM\Table(name="users")
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- */
+* @ORM\Table(name="users")
+* @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+*/
 class User implements AdvancedUserInterface, \Serializable
 {
 
     /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
+    * @ORM\Column(type="integer")
+    * @ORM\Id
+    * @ORM\GeneratedValue(strategy="AUTO")
+    */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
-     */
+    * @ORM\Column(type="string", length=255)
+    * @Assert\NotBlank()
+    */
     private $firstname;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
+    * @ORM\Column(type="string", length=255)
+    */
     private $lastname;
 
     /**
-     * @ORM\Column(type="string", length=60, unique=true)
-     */
+    * @ORM\Column(type="string", length=60, unique=true)
+    */
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=64)
-     * @Assert\NotBlank()
-     */
+    * @ORM\Column(type="string", length=64)
+    * @Assert\NotBlank()
+    */
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=60, unique=true, nullable=true)
-     */
+    * @ORM\Column(type="string", length=60, unique=true, nullable=true)
+    */
     private $phone;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Locale")
-     */
+    * @ORM\ManyToOne(targetEntity="App\Entity\Locale")
+    */
     protected $locale;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\UserInformation", cascade={"persist", "remove"})
-     */
+    * @ORM\OneToOne(targetEntity="App\Entity\UserInformation", cascade={"persist", "remove"})
+    */
     private $information;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\UserNote", cascade={"persist", "remove"})
-     */
+    * @ORM\OneToOne(targetEntity="App\Entity\UserNote", cascade={"persist", "remove"})
+    */
     private $note;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Permission")
-     */
+    * @ORM\ManyToMany(targetEntity="App\Entity\Permission")
+    */
     protected $permissions;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Role")
-     */
+    * @ORM\ManyToMany(targetEntity="App\Entity\Role")
+    */
     protected $roles;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
+    * @ORM\Column(type="boolean")
+    */
     private $emailConfirmed = false;
 
     /**
-     * @ORM\Column(type="boolean")
-     */
+    * @ORM\Column(type="boolean")
+    */
     private $phoneConfirmed = false;
 
     /**
-     * @ORM\Column(type="string", length=60, unique=true, nullable=true)
-     */
+    * @ORM\Column(type="string", length=60, unique=true, nullable=true)
+    */
     private $confirmKey;
 
     /**
-     * @ORM\Column(type="datetime")
-     */
+    * @ORM\Column(type="datetime")
+    */
     protected $creationDate;
 
     /**
-     * @ORM\Column(name="active", type="boolean")
-     */
+    * @ORM\Column(name="active", type="boolean")
+    */
     private $active;
 
     public function __construct()
@@ -108,22 +110,22 @@ class User implements AdvancedUserInterface, \Serializable
     }
 
     /**
-     * Get the value of Id
-     *
-     * @return mixed
-     */
+    * Get the value of Id
+    *
+    * @return mixed
+    */
     public function getId()
     {
         return $this->id;
     }
 
     /**
-     * Set the value of Id
-     *
-     * @param mixed id
-     *
-     * @return self
-     */
+    * Set the value of Id
+    *
+    * @param mixed id
+    *
+    * @return self
+    */
     public function setId($id)
     {
         $this->id = $id;
@@ -132,22 +134,22 @@ class User implements AdvancedUserInterface, \Serializable
     }
 
     /**
-     * Get the value of Email
-     *
-     * @return mixed
-     */
+    * Get the value of Email
+    *
+    * @return mixed
+    */
     public function getEmail()
     {
         return $this->email;
     }
 
     /**
-     * Set the value of Email
-     *
-     * @param mixed email
-     *
-     * @return self
-     */
+    * Set the value of Email
+    *
+    * @param mixed email
+    *
+    * @return self
+    */
     public function setEmail($email)
     {
         $this->email = $email;
@@ -156,22 +158,22 @@ class User implements AdvancedUserInterface, \Serializable
     }
 
     /**
-     * Get the value of Firstname
-     *
-     * @return mixed
-     */
+    * Get the value of Firstname
+    *
+    * @return mixed
+    */
     public function getFirstname()
     {
         return $this->firstname;
     }
 
     /**
-     * Set the value of Firstname
-     *
-     * @param mixed firstname
-     *
-     * @return self
-     */
+    * Set the value of Firstname
+    *
+    * @param mixed firstname
+    *
+    * @return self
+    */
     public function setFirstname($firstname)
     {
         $this->firstname = $firstname;
@@ -180,22 +182,22 @@ class User implements AdvancedUserInterface, \Serializable
     }
 
     /**
-     * Get the value of Lastname
-     *
-     * @return mixed
-     */
+    * Get the value of Lastname
+    *
+    * @return mixed
+    */
     public function getLastname()
     {
         return $this->lastname;
     }
 
     /**
-     * Set the value of Lastname
-     *
-     * @param mixed lastname
-     *
-     * @return self
-     */
+    * Set the value of Lastname
+    *
+    * @param mixed lastname
+    *
+    * @return self
+    */
     public function setLastname($lastname)
     {
         $this->lastname = $lastname;
@@ -204,32 +206,32 @@ class User implements AdvancedUserInterface, \Serializable
     }
 
     /**
-     * Get the value of Lastname
-     *
-     * @return mixed
-     */
+    * Get the value of Lastname
+    *
+    * @return mixed
+    */
     public function getFullname()
     {
         return $this->firstname . ' ' . $this->lastname;
     }
 
     /**
-     * Get the value of Phone
-     *
-     * @return mixed
-     */
+    * Get the value of Phone
+    *
+    * @return mixed
+    */
     public function getPhone()
     {
         return $this->phone;
     }
 
     /**
-     * Set the value of Phone
-     *
-     * @param mixed phone
-     *
-     * @return self
-     */
+    * Set the value of Phone
+    *
+    * @param mixed phone
+    *
+    * @return self
+    */
     public function setPhone($phone)
     {
         $this->phone = $phone;
@@ -238,22 +240,22 @@ class User implements AdvancedUserInterface, \Serializable
     }
 
     /**
-     * Get the value of Locale
-     *
-     * @return mixed
-     */
+    * Get the value of Locale
+    *
+    * @return mixed
+    */
     public function getLocale()
     {
         return $this->locale;
     }
 
     /**
-     * Set the value of Locale
-     *
-     * @param mixed locale
-     *
-     * @return self
-     */
+    * Set the value of Locale
+    *
+    * @param mixed locale
+    *
+    * @return self
+    */
     public function setLocale($locale)
     {
         $this->locale = $locale;
@@ -262,22 +264,22 @@ class User implements AdvancedUserInterface, \Serializable
     }
 
     /**
-     * Get the value of Email Confirmed
-     *
-     * @return mixed
-     */
+    * Get the value of Email Confirmed
+    *
+    * @return mixed
+    */
     public function getEmailConfirmed()
     {
         return $this->emailConfirmed;
     }
 
     /**
-     * Set the value of Email Confirmed
-     *
-     * @param mixed emailConfirmed
-     *
-     * @return self
-     */
+    * Set the value of Email Confirmed
+    *
+    * @param mixed emailConfirmed
+    *
+    * @return self
+    */
     public function setEmailConfirmed($emailConfirmed)
     {
         $this->emailConfirmed = $emailConfirmed;
@@ -286,22 +288,22 @@ class User implements AdvancedUserInterface, \Serializable
     }
 
     /**
-     * Get the value of Phone Confirmed
-     *
-     * @return mixed
-     */
+    * Get the value of Phone Confirmed
+    *
+    * @return mixed
+    */
     public function getPhoneConfirmed()
     {
         return $this->phoneConfirmed;
     }
 
     /**
-     * Set the value of Phone Confirmed
-     *
-     * @param mixed phoneConfirmed
-     *
-     * @return self
-     */
+    * Set the value of Phone Confirmed
+    *
+    * @param mixed phoneConfirmed
+    *
+    * @return self
+    */
     public function setPhoneConfirmed($phoneConfirmed)
     {
         $this->phoneConfirmed = $phoneConfirmed;
@@ -310,22 +312,22 @@ class User implements AdvancedUserInterface, \Serializable
     }
 
     /**
-     * Get the value of Confirm Key
-     *
-     * @return mixed
-     */
+    * Get the value of Confirm Key
+    *
+    * @return mixed
+    */
     public function getConfirmKey()
     {
         return $this->confirmKey;
     }
 
     /**
-     * Set the value of Confirm Key
-     *
-     * @param mixed confirmKey
-     *
-     * @return self
-     */
+    * Set the value of Confirm Key
+    *
+    * @param mixed confirmKey
+    *
+    * @return self
+    */
     public function setConfirmKey($confirmKey)
     {
         $this->confirmKey = $confirmKey;
@@ -334,22 +336,22 @@ class User implements AdvancedUserInterface, \Serializable
     }
 
     /**
-     * Get the value of Creation Date
-     *
-     * @return mixed
-     */
+    * Get the value of Creation Date
+    *
+    * @return mixed
+    */
     public function getCreationDate()
     {
         return $this->creationDate;
     }
 
     /**
-     * Set the value of Creation Date
-     *
-     * @param mixed creationDate
-     *
-     * @return self
-     */
+    * Set the value of Creation Date
+    *
+    * @param mixed creationDate
+    *
+    * @return self
+    */
     public function setCreationDate($creationDate)
     {
         $this->creationDate = $creationDate;
@@ -358,22 +360,22 @@ class User implements AdvancedUserInterface, \Serializable
     }
 
     /**
-     * Get the value of Active
-     *
-     * @return mixed
-     */
+    * Get the value of Active
+    *
+    * @return mixed
+    */
     public function getActive()
     {
         return $this->active;
     }
 
     /**
-     * Set the value of Active
-     *
-     * @param mixed active
-     *
-     * @return self
-     */
+    * Set the value of Active
+    *
+    * @param mixed active
+    *
+    * @return self
+    */
     public function setActive($active)
     {
         $this->active = $active;
@@ -395,22 +397,22 @@ class User implements AdvancedUserInterface, \Serializable
 
 
     /**
-     * Get the value of Password
-     *
-     * @return mixed
-     */
+    * Get the value of Password
+    *
+    * @return mixed
+    */
     public function getPassword()
     {
         return $this->password;
     }
 
     /**
-     * Set the value of Password
-     *
-     * @param mixed password
-     *
-     * @return self
-     */
+    * Set the value of Password
+    *
+    * @param mixed password
+    *
+    * @return self
+    */
     public function setPassword($password)
     {
         $this->password = $password;
@@ -467,144 +469,144 @@ class User implements AdvancedUserInterface, \Serializable
             $this->active,
             // see section on salt below
             // $this->salt
-        ) = unserialize($serialized);
-    }
-
-    /**
-     * Get the value of Information
-     *
-     * @return mixed
-     */
-    public function getInformation()
-    {
-        return $this->information;
-    }
-
-    /**
-     * Set the value of Information
-     *
-     * @param mixed information
-     *
-     * @return self
-     */
-    public function setInformation($information)
-    {
-        $this->information = $information;
-
-        return $this;
-    }
-
-
-    /**
-     * Get the value of Note
-     *
-     * @return mixed
-     */
-    public function getNote()
-    {
-        return $this->note;
-    }
-
-    /**
-     * Set the value of Note
-     *
-     * @param mixed note
-     *
-     * @return self
-     */
-    public function setNote($note)
-    {
-        $this->note = $note;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of Permissions
-     *
-     * @return mixed
-     */
-    public function getPermissions()
-    {
-        return $this->permissions;
-    }
-
-    /**
-     * Set the value of Permissions
-     *
-     * @param mixed permissions
-     *
-     * @return self
-     */
-    public function setPermissions($permissions)
-    {
-        $this->permissions = $permissions;
-
-        return $this;
-    }
-
-    /**
-     * @param Permission $permission
-     */
-    public function addPermission(Permission $permission)
-    {
-        if ($this->permissions->contains($permission)) {
-            return;
+            ) = unserialize($serialized);
         }
-        $this->permissions->add($permission);
-    }
 
-    /**
-     * @param Permission $permission
-     */
-    public function removePermission(Permission $permission)
-    {
-        if (!$this->permissions->contains($permission)) {
-            return;
+        /**
+        * Get the value of Information
+        *
+        * @return mixed
+        */
+        public function getInformation()
+        {
+            return $this->information;
         }
-        $this->permissions->removeElement($permission);
-    }
 
-    /**
-     * Get the value of roles
-     *
-     * @return mixed
-     */
-    public function getRoles()
-    {
-        //return $this->roles;
-        return array('ROLE_ADMIN', 'ROLE_SUPER_ADMIN');
-    }
+        /**
+        * Set the value of Information
+        *
+        * @param mixed information
+        *
+        * @return self
+        */
+        public function setInformation($information)
+        {
+            $this->information = $information;
 
-    /**
-     * Get the value of roles
-     *
-     * @return mixed
-     */
-    public function getUserRoles()
-    {
-        return $this->roles;
-    }
-
-    /**
-     * @param Role $role
-     */
-    public function addRole(Role $role)
-    {
-        if ($this->roles->contains($role)) {
-            return;
+            return $this;
         }
-        $this->roles->add($role);
-    }
 
-    /**
-     * @param Role $role
-     */
-    public function removeRole(Role $role)
-    {
-        if (!$this->roles->contains($role)) {
-            return;
+
+        /**
+        * Get the value of Note
+        *
+        * @return mixed
+        */
+        public function getNote()
+        {
+            return $this->note;
         }
-        $this->roles->removeElement($role);
+
+        /**
+        * Set the value of Note
+        *
+        * @param mixed note
+        *
+        * @return self
+        */
+        public function setNote($note)
+        {
+            $this->note = $note;
+
+            return $this;
+        }
+
+        /**
+        * Get the value of Permissions
+        *
+        * @return mixed
+        */
+        public function getPermissions()
+        {
+            return $this->permissions;
+        }
+
+        /**
+        * Set the value of Permissions
+        *
+        * @param mixed permissions
+        *
+        * @return self
+        */
+        public function setPermissions($permissions)
+        {
+            $this->permissions = $permissions;
+
+            return $this;
+        }
+
+        /**
+        * @param Permission $permission
+        */
+        public function addPermission(Permission $permission)
+        {
+            if ($this->permissions->contains($permission)) {
+                return;
+            }
+            $this->permissions->add($permission);
+        }
+
+        /**
+        * @param Permission $permission
+        */
+        public function removePermission(Permission $permission)
+        {
+            if (!$this->permissions->contains($permission)) {
+                return;
+            }
+            $this->permissions->removeElement($permission);
+        }
+
+        /**
+        * Get the value of roles
+        *
+        * @return mixed
+        */
+        public function getRoles()
+        {
+            //return $this->roles;
+            return array('ROLE_ADMIN', 'ROLE_SUPER_ADMIN');
+        }
+
+        /**
+        * Get the value of roles
+        *
+        * @return mixed
+        */
+        public function getUserRoles()
+        {
+            return $this->roles;
+        }
+
+        /**
+        * @param Role $role
+        */
+        public function addRole(Role $role)
+        {
+            if ($this->roles->contains($role)) {
+                return;
+            }
+            $this->roles->add($role);
+        }
+
+        /**
+        * @param Role $role
+        */
+        public function removeRole(Role $role)
+        {
+            if (!$this->roles->contains($role)) {
+                return;
+            }
+            $this->roles->removeElement($role);
+        }
     }
-}

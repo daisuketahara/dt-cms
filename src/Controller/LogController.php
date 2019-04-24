@@ -7,98 +7,39 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 use App\Entity\Log;
-use App\Service\LogService;
 use App\Service\SettingService;
 
 class LogController extends Controller
 {
     /**
-     * @Route("/{_locale}/admin/log/", name="log"))
-     */
-     final public function list(TranslatorInterface $translator)
-     {
-         return $this->render('log/admin/list.html.twig', array(
-             'page_title' => $translator->trans('Log'),
-             'can_add' => true,
-             'can_edit' => true,
-             'can_delete' => true,
-         ));
-     }
+    * @Route("/{_locale}/admin/log/", name="log"))
+    */
+    final public function list(TranslatorInterface $translator)
+    {
+        return $this->render('log/admin/list.html.twig', array(
+            'apikey' => 'ce07f59f2eca96d9e3e4dbe2becce743',
+            'page_title' => $translator->trans('Log'),
+        ));
+    }
 
-     /**
-      * @Route("/{_locale}/admin/log/get/", name="log_get"))
-      */
-     final public function getLog(Request $request)
-     {
-         $sort_column = $request->request->get('sortColumn', 'id');
-         $sort_direction = strtoupper($request->request->get('sortDirection', 'desc'));
-         $limit = $request->request->get('limit', 15);
-         $offset = $request->request->get('offset', 0);
-         $filter = $request->request->get('filter', '');
+    /**
+    * @Route("/cron/log/clear/", name="log_clear")
+    */
+    final public function clear(SettingService $setting)
+    {
+        $days = $setting->getSetting('log.history.days');
 
-         $where = array();
-         $whereString = '1=1';
-         $filter = explode('&', $filter);
-         if (!empty($filter))
-         foreach($filter as $filter_item) {
-             $filter_item = explode('=', $filter_item);
-             if (!empty($filter_item[1])) {
-                 $where[$filter_item[0]] = $filter_item[1];
-                 $whereString .= " AND `" . $filter_item[0] . "`='" . $filter_item[1] . "'";
-             }
-         }
+        $em = $this->getDoctrine()->getManager();
+        $mail = $em->getRepository(Log::class)->deleteOldRecords($days);
 
-         $qb = $this->getDoctrine()->getRepository(Log::class)->createQueryBuilder('l');
-         $qb->select('count(l.id)');
-         $qb->where($whereString);
-         $count = $qb->getQuery()->getSingleScalarResult();
+        $logMessage = 'Cleared log';
 
-         if (!empty($limit)) {
-             $log = $this->getDoctrine()
-                 ->getRepository(Log::class)
-                 ->findBy($where, array($sort_column => $sort_direction), $limit, $offset);
-         } else {
-              $log = $this->getDoctrine()
-                  ->getRepository(Log::class)
-                  ->findBy($where, array($sort_column => $sort_direction));
-         }
+        //$log->add('Mail Queue', 0, $logMessage, 'Clear mail queue');
 
-         $encoders = array(new XmlEncoder(), new JsonEncoder());
-         $normalizers = array(new ObjectNormalizer());
-         $serializer = new Serializer($normalizers, $encoders);
-
-         $json = array(
-             'total' => $count,
-             'data' => $log
-         );
-
-         $json = $serializer->serialize($json, 'json');
-
-         return $this->json($json);
-     }
-
-     /**
-      * @Route("/cron/log/clear/", name="log_clear")
-      */
-     final public function clear(SettingService $setting, LogService $log)
-     {
-         $days = $setting->getSetting('log.history.days');
-
-         $em = $this->getDoctrine()->getManager();
-         $mail = $em->getRepository(Log::class)->deleteOldRecords($days);
-
-         $logMessage = 'Cleared log';
-
-         //$log->add('Mail Queue', 0, $logMessage, 'Clear mail queue');
-
-         return new Response(
-             'Emails cleared from queue'
-         );
-     }
+        return new Response(
+            'Old items in log have been cleared'
+        );
+    }
 }

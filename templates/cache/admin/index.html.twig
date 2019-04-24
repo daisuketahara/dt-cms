@@ -1,14 +1,32 @@
 {% extends templateservice.getAdminTemplate() %}
 
 
-{% block javascripts %}
-    {{ parent() }}
-{% endblock %}
 
 {% block content %}
+<control></control>
+{% endblock %}
 
-<form action="" method="post">
-    <input type="submit" name="submit" class="btn btn-primary" value="{% trans %}Clear Cache{% endtrans %}">
-</form>
+{% block stylesheets %}
+{{ parent() }}
+    {{ encore_entry_link_tags('control') }}
+{% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var apikey = '{{apikey}}';
+
+        var api = {
+
+        };
+
+        var elements = [
+            {
+                type: 'button',
+                label: '{% trans %}Clear cache{% endtrans %}',
+                api: '/cache/clear/'
+            }
+        ];
+    </script>
+    {{ encore_entry_script_tags('control') }}
 {% endblock %}

@@ -5,6 +5,7 @@
 namespace App\Security;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -95,7 +96,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
         }
 
         return new PreAuthenticatedToken(
-            'anon.',
+            '$token.',
             $apiKey,
             $providerKey
         );

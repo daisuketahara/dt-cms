@@ -34,7 +34,7 @@
 {% block stylesheets %}{% endblock %}
 {{blockservice.getBlock('head')|raw}}
     </head>
-    <body>
+    <body data-locale="{{ app.request.locale }}">
 {% block body %}{% endblock %}
         <div class="modal fade" id="dt-modal" tabindex="-1" role="dialog" aria-labelledby="dt-modal" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -53,21 +53,30 @@
             </div>
         </div>
 {% block javascripts %}
-        <script>
-
-            var translations = {
-                'Close': '{% trans %}Close{% endtrans %}',
-                'Cancel': '{% trans %}Cancel{% endtrans %}',
-                'Delete': '{% trans %}Delete{% endtrans %}',
-                'Error': '{% trans %}Error{% endtrans %}',
-                'An error has occurred.': '{% trans %}An error has occurred.{% endtrans %}',
-                'Please try again.': '{% trans %}Please try again.{% endtrans %}',
-                'View record': '{% trans %}View record{% endtrans %}',
-                'Confirm delete': '{% trans %}Confirm delete{% endtrans %}',
-                'You are about to delete a record, this cannot be undone.': '{% trans %}You are about to delete a record, this cannot be undone.{% endtrans %}',
-                'Do you want to proceed?': '{% trans %}Do you want to proceed?{% endtrans %}',
-            }
-        </script>
+    <script>
+        var translations = {
+            'submit': '{% trans %}Submit{% endtrans %}',
+            'saved': '{% trans %}The data has been saved{% endtrans %}',
+            'new': '{% trans %}New{% endtrans %}',
+            'edit': '{% trans %}Edit{% endtrans %}',
+            'back': '{% trans %}Go back{% endtrans %}',
+            'close': '{% trans %}Close{% endtrans %}',
+            'cancel': '{% trans %}Cancel{% endtrans %}',
+            'delete': '{% trans %}Delete{% endtrans %}',
+            'error': '{% trans %}Error{% endtrans %}',
+            'filter': '{% trans %}Filter{% endtrans %}',
+            'reset_filter': '{% trans %}Reset filter{% endtrans %}',
+            'error_test': '{% trans %}An error has occurred.{% endtrans %}',
+            'try_again': '{% trans %}Please try again.{% endtrans %}',
+            'view_record': '{% trans %}View record{% endtrans %}',
+            'delete_selected': '{% trans %}Delete selected{% endtrans %}',
+            'confirm_delete': '{% trans %}Confirm delete{% endtrans %}',
+            'confirm_delete_text': '{% trans %}You are about to delete a record, this cannot be undone.{% endtrans %}',
+            'confirm_multiple_delete_text': '{% trans %}You are about to delete multiple records, this cannot be undone.{% endtrans %}',
+            'delete_confirmation': '{% trans %}The record has been deleted.{% endtrans %}',
+            'want_proceed': '{% trans %}Do you want to proceed?{% endtrans %}'
+        }
+    </script>
 {% endblock %}
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     </body>

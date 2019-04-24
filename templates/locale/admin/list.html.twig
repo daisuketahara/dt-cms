@@ -1,36 +1,93 @@
 {% extends templateservice.getAdminTemplate() %}
 
-{% set page_title='Locale' %}
-
 {% block content %}
-<table class="table table-hover table-striped">
-    <thead class="thead-dark">
-        <tr>
-            <th class="width-100" data-column="id">{% trans %}ID{% endtrans %}</th>
-            <th data-column="name">{% trans %}Language{% endtrans %}</th>
-            <th data-column="locale">{% trans %}Locale{% endtrans %}</th>
-            <th data-column="lcid">{% trans %}LCID{% endtrans %}</th>
-            <th data-column="isoCode">{% trans %}ISO Code{% endtrans %}</th>
-            <th data-column="default">{% trans %}Default{% endtrans %}</th>
-            <th data-column="active">{% trans %}Active{% endtrans %}</th>
-        </tr>
-    </thead>
-</table>
+<datamanager></datamanager>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+    {{ encore_entry_link_tags('data-manager') }}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
+        var apikey = '{{apikey}}';
 
-        $('.table').dtTable({
-            ajaxUrl: '/{{ app.request.locale }}/admin/locale/get/',
-            addUrl: '/{{ app.request.locale }}/admin/locale/add/',
-            editUrl: '/{{ app.request.locale }}/admin/locale/edit/',
-            deleteUrl: '/{{ app.request.locale }}/admin/locale/delete/',
-            filter: true,
-            sort: 'asc',
-            limit: 15
-        });
+        var api = {
+            list: '/locale/list/',
+            get: '/locale/get/',
+            insert: '/locale/insert/',
+            update: '/locale/update/',
+            delete: '/locale/delete/'
+        };
+
+        var columns = [
+            {
+                id: 'id',
+                label: '{% trans %}ID{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: false,
+                show_list: true,
+                show_form: false,
+            },
+            {
+                id: 'name',
+                label: '{% trans %}Name{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            },
+            {
+                id: 'locale',
+                label: '{% trans %}Locale{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            },
+            {
+                id: 'lcid',
+                label: '{% trans %}LCID{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            },
+            {
+                id: 'isoCode',
+                label: '{% trans %}ISO Code{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            },
+            {
+                id: 'default',
+                label: '{% trans %}Default{% endtrans %}',
+                type: 'checkbox',
+                required: false,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            },
+            {
+                id: 'active',
+                label: '{% trans %}Active{% endtrans %}',
+                type: 'checkbox',
+                required: false,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            }
+        ];
 
     </script>
+    {{ encore_entry_script_tags('data-manager') }}
 {% endblock %}

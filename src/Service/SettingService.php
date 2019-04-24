@@ -29,7 +29,7 @@ class SettingService
         }
 
         $setting = $this->em->getRepository(Setting::class)
-            ->findBy(array('settingKey' => $key), array());
+        ->findBy(array('settingKey' => $key), array());
 
         if (!empty($setting)) {
             $value = html_entity_decode($setting[0]->getSettingValue());

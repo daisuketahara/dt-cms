@@ -1,33 +1,82 @@
 {% extends templateservice.getAdminTemplate() %}
 
-{% set page_title='Pages' %}
-
 {% block content %}
-<div id="dt-list"></div>
+<datamanager></datamanager>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+    {{ encore_entry_link_tags('data-manager') }}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
-        $('#dt-list').dtList({
-            columns: [
-                {id1: 'pageTitle', id2: 'pageRoute'},
-                {id1: 'publishDate'},
-                {id1: 'status'}
-            ],
-            labels: [
-                '{% trans %}Title{% endtrans %}',
-                '{% trans %}Publish date{% endtrans %}',
-                '{% trans %}Published{% endtrans %}'
-            ],
-            ajaxUrl: '/{{ app.request.locale }}/admin/page/get/',
-            addUrl: '/{{ app.request.locale }}/admin/page/add/',
-            editUrl: '/{{ app.request.locale }}/admin/page/edit/',
-            deleteUrl: '/{{ app.request.locale }}/admin/page/delete/',
-            filter: true,
-            refresh: 60,
-            limit: 15
-        });
+        var apikey = '{{apikey}}';
+
+        var api = {
+            list: '/page/list/',
+            get: '/page/get/',
+            delete: '/page/delete/',
+            locales: '/locale/list/'
+        };
+
+        var special = {
+            insert: '/admin/page/insert/',
+            update: '/admin/page/update/'
+        };
+
+        var columns = [
+            {
+                object: 'page',
+                id: 'id',
+                label: '{% trans %}ID{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: false,
+                show_list: true,
+                show_form: false,
+            },
+            {
+                id: 'pageTitle',
+                label: '{% trans %}Title{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            },
+            {
+                id: 'pageRoute',
+                label: '{% trans %}Route{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            },
+            {
+                object: 'page',
+                id: 'publishDate',
+                label: '{% trans %}Publish date{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: false,
+                show_form: true,
+            },
+            {
+                object: 'page',
+                id: 'status',
+                label: '{% trans %}Published{% endtrans %}',
+                type: 'text',
+                required: false,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            }
+        ];
 
     </script>
+    {{ encore_entry_script_tags('data-manager') }}
 {% endblock %}

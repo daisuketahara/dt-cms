@@ -16,9 +16,9 @@ class FileForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class, array('label' => 'Name'))
-            ->add('fileName', FileType::class, array('label' => 'File'))
-            ->add('save', SubmitType::class, array('label' => 'Save'))
+        ->add('name', TextType::class, array('label' => 'Name'))
+        ->add('fileName', FileType::class, array('label' => 'File'))
+        ->add('save', SubmitType::class, array('label' => 'Save'))
         ;
     }
 

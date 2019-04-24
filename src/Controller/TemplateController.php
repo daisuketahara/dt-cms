@@ -16,28 +16,28 @@ use App\Service\LogService;
 class TemplateController extends Controller
 {
     /**
-     * @Route("/{_locale}/admin/template/", name="template"))
-     */
-     final public function list(TranslatorInterface $translator)
-     {
-         $templates = $this->getDoctrine()
-             ->getRepository(Template::class)
-             ->findAll();
+    * @Route("/{_locale}/admin/template/", name="template"))
+    */
+    final public function list(TranslatorInterface $translator)
+    {
+        $templates = $this->getDoctrine()
+        ->getRepository(Template::class)
+        ->findAll();
 
-         return $this->render('template/admin/list.html.twig', array(
-             'page_title' => $translator->trans('Templates'),
-             'templates' => $templates,
-         ));
-     }
+        return $this->render('template/admin/list.html.twig', array(
+            'page_title' => $translator->trans('Templates'),
+            'templates' => $templates,
+        ));
+    }
 
-     /**
-      * @Route("/{_locale}/admin/template/edit/{id}/", name="template_edit"))
-      */
+    /**
+    * @Route("/{_locale}/admin/template/edit/{id}/", name="template_edit"))
+    */
     public function edit($id, Request $request, TranslatorInterface $translator, LogService $log)
     {
         $template = $this->getDoctrine()
-            ->getRepository(Template::class)
-            ->find($id);
+        ->getRepository(Template::class)
+        ->find($id);
 
         $form = $this->createFormBuilder();
         $form = $form->getForm();
@@ -66,19 +66,19 @@ class TemplateController extends Controller
         ));
     }
 
-     /**
-      * @Route("/{_locale}/admin/template/compile/{id}/", name="template_compile"))
-      */
+    /**
+    * @Route("/{_locale}/admin/template/compile/{id}/", name="template_compile"))
+    */
     public function compile($id, TranslatorInterface $translator, LogService $log, Filesystem $fileSystem)
     {
         ini_set('max_execution_time', 300);
 
         $template = $this->getDoctrine()
-            ->getRepository(Template::class)
-            ->find($id);
+        ->getRepository(Template::class)
+        ->find($id);
 
         try {
-			$scss = new Compiler();
+            $scss = new Compiler();
             $scss->setFormatter('Leafo\\ScssPhp\\Formatter\\Crunched');
             $scss->setImportPaths(array(
                 'assets/scss/',
@@ -92,15 +92,15 @@ class TemplateController extends Controller
             $css .= $scss->compile($template->getCustomCss());
 
             if (file_exists('public/css/' . $template->getTag() . '.css')) unlink('public/css/' . $template->getTag() . '.css');
-			$myfile = fopen('public/css/' . $template->getTag() . '.css', 'w');
-			fwrite($myfile, $css);
-			fclose($myfile);
-			chmod('public/css/' . $template->getTag() . '.css', 0644);
+            $myfile = fopen('public/css/' . $template->getTag() . '.css', 'w');
+            fwrite($myfile, $css);
+            fclose($myfile);
+            chmod('public/css/' . $template->getTag() . '.css', 0644);
 
             $build_style = 1;
 
         } catch(Exception $e) {
-        	$build_style = $e->getMessage();
+            $build_style = $e->getMessage();
         }
 
         // Create symlinks

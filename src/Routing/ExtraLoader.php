@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 use App\Entity\Page;
+use App\Entity\PageContent;
 use App\Entity\Redirect;
 
 class ExtraLoader extends Loader
@@ -30,25 +31,31 @@ class ExtraLoader extends Loader
 
         $pages = $this->em->getRepository(Page::class)->getActivePages();
 
+        if ($pages)
         foreach($pages as $page) {
 
-            if ($page->getLocale()->getDefault()) $locale = '';
-            else $locale = $page->getLocale()->getLocale() . '/';
+            $pageContents = $this->em->getRepository(PageContent::class)->findBy(['page' => $page]);
 
-            // prepare a new route
-            $path = '/' . $locale . $page->getPageRoute();
-            if (!empty($page->getPageRoute())) $path .= '/';
+            if (!empty($pageContents))
+            foreach($pageContents as $pageContent) {
+                if ($pageContent->getLocale()->getDefault()) $locale = '';
+                else $locale = $pageContent->getLocale()->getLocale() . '/';
 
-            $defaults = array(
-                '_controller' => 'App\Controller\PageController::loadPage',
-            );
-            $requirements = array(
-            );
-            $route = new Route($path, $defaults, $requirements);
+                // prepare a new route
+                $path = '/' . $locale . $pageContent->getPageRoute();
+                if (!empty($pageContent->getPageRoute())) $path .= '/';
 
-            // add the new route to the route collection
-            $routeName = 'page_' . $page->getLocale()->getLocale() . '_' . strtolower(str_replace('/', '_', $page->getPageRoute()));
-            $routes->add($routeName, $route);
+                $defaults = array(
+                    '_controller' => 'App\Controller\PageController::loadPage',
+                );
+                $requirements = array(
+                );
+                $route = new Route($path, $defaults, $requirements);
+
+                // add the new route to the route collection
+                $routeName = 'page_' . $pageContent->getLocale()->getLocale() . '_' . strtolower(str_replace('/', '_', $pageContent->getPageRoute()));
+                $routes->add($routeName, $route);
+            }
         }
 
         $redirects = $this->em->getRepository(Redirect::class)->findBy(array('active' => 1));

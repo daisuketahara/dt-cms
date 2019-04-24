@@ -1,31 +1,79 @@
 {% extends templateservice.getAdminTemplate() %}
 
 {% block content %}
-<table class="table table-hover table-striped">
-    <thead class="thead-dark">
-        <tr>
-            <th class="width-100" data-column="id">{% trans %}ID{% endtrans %}</th>
-            <th data-column="email">{% trans %}Email{% endtrans %}</th>
-            <th data-column="firstname">{% trans %}Firstname{% endtrans %}</th>
-            <th data-column="lastname">{% trans %}Lastname{% endtrans %}</th>
-            <th data-column="active">{% trans %}Status{% endtrans %}</th>
-        </tr>
-    </thead>
-</table>
+<datamanager></datamanager>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+    {{ encore_entry_link_tags('data-manager') }}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
+        var apikey = '{{apikey}}';
 
-        $('.table').dtTable({
-            ajaxUrl: '/{{ app.request.locale }}/admin/user/get/',
-            addUrl: '/{{ app.request.locale }}/admin/user/add/',
-            editUrl: '/{{ app.request.locale }}/admin/user/edit/',
-            deleteUrl: '/{{ app.request.locale }}/admin/user/delete/',
-            filter: true,
-            limit: 15
-        });
+        var api = {
+            list: '/user/list/',
+            get: '/user/get/',
+            delete: '/user/delete/'
+        };
+
+        var special = {
+            insert: '/admin/user/insert/',
+            update: '/admin/user/update/'
+        };
+
+
+        var columns = [
+            {
+                id: 'id',
+                label: '{% trans %}ID{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: false,
+                show_list: true,
+                show_form: false,
+            },
+            {
+                id: 'email',
+                label: '{% trans %}Email{% endtrans %}',
+                type: 'email',
+                required: true,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            },
+            {
+                id: 'firstname',
+                label: '{% trans %}Firstname{% endtrans %}',
+                type: 'text',
+                required: false,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            },
+            {
+                id: 'lastname',
+                label: '{% trans %}Lastname{% endtrans %}',
+                type: 'text',
+                required: false,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            },
+            {
+                id: 'active',
+                label: '{% trans %}Active{% endtrans %}',
+                type: 'checkbox',
+                required: false,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            }
+        ];
 
     </script>
+    {{ encore_entry_script_tags('data-manager') }}
 {% endblock %}

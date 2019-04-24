@@ -19,7 +19,14 @@ class LocaleRepository extends ServiceEntityRepository
             ->where('l.active = 1')
             ->orderBy('l.default', 'DESC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
+    }
+
+    public function getDefaultLocale()
+    {
+        return $this->createQueryBuilder('l')
+            ->where('l.default = 1')
+            ->getQuery()
+            ->getSingleResult();
     }
 }

@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Doctrine\ORM\EntityManager;
 
 use App\Entity\Block;
+use App\Entity\BlockContent;
 use App\Entity\Locale;
 use App\Service\CacheService;
 
@@ -27,7 +28,7 @@ class BlockService
 
         $localeTag = $this->requestStack->getCurrentRequest()->getLocale();
         $locale = $this->em->getRepository(Locale::class)
-            ->findOneBy(array('locale' => $localeTag), array());
+            ->findOneBy(['locale' => $localeTag], array());
 
         if ($cache->has('block.' . $locale->getId() . '.' . $key)) {
             $block = $cache->get('block.' . $locale->getId() . '.' . $key);
@@ -35,12 +36,17 @@ class BlockService
         }
 
         $block = $this->em->getRepository(Block::class)
-            ->findOneBy(array('tag' => $key, 'locale' => $locale), array());
+            ->findOneBy(['tag' => $key], array());
 
         if (!empty($block)) {
-            $blockContent = html_entity_decode($block->getContent());
-            $cache->set('block.' . $locale->getId() . '.' . $key, $blockContent);
-            return $blockContent;
+            $blockContent = $this->em->getRepository(BlockContent::class)
+                ->findOneBy(['block' => $block, 'locale' => $locale], array());
+
+            if ($blockContent) {
+                $content = html_entity_decode($blockContent->getContent());
+                $cache->set('block.' . $locale->getId() . '.' . $key, $content);
+                return $content;
+            }
         }
         return false;
     }

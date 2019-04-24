@@ -13,25 +13,13 @@ use App\Service\CacheService;
 
 class CacheController extends Controller
 {
-
-
     /**
-     * @Route("/{_locale}/admin/cache/", name="admin_cache"))
-     */
+    * @Route("/{_locale}/admin/cache/", name="admin_cache"))
+    */
     final public function index(Request $request, TranslatorInterface $translator)
     {
-        if ($request->isMethod('POST')) {
-            $cache = new CacheService();
-            $cache->clear();
-
-            $this->addFlash(
-                'success',
-                $translator->trans('The cache has been cleared!')
-            );
-            return $this->redirectToRoute('admin_cache');
-        }
-
         return $this->render('cache/admin/index.html.twig', array(
+            'apikey' => 'ce07f59f2eca96d9e3e4dbe2becce743',
             'page_title' => $translator->trans('Cache control'),
         ));
     }

@@ -22,9 +22,9 @@ class ValidatorService
                 $client = new \SoapClient("http://ec.europa.eu/taxation_customs/vies/checkVatService.wsdl");
                 if($client) {
                     $params = array('countryCode' => $country, 'vatNumber' => $numberPortion);
-                        $r = $client->checkVat($params);
-                        if($r->valid == true) return true;
-                        else return false;
+                    $r = $client->checkVat($params);
+                    if($r->valid == true) return true;
+                    else return false;
                 } else {
                     $logMessage = '<i>Error:</i><br>';
                     $logMessage .= "Can't connect to ec.europa.eu, VAT number cannot be validate.";

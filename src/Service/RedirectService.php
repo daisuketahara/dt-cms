@@ -17,7 +17,7 @@ class RedirectService
     public function getRedirect($pageRoute)
     {
         $redirect = $this->em->getRepository(Redirect::class)
-            ->findBy(array('oldPageRoute' => $pageRoute, 'active' => 1), array());
+        ->findBy(array('oldPageRoute' => $pageRoute, 'active' => 1), array());
 
         if ($redirect) return $redirect[0];
         return false;

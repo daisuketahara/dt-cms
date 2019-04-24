@@ -21,7 +21,7 @@ class UserPermissionService extends Controller
     public function getUserPermissions()
     {
         $user = $this->getUser();
-        
+
         $sql =  "SELECT p.route_name FROM user_permission AS up ";
         $sql .=  "LEFT JOIN permission AS p ON up.permission_id = p.id ";
         $sql .=  "WHERE up.user_id = " . $user->getId() . " ";

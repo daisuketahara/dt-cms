@@ -1,15 +1,11 @@
 // assets/js/admin.js
-
-require('../scss/admin.scss');
-require('animate.css');
-
-require('./list.js');
-require('./paginator.js');
-require('./table.js');
+'use strict';
 
 const $ = require('jquery');
 global.$ = global.jQuery = $;
 
+require('../scss/admin.scss');
+require('animate.css');
 require('bootstrap');
 
 $(document).ready(function() {

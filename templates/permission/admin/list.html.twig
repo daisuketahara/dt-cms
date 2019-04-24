@@ -1,29 +1,75 @@
 {% extends templateservice.getAdminTemplate() %}
 
 {% block content %}
-<table class="table table-hover table-striped">
-    <thead class="thead-dark">
-        <tr>
-            <th class="width-100" data-column="id">{% trans %}ID{% endtrans %}</th>
-            <th data-column="routeName">{% trans %}Route name{% endtrans %}</th>
-            <th data-column="description">{% trans %}Description{% endtrans %}</th>
-        </tr>
-    </thead>
-</table>
+<datamanager></datamanager>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+    {{ encore_entry_link_tags('data-manager') }}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
+        var apikey = '{{apikey}}';
 
-        $('.table').dtTable({
-            ajaxUrl: '/{{ app.request.locale }}/admin/permission/get/',
-            addUrl: '/{{ app.request.locale }}/admin/permission/add/',
-            editUrl: '/{{ app.request.locale }}/admin/permission/edit/',
-            deleteUrl: '/{{ app.request.locale }}/admin/permission/delete/',
-            filter: true,
-            limit: 15
-        });
+        var api = {
+            list: '/permission/list/',
+            get: '/permission/get/',
+            insert: '/permission/insert/',
+            update: '/permission/update/',
+            delete: '/permission/delete/'
+        };
+
+        var columns = [
+            {
+                id: 'id',
+                label: '{% trans %}ID{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: false,
+                show_list: true,
+                show_form: false,
+            },
+            {
+                id: 'permissionGroup',
+                label: '{% trans %}Group{% endtrans %}',
+                type: 'text',
+                required: false,
+                editable: false,
+                show_list: false,
+                show_form: false,
+            },
+            {
+                id: 'page',
+                label: '{% trans %}Page{% endtrans %}',
+                type: 'text',
+                required: false,
+                editable: false,
+                show_list: false,
+                show_form: true,
+            },
+            {
+                id: 'routeName',
+                label: '{% trans %}Route name{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            },
+            {
+                id: 'description',
+                label: '{% trans %}Description{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            }
+        ];
 
     </script>
+    {{ encore_entry_script_tags('data-manager') }}
 {% endblock %}

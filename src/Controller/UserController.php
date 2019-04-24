@@ -28,74 +28,20 @@ use App\Service\LogService;
 class UserController extends Controller
 {
     /**
-     * @Route("/{_locale}/admin/user/", name="user"))
-     */
-     final public function list(TranslatorInterface $translator)
-     {
-         return $this->render('user/admin/list.html.twig', array(
-             'page_title' => $translator->trans('Users'),
-             'can_add' => true,
-             'can_edit' => true,
-             'can_delete' => true,
-         ));
-     }
+    * @Route("/{_locale}/admin/user/", name="admin_user_list"))
+    */
+    final public function list(TranslatorInterface $translator)
+    {
+        return $this->render('user/admin/list.html.twig', array(
+            'apikey' => 'ce07f59f2eca96d9e3e4dbe2becce743',
+            'page_title' => $translator->trans('Users'),
+        ));
+    }
 
-     /**
-      * @Route("/{_locale}/admin/user/get/", name="user_get"))
-      */
-     final public function getUsers(Request $request)
-     {
-         $sort_column = $request->request->get('sortColumn', 'id');
-         $sort_direction = strtoupper($request->request->get('sortDirection', 'desc'));
-         $limit = $request->request->get('limit', 15);
-         $offset = $request->request->get('offset', 0);
-         $filter = $request->request->get('filter', '');
-
-         $where = array();
-         $whereString = '1=1';
-         $filter = explode('&', $filter);
-         if (!empty($filter))
-         foreach($filter as $filter_item) {
-             $filter_item = explode('=', $filter_item);
-             if (!empty($filter_item[1])) {
-                 $where[$filter_item[0]] = $filter_item[1];
-                 $whereString .= " AND `" . $filter_item[0] . "`='" . $filter_item[1] . "'";
-             }
-         }
-
-         $qb = $this->getDoctrine()->getRepository(User::class)->createQueryBuilder('u');
-         $qb->select('count(u.id)');
-         $qb->where($whereString);
-         $count = $qb->getQuery()->getSingleScalarResult();
-
-         if (empty($limit)) {
-             $users = $this->getDoctrine()
-                 ->getRepository(User::class)
-                 ->findBy($where, array($sort_column => $sort_direction));
-         } else {
-             $users = $this->getDoctrine()
-                 ->getRepository(User::class)
-                 ->findBy($where, array($sort_column => $sort_direction), $limit, $offset);
-         }
-
-         $encoders = array(new XmlEncoder(), new JsonEncoder());
-         $normalizers = array(new ObjectNormalizer());
-         $serializer = new Serializer($normalizers, $encoders);
-
-         $json = array(
-             'total' => 6,
-             'data' => $users
-         );
-
-         $json = $serializer->serialize($json, 'json');
-
-         return $this->json($json);
-     }
-
-     /**
-      * @Route("/{_locale}/admin/user/add/", name="user_add"))
-      * @Route("/{_locale}/admin/user/edit/{id}/", name="user_edit"))
-      */
+    /**
+    * @Route("/{_locale}/admin/user/insert/", name="admin_user_insert"))
+    * @Route("/{_locale}/admin/user/update/{id}/", name="admin_user_update"))
+    */
     final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log, UserPasswordEncoderInterface $encoder)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
@@ -106,8 +52,8 @@ class UserController extends Controller
 
         if (!empty($id)) {
             $user = $this->getDoctrine()
-                ->getRepository(User::class)
-                ->find($id);
+            ->getRepository(User::class)
+            ->find($id);
             if (!$user) {
                 $user = new User();
                 $this->addFlash(
@@ -139,11 +85,10 @@ class UserController extends Controller
 
         if ($request->isMethod('POST')) {
 
-
             $localeId = $request->request->get('user-locale', '');
             $locale = $this->getDoctrine()
-                ->getRepository(Locale::class)
-                ->find($localeId);
+            ->getRepository(Locale::class)
+            ->find($localeId);
 
             $user->setFirstname($request->request->get('firstname', ''));
             $user->setLastname($request->request->get('lastname', ''));
@@ -192,8 +137,8 @@ class UserController extends Controller
             if (!empty($formPermissions))
             foreach($formPermissions as $formPermission => $permissionId) {
                 $permission = $this->getDoctrine()
-                    ->getRepository(Permission::class)
-                    ->find($permissionId);
+                ->getRepository(Permission::class)
+                ->find($permissionId);
                 $user->addPermission($permission);
             }
             //$user->setPermissions($userPermissions);
@@ -202,8 +147,8 @@ class UserController extends Controller
             if (!empty($formRoles))
             foreach($formRoles as $formRole => $roleId) {
                 $role = $this->getDoctrine()
-                    ->getRepository(Role::class)
-                    ->find($roleId);
+                ->getRepository(Role::class)
+                ->find($roleId);
                 $user->addRole($role);
             }
 
@@ -219,27 +164,37 @@ class UserController extends Controller
                 'success',
                 $translator->trans('Your changes were saved!')
             );
-            return $this->redirectToRoute('user_edit', array('id' => $id));
+            return $this->redirectToRoute('admin_user_update', array('id' => $id));
         }
 
         if (!empty($id)) $title = $translator->trans('Edit user');
         else $title = $translator->trans('Add user');
 
         $roles = $this->getDoctrine()
-            ->getRepository(Role::class)
-            ->findAll();
+        ->getRepository(Role::class)
+        ->findAll();
 
         $locales = $this->getDoctrine()
-            ->getRepository(Locale::class)
-            ->findAll();
+        ->getRepository(Locale::class)
+        ->findAll();
 
         $permissions = $this->getDoctrine()
-            ->getRepository(Permission::class)
-            ->getPermissions();
+        ->getRepository(Permission::class)
+        ->getPermissions();
 
         $apiKeys = $this->getDoctrine()
-            ->getRepository(UserApiKey::class)
-            ->findBy(array('user' => $user));
+        ->getRepository(UserApiKey::class)
+        ->findBy(array('user' => $user));
+
+        if ($user->getLocale()) {
+            $userLocaleId = $user->getLocale()->getId();
+        } else {
+            $defaultLocale = $this->getDoctrine()
+            ->getRepository(Locale::class)
+            ->getDefaultLocale();
+            $userLocaleId = $defaultLocale->getId();
+        }
+
 
         return $this->render('user/admin/edit.html.twig', array(
             'form' => $form->createView(),
@@ -248,7 +203,7 @@ class UserController extends Controller
             'lastname' => $user->getLastname(),
             'email' => $user->getEmail(),
             'phone' => $user->getPhone(),
-            'locale_id' => $user->getLocale()->getId(),
+            'locale_id' => $userLocaleId,
             'locales' => $locales,
             'password' => 'passwordnotchanged',
             'email_confirmed' => $user->getEmailConfirmed(),
@@ -275,29 +230,5 @@ class UserController extends Controller
             'permissions_set' => $user->getPermissions(),
             'api_keys' => $apiKeys,
         ));
-     }
-
-     /**
-      * @Route("/{_locale}/admin/user/delete/{id}/", name="user_delete"))
-      */
-     final public function delete($id, LogService $log)
-     {
-         $em = $this->getDoctrine()->getManager();
-         $user = $em->getRepository(User::class)->find($id);
-
-         $encoders = array(new XmlEncoder(), new JsonEncoder());
-         $normalizers = array(new ObjectNormalizer());
-         $serializer = new Serializer($normalizers, $encoders);
-         $logMessage = '<i>Data:</i><br>';
-         $logMessage .= $serializer->serialize($user, 'json');
-
-         $log->add('User', $id, $logMessage, 'Delete');
-
-         $em->remove($user);
-         $em->flush();
-
-         return new Response(
-             '1'
-         );
-     }
+    }
 }

@@ -1,31 +1,48 @@
 {% extends templateservice.getAdminTemplate() %}
 
-{% set page_title='File Group' %}
-
 {% block content %}
-<table class="table table-hover table-striped">
-    <thead class="thead-dark">
-        <tr>
-            <th class="width-100" data-column="id">{% trans %}ID{% endtrans %}</th>
-            <th data-column="name">{% trans %}Name{% endtrans %}</th>
-        </tr>
-    </thead>
-</table>
+<datamanager></datamanager>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+    {{ encore_entry_link_tags('data-manager') }}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
+        var apikey = '{{apikey}}';
 
-        $('.table').dtTable({
-            ajaxUrl: '/{{ app.request.locale }}/admin/filegroup/get/',
-            addUrl: '/{{ app.request.locale }}/admin/filegroup/add/',
-            editUrl: '/{{ app.request.locale }}/admin/filegroup/edit/',
-            deleteUrl: '/{{ app.request.locale }}/admin/filegroup/delete/',
-            filter: true,
-            sort: 'asc',
-            limit: 15
-        });
+        var api = {
+            list: '/filegroup/list/',
+            get: '/filegroup/get/',
+            insert: '/filegroup/insert/',
+            update: '/filegroup/update/',
+            delete: '/filegroup/delete/'
+        };
+
+        var columns = [
+            {
+                id: 'id',
+                label: '{% trans %}ID{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: false,
+                show_list: true,
+                show_form: false,
+            },
+            {
+                id: 'name',
+                label: '{% trans %}Name{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            }
+        ];
 
     </script>
+    {{ encore_entry_script_tags('data-manager') }}
 {% endblock %}

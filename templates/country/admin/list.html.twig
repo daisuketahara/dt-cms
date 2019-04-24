@@ -1,0 +1,48 @@
+{% extends templateservice.getAdminTemplate() %}
+
+{% block content %}
+<datamanager></datamanager>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+    {{ encore_entry_link_tags('data-manager') }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        var apikey = '{{apikey}}';
+
+        var api = {
+            list: '/country/list/',
+            get: '/country/get/',
+            insert: '/country/insert/',
+            update: '/country/update/',
+            delete: '/country/delete/'
+        };
+
+        var columns = [
+            {
+                id: 'id',
+                label: '{% trans %}ID{% endtrans %}',
+                type: 'integer',
+                required: true,
+                editable: false,
+                show_list: true,
+                show_form: false,
+            },
+            {
+                id: 'country',
+                label: '{% trans %}Country{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            }
+        ];
+
+    </script>
+    {{ encore_entry_script_tags('data-manager') }}
+{% endblock %}

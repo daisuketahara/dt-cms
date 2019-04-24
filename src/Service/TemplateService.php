@@ -29,7 +29,7 @@ class TemplateService
         }
 
         $template = $this->em->getRepository(Template::class)
-            ->findBy(array('frontend' => 1), array());
+        ->findBy(array('frontend' => 1), array());
 
         $templateFile = 'layout/' . $template[0]->getTag() . '/index.html.twig';
         $cache->set('template.front', $templateFile);
@@ -47,7 +47,7 @@ class TemplateService
         }
 
         $template = $this->em->getRepository(Template::class)
-            ->findBy(array('admin' => 1), array());
+        ->findBy(array('admin' => 1), array());
 
         $templateFile = 'layout/' . $template[0]->getTag() . '/index.html.twig';
         $cache->set('template.admin', $templateFile);

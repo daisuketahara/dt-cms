@@ -16,10 +16,10 @@ class MailQueueRepository extends ServiceEntityRepository
     public function findToSend()
     {
         $qb = $this->createQueryBuilder('m')
-            ->andWhere('m.status = 0')
-            ->orderBy('m.creationDate', 'ASC')
-            //->setParameter('localeId', $localeId)
-            ->getQuery();
+        ->andWhere('m.status = 0')
+        ->orderBy('m.creationDate', 'ASC')
+        //->setParameter('localeId', $localeId)
+        ->getQuery();
 
         return $qb->setMaxResults(30)->execute();
     }

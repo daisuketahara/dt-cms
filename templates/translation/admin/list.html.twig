@@ -1,36 +1,76 @@
 {% extends templateservice.getAdminTemplate() %}
 
 {% block content %}
-<table class="table table-hover table-striped">
-    <thead class="thead-dark">
-        <tr>
-            <th class="width-100" data-column="id">{% trans %}ID{% endtrans %}</th>
-            <th data-column="original">{% trans %}Text{% endtrans %}</th>
-            <th data-column="complete">{% trans %}Complete{% endtrans %}</th>
-        </tr>
-    </thead>
-</table>
-<a href="/{{ app.request.locale }}/admin/translation/generate/" class="btn btn-secondary">{% trans %}Generate translation files{% endtrans %}</a>
-<a href="/{{ app.request.locale }}/admin/translation/populate/" class="btn btn-secondary">{% trans %}Get missing translations{% endtrans %}</a>
-<a href="/{{ app.request.locale }}/admin/translation/export/" class="btn btn-secondary" data-disable-loader="1">{% trans %}Export{% endtrans %}</a>
-<form action="/{{ app.request.locale }}/admin/translation/import/" class="form-inline d-inline-block">
-    <input type="file" class="d-none">
-    <button type="submit" name="submit" class="btn btn-secondary">{% trans %}Import{% endtrans %}</button>
-</form>
+<datamanager></datamanager>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+    {{ encore_entry_link_tags('data-manager') }}
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     <script>
+        var apikey = '{{apikey}}';
 
-        $('.table').dtTable({
-            ajaxUrl: '/{{ app.request.locale }}/admin/translation/get/',
-            addUrl: '/{{ app.request.locale }}/admin/translation/add/',
-            editUrl: '/{{ app.request.locale }}/admin/translation/edit/',
-            view: false,
-            filter: true,
-            limit: 15
-        });
+        var api = {
+            list: '/translation/list/',
+            get: '/translation/get/',
+            insert: '/translation/insert/',
+            update: '/translation/update/',
+            delete: '/translation/delete/',
+            custom_form: '/translation/fields/'
+        };
+
+        var buttons = [
+            {
+                id: 'generate',
+                label: '{% trans %}Generate translation files{% endtrans %}',
+                api: '/translation/generate/'
+            },
+            {
+                id: 'populate',
+                label: '{% trans %}Get missing translations{% endtrans %}',
+                api: '/translation/populate/'
+            },
+            {
+                id: 'export',
+                label: '{% trans %}Exports{% endtrans %}',
+                url: '/{{ app.request.locale }}/admin/translation/export/'
+            }
+        ];
+
+        var columns = [
+            {
+                id: 'id',
+                label: '{% trans %}ID{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: false,
+                show_list: true,
+                show_form: false,
+            },
+            {
+                id: 'original',
+                label: '{% trans %}Original{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            },
+            {
+                id: 'complete',
+                label: '{% trans %}Complete{% endtrans %}',
+                type: 'text',
+                required: true,
+                editable: true,
+                show_list: true,
+                show_form: true,
+            }
+        ];
 
     </script>
+    {{ encore_entry_script_tags('data-manager') }}
 {% endblock %}

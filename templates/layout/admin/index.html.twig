@@ -51,7 +51,7 @@
         </nav>
         {% endblock %}
     </div>
-    <main class="admin-content">
+    <main id="admin-content" class="admin-content">
         <div class="row">
             <div class="col">{% if page_title is defined %}<h1>{{ page_title|trans|raw }}</h1>{% endif %}</div>
             <div class="col-auto">{% block topbar %}{% endblock %}</div>
@@ -83,8 +83,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-        {% endfor %}
-        {% block content %}{% endblock %}
+        {% endfor %}{% block content %}{% endblock %}
     </main>
 </div>
 <footer class="container-fluid">

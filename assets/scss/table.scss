@@ -1,3 +1,58 @@
+.data-manager-table {
+
+    thead {
+
+        tr {
+
+            th:last-child {
+                text-align: right;
+            }
+
+            .table-sort {
+                cursor: pointer;
+            }
+
+        }
+        .table-filter td {
+            padding: 0;
+            background: white;
+        }
+        .table-filter td input {
+            padding: 8px;
+            width: 100%;
+            border: 0;
+        }
+
+
+    }
+
+    tbody {
+
+        tr {
+
+            td:last-child {
+                text-align: right;
+            }
+
+        }
+
+        tr.to-delete {
+            background-color: red !important;
+            background-color: rgba(255,0,0,0.2) !important;
+            color: white;
+        }
+
+    }
+
+}
+
+.select-limit {
+    display: inline-block;
+    width: 70px;
+}
+
+
+
 
 .im-table-filter td {
     padding: 0;
@@ -7,10 +62,4 @@
     padding: 8px;
     width: 100%;
     border: 0;
-}
-#dt-modal {
-    .modal-label {
-        font-weight: bold;
-        text-transform: capitalize;
-    }
 }

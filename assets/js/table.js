@@ -96,6 +96,9 @@ require('../scss/table.scss');
 		$.ajax({
 			url: ajaxUrl,
 			type: 'POST',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + apikey);
+            },
 			data: {
 				limit: limit,
 				offset: offset,
@@ -271,6 +274,9 @@ require('../scss/table.scss');
 		$.ajax({
 			url: url + '/' + id,
 			type: 'POST',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + apikey);
+            },
 			dataType: 'html',
 			success: function(result) {
 

@@ -31,16 +31,16 @@ class ContactFormController extends Controller
     }
 
     /**
-     * @Route("/{_locale}/ajax/contact/getform/", name="contact_ajax_get_form"))
-     */
+    * @Route("/{_locale}/ajax/contact/getform/", name="contact_ajax_get_form"))
+    */
     final public function getForm()
     {
         return $this->render('contact/form.html.twig', array());
     }
 
     /**
-     * @Route("/{_locale}/ajax/contact/post/", name="contact_ajax_post_form"))
-     */
+    * @Route("/{_locale}/ajax/contact/post/", name="contact_ajax_post_form"))
+    */
     final public function postForm(Request $request)
     {
 
@@ -63,8 +63,8 @@ class ContactFormController extends Controller
         if (!empty($id)) {
 
             $localeEntity = $this->getDoctrine()
-                ->getRepository(Locale::class)
-                ->findOneBy(array('locale' => $request->getLocale()));
+            ->getRepository(Locale::class)
+            ->findOneBy(array('locale' => $request->getLocale()));
 
             if ($localeEntity) $localeId = $localeEntity->getId();
             else $localeId = 1;
