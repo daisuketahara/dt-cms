@@ -8,6 +8,7 @@ import Editor from '../components/Editor';
 
 import 'vuejs-dialog/dist/vuejs-dialog.min.css';
 import '../scss/editor.scss';
+import '../scss/components.scss';
 
 Vue.use(VuejsDialog, {
     html: true,

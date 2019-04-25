@@ -5,10 +5,10 @@
                 <nav class="editor-nav">
                     <div class="btn-group mb-3" role="group" aria-label="Editor functions">
                         <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownLocaleButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{translate_name}}
                             </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <div class="dropdown-menu" aria-labelledby="dropdownLocaleButton">
                                 <button v-for="item in locales" class="dropdown-item" :data-lid="item.id" v-on:click.prevent="setTranslate">{{item.name}}</button>
                             </div>
                         </div>
@@ -16,6 +16,18 @@
                         <button :class="{ 'btn': true, 'btn-secondary': true, ' px-3': true, 'active' : panel == 'settings'}" type="button" v-on:click.prevent="showPanel" data-panel="settings">{{translations.settings}}</button>
                         <button :class="{ 'btn': true, 'btn-secondary': true, ' px-3': true, 'active' : panel == 'css'}" type="button" v-on:click.prevent="showPanel" data-panel="css">{{translations.custom_css}}</button>
                         <button :class="{ 'btn': true, 'btn-secondary': true, ' px-3': true, 'active' : panel == 'js'}" type="button" v-on:click.prevent="showPanel" data-panel="js">{{translations.custom_js}}</button>
+                    </div>
+                    <div class="btn-group mb-3" role="group" aria-label="Editor select">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownEditorButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{selected_editor_name}}
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownEditorButton">
+                                <button class="dropdown-item" data-editor="html" v-on:click.prevent="setEditor">{{translations.html}}</button>
+                                <button class="dropdown-item" data-editor="editor" v-on:click.prevent="setEditor">{{translations.editor}}</button>
+                                <button class="dropdown-item" data-editor="builder" v-on:click.prevent="setEditor">{{translations.builder}}</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="btn-group mb-3" role="group" aria-label="Editor submit">
                         <button class="btn btn-primary px-5">{{translations.submit}}</button>
@@ -138,7 +150,6 @@
                         <textarea class="form-control" rows="6" v-model="page.customJs"></textarea>
                     </div>
                 </transition>
-
                 <div class="form-group mb-2">
                     <input type="text" id="page-title" name="page-title" class="form-control" :value="page.pageTitle" :placeholder="translations['enter_title']">
                 </div>
@@ -148,13 +159,77 @@
                     </div>
                     <input type="text" class="form-control" id="page-route" name="page-route" :value="page.pageRoute" aria-describedby="basic-addon3">
                 </div>
-                <textarea class="form-control" rows="20" v-model="page.content"></textarea>
+
+
+
+
+
+
+
+
+
+                <textarea v-if="selected_editor == 'html'" id="page-content" class="form-control mb-2" v-model="page.content" rows="24"></textarea>
+                <ckeditor v-if="selected_editor == 'editor'" :editor="editor" v-model="page.content" :config="editorConfig"></ckeditor>
+                <div v-if="selected_editor == 'builder'" id="content-editor" class="mt-2">
+                    <div v-for="element in construct" class="container-fluid">
+                        <div v-if="element.type == 'text_left_image_right'" class="row" v-on:click="activateElement">
+                            <div class="col-sm-6 wrap-content" :contenteditable="enableEdit">
+                                <h3>{{element.title}}</h3>
+                                {{element.text}}
+                                <a href="#" class="btn btn-lg btn-secondary" :contenteditable="enableEdit">{{element.cta_button_text}}</a>
+                            </div>
+                            <div class="col-sm-6 bg-image"></div>
+                        </div>
+                        <div v-else-if="element.type == 'text_right_image_left'" class="row" v-on:click="activateElement">
+                            <div class="col-sm-6 bg-image"></div>
+                            <div class="col-sm-6 wrap-content" :contenteditable="enableEdit">
+                                <h3>{{element.title}}</h3>
+                                {{element.text}}
+                                <a href="#" class="btn btn-lg btn-secondary" :contenteditable="enableEdit">{{element.cta_button_text}}</a>
+                            </div>
+                        </div>
+                        <div v-else-if="element.type == 'block'" class="" :contenteditable="enableEdit" v-on:click="activateElement">
+                            <h3>{{element.title}}</h3>
+                            {{element.text}}
+                            <a href="#" class="btn btn-lg btn-secondary" :contenteditable="enableEdit">{{element.cta_button_text}}</a>
+                        </div>
+                    </div>
+                    <div v-if="enableEdit" class="text-center mt-3 py-5">
+                        <button class="btn btn-lg btn-secondary" v-on:click.prevent="selectElement"><i class="fas fa-plus"></i> {{translations.add_element}}</button>
+                    </div>
+                </div>
+
+
+
+
+
+
+
 
 
             </div>
             <div class="col-md-4 col-lg-3">
             </div>
         </div>
+        <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
+            <div v-if="modal" id="im-editor-modal">
+                <div class="im-modal-backdrop">
+                    <div class="im-modal-body p-4">
+                        <div class="im-modal-close" v-on:click="closeModal"><i class="fas fa-times"></i></div>
+                            <div v-if="modal_view == 'elements'" class="row">
+                                <div v-for="(element, index) in elements" class="col-sm-6 col-md-4 col-lg-3 mb-4" :data-element="index">
+                                    <img :src="element.image" :alt="element.title" class="img-fluid w-100 mb-1">
+                                    <h4>
+                                        {{element.title}}
+                                        <button v-on:click.prevent="addElement" class="btn btn-sm btn-secondary float-right" :data-element="element.type">{{translations.select}}</button>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </transition>
     </form>
 </template>
 
@@ -180,9 +255,17 @@ export default {
             alert: {},
             editor: ClassicEditor, //ClassicEditor,
             editorData: {}, //'<p>Rich-text editor content.</p>',
-            editorConfig: {
-                'min-height': '500px'
-            }
+            editorConfig: {},
+            modal: false,
+            modal_view: '',
+            elements: {},
+            construct: [],
+            construct_css: '',
+            enableEdit: true,
+            active_element: '',
+            example: {},
+            selected_editor_name: 'HTML',
+            selected_editor: 'html'
         }
     },
     created() {
@@ -190,9 +273,17 @@ export default {
         this.domain = domain;
         this.getRoles();
         this.getLocales();
+        this.getExample();
+        this.getElements();
         if (page_id > 0) {
             this.page_id = page_id;
             this.getPage();
+        }
+
+        var checkSelectedEditor = this.readCookie('selected_editor');
+        if (checkSelectedEditor) {
+            this.selected_editor = checkSelectedEditor;
+            this.selected_editor_name = checkSelectedEditor;
         }
     },
     methods: {
@@ -232,6 +323,18 @@ export default {
 
             this.getPage();
         },
+        getExample: function() {
+
+            this.example = {
+                title: 'Title goes here',
+                bg_image: '/img/img-placeholder.png',
+                btn_txt: 'Button text',
+                text_short: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                text_medium: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugifffat nulla pariatur.',
+            };
+
+            this.example.text_long = this.example.text_short + ' ' + this.example.text_short;
+        },
         getPage: function() {
 
             let url = '/api/v1/page/get/' + this.page_id + '/';
@@ -248,8 +351,14 @@ export default {
             .then(response => {
                 var result = JSON.parse(response.data);
                 if (result.success) {
-                    if (result['data'].constructor === {}.constructor) this.page = result['data'];
-                    else this.page = {};
+                    if (result['data'].constructor === {}.constructor) {
+                        this.page = result['data'];
+                        if (result['data']['construct']) this.construct = JSON.parse(result['data']['construct']);
+                        else this.construct = [];
+                    } else {
+                        this.page = {};
+                        this.construct = [];
+                    }
                 } else {
                     this.setAlert(result.message, 'error');
                 }
@@ -259,7 +368,89 @@ export default {
                 this.errors.push(e)
             });
         },
+        getElements: function() {
+            this.elements = {
+                text_left_image_right: {
+                    'title': this.translations.text_left_image_right,
+                    'image': this.example.bg_image,
+                    'options': {
+                        'title': this.example.title,
+                        'text': '<p>' + this.example.text_medium + '</p>',
+                        'cta_button': this.example.btn_txt,
+                        'bg_image': this.example.bg_image
+                    }
+                },
+                text_right_image_left: {
+                    'title': this.translations.text_right_image_left,
+                    'image': this.example.bg_image,
+                    'options': {
+                        'title': this.example.title,
+                        'text': '<p>' + this.example.text_medium + '</p>',
+                        'cta_button': this.example.btn_txt,
+                        'bg_image': this.example.bg_image
+                    }
+                },
+                block: {
+                    'title': this.translations.block,
+                    'image': this.example.bg_image,
+                    'options': {
+                        'title': this.example.title,
+                        'text': '<p>' + this.example.text_medium + '</p>',
+                        'cta_button': this.example.btn_txt,
+                        'bg_image': this.example.bg_image
+                    }
+                },
+                html: {
+                    'title': this.translations.html,
+                    'image': this.example.bg_image
+                },
+                slider: {
+                    'title': this.translations.slider,
+                    'image': this.example.bg_image
+                },
+                collapse: {
+                    'title': this.translations.collapse,
+                    'image': this.example.bg_image
+                },
+                hero: {
+                    'title': this.translations.collapse,
+                    'image': this.example.bg_image
+                }
+            };
+        },
+        selectElement: function(event) {
+            this.modal_view = 'elements';
+            this.launchModal();
+        },
+        addElement: function(event) {
+            this.construct.push({
+                'type': event.target.dataset.element
+            });
+
+
+
+
+
+
+
+            this.modal = false;
+        },
+        activateElement: function(event) {
+            this.active_element = event.target;
+        },
+        launchModal: function() {
+            document.getElementById('admin-content').style.zIndex = '14';
+            this.modal = true;
+        },
+        closeModal: function() {
+            this.modal = false;
+            document.getElementById('admin-content').style.zIndex = '11';
+        },
         update: function(event){
+
+            this.enableEdit = false;
+            this.page.content = document.getElementById('content-editor').innerHTML;
+            this.enableEdit = true;
 
             let headers = {
                 'Content-Type': 'application/json;charset=UTF-8',
@@ -269,6 +460,7 @@ export default {
             let params = {};
             params['id'] = this.page_id;
             params['content'] = this.page.content;
+            params['construct'] = this.construct;
             params['customCss'] = this.page.customCss;
             params['customJs'] = this.page.customJs;
             params['disableLayout'] = this.page.disableLayout;
@@ -306,6 +498,11 @@ export default {
                 });
 
         },
+        setEditor: function(event) {
+            this.createCookie('selected_editor', event.target.dataset.editor);
+            this.selected_editor = event.target.dataset.editor;
+            this.selected_editor_name = event.target.textContent;
+        },
         showPanel: function(event) {
             if (this.panel != event.target.dataset.panel) this.panel = event.target.dataset.panel;
             else this.panel = '';
@@ -314,6 +511,27 @@ export default {
             var self = this;
             this.alert = {text: text, type: type};
             setTimeout(function() { self.alert = {}; }, 5000);
+        },
+        createCookie: function(name, value, days) {
+            var expires;
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toGMTString();
+            } else {
+                expires = "";
+            }
+            document.cookie = escape(name) + "=" + escape(value) + expires + "; path=/;";
+        },
+        readCookie: function(name) {
+            var nameEQ = escape(name) + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return unescape(c.substring(nameEQ.length, c.length));
+            }
+            return false;
         }
     }
 }
