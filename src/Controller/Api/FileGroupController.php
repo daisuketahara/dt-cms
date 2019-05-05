@@ -17,6 +17,42 @@ use App\Service\LogService;
 
 class FileGroupController extends Controller
 {
+    /**
+    * @Route("/api/v1/filegroup/info/", name="api_filegroup_info"), methods={"GET","HEAD"})
+    */
+    final public function info(Request $request, TranslatorInterface $translator)
+    {
+        $info = array(
+            'api' => array(
+                'list' => '/filegroup/list/',
+                'get' => '/filegroup/get/',
+                'insert' => '/filegroup/insert/',
+                'update' => '/filegroup/update/',
+                'delete' => '/filegroup/delete/'
+            ),
+            'fields' => array(
+                [
+                    'id' => 'id',
+                    'label' => 'id',
+                    'type' => 'integer',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => false,
+                ],
+                [
+                    'id' => 'name',
+                    'label' => 'name',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ]
+            ),
+        );
+        return $this->json(json_encode($info));
+    }
 
     /**
     * @Route("/api/v1/filegroup/list/", name="api_filegroup_list"), methods={"GET","HEAD"})

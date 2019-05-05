@@ -4,16 +4,8 @@
 <datamanager></datamanager>
 {% endblock %}
 
-{% block stylesheets %}
-{{ parent() }}
-    {{ encore_entry_link_tags('data-manager') }}
-{% endblock %}
-
 {% block javascripts %}
-    {{ parent() }}
     <script>
-        var apikey = '{{apikey}}';
-
         var api = {
             list: '/user/list/',
             get: '/user/get/',
@@ -24,7 +16,6 @@
             insert: '/admin/user/insert/',
             update: '/admin/user/update/'
         };
-
 
         var columns = [
             {
@@ -75,5 +66,5 @@
         ];
 
     </script>
-    {{ encore_entry_script_tags('data-manager') }}
+    {{ parent() }}
 {% endblock %}

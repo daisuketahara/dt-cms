@@ -22,7 +22,7 @@ class MenuService
         $this->requestStack = $requestStack;
     }
 
-    public function getMenu($menuId)
+    public function getMenu($menuId, $useCache=true)
     {
         $cache = new CacheService();
         $session = new Session();
@@ -36,7 +36,7 @@ class MenuService
                 ->findOneBy(array('default' => true));
         }
 
-        if ($cache->has('menu.' . $locale->getId() . '.' . $menuId)) {
+        if ($cache->has('menu.' . $locale->getId() . '.' . $menuId) && $useCache) {
             $value = $cache->get('menu.' . $locale->getId() . '.' . $menuId);
             return $value;
         }
@@ -44,15 +44,25 @@ class MenuService
         $sql = "SELECT
         	mi.id AS id,
             mi.icon AS icon,
-        	CASE WHEN p.id IS NOT NULL THEN pc.page_title ELSE mi.label END AS label,
         	CASE
+                WHEN mi.label IS NOT NULL AND mi.label <> '' THEN mi.label
+                WHEN pm.id IS NOT NULL AND pm.description IS NOT NULL AND pm.description <> '' THEN pm.description
+                WHEN pm.id IS NOT NULL THEN pm.route_name
+                WHEN p.id IS NOT NULL THEN pc.page_title
+            END AS label,
+        	CASE
+        		WHEN pm.id IS NOT NULL THEN pm.route
         		WHEN p.id IS NOT NULL AND l.default = 0 AND pc.page_route = '' THEN CONCAT(l.locale,'/')
         		WHEN p.id IS NOT NULL AND l.default = 0 THEN CONCAT(l.locale,'/',pc.page_route,'/')
         		WHEN p.id IS NOT NULL AND pc.page_route = '' THEN ''
         		WHEN p.id IS NOT NULL THEN CONCAT(pc.page_route,'/')
         		ELSE mi.route
-        	END AS route
+        	END AS route,
+            pm.route_name AS route_name,
+            pm.component AS component,
+            pm.props AS props
         FROM menu_items AS mi
+        LEFT JOIN permission AS pm ON mi.permission_id = pm.id
         LEFT JOIN page AS p ON p.status = 1 AND mi.page_id = p.id
         LEFT JOIN page_content AS pc ON p.id = pc.page_id AND pc.locale_id = " . $locale->getId() . "
         LEFT JOIN locale AS l ON l.id = pc.locale_id
@@ -72,7 +82,11 @@ class MenuService
             $menuItem['id'] = $mainMenuItem['id'];
             $menuItem['icon'] = $mainMenuItem['icon'];
             $menuItem['label'] = $mainMenuItem['label'];
+            $menuItem['name'] = $mainMenuItem['route'];
             $menuItem['route'] = $mainMenuItem['route'];
+            $menuItem['route_name'] = $mainMenuItem['route_name'];
+            $menuItem['component'] = $mainMenuItem['component'];
+            $menuItem['props'] = $mainMenuItem['props'];
 
             $mainMenuSub = $this->getSubMenu($mainMenuItem['id']);
 
@@ -86,6 +100,9 @@ class MenuService
                     $subMenuItem['icon'] = $mainMenuSubItem['icon'];
                     $subMenuItem['label'] = $mainMenuSubItem['label'];
                     $subMenuItem['route'] = $mainMenuSubItem['route'];
+                    $subMenuItem['route_name'] = $mainMenuSubItem['route_name'];
+                    $subMenuItem['component'] = $mainMenuSubItem['component'];
+                    $subMenuItem['props'] = $mainMenuSubItem['props'];
                     $subMenu[] = $subMenuItem;
                 }
                 if (!empty($subMenu)) $menuItem['submenu'] = $subMenu;
@@ -114,15 +131,25 @@ class MenuService
         $sql = "SELECT
         	mi.id AS id,
             mi.icon AS icon,
-        	CASE WHEN p.id IS NOT NULL THEN pc.page_title ELSE mi.label END AS label,
         	CASE
+                WHEN mi.label IS NOT NULL AND mi.label <> '' THEN mi.label
+                WHEN pm.id IS NOT NULL AND pm.description IS NOT NULL AND pm.description <> '' THEN pm.description
+                WHEN pm.id IS NOT NULL THEN pm.route_name
+                WHEN p.id IS NOT NULL THEN pc.page_title
+            END AS label,
+        	CASE
+        		WHEN pm.id IS NOT NULL THEN pm.route
         		WHEN p.id IS NOT NULL AND l.default = 0 AND pc.page_route = '' THEN CONCAT(l.locale,'/')
         		WHEN p.id IS NOT NULL AND l.default = 0 THEN CONCAT(l.locale,'/',pc.page_route,'/')
         		WHEN p.id IS NOT NULL AND pc.page_route = '' THEN ''
         		WHEN p.id IS NOT NULL THEN CONCAT(pc.page_route,'/')
         		ELSE mi.route
-        	END AS route
+        	END AS route,
+            pm.route_name AS route_name,
+            pm.component AS component,
+            pm.props AS props
         FROM menu_items AS mi
+        LEFT JOIN permission AS pm ON mi.permission_id = pm.id
         LEFT JOIN page AS p ON p.status = 1 AND mi.page_id = p.id
         LEFT JOIN page_content AS pc ON p.id = pc.page_id AND pc.locale_id = " . $locale->getId() . "
         LEFT JOIN locale AS l ON l.id = pc.locale_id

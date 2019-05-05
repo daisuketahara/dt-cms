@@ -15,17 +15,6 @@ use App\Entity\Cron;
 class CronController extends Controller
 {
     /**
-    * @Route("/{_locale}/admin/cron/", name="cron"))
-    */
-    final public function list(TranslatorInterface $translator)
-    {
-        return $this->render('cron/admin/list.html.twig', array(
-            'apikey' => 'ce07f59f2eca96d9e3e4dbe2becce743',
-            'page_title' => $translator->trans('Crons'),
-        ));
-    }
-
-    /**
     * @Route("/cron/", name="cron_run")
     */
     final public function cron(Request $request)

@@ -15,9 +15,8 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterface;
 use Doctrine\ORM\EntityManager;
 
+use App\Entity\Permission;
 use App\Security\ApiKeyUserProvider;
-use App\Entity\UserApiKey;
-use App\Entity\User;
 
 class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
 {
@@ -30,54 +29,6 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
 
     public function createToken(Request $request, $providerKey)
     {
-        if ($request->getPathInfo() == '/api/gettoken/') {
-
-            $username = strtolower($request->query->get('username', ''));
-            $password = $request->query->get('password', '');
-            $callback = $request->query->get('callback', '');
-
-            $user = $this->em->getRepository(User::class)
-                ->findOneBy(array('email' => $username));
-
-            if ($user) {
-                $hash = $user->getPassword();
-
-                if (password_verify($password, $hash)) {
-
-                    $token = md5($user->getEmail().rand(0,9999).time());
-                    $expire = date('Y-m-d H:i:s', strtotime('+ 30 minutes'));
-
-                    $userApiKey = new UserApiKey();
-                    $userApiKey->setUser($user);
-                    $userApiKey->setKeyName('Request token by API');
-                    $userApiKey->setToken($token);
-                    $userApiKey->setExpire(new \DateTime($expire));
-                    $userApiKey->setActive(true);
-                    $this->em->persist($userApiKey);
-                    $this->em->flush();
-
-                    $response = array(
-                        'result' => 'valid',
-                        'token' => $token,
-                        'expire' => $expire,
-                    );
-                }
-            }
-
-            if (empty($response)) {
-                $response = array(
-                    'result' => 'invalid',
-                );
-            }
-
-            header('Access-Control-Allow-Origin: *');
-            header('Content-Type: application/json');
-            $json = json_encode($response);
-            if (!empty($callback)) echo $callback . '(' . $json . ')';
-            else echo $json;
-            exit;
-        }
-
         $authHeader = $request->headers->get('Authorization');
         $token = $request->query->get('token');
         if (empty($token)) $token = $request->request->get('token');
@@ -90,9 +41,23 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
 
         if (empty($apiKey)) {
             throw new BadCredentialsException();
+        }
 
-            // or to just skip api key authentication
-            // return null;
+        $path = '/';
+        $pathArray = explode('/', $request->getPathInfo());
+
+        foreach ($pathArray as $part) {
+            if (!empty($part)) {
+                if (is_numeric($part)) $path .= '%/';
+                else $path .= $part .'/';
+            }
+        }
+
+        $permission = $this->em->getRepository(Permission::class)
+            ->checkUserPermission($path, $apiKey);
+
+        if (empty($permission)) {
+            throw new CustomUserMessageAuthenticationException('You do not have permisssion to use this function.');
         }
 
         return new PreAuthenticatedToken(

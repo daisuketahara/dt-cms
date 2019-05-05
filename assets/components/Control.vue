@@ -81,7 +81,7 @@
                 var url = event.target.dataset.url;
 
                 if (event.target.dataset.api) {
-                    axios.get('/api/v1'+event.target.dataset.api, { headers: {"Authorization" : "Bearer " + apikey} })
+                    axios.get('/api/v1'+event.target.dataset.api, { headers: {"Authorization" : "Bearer " + this.$store.state.apikey} })
                         .then(response => {
                             var result = JSON.parse(response.data);
                             if (result.success) {

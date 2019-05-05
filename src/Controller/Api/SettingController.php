@@ -18,6 +18,51 @@ use App\Service\CacheService;
 
 class SettingController extends Controller
 {
+    /**
+    * @Route("/api/v1/setting/info/", name="api_setting_info"), methods={"GET","HEAD"})
+    */
+    final public function info(Request $request, TranslatorInterface $translator)
+    {
+        $info = array(
+            'api' => array(
+                'list' => '/setting/list/',
+                'get' => '/setting/get/',
+                'insert' => '/setting/insert/',
+                'update' => '/setting/update/',
+                'delete' => '/setting/delete/'
+            ),
+            'fields' => array(
+                [
+                    'id' => 'id',
+                    'label' => 'id',
+                    'type' => 'integer',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => false,
+                ],
+                [
+                    'id' => 'settingKey',
+                    'label' => 'key',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'settingValue',
+                    'label' => 'value',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ]
+            ),
+        );
+        return $this->json(json_encode($info));
+    }
 
     /**
     * @Route("/api/v1/setting/list/", name="api_setting_list"), methods={"GET","HEAD"})

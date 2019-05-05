@@ -26,6 +26,79 @@ use App\Service\LogService;
 class AppTranslationController extends Controller
 {
     /**
+    * @Route("/api/v1/apptranslation/info/", name="api_apptranslation_info"), methods={"GET","HEAD"})
+    */
+    final public function info(Request $request, TranslatorInterface $translator)
+    {
+        $info = array(
+            'api' => array(
+                'list' => '/apptranslation/list/',
+                'get' => '/apptranslation/get/',
+                'insert' => '/apptranslation/insert/',
+                'update' => '/apptranslation/update/',
+                'delete' => '/apptranslation/delete/'
+            ),
+            'buttons' => array(
+                [
+                    'id' => 'export',
+                    'label' => 'export',
+                    'url' => '/apptranslation/export/'
+                ]
+            ),
+            'fields' => array(
+                [
+                    'id' => 'id',
+                    'label' => 'id',
+                    'type' => 'integer',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => false,
+                ],
+                [
+                    'id' => 'tag',
+                    'label' => 'tag',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'complete',
+                    'label' => 'complete',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => false,
+                ]
+            ),
+        );
+
+
+        $locales = $this->getDoctrine()
+        ->getRepository(Locale::class)
+        ->findActiveLocales();
+
+        if ($locales)
+        foreach($locales as $locale) {
+
+            $info['fields'][] = [
+                'id' => 'apptranslation_' . $locale->getLocale(),
+                'label' => $translator->trans('translation') . ' (' . strtoupper($locale->getLocale()) . ')',
+                'type' => 'text',
+                'required' => false,
+                'editable' => true,
+                'show_list' => false,
+                'show_form' => true,
+            ];
+        }
+
+        return $this->json(json_encode($info));
+    }
+
+    /**
     * @Route("/api/v1/apptranslation/list/", name="api_apptranslation_list"), methods={"GET","HEAD"})
     */
     final public function list(Request $request)
@@ -125,47 +198,6 @@ class AppTranslationController extends Controller
         }
 
         $json = $serializer->serialize($response, 'json');
-        return $this->json($json);
-    }
-
-    /**
-    * @Route("/api/v1/apptranslation/fields/", name="api_apptranslation_fields"), methods={"GET","HEAD"})
-    */
-    final public function getTranslationFields(Request $request, TranslatorInterface $translator)
-    {
-        $fields = array();
-
-        $fields[] = [
-            'id' => 'tag',
-            'type' => 'text',
-            'label' => $translator->trans('Tag'),
-            'editable' => false,
-            'required' => false,
-            'editable' => true,
-        ];
-
-        $locales = $this->getDoctrine()
-        ->getRepository(Locale::class)
-        ->findActiveLocales();
-
-        if ($locales)
-        foreach($locales as $locale) {
-
-            $fields[] = [
-                'id' => 'apptranslation_' . $locale->getLocale(),
-                'type' => 'text',
-                'label' => $translator->trans('Translation') . ' (' . strtoupper($locale->getLocale()) . ')',
-                'required' => false,
-                'editable' => true,
-            ];
-        }
-
-        $response = [
-            'success' => true,
-            'fields' => $fields,
-        ];
-
-        $json = json_encode($response);
         return $this->json($json);
     }
 
@@ -372,106 +404,4 @@ class AppTranslationController extends Controller
         $json = json_encode($response);
         return $this->json($json);
     }
-
-    /**
-    * @Route("/api/v1/apptranslation/populate/", name="apptranslation_populate"))
-    */
-    final public function populate(TranslatorInterface $translator, LogService $log, KernelInterface $kernel) {
-
-        $application = new Application($kernel);
-        $application->setAutoExit(false);
-
-        $input = new ArrayInput(array(
-            'command' => 'debug:apptranslation',
-            'locale' => 'en',
-        ));
-        $output = new BufferedOutput();
-        $application->run($input, $output);
-
-        // return the output, don't use if you used NullOutput()
-        $content = $output->fetch();
-        $fieldLengths = array();
-        $apptranslations = array();
-
-        $i = 0;
-        $count = 0;
-        $lines = preg_split("/((\r?\n)|(\n?\r))/", $content);
-        foreach($lines as $line){
-            if (empty($i)) {
-                $fields = explode(' ', $line);
-                foreach($fields as $field) {
-                    $fieldLengths[] = strlen($field);
-                }
-            } elseif ($i < 3) {
-                $i++;
-                continue;
-            } elseif ($i > (count($lines)-4)) {
-                $i++;
-                continue;
-            } else {
-                $state = trim(substr($line, 1, $fieldLengths[1]));
-                $domain = trim(substr($line, ($fieldLengths[1]+2), $fieldLengths[2]));
-                $apptranslationId = trim(substr($line, ($fieldLengths[1]+$fieldLengths[2]+3), $fieldLengths[3]));
-
-                if (!empty($domain)) {
-                    $apptranslations[] = array(
-                        'state' => $state,
-                        'domain' => $domain,
-                        'id' => $apptranslationId,
-                    );
-                } else {
-                    $last = count($apptranslations) - 1;
-                    $apptranslations[$last]['id'] .= PHP_EOL . $apptranslationId;
-                }
-            }
-            $i++;
-        }
-
-        if (!empty($apptranslations)) {
-
-            $locales = $this->getDoctrine()
-            ->getRepository(Locale::class)
-            ->findActiveLocales();
-
-            foreach ($apptranslations as $key => $apptranslation) {
-
-                $parentId = 0;
-
-                $apptranslationDb = $this->getDoctrine()
-                ->getRepository(AppTranslation::class)
-                ->findBy(array('tag' => $apptranslation['id']));
-
-                if (!$apptranslationDb) {
-
-                    foreach($locales as $localeId) {
-
-                        $locale = $this->getDoctrine()
-                        ->getRepository(Locale::class)
-                        ->find($localeId);
-
-                        $apptranslationDb = new AppTranslation();
-                        $apptranslationDb->setLocale($locale);
-                        $apptranslationDb->setTag($apptranslation['id']);
-                        $apptranslationDb->setTranslation('');
-                        if (!empty($parentId)) $apptranslationDb->setParentId($parentId);
-
-                        $em = $this->getDoctrine()->getManager();
-                        $em->persist($apptranslationDb);
-                        $em->flush();
-
-                        if (empty($parentId)) $parentId = $apptranslationDb->getId();
-                    }
-                }
-            }
-        }
-
-        $log->add('AppTranslation', 0, '<i>AppTranslations table populated:</i><br>', 'AppTranslation populate');
-        $response = [
-            'success' => true,
-            'message'=> $translator->trans('Missing apptranslation scan completed'),
-        ];
-        $json = json_encode($response);
-        return $this->json($json);
-    }
-
 }

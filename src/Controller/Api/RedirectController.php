@@ -17,6 +17,69 @@ use App\Service\LogService;
 
 class RedirectController extends Controller
 {
+    /**
+    * @Route("/api/v1/redirect/info/", name="api_redirect_info"), methods={"GET","HEAD"})
+    */
+    final public function info(Request $request, TranslatorInterface $translator)
+    {
+        $info = array(
+            'api' => array(
+                'list' => '/redirect/list/',
+                'get' => '/redirect/get/',
+                'insert' => '/redirect/insert/',
+                'update' => '/redirect/update/',
+                'delete' => '/redirect/delete/'
+            ),
+            'fields' => array(
+                [
+                    'id' => 'id',
+                    'label' => 'id',
+                    'type' => 'integer',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => false,
+                ],
+                [
+                    'id' => 'oldPageRoute',
+                    'label' => 'old_page_route',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'newPageRoute',
+                    'label' => 'new_page_route',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => false,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'redirectType',
+                    'label' => 'redirect_type',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => false,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'active',
+                    'label' => 'active',
+                    'type' => 'checkbox',
+                    'required' => false,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ]
+            ),
+        );
+        return $this->json(json_encode($info));
+    }
 
     /**
     * @Route("/api/v1/redirect/list/", name="api_redirect_list"), methods={"GET","HEAD"})

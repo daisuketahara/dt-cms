@@ -28,6 +28,65 @@ use App\Service\LogService;
 class UserController extends Controller
 {
     /**
+    * @Route("/api/v1/user/info/", name="api_user_info"), methods={"GET","HEAD"})
+    */
+    final public function fields(Request $request, TranslatorInterface $translator)
+    {
+        $info = array(
+            'api' => array(
+                'list' => '/user/list/',
+                'get' => '/user/get/',
+                'delete' => '/user/delete/',
+            ),
+            'fields' => array(
+                [
+                    'id' => 'id',
+                    'label' => 'id',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => false,
+                ],[
+                    'id' => 'email',
+                    'label' => 'email',
+                    'type' => 'email',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],[
+                    'id' => 'firstname',
+                    'label' => 'firstname',
+                    'type' => 'text',
+                    'required' => false,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],[
+                    'id' => 'lastname',
+                    'label' => 'lastname',
+                    'type' => 'text',
+                    'required' => false,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],[
+                    'id' => 'active',
+                    'label' => 'active',
+                    'type' => 'checkbox',
+                    'required' => false,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ]
+            ),
+        );
+
+        return $this->json(json_encode($info));
+    }
+
+    /**
     * @Route("/api/v1/user/list/", name="api_user_list"), methods={"GET","HEAD"})
     */
     final public function list(Request $request)

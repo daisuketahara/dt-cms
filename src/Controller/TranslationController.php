@@ -19,18 +19,7 @@ use App\Service\LogService;
 class TranslationController extends Controller
 {
     /**
-    * @Route("/{_locale}/admin/translation/", name="admin_translation"))
-    */
-    final public function list(TranslatorInterface $translator)
-    {
-        return $this->render('translation/admin/list.html.twig', array(
-            'apikey' => 'ce07f59f2eca96d9e3e4dbe2becce743',
-            'page_title' => $translator->trans('Translations'),
-        ));
-    }
-
-    /**
-    * @Route("/{_locale}/admin/translation/export/", name="admin_translation_export"))
+    * @Route("/{_locale}/export/translation/", name="admin_translation_export"))
     */
     final public function export(TranslatorInterface $translator, LogService $log)
     {
@@ -49,6 +38,7 @@ class TranslationController extends Controller
 
             $columnNames = array(
                 $translator->trans('ID'),
+                $translator->trans('Tag'),
                 $translator->trans('Original'),
             );
 
@@ -64,6 +54,7 @@ class TranslationController extends Controller
 
                 $row = array();
                 $row[] = $translation['id'];
+                $row[] = $translation['tag'];
                 $row[] = $translation['original'];
 
                 if ($locales) {

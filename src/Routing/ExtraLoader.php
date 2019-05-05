@@ -71,7 +71,7 @@ class ExtraLoader extends Loader
             $route = new Route($path, $defaults, $requirements);
 
             // add the new route to the route collection
-            $routeName = 'dtredirect_' . strtolower(str_replace('/', '_', $redirect->getOldPageRoute()));
+            $routeName = 'redirect_' . strtolower(str_replace('/', '_', $redirect->getOldPageRoute()));
             $routes->add($routeName, $route);
         }
 

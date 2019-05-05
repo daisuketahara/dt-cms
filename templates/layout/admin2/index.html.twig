@@ -1,0 +1,146 @@
+{% extends "layout/index.html.twig" %}
+
+{% block stylesheets %}
+{{ parent() }}
+    <link rel="stylesheet" type="text/css" href="/css/admin.css?v={{settingservice.getSetting('template.assets.version')}}">
+    {{ encore_entry_link_tags('admin') }}
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+    <script>
+        var apikey = '{{apikey}}';
+
+        translations['meta_data'] = '{% trans %}Meta data{% endtrans %}';
+        translations['settings'] = '{% trans %}Settings{% endtrans %}';
+        translations['title_tag'] = '{% trans %}Title tag{% endtrans %}';
+        translations['meta_keywords'] = '{% trans %}Meta keywords{% endtrans %}';
+        translations['meta_description'] = '{% trans %}Meta description{% endtrans %}';
+        translations['custom_meta'] = '{% trans %}Custom meta{% endtrans %}';
+        translations['publish_date'] = '{% trans %}Publish date{% endtrans %}';
+        translations['add_image'] = '{% trans %}Add image{% endtrans %}';
+        translations['expire_date'] = '{% trans %}Expire date{% endtrans %}';
+        translations['page_status'] = '{% trans %}Page status{% endtrans %}';
+        translations['publish'] = '{% trans %}Publish{% endtrans %}';
+        translations['draft'] = '{% trans %}Draft{% endtrans %}';
+        translations['page_width'] = '{% trans %}Page width{% endtrans %}';
+        translations['default'] = '{% trans %}Default{% endtrans %}';
+        translations['disable_layout'] = '{% trans %}Disable layout{% endtrans %}';
+        translations['yes'] = '{% trans %}Yes{% endtrans %}';
+        translations['no'] = '{% trans %}No{% endtrans %}';
+        translations['page_weight'] = '{% trans %}Page Weight{% endtrans %}';
+        translations['grant_access'] = '{% trans %}Grant access to role{% endtrans %}';
+        translations['enter_title'] = '{% trans %}Enter your title here...{% endtrans %}';
+        translations['custom_css'] = '{% trans %}Custom CSS{% endtrans %}';
+        translations['custom_js'] = '{% trans %}Custom JS{% endtrans %}';
+        translations['select'] = '{% trans %}Select{% endtrans %}';
+        translations['layout'] = '{% trans %}Layout{% endtrans %}';
+        translations['content'] = '{% trans %}Content{% endtrans %}';
+        translations['text_left_image_right'] = '{% trans %}Text left, image right{% endtrans %}';
+        translations['text_right_image_left'] = '{% trans %}Text right, image left{% endtrans %}';
+        translations['textarea'] = '{% trans %}Textarea{% endtrans %}';
+        translations['slider'] = '{% trans %}Slider{% endtrans %}';
+        translations['block'] = '{% trans %}Block{% endtrans %}';
+        translations['add_element'] = '{% trans %}Add element{% endtrans %}';
+        translations['editor'] = '{% trans %}Editor{% endtrans %}';
+        translations['builder'] = '{% trans %}Builder{% endtrans %}';
+        translations['header'] = '{% trans %}Header{% endtrans %}';
+        translations['header'] = '{% trans %}Header{% endtrans %}';
+        translations['header'] = '{% trans %}Header{% endtrans %}';
+        translations['text'] = '{% trans %}Text{% endtrans %}';
+        translations['image'] = '{% trans %}Image{% endtrans %}';
+        translations['button'] = '{% trans %}Button{% endtrans %}';
+        translations['list'] = '{% trans %}List{% endtrans %}';
+        translations['icon'] = '{% trans %}Icon{% endtrans %}';
+        translations['html'] = '{% trans %}HTML{% endtrans %}';
+        translations['video'] = '{% trans %}Video{% endtrans %}';
+        translations['content'] = '{% trans %}Content{% endtrans %}';
+        translations['new_menu'] = '{% trans %}New menu{% endtrans %}';
+        translations['go_back'] = '{% trans %}Go back{% endtrans %}';
+        translations['expand'] = '{% trans %}Expand{% endtrans %}';
+        translations['collapse'] = '{% trans %}Collapse{% endtrans %}';
+        translations['text'] = '{% trans %}Text{% endtrans %}';
+        translations['icon'] = '{% trans %}Icon{% endtrans %}';
+        translations['active'] = '{% trans %}Active{% endtrans %}';
+        translations['add_menu_item'] = '{% trans %}Add menu item{% endtrans %}';
+        translations['parent'] = '{% trans %}Parent{% endtrans %}';
+        translations['custom_route'] = '{% trans %}Custom route{% endtrans %}';
+    </script>
+    {{ encore_entry_script_tags('admin') }}
+{% endblock %}
+
+{% block body %}
+<div class="admin-container">
+    <div class="admin-navigation">
+        <div class="text-center mb-3 mt-4">
+            <div class="im-user-profile-picture mb-3"></div>
+            <div class="im-user-profile-name mb-3">{{ app.user.getFirstname() }} {{ app.user.getLastname() }}</div>
+            <a class="btn btn-secondary btn-sm" href="/{{ app.request.locale }}/admin/account/">{% trans %}My account{% endtrans %}</a>
+            <a class="btn btn-secondary btn-sm" href="/{{ app.request.locale }}/logout/">{% trans %}Logout{% endtrans %}</a>
+        </div>
+        {% block sidebar %}
+        <nav class="dt-admin-menu">
+            <ul>
+            {% for menuItem in menuservice.getMenu(2) %}
+                <li>
+                    <a href="/{{ app.request.locale }}/{{menuItem.route}}">
+                    {{menuItem.icon|raw}}
+                    <span>{{menuItem.label|trans|raw}}</span>
+                    {% if menuItem.submenu is defined %}<i class="fas fa-angle-right float-right"></i>{% endif %}
+                    </a>
+                {% if menuItem.submenu is defined %}
+                    {% if menuItem.submenu is iterable %}
+                    <ul>
+                        {% for submenu in menuItem.submenu %}
+                        <li><a href="/{{ app.request.locale }}/{{submenu.route}}">{{submenu.icon}}{{submenu.label|trans|raw}}</a></li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        </nav>
+        {% endblock %}
+    </div>
+    <main id="admin-content" class="admin-content">
+        <div class="row">
+            <div class="col">{% if page_title is defined %}<h1>{{ page_title|trans|raw }}</h1>{% endif %}</div>
+            <div class="col-auto">{% block topbar %}{% endblock %}</div>
+        </div>
+
+        <!--
+        <?php echo $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
+        -->
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-dismissible alert-danger">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('notice') %}
+            <div class="alert alert-dismissible alert-info">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-dismissible alert-success">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endfor %}{% block content %}{% endblock %}
+    </main>
+</div>
+<footer class="container-fluid">
+        &copy; 2014 - {{ "now"|date('Y') }} by InterMention.
+        {% trans %}All rights reserved.{% endtrans %}
+        {{constant('APPLICATION_VERSION')}}
+</footer>
+{% endblock %}

@@ -34,6 +34,75 @@ use App\Service\RedirectService;
 class PageController extends Controller
 {
     /**
+    * @Route("/api/v1/page/info/", name="api_page_info"), methods={"GET","HEAD"})
+    */
+    final public function info(Request $request, TranslatorInterface $translator)
+    {
+        $info = array(
+            'api' => array(
+                'list' => '/page/list/',
+                'get' => '/page/get/',
+                'delete' => '/page/delete/'
+            ),
+            'settings' => array(
+                'insert' => '/page/insert/',
+                'update' => '/page/update/',
+            ),
+            'fields' => array(
+                [
+                    'object' => 'page',
+                    'id' => 'id',
+                    'label' => 'id',
+                    'type' => 'integer',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => false,
+                ],
+                [
+                    'id' => 'pageTitle',
+                    'label' => 'title',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'pageRoute',
+                    'label' => 'route',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'object' => 'page',
+                    'id' => 'publishDate',
+                    'label' => 'publish_date',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => false,
+                    'show_form' => true,
+                ],
+                [
+                    'object' => 'page',
+                    'id' => 'status',
+                    'label' => 'published',
+                    'type' => 'text',
+                    'required' => false,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ]
+            ),
+        );
+        return $this->json(json_encode($info));
+    }
+
+    /**
     * @Route("/api/v1/page/list/", name="api_page_list"), methods={"GET","HEAD"})
     */
     final public function list(Request $request)

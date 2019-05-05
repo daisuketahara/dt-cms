@@ -1,5 +1,6 @@
 html, body {
     background-color: rgb(252,252,252);
+        scroll-behavior: smooth;
 }
 
 body {
@@ -11,4 +12,5 @@ body {
 	$link-color-reverse:	#ffffff;
 
 	@import 'theme-components';
+
 }

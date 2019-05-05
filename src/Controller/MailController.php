@@ -16,29 +16,6 @@ use App\Service\SettingService;
 class MailController extends Controller
 {
     /**
-    * @Route("/{_locale}/admin/mail/queue/", name="admin_mail_queue"))
-    */
-    final public function queue(TranslatorInterface $translator)
-    {
-        return $this->render('mail/admin/queue.html.twig', array(
-            'apikey' => 'ce07f59f2eca96d9e3e4dbe2becce743',
-            'page_title' => $translator->trans('Mail Queue'),
-        ));
-    }
-
-    /**
-    * @Route("/{_locale}/admin/mail/template/", name="admin_mail_templates"))
-    */
-    final public function template(TranslatorInterface $translator)
-    {
-        return $this->render('mail/admin/templates.html.twig', array(
-            'apikey' => 'ce07f59f2eca96d9e3e4dbe2becce743',
-            'page_title' => $translator->trans('Mail templates'),
-        ));
-    }
-
-
-    /**
     * @Route("/cron/mail/queue/send/", name="cron_mail_queue_send")
     */
     final public function send(LogService $log, SettingService $setting, \Swift_Mailer $mailer)

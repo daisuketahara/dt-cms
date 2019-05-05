@@ -3,20 +3,115 @@
 namespace App\Controller\Api;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 use App\Entity\Permission;
 use App\Service\LogService;
 
 class PermissionController extends Controller
 {
+    /**
+    * @Route("/api/v1/permission/info/", name="api_permission_info"), methods={"GET","HEAD"})
+    */
+    final public function info(Request $request, TranslatorInterface $translator)
+    {
+        $info = array(
+            'api' => array(
+                'list' => '/permission/list/',
+                'get' => '/permission/get/',
+                'insert' => '/permission/insert/',
+                'update' => '/permission/update/',
+                'delete' => '/permission/delete/'
+            ),
+            'buttons' => array(
+                [
+                    'id' => 'populate',
+                    'label' => 'get_missing_permissions',
+                    'api' => '/permission/populate/'
+                ]
+            ),
+            'fields' => array(
+                [
+                    'id' => 'id',
+                    'label' => 'id',
+                    'type' => 'integer',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => false,
+                ],
+                [
+                    'id' => 'permissionGroup',
+                    'label' => 'group',
+                    'type' => 'text',
+                    'required' => false,
+                    'editable' => false,
+                    'show_list' => false,
+                    'show_form' => false,
+                ],
+                [
+                    'id' => 'page',
+                    'label' => 'page',
+                    'type' => 'text',
+                    'required' => false,
+                    'editable' => false,
+                    'show_list' => false,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'routeName',
+                    'label' => 'route_name',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'description',
+                    'label' => 'description',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'component',
+                    'label' => 'component',
+                    'type' => 'text',
+                    'required' => false,
+                    'editable' => true,
+                    'show_list' => false,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'props',
+                    'label' => 'props',
+                    'type' => 'text',
+                    'required' => false,
+                    'editable' => true,
+                    'show_list' => false,
+                    'show_form' => true,
+                ]
+            ),
+        );
+        return $this->json(json_encode($info));
+    }
 
     /**
     * @Route("/api/v1/permission/list/", name="api_permission_list"), methods={"GET","HEAD"})
@@ -225,6 +320,90 @@ class PermissionController extends Controller
             ];
         }
 
+        $json = json_encode($response);
+        return $this->json($json);
+    }
+
+    /**
+    * @Route("/api/v1/permission/populate/", name="api_permission_populate"), methods={"GET","HEAD"})
+    */
+    final public function populate(TranslatorInterface $translator, LogService $log, KernelInterface $kernel) {
+
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+
+        $input = new ArrayInput(array(
+            'command' => 'debug:router',
+        ));
+        $output = new BufferedOutput();
+        $application->run($input, $output);
+
+        // return the output, don't use if you used NullOutput()
+        $content = $output->fetch();
+        $fieldLengths = array();
+        $routes = array();
+
+        $i = 0;
+        $count = 0;
+        $lines = preg_split("/((\r?\n)|(\n?\r))/", $content);
+        foreach($lines as $line){
+            if (empty($i)) {
+                $fields = explode(' ', $line);
+                foreach($fields as $field) {
+                    $fieldLengths[] = strlen($field);
+                }
+            } elseif ($i < 3) {
+                $i++;
+                continue;
+            } elseif ($i > (count($lines)-4)) {
+                $i++;
+                continue;
+            } else {
+                $name = trim(substr($line, 1, $fieldLengths[1]));
+                $path = trim(substr($line, ($fieldLengths[1]+$fieldLengths[2]+$fieldLengths[3]+$fieldLengths[4]+6), $fieldLengths[5]));
+
+                $routes[] = array(
+                    'name' => $name,
+                    'path' => $path
+                );
+            }
+            $i++;
+        }
+
+        if (!empty($routes)) {
+            foreach ($routes as $key => $route) {
+
+                // Skip if first character _, redirect_ or cron_
+                $nameSplit = explode('_', $route['name']);
+                if (in_array($nameSplit[0], array('', 'cron','redirect','page'))) {
+                    continue;
+                }
+
+                $permission = $this->getDoctrine()
+                ->getRepository(Permission::class)
+                ->findOneBy(['routeName' => $route['name']]);
+
+                if (!$permission) {
+                    $permission = new Permission();
+                }
+
+                $path = str_replace('/{_locale}', '', $route['path']);
+
+                $permission->setRouteName($route['name']);
+                $permission->setRoute($path);
+
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($permission);
+                $em->flush();
+
+            }
+        }
+
+        $log->add('Permission', 0, '<i>Permissions table populated:</i><br>', 'Permission populate');
+        $response = [
+            'success' => true,
+            'message'=> $translator->trans('Missing permissions scan completed'),
+        ];
         $json = json_encode($response);
         return $this->json($json);
     }

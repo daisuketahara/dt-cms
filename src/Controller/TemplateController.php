@@ -16,7 +16,7 @@ use App\Service\LogService;
 class TemplateController extends Controller
 {
     /**
-    * @Route("/{_locale}/admin/template/", name="template"))
+    * @Route("/{_locale}/admin/template/", name="admin_template"))
     */
     final public function list(TranslatorInterface $translator)
     {
@@ -31,7 +31,7 @@ class TemplateController extends Controller
     }
 
     /**
-    * @Route("/{_locale}/admin/template/edit/{id}/", name="template_edit"))
+    * @Route("/{_locale}/admin/template/edit/{id}/", name="admin_template_edit"))
     */
     public function edit($id, Request $request, TranslatorInterface $translator, LogService $log)
     {
@@ -67,7 +67,7 @@ class TemplateController extends Controller
     }
 
     /**
-    * @Route("/{_locale}/admin/template/compile/{id}/", name="template_compile"))
+    * @Route("/{_locale}/admin/template/compile/{id}/", name="admin_template_compile"))
     */
     public function compile($id, TranslatorInterface $translator, LogService $log, Filesystem $fileSystem)
     {

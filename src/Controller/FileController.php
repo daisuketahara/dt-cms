@@ -22,7 +22,7 @@ use App\Service\LogService;
 class FileController extends Controller
 {
     /**
-    * @Route("/{_locale}/admin/file/", name="file"))
+    * @Route("/{_locale}/admin/file/", name="admin_file"))
     */
     final public function list(TranslatorInterface $translator)
     {
@@ -35,7 +35,7 @@ class FileController extends Controller
     }
 
     /**
-    * @Route("/ajax/file/get/", name="file_get"))
+    * @Route("/ajax/file/get/", name="admin_file_get"))
     */
     final public function getFile(Request $request)
     {
@@ -87,7 +87,7 @@ class FileController extends Controller
     }
 
     /**
-    * @Route("/ajax/file/upload/", name="file_upload"))
+    * @Route("/ajax/file/upload/", name="admin_file_upload"))
     */
     final public function processFileUpload(Request $request, FileService $fileService)
     {
@@ -104,7 +104,7 @@ class FileController extends Controller
     }
 
     /**
-    * @Route("/{_locale}/admin/file/delete/{id}/", name="file_delete"))
+    * @Route("/{_locale}/admin/file/delete/{id}/", name="admin_file_delete"))
     */
     final public function delete($id, LogService $log)
     {

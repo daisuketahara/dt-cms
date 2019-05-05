@@ -22,6 +22,85 @@ use App\Service\SettingService;
 
 class MailController extends Controller
 {
+    /**
+    * @Route("/api/v1/mail/queue/info/", name="api_mail_queue_info"), methods={"GET","HEAD"})
+    */
+    final public function infoQueue(Request $request, TranslatorInterface $translator)
+    {
+        $info = array(
+            'api' => array(
+                'list' => '/mail/queue/list/',
+                'get' => '/mail/queue/get/',
+                'delete' => '/mail/queue/delete/'
+            ),
+            'fields' => array(
+                [
+                    'id' => 'id',
+                    'label' => 'id',
+                    'type' => 'integer',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => false,
+                ],
+                [
+                    'id' => 'toEmail',
+                    'label' => 'to',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'subject',
+                    'label' => 'subject',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'creationDate',
+                    'label' => 'creation_date',
+                    'type' => 'datetime',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => false,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'sendDate',
+                    'label' => 'send_date',
+                    'type' => 'datetime',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => false,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'body',
+                    'label' => 'body',
+                    'type' => 'texteditor',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => false,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'status',
+                    'label' => 'status',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => false,
+                    'show_form' => true,
+                ]
+            ),
+        );
+        return $this->json(json_encode($info));
+    }
 
     /**
     * @Route("/api/v1/mail/queue/list/", name="api_mail_queue_list"), methods={"GET","HEAD"})
@@ -150,6 +229,75 @@ class MailController extends Controller
 
         $json = json_encode($response);
         return $this->json($json);
+    }
+
+    /**
+    * @Route("/api/v1/mail/template/info/", name="api_mail_template_info"), methods={"GET","HEAD"})
+    */
+    final public function infoTemplate(Request $request, TranslatorInterface $translator)
+    {
+        $info = array(
+            'settings' => array(
+                'translate' => true,
+            ),
+            'api' => array(
+                'list' => '/mail/template/list/',
+                'get' => '/mail/template/get/',
+                'insert' => '/mail/template/insert/',
+                'update' => '/mail/template/update/',
+                'delete' => '/mail/template/delete/'
+            ),
+            'fields' => array(
+                [
+                    'object' => 'mailTemplate',
+                    'id' => 'id',
+                    'label' => $translator->trans('ID'),
+                    'type' => 'integer',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => false,
+                ],
+                [
+                    'object' => 'mailTemplate',
+                    'id' => 'tag',
+                    'label' => $translator->trans('Tag'),
+                    'type' => 'text',
+                    'required' => false,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'name',
+                    'label' => $translator->trans('Name'),
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'subject',
+                    'label' => $translator->trans('Subject'),
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'body',
+                    'label' => $translator->trans('Body'),
+                    'type' => 'texteditor',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => false,
+                    'show_form' => true,
+                ]
+            ),
+        );
+        return $this->json(json_encode($info));
     }
 
     /**

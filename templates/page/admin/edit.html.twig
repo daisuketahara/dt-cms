@@ -1,70 +1,13 @@
 {% extends templateservice.getAdminTemplate() %}
 
-
-
-
 {% block content %}
 <editor></editor>
 {% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    {{ encore_entry_link_tags('editor') }}
-{% endblock %}
-
 {% block javascripts %}
-    {{ parent() }}
     <script>
-        var apikey = '{{apikey}}';
         var page_id = {{page_id}};
         var domain = '{{domain}}';
-        translations['meta_data'] = '{% trans %}Meta data{% endtrans %}';
-        translations['settings'] = '{% trans %}Settings{% endtrans %}';
-        translations['title_tag'] = '{% trans %}Title tag{% endtrans %}';
-        translations['meta_keywords'] = '{% trans %}Meta keywords{% endtrans %}';
-        translations['meta_description'] = '{% trans %}Meta description{% endtrans %}';
-        translations['custom_meta'] = '{% trans %}Custom meta{% endtrans %}';
-        translations['publish_date'] = '{% trans %}Publish date{% endtrans %}';
-        translations['add_image'] = '{% trans %}Add image{% endtrans %}';
-        translations['expire_date'] = '{% trans %}Expire date{% endtrans %}';
-        translations['page_status'] = '{% trans %}Page status{% endtrans %}';
-        translations['publish'] = '{% trans %}Publish{% endtrans %}';
-        translations['draft'] = '{% trans %}Draft{% endtrans %}';
-        translations['page_width'] = '{% trans %}Page width{% endtrans %}';
-        translations['default'] = '{% trans %}Default{% endtrans %}';
-        translations['disable_layout'] = '{% trans %}Disable layout{% endtrans %}';
-        translations['yes'] = '{% trans %}Yes{% endtrans %}';
-        translations['no'] = '{% trans %}No{% endtrans %}';
-        translations['page_weight'] = '{% trans %}Page Weight{% endtrans %}';
-        translations['grant_access'] = '{% trans %}Grant access to role{% endtrans %}';
-        translations['enter_title'] = '{% trans %}Enter your title here...{% endtrans %}';
-        translations['custom_css'] = '{% trans %}Custom CSS{% endtrans %}';
-        translations['custom_js'] = '{% trans %}Custom JS{% endtrans %}';
-        translations['select'] = '{% trans %}Select{% endtrans %}';
-        translations['layout'] = '{% trans %}Layout{% endtrans %}';
-        translations['content'] = '{% trans %}Content{% endtrans %}';
-
-        translations['text_left_image_right'] = '{% trans %}Text left, image right{% endtrans %}';
-        translations['text_right_image_left'] = '{% trans %}Text right, image left{% endtrans %}';
-        translations['textarea'] = '{% trans %}Textarea{% endtrans %}';
-        translations['slider'] = '{% trans %}Slider{% endtrans %}';
-        translations['block'] = '{% trans %}Block{% endtrans %}';
-        translations['add_element'] = '{% trans %}Add element{% endtrans %}';
-
-
-        translations['editor'] = '{% trans %}Editor{% endtrans %}';
-        translations['builder'] = '{% trans %}Builder{% endtrans %}';
-        translations['header'] = '{% trans %}Header{% endtrans %}';
-        translations['header'] = '{% trans %}Header{% endtrans %}';
-        translations['header'] = '{% trans %}Header{% endtrans %}';
-        translations['text'] = '{% trans %}Text{% endtrans %}';
-        translations['image'] = '{% trans %}Image{% endtrans %}';
-        translations['button'] = '{% trans %}Button{% endtrans %}';
-        translations['list'] = '{% trans %}List{% endtrans %}';
-        translations['icon'] = '{% trans %}Icon{% endtrans %}';
-        translations['html'] = '{% trans %}HTML{% endtrans %}';
-        translations['video'] = '{% trans %}Video{% endtrans %}';
-        translations['content'] = '{% trans %}Content{% endtrans %}';
     </script>
-    {{ encore_entry_script_tags('editor') }}
+    {{ parent() }}
 {% endblock %}

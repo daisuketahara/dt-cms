@@ -118,7 +118,7 @@ class PageController extends Controller
     }
 
     /**
-    * @Route("/{_locale}/page-not-found/", name="page_not_found"))
+    * @Route("/{_locale}/page-not-found/", name="site_page_not_found"))
     */
     public function pageNotFound(Request $request)
     {
@@ -126,7 +126,7 @@ class PageController extends Controller
     }
 
     /**
-    * @Route("/{_locale}/access-denied/", name="page_access_denied"))
+    * @Route("/{_locale}/access-denied/", name="site_page_access_denied"))
     */
     public function accessDenied(Request $request)
     {
@@ -134,7 +134,7 @@ class PageController extends Controller
     }
 
     /**
-    * @Route("/cron/generate-sitemap/", name="page_generate_sitemap"))
+    * @Route("/cron/generate-sitemap/", name="cron_page_generate_sitemap"))
     */
     public function generateSitemap(Request $request)
     {

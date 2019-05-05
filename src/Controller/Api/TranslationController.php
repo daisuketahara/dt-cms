@@ -20,11 +20,104 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 use App\Entity\Translation;
+use App\Entity\TranslationText;
 use App\Entity\Locale;
 use App\Service\LogService;
 
 class TranslationController extends Controller
 {
+    /**
+    * @Route("/api/v1/translation/info/", name="api_translation_info"), methods={"GET","HEAD"})
+    */
+    final public function info(Request $request, TranslatorInterface $translator)
+    {
+        $info = array(
+            'api' => array(
+                'list' => '/translation/list/',
+                'get' => '/translation/get/',
+                'insert' => '/translation/insert/',
+                'update' => '/translation/update/',
+                'delete' => '/translation/delete/'
+            ),
+            'buttons' => array(
+                [
+                    'id' => 'generate',
+                    'label' => $translator->trans('Generate translation files'),
+                    'api' => '/translation/generate/'
+                ],
+                [
+                    'id' => 'populate',
+                    'label' => $translator->trans('Get missing translations'),
+                    'api' => '/translation/populate/'
+                ],
+                [
+                    'id' => 'export',
+                    'label' => $translator->trans('Export'),
+                    'url' => '/export/translation/'
+                ]
+            ),
+            'fields' => array(
+                [
+                    'id' => 'id',
+                    'label' => 'id',
+                    'type' => 'integer',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => false,
+                ],
+                [
+                    'id' => 'tag',
+                    'label' => 'tag',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'original',
+                    'label' => 'original',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'complete',
+                    'label' => 'complete',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => false,
+                ]
+            ),
+        );
+
+
+        $locales = $this->getDoctrine()
+        ->getRepository(Locale::class)
+        ->findActiveLocales();
+
+        if ($locales)
+        foreach($locales as $locale) {
+
+            $info['fields'][] = [
+                'id' => 'translation_' . $locale->getLocale(),
+                'label' => $translator->trans('Translation') . ' (' . strtoupper($locale->getLocale()) . ')',
+                'type' => 'text',
+                'required' => false,
+                'editable' => true,
+                'show_list' => false,
+                'show_form' => true,
+            ];
+        }
+
+        return $this->json(json_encode($info));
+    }
+
     /**
     * @Route("/api/v1/translation/list/", name="api_translation_list"), methods={"GET","HEAD"})
     */
@@ -41,7 +134,7 @@ class TranslationController extends Controller
         ->getRepository(Locale::class)
         ->getDefaultLocale();
 
-        $where = 't.locale_id=' . $defaultLocale->getId();
+        $where = '1=1';
         if (!empty($filter)) {
             parse_str($filter, $filter_array);
             foreach($filter_array as $key => $value) {
@@ -93,18 +186,21 @@ class TranslationController extends Controller
                 ->getRepository(Locale::class)
                 ->findActiveLocales();
 
-                $data = array('id' => $id);
+                $data = array(
+                    'id' => $id,
+                    'original' => $translation->getOriginal(),
+                    'tag' => $translation->getTag(),
+                );
 
                 foreach($locales as $locale) {
 
                     $fieldId = 'translation_' . $locale->getLocale();
 
                     $fieldTranslation = $this->getDoctrine()
-                    ->getRepository(Translation::class)
-                    ->findTranslation($translation->getOriginal(), $locale->getId());
+                    ->getRepository(TranslationText::class)
+                    ->findOneBy(['translation' => $translation, 'locale' => $locale]);
 
-                    if ($fieldTranslation && !empty($fieldTranslation->getTranslation())) $data[$fieldId] = $fieldTranslation->getTranslation();
-                    $data['original'] = $fieldTranslation->getOriginal();
+                    if ($fieldTranslation && !empty($fieldTranslation->getText())) $data[$fieldId] = $fieldTranslation->getText();
                 }
 
                 $response = [
@@ -125,47 +221,6 @@ class TranslationController extends Controller
         }
 
         $json = $serializer->serialize($response, 'json');
-        return $this->json($json);
-    }
-
-    /**
-    * @Route("/api/v1/translation/fields/", name="api_translation_fields"), methods={"GET","HEAD"})
-    */
-    final public function getTranslationFields(Request $request, TranslatorInterface $translator)
-    {
-        $fields = array();
-
-        $fields[] = [
-            'id' => 'original',
-            'type' => 'text',
-            'label' => $translator->trans('Original'),
-            'editable' => false,
-            'required' => false,
-            'editable' => true,
-        ];
-
-        $locales = $this->getDoctrine()
-        ->getRepository(Locale::class)
-        ->findActiveLocales();
-
-        if ($locales)
-        foreach($locales as $locale) {
-
-            $fields[] = [
-                'id' => 'translation_' . $locale->getLocale(),
-                'type' => 'text',
-                'label' => $translator->trans('Translation') . ' (' . strtoupper($locale->getLocale()) . ')',
-                'required' => false,
-                'editable' => true,
-            ];
-        }
-
-        $response = [
-            'success' => true,
-            'fields' => $fields,
-        ];
-
-        $json = json_encode($response);
         return $this->json($json);
     }
 
@@ -213,6 +268,9 @@ class TranslationController extends Controller
             if (isset($params['original'])) $data['original'] = $params['original'];
             else $errors[] = 'Original cannot be empty';
 
+            if (isset($params['tag'])) $data['tag'] = $params['tag'];
+            else $errors[] = 'tag cannot be empty';
+
             if (!empty($errors)) {
 
                 $response = [
@@ -231,29 +289,19 @@ class TranslationController extends Controller
 
                 if (isset($params['translation_' . $locale->getLocale()])) $data['translation_' . $locale->getLocale()] = $params['translation_' . $locale->getLocale()];
 
-                if (!empty($locale->getDefault())) {
-                    $fieldTranslation = $translation;
-                } else {
-                    $fieldTranslation = $this->getDoctrine()
-                    ->getRepository(Translation::class)
-                    ->findTranslation($data['original'], $locale->getId());
-                }
+                $translationText = $this->getDoctrine()
+                    ->getRepository(TranslationText::class)
+                    ->findOneBy(['translation'=> $translation, 'locale' => $locale]);
 
-                if (!$fieldTranslation) {
-                    $fieldTranslation = new Translation();
-                }
+                if (!$translationText) $translationText = new TranslationText();
 
-                $fieldId = 'translation';
-                if (empty($locale->getDefault())) $fieldId = 'translation_' . $locale->getLocale();
-
-                $fieldTranslation->setLocale($locale);
-                $fieldTranslation->setOriginal($data['original']);
-                $fieldTranslation->setTranslation($data['translation_' . $locale->getLocale()]);
+                $translationText->setTranslation($translation);
+                $translationText->setLocale($locale);
+                $translationText->setText($data['translation_' . $locale->getLocale()]);
 
                 $em = $this->getDoctrine()->getManager();
-                $em->persist($fieldTranslation);
+                $em->persist($translationText);
                 $em->flush();
-
             }
 
             $logMessage .= '<i>New data:</i><br>';
@@ -359,7 +407,7 @@ class TranslationController extends Controller
             ->findTranslationsByLocaleId($locale->getId());
 
             foreach($translations as $translation) {
-                if (!empty($translation->getTranslation())) $fs->appendToFile($file, "'" . htmlentities($translation->getOriginal()) . "': '" . htmlentities($translation->getTranslation()) . "'" . PHP_EOL);
+                if (!empty($translation['text'])) $fs->appendToFile($file, "'" . htmlentities($translation['original']) . "': '" . htmlentities($translation['text']) . "'" . PHP_EOL);
             }
 
         }
@@ -374,7 +422,7 @@ class TranslationController extends Controller
     }
 
     /**
-    * @Route("/api/v1/translation/populate/", name="translation_populate"))
+    * @Route("/api/v1/translation/populate/", name="api_translation_populate"))
     */
     final public function populate(TranslatorInterface $translator, LogService $log, KernelInterface $kernel) {
 
@@ -409,20 +457,7 @@ class TranslationController extends Controller
                 $i++;
                 continue;
             } else {
-                $state = trim(substr($line, 1, $fieldLengths[1]));
-                $domain = trim(substr($line, ($fieldLengths[1]+2), $fieldLengths[2]));
-                $translationId = trim(substr($line, ($fieldLengths[1]+$fieldLengths[2]+3), $fieldLengths[3]));
-
-                if (!empty($domain)) {
-                    $translations[] = array(
-                        'state' => $state,
-                        'domain' => $domain,
-                        'id' => $translationId,
-                    );
-                } else {
-                    $last = count($translations) - 1;
-                    $translations[$last]['id'] .= PHP_EOL . $translationId;
-                }
+                $translations[] = trim(substr($line, ($fieldLengths[1]+$fieldLengths[2]+3), $fieldLengths[3]));
             }
             $i++;
         }
@@ -430,37 +465,30 @@ class TranslationController extends Controller
         if (!empty($translations)) {
 
             $locales = $this->getDoctrine()
-            ->getRepository(Locale::class)
-            ->findActiveLocales();
+                ->getRepository(Locale::class)
+                ->findActiveLocales();
 
-            foreach ($translations as $key => $translation) {
-
-                $parentId = 0;
+            foreach ($translations as $key => $original) {
 
                 $translationDb = $this->getDoctrine()
-                ->getRepository(Translation::class)
-                ->findBy(array('original' => $translation['id']));
+                    ->getRepository(Translation::class)
+                    ->findBy(array('original' => $original));
 
                 if (!$translationDb) {
+                    $translationDb = new Translation();
 
-                    foreach($locales as $localeId) {
+                    $tag = preg_replace('~[^\pL\d]+~u', '_', $original);
+                    $tag = iconv('utf-8', 'us-ascii//TRANSLIT', $tag);
+                    $tag = preg_replace('~[^-\w]+~', '', $tag);
+                    $tag = trim($tag, '-');
+                    $tag = preg_replace('~-+~', '-', $tag);
+                    $tag = strtolower($tag);
 
-                        $locale = $this->getDoctrine()
-                        ->getRepository(Locale::class)
-                        ->find($localeId);
-
-                        $translationDb = new Translation();
-                        $translationDb->setLocale($locale);
-                        $translationDb->setOriginal($translation['id']);
-                        $translationDb->setTranslation('');
-                        if (!empty($parentId)) $translationDb->setParentId($parentId);
-
-                        $em = $this->getDoctrine()->getManager();
-                        $em->persist($translationDb);
-                        $em->flush();
-
-                        if (empty($parentId)) $parentId = $translationDb->getId();
-                    }
+                    $translationDb->setTag($tag);
+                    $translationDb->setOriginal($original);
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($translationDb);
+                    $em->flush();
                 }
             }
         }
@@ -474,4 +502,49 @@ class TranslationController extends Controller
         return $this->json($json);
     }
 
+    /**
+    * @Route("/api/v1/translation/locale/{locale}", name="api_translation_by_locale"), methods={"GET","HEAD"))
+    */
+    final public function getTranslationsByLocale($locale)
+    {
+        $locale = $this->getDoctrine()
+            ->getRepository(Locale::class)
+            ->findBy(['locale' => $locale]);
+
+        if ($locale) {
+            $translations = $this->getDoctrine()
+                ->getRepository(TranslationText::class)
+                ->findBy(['locale' => $locale]);
+
+            if ($translations) {
+
+                $data = array();
+                foreach($translations as $translation) {
+                    if (!empty($translation->getText())) $data[$translation->getTranslation()->getTag()] = $translation->getText();
+                    else $data[$translation->getTranslation()->getTag()] = $translation->getTranslation()->getOriginal();
+                }
+
+                $json = array(
+                    'success' => true,
+                    'data' => $data,
+                );
+            } else {
+                $json = array(
+                    'success' => false,
+                    'message' => 'Cannot find translations',
+                );
+            }
+        } else {
+            $json = array(
+                'success' => false,
+                'message' => 'Locale cannot be found',
+            );
+        }
+
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $serializer = new Serializer($normalizers, $encoders);
+        $json = $serializer->serialize($json, 'json');
+        return $this->json($json);
+    }
 }

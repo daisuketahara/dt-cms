@@ -17,6 +17,87 @@ use App\Service\LogService;
 
 class LocaleController extends Controller
 {
+    /**
+    * @Route("/api/v1/locale/info/", name="api_locale_info"), methods={"GET","HEAD"})
+    */
+    final public function info(Request $request, TranslatorInterface $translator)
+    {
+        $info = array(
+            'api' => array(
+                'list' => '/locale/list/',
+                'get' => '/locale/get/',
+                'insert' => '/locale/insert/',
+                'update' => '/locale/update/',
+                'delete' => '/locale/delete/'
+            ),
+            'fields' => array(
+                [
+                    'id' => 'id',
+                    'label' => 'id',
+                    'type' => 'integer',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => false,
+                ],
+                [
+                    'id' => 'name',
+                    'label' => 'name',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'locale',
+                    'label' => 'locale',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'lcid',
+                    'label' => 'lcid',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'isoCode',
+                    'label' => 'iso_code',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'default',
+                    'label' => 'default',
+                    'type' => 'checkbox',
+                    'required' => false,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'active',
+                    'label' => 'active',
+                    'type' => 'checkbox',
+                    'required' => false,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ]
+            ),
+        );
+        return $this->json(json_encode($info));
+    }
 
     /**
     * @Route("/api/v1/locale/list/", name="api_locale_list"), methods={"GET","HEAD"})

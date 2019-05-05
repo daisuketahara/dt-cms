@@ -14,7 +14,7 @@
                     <tr>
                         <th width="30"><input type="checkbox" v-on:click="selectAllDelete"></th>
                         <th v-for="column in columns" v-if="column.show_list == true" :data-column="column.id">
-                            {{column.label}}
+                            {{translations[column.label]}}
                             <a class="table-sort" v-on:click="sortlist" :data-id="column.id" data-dir="asc">
                                 <i v-if="column.id === sort.id && sort.dir === 'desc'" class="fa fa-sort-down" aria-hidden="true"></i>
                                 <i v-else-if="column.id === sort.id && sort.dir === 'asc'" class="fa fa-sort-up" aria-hidden="true"></i>
@@ -23,7 +23,7 @@
                         </th>
                         <th width="160">
                             <button v-if="api.insert" class="btn btn-success btn-sm" v-on:click="add"><i class="fa fa-plus" aria-hidden="true"></i> {{translations.new}}</button>
-                            <button v-if="special.insert" class="btn btn-success btn-sm" :data-url="special.insert" v-on:click="customButton"><i class="fa fa-plus" aria-hidden="true" :data-url="special.insert"></i> {{translations.new}}</button>
+                            <button v-if="settings.insert" class="btn btn-success btn-sm" :data-url="settings.insert" v-on:click="customButton"><i class="fa fa-plus" aria-hidden="true" :data-url="settings.insert"></i> {{translations.new}}</button>
                         </th>
                     </tr>
                     <tr class="table-filter">
@@ -46,7 +46,7 @@
                         <td>
                             <button v-if="api.get" class="btn btn-secondary btn-sm text-white pointer ml-1" v-on:click="view" :data-id="item.id"><i class="fa fa-search" aria-hidden="true" :data-id="item.id"></i></button>
                             <button v-if="api.update" class="btn btn-secondary btn-sm text-white pointer ml-1" v-on:click="edit" :data-id="item.id"><i class="fa fa-pencil-alt" aria-hidden="true" :data-id="item.id"></i></button>
-                            <button v-if="special.update" class="btn btn-secondary btn-sm text-white pointer ml-1" v-on:click="customButton" :data-url="special.update+item.id+'/'" :data-id="item.id"><i class="fa fa-pencil-alt" aria-hidden="true" v-on:click="customButton" :data-url="special.update+item.id+'/'"></i></button>
+                            <button v-if="settings.update" class="btn btn-secondary btn-sm text-white pointer ml-1" v-on:click="customButton" :data-url="settings.update+item.id+'/'" :data-id="item.id"><i class="fa fa-pencil-alt" aria-hidden="true" :data-url="settings.update+item.id+'/'"></i></button>
                             <button v-if="api.delete" class="btn btn-secondary btn-sm text-white pointer ml-1" v-on:click="drop" :data-id="item.id"><i class="fa fa-trash" aria-hidden="true" :data-id="item.id"></i></button>
                         </td>
                     </tr>
@@ -95,7 +95,7 @@
             <table class="table table-hover table-striped">
                 <tbody>
                     <tr v-for="column in columns">
-                        <th>{{column.label}}</th>
+                        <th>{{translations[column.label]}}</th>
                         <td>{{form_data[column.id]}}</td>
                     </tr>
                 </tbody>
@@ -105,7 +105,7 @@
                     <button class="btn btn-primary" v-on:click.prevent="edit" :data-id="form_id">{{translations.edit}}</button>
                 </div>
                 <div class="col text-right">
-                    <button class="btn btn-primary" v-on:click.prevent="gotoList">{{translations.back}}</button>
+                    <button class="btn btn-primary" v-on:click.prevent="gotoList">{{translations.back_to_list}}</button>
                 </div>
             </div>
         </div>
@@ -118,65 +118,47 @@
                     {{alert.text}}
                 </div>
             </transition>
-            <ul v-if="locales.length > 0" class="nav nav-tabs">
+            <ul v-if="settings.translate == true" class="nav nav-tabs">
                 <li v-for="item in locales" class="nav-item">
                     <a :class="{ 'nav-link': true, 'active' : (locale_id == item.id && translate_id === 0) || translate_id == item.id}" href="#" v-on:click.prevent="setTranslate" :data-locale="item.locale" :data-lid="item.id">{{item.name}}</a>
                 </li>
             </ul>
             <form method="post" v-on:submit.prevent="update">
                 <div v-for="column in columns">
-                    <div v-if="column.type === 'text' && (column.editable || (form_id === 0 && column.show_form))" class="form-group">
-                        <label :for="'form-'+column.id">{{column.label}}</label>
-                        <input type="text" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" :value="form_data[column.id]" v-on:keyup="updateFormData">
-                    </div>
-                    <div v-else-if="column.type === 'email' && (column.editable || (form_id === 0 && column.show_form))" class="form-group">
-                        <label :for="'form-'+column.id">{{column.label}}</label>
-                        <input type="email" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" :value="form_data[column.id]" v-on:keyup="updateFormData">
-                    </div>
-                    <div v-else-if="column.type === 'phone' && (column.editable || (form_id === 0 && column.show_form))" class="form-group">
-                        <label :for="'form-'+column.id">{{column.label}}</label>
-                        <vue-tel-input v-model="form_data[column.id]" class="form-control" :preferredCountries="['nl', 'be', 'gb']"></vue-tel-input>
-                    </div>
-                    <div v-else-if="column.type === 'integer' && (column.editable || (form_id === 0 && column.show_form))" class="form-group">
-                        <label :for="'form-'+column.id">{{column.label}}</label>
-                        <input type="integer" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" :value="form_data[column.id]" v-on:keyup="updateFormData">
-                    </div>
-                    <div v-else-if="column.type === 'date' && (column.editable || (form_id === 0 && column.show_form))" class="form-group">
-                        <label :for="'form-'+column.id">{{column.label}}</label>
-                        <input type="date" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" :value="form_data[column.id]" v-on:keyup="updateFormData">
-                    </div>
-                    <div v-else-if="column.type === 'textarea' && (column.editable || (form_id === 0 && column.show_form))" class="form-group">
-                        <label :for="'form-'+column.id">{{column.label}}</label>
-                        <textarea :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" v-on:keyup="filterlist">{{ form_data[column.id] }}</textarea>
-                    </div>
-                    <div v-else-if="column.type === 'texteditor' && (column.editable || (form_id === 0 && column.show_form))" class="form-group">
-                        <label :for="'form-'+column.id">{{column.label}}</label>
-                        <ckeditor :editor="editor" v-model="form_data[column.id]" :config="editorConfig"></ckeditor>
-                    </div>
-                    <div v-else-if="column.type === 'checkbox' && (column.editable || (form_id === 0 && column.show_form))" class="form-group">
+                    <div v-if="column.type === 'checkbox' && (column.editable || (form_id === 0 && column.show_form))" class="form-group">
                         <div class="checkbox">
                             <label :for="'form-'+column.id">
-                                <input type="checkbox" :id="'form-'+column.id" :name="'form-'+column.id" v-model="form_data[column.id]" v-on:keyup="updateFormData">
-                                {{column.label}}
+                                <input type="checkbox" :id="'form-'+column.id" :name="'form-'+column.id" v-model="form_data[column.id]">
+                                {{translations[column.label]}}
                             </label>
                         </div>
                     </div>
                     <div v-else-if="column.type === 'checkboxes' && (column.editable || (form_id === 0 && column.show_form))" class="form-group">
-                        <h4>{{column.label}}</h4>
+                        <h4>
+                            {{translations[column.label]}}
+                            <button class="btn btn-sm btn-link" v-on:click.prevent="toggleCheckboxes" data-status="0">{{translations.select_all}}</button>
+                        </h4>
                         <div class="row">
                             <div v-for="(description, index) in column.options" class="col-sm-6 col-md-4 col-lg-3">
                                 <div class="checkbox">
                                     <label :for="column.id+'-'+index">
-                                        <input type="checkbox" :id="column.id+'-'+index" :name="column.id+'-'+index" :value="index" v-model="form_data[column.id+'-'+index]" v-on:keyup="updateFormData">
+                                        <input type="checkbox" :id="column.id+'-'+index" :name="column.id+'-'+index" :value="index" v-model="form_data[column.id+'-'+index]">
                                         {{description}}
                                     </label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div v-else-if="(column.editable || (form_id === 0 && column.show_form))" class="form-group">
-                        <label :for="'form-'+column.id">{{column.label}}</label>
-                        <input type="text" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" :value="form_data[column.id]" v-on:keyup="updateFormData">
+                    <div v-else-if="column.editable || (form_id === 0 && column.show_form)" class="form-group">
+                        <label :for="'form-'+column.id">{{translations[column.label]}}</label>
+                        <input v-if="column.type === 'text'" type="text" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" v-model="form_data[column.id]">
+                        <input v-else-if="column.type === 'email'" type="email" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" v-model="form_data[column.id]">
+                        <vue-tel-input v-else-if="column.type === 'email'" v-model="form_data[column.id]" class="form-control" :preferredCountries="['nl', 'be', 'gb']"></vue-tel-input>
+                        <input v-else-if="column.type === 'integer'" type="integer" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" v-model="form_data[column.id]">
+                        <input v-else-if="column.type === 'date'" type="date" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" v-model="form_data[column.id]">
+                        <textarea v-else-if="column.type === 'textarea'" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" v-on:keyup="filterlist">{{ form_data[column.id] }}</textarea>
+                        <ckeditor v-else-if="column.type === 'texteditor'" :editor="editor" v-model="form_data[column.id]" :config="editorConfig"></ckeditor>
+                        <input v-else type="text" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" v-model="form_data[column.id]">
                     </div>
                 </div>
                 <div class="row">
@@ -184,7 +166,7 @@
                         <button class="btn btn-primary">{{translations.submit}}</button>
                     </div>
                     <div class="col text-right">
-                        <button class="btn btn-primary" v-on:click.prevent="gotoList">{{translations.cancel}}</button>
+                        <button class="btn btn-primary" v-on:click.prevent="gotoList">{{translations.back_to_list}}</button>
                     </div>
                 </div>
             </form>
@@ -201,13 +183,10 @@
         components: {
             VueTelInput,
         },
-        name: "datamanager",
+        name: "DataManager",
         data() {
             return {
                 mode: 'table',
-                locales: [],
-                locale: '',
-                locale_id: 0,
                 default_locale_id: 0,
                 translate_id: 0,
                 data: {},
@@ -215,9 +194,9 @@
                 form_status: '',
                 form_data: {},
                 errors: {},
-                columns: {},
+                columns: [],
                 api: {},
-                special: {},
+                settings: {},
                 sort: {},
                 filter: '',
                 offset: 0,
@@ -233,33 +212,49 @@
                 }
             }
         },
+        computed: {
+            authenticated () {
+                return this.$store.state.authenticated;
+            },
+            initialised () {
+                return this.$store.state.init;
+            },
+            locales () {
+                return this.$store.state.locales;
+            },
+            locale () {
+                return this.$store.state.locale;
+            },
+            locale_id () {
+                return this.$store.state.locale_id;
+            },
+            translations () {
+                return this.$store.state.translations;
+            }
+        },
         created() {
-            this.columns = columns;
-            this.api = api;
-            this.translations = translations;
-            if (typeof buttons !== 'undefined') this.buttons = buttons;
-            if (typeof special !== 'undefined') this.special = special;
-            this.getLocales();
+            this.getEntityInfo();
         },
         methods: {
-            getLocales: function() {
-                this.locale = document.body.dataset.locale;
-                if (this.api.locales){
-                    axios.get('/api/v1'+this.api.locales, { headers: {"Authorization" : "Bearer " + apikey} })
-                        .then(response => {
-                            this.locales = JSON.parse(response.data)['data'];
-                            for (var i = 0; i < this.locales.length; i++) {
-                                if (this.locale == this.locales[i]['locale']) this.locale_id = this.locales[i]['id'];
-                                if (this.locales[i]['default']) this.default_locale_id = this.locales[i]['id'];
-                            }
-                            this.list();
-                        })
-                        .catch(e => {
-                            this.errors.push(e)
-                        });
-                } else {
-                    this.list();
-                }
+            getEntityInfo: function() {
+
+                axios.get('/api/v1'+this.$attrs.info, { headers: {"Authorization" : "Bearer " + this.$store.state.apikey} })
+                    .then(response => {
+                        var result = JSON.parse(response.data);
+                        this.api = result.api;
+                        this.columns = result.fields;
+
+                        if (result['buttons'] != undefined) this.buttons = result['buttons'];
+                        else this.buttons = {};
+
+                        if (result['settings'] != undefined) this.settings = result['settings'];
+                        else this.settings = {};
+
+                        this.list();
+                    })
+                    .catch(e => {
+                        this.setAlert(e, 'error');
+                    });
             },
             setTranslate: function(event) {
                 if (event.target.dataset.lid != this.default_locale_id) this.translate_id = parseInt(event.target.dataset.lid);
@@ -269,11 +264,9 @@
             },
             list: function() {
 
-                this.columns = columns;
-
                 var headers = {
                     'Content-Type': 'application/json;charset=UTF-8',
-                    "Authorization" : "Bearer " + apikey
+                    "Authorization" : "Bearer " + this.$store.state.apikey
                 }
 
                 let params = {};
@@ -282,16 +275,16 @@
                 params.sort = this.sort.id;
                 params.dir = this.sort.dir;
                 params.filter = this.filter;
-                params.locale = this.locale_id;
+                params.locale = this.$store.state.locale_id;
 
-                axios.post('/api/v1'+api.list, params, {headers: headers})
+                axios.post('/api/v1'+this.api.list, params, {headers: headers})
                     .then(response => {
                         this.data = JSON.parse(response.data)['data'];
                         this.total = parseInt(JSON.parse(response.data)['total']);
                         this.pages = Math.ceil(this.total/this.limit);
                     })
                     .catch(e => {
-                        this.errors.push(e)
+                        this.setAlert(e, 'error');
                     });
             },
             sortlist: function(event) {
@@ -344,13 +337,13 @@
             view: function(event) {
 
                 this.form_id = parseInt(event.target.dataset.id);
-                axios.get('/api/v1'+api.get + event.target.dataset.id + '/', { headers: {"Authorization" : "Bearer " + apikey} })
+                axios.get('/api/v1'+this.api.get + event.target.dataset.id + '/', { headers: {"Authorization" : "Bearer " + this.$store.state.apikey} })
                     .then(response => {
                         this.form_data = JSON.parse(response.data)['data'];
                         this.mode = 'view';
                     })
                     .catch(e => {
-                        this.errors.push(e)
+                        this.setAlert(e, 'error');
                     });
             },
             add: function(event) {
@@ -361,7 +354,7 @@
 
                 if (this.api.custom_form) {
 
-                    axios.get('/api/v1'+this.api.custom_form, { headers: {"Authorization" : "Bearer " + apikey} })
+                    axios.get('/api/v1'+this.api.custom_form, { headers: {"Authorization" : "Bearer " + this.$store.state.apikey} })
                         .then(response => {
                             var result = JSON.parse(response.data);
                             if (result.success) {
@@ -371,16 +364,16 @@
                             }
                         })
                         .catch(e => {
-                            this.errors.push(e)
+                            this.setAlert(e, 'error');
                         });
                 }
 
                 if (this.form_id === 0) this.form_id = parseInt(event.target.dataset.id);
-                let url = '/api/v1'+api.get + this.form_id + '/';
+                let url = '/api/v1'+this.api.get + this.form_id + '/';
 
                 let headers = {
                     'Content-Type': 'application/json;charset=UTF-8',
-                    "Authorization" : "Bearer " + apikey
+                    "Authorization" : "Bearer " + this.$store.state.apikey
                 }
 
                 let params = {};
@@ -410,7 +403,6 @@
                     })
                     .catch(e => {
                         this.setAlert(e, 'error');
-                        this.errors.push(e)
                     });
             },
             updateFormData: function(event) {
@@ -420,7 +412,7 @@
 
                 let headers = {
                     'Content-Type': 'application/json;charset=UTF-8',
-                    "Authorization" : "Bearer " + apikey
+                    "Authorization" : "Bearer " + this.$store.state.apikey
                 }
 
                 let params = {};
@@ -446,8 +438,8 @@
                     }
                 }
 
-                let url = '/api/v1'+api.insert;
-                if (this.form_id > 0) url = '/api/v1'+api.update + this.form_id + '/';
+                let url = '/api/v1'+this.api.insert;
+                if (this.form_id > 0) url = '/api/v1'+this.api.update + this.form_id + '/';
 
                 axios.put(url, params, {headers: headers})
                     .then(response => {
@@ -462,7 +454,7 @@
                         }
                     })
                     .catch(e => {
-                        this.errors.push(e)
+                        this.setAlert(e, 'error');
                     });
             },
             drop: function(event) {
@@ -475,7 +467,7 @@
                 this.$dialog
                     .confirm(translations['confirm_delete_text'] + ' ' + translations['want_proceed'])
                     .then(function(dialog) {
-                        axios.delete('/api/v1'+api.delete + event.target.dataset.id + '/', { headers: {"Authorization" : "Bearer " + apikey} })
+                        axios.delete('/api/v1'+this.api.delete + event.target.dataset.id + '/', { headers: {"Authorization" : "Bearer " + this.$store.state.apikey} })
                             .then(response => {
                                 var result = JSON.parse(response.data);
                                 if (result.success) {
@@ -487,8 +479,7 @@
                                 }
                             })
                             .catch(e => {
-                                console.log(e);
-                                this.errors.push(e);
+                                this.setAlert(e, 'error');
                             });
                     })
                     .catch(function() {
@@ -506,7 +497,7 @@
 
                         var headers = {
                             'Content-Type': 'application/json;charset=UTF-8',
-                            "Authorization" : "Bearer " + apikey
+                            "Authorization" : "Bearer " + this.$store.state.apikey
                         }
 
                         let chk_arr =  document.getElementsByName("select-delete[]");
@@ -518,7 +509,7 @@
 
                         let params = {ids: ids};
 
-                        axios.put('/api/v1'+api.delete, params, {headers: headers})
+                        axios.put('/api/v1'+this.api.delete, params, {headers: headers})
                             .then(response => {
                                 var result = JSON.parse(response.data);
 
@@ -531,7 +522,7 @@
                             })
                             .catch(e => {
                                 console.log(e);
-                                this.errors.push(e)
+                                this.setAlert(e, 'error');
                             });
                     })
                     .catch(function() {
@@ -559,9 +550,26 @@
                 this.form_data = [];
                 this.form_id = 0;
             },
+            toggleCheckboxes: function(event) {
+
+                var status = event.target.dataset.status;
+                var checkboxes = event.target.parentNode.parentNode.querySelectorAll('input[type="checkbox"]');
+
+                if (status == 0) {
+                    event.target.dataset.status = 1;
+                    for(var i = 0; i < checkboxes.length; i++) {
+                        checkboxes[i].checked = true;
+                    }
+                } else {
+                    event.target.dataset.status = 0;
+                    for(var i = 0; i < checkboxes.length; i++) {
+                        checkboxes[i].checked = false;
+                    }
+                }
+            },
             customButton: function(event){
                 if (event.target.dataset.api) {
-                    axios.get(event.target.dataset.api, { headers: {"Authorization" : "Bearer " + apikey} })
+                    axios.get('/api/v1' + event.target.dataset.api, { headers: {"Authorization" : "Bearer " + this.$store.state.apikey} })
                         .then(response => {
                             var result = JSON.parse(response.data);
                             if (result.success) {
@@ -572,10 +580,16 @@
                             }
                         })
                         .catch(e => {
-                            this.errors.push(e)
+                            this.setAlert(e, 'error');
                         });
                 } else if (event.target.dataset.url) {
-                    window.location.href = '/' + this.locale + event.target.dataset.url;
+
+
+
+
+
+
+                    this.$router.push({ path: '/' + this.$store.state.locale + '/admin' + event.target.dataset.url })
                 }
             },
             setAlert: function(text, type) {
@@ -587,6 +601,77 @@
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+
+#data-manager-table {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    padding: 15px;
+    text-align: left;
+}
+.data-manager-table {
+
+    thead {
+
+        tr {
+
+            th:last-child {
+                text-align: right;
+            }
+
+            .table-sort {
+                cursor: pointer;
+            }
+
+        }
+        .table-filter td {
+            padding: 0;
+            background: white;
+        }
+        .table-filter td input {
+            padding: 8px;
+            width: 100%;
+            border: 0;
+        }
+
+
+    }
+
+    tbody {
+
+        tr {
+
+            td:last-child {
+                text-align: right;
+            }
+
+        }
+
+        tr.to-delete {
+            background-color: red !important;
+            background-color: rgba(255,0,0,0.2) !important;
+            color: white;
+        }
+
+    }
+
+}
+
+.select-limit {
+    display: inline-block;
+    width: 70px;
+}
+
+.im-table-filter td {
+    padding: 0;
+    background: white;
+}
+.im-table-filter td input {
+    padding: 8px;
+    width: 100%;
+    border: 0;
+}
 
 </style>

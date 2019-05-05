@@ -17,14 +17,9 @@ class Translation
     private $id;
 
     /**
-    * @ORM\ManyToOne(targetEntity="App\Entity\Locale")
+    * @ORM\Column(type="string", length=255)
     */
-    protected $locale;
-
-    /**
-    * @ORM\Column(type="integer", nullable=true)
-    */
-    protected $parentId;
+    private $tag;
 
     /**
     * @ORM\Column(type="text")
@@ -32,27 +27,22 @@ class Translation
     protected $original;
 
     /**
-    * @ORM\Column(type="text", nullable=true)
-    */
-    protected $translation;
-
-    /**
-    * Get the value of Id
-    *
-    * @return mixed
-    */
+     * Get the value of Id
+     *
+     * @return mixed
+     */
     public function getId()
     {
         return $this->id;
     }
 
     /**
-    * Set the value of Id
-    *
-    * @param mixed id
-    *
-    * @return self
-    */
+     * Set the value of Id
+     *
+     * @param mixed id
+     *
+     * @return self
+     */
     public function setId($id)
     {
         $this->id = $id;
@@ -61,70 +51,46 @@ class Translation
     }
 
     /**
-    * Get the value of Locale
-    *
-    * @return mixed
-    */
-    public function getLocale()
+     * Get the value of Tag
+     *
+     * @return mixed
+     */
+    public function getTag()
     {
-        return $this->locale;
+        return $this->tag;
     }
 
     /**
-    * Set the value of Locale
-    *
-    * @param mixed locale
-    *
-    * @return self
-    */
-    public function setLocale($locale)
+     * Set the value of Tag
+     *
+     * @param mixed tag
+     *
+     * @return self
+     */
+    public function setTag($tag)
     {
-        $this->locale = $locale;
+        $this->tag = $tag;
 
         return $this;
     }
 
     /**
-    * Get the value of Parent Id
-    *
-    * @return mixed
-    */
-    public function getParentId()
-    {
-        return $this->parentId;
-    }
-
-    /**
-    * Set the value of Parent Id
-    *
-    * @param mixed parentId
-    *
-    * @return self
-    */
-    public function setParentId($parentId)
-    {
-        $this->parentId = $parentId;
-
-        return $this;
-    }
-
-    /**
-    * Get the value of Original
-    *
-    * @return mixed
-    */
+     * Get the value of Original
+     *
+     * @return mixed
+     */
     public function getOriginal()
     {
         return $this->original;
     }
 
     /**
-    * Set the value of Original
-    *
-    * @param mixed original
-    *
-    * @return self
-    */
+     * Set the value of Original
+     *
+     * @param mixed original
+     *
+     * @return self
+     */
     public function setOriginal($original)
     {
         $this->original = $original;
@@ -132,27 +98,4 @@ class Translation
         return $this;
     }
 
-    /**
-    * Get the value of Translation
-    *
-    * @return mixed
-    */
-    public function getTranslation()
-    {
-        return $this->translation;
-    }
-
-    /**
-    * Set the value of Translation
-    *
-    * @param mixed translation
-    *
-    * @return self
-    */
-    public function setTranslation($translation)
-    {
-        $this->translation = $translation;
-
-        return $this;
-    }
 }

@@ -17,10 +17,10 @@ class TranslationRepository extends ServiceEntityRepository
 
     public function findTranslationsList($where='', $order='', $limit=0, $offset=0)
     {
-        $sql = "SELECT t.id, t.original, ";
-        $sql .= "CONCAT(CAST(ROUND(((SELECT COUNT(*) FROM translation AS t2 WHERE t2.translation <> '' AND t2.translation IS NOT NULL AND t2.original=t.original)/(SELECT COUNT(*) FROM locale AS l WHERE l.active=1))*100) AS CHAR(3)),'%') AS complete ";
+        $sql = "SELECT t.id, t.tag, t.original, ";
+        $sql .= "CONCAT(CAST(ROUND(((SELECT COUNT(*) FROM translation_text AS t2 WHERE t2.text <> '' AND t2.text IS NOT NULL AND t2.translation_id=t.id)/(SELECT COUNT(*) FROM locale AS l WHERE l.active=1))*100) AS CHAR(3)),'%') AS complete ";
         $sql .= "FROM translation AS t ";
-        $sql .= "WHERE t.locale_id=(SELECT id FROM locale AS l2 WHERE `default`=1)";
+        $sql .= "WHERE 1=1";
 
         if (!empty($where)) $sql .= " AND " . $where;
         if (!empty($order)) $sql .= " ORDER BY " . $order[0] . " " . $order[1];
@@ -38,7 +38,7 @@ class TranslationRepository extends ServiceEntityRepository
     public function countTranslationsList($where='')
     {
 
-        $sql = "SELECT COUNT(*) AS amount FROM translation AS t WHERE t.locale_id=(SELECT id FROM locale AS l2 WHERE `default`=1)";
+        $sql = "SELECT COUNT(*) AS amount FROM translation AS t WHERE 1=1";
 
         if (!empty($where)) $sql .= " AND " . $where;
 
@@ -52,12 +52,17 @@ class TranslationRepository extends ServiceEntityRepository
 
     public function findTranslationsByLocaleId($localeId)
     {
-        $qb = $this->createQueryBuilder('t')
-        ->andWhere('t.locale = :locale')
-        ->setParameter('locale', $localeId)
-        ->getQuery();
+        $sql = "SELECT t.tag, t.original, ";
+        $sql .= "CASE WHEN tt.text IS NOT NULL THEN tt.text ELSE t.original END AS text ";
+        $sql .= "FROM translation AS t ";
+        $sql .= "LEFT JOIN translation_text AS tt ON t.id = tt.translation_id AND tt.locale_id=" . $localeId;
 
-        return $qb->execute();
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        //$stmt->execute(['price' => 10]);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
     }
 
     public function findTranslation($original, $localeId)
@@ -76,11 +81,11 @@ class TranslationRepository extends ServiceEntityRepository
     {
         $locales = $this->getEntityManager()->getRepository(Locale::class)->findAll();
 
-        $sql = "SELECT t1.id, t1.original";
+        $sql = "SELECT t1.id, t1.tag, t1.original";
         $i = 2;
         if (!empty($locales)) {
             foreach($locales as $locale) {
-                $sql .= ", t" . $i . ".translation AS " . $locale->getLocale() . " ";
+                $sql .= ", t" . $i . ".text AS " . $locale->getLocale() . " ";
                 $i++;
             }
         }
@@ -88,12 +93,10 @@ class TranslationRepository extends ServiceEntityRepository
         $i = 2;
         if (!empty($locales)) {
             foreach($locales as $locale) {
-                if ($locale->getDefault()) $sql .= "LEFT JOIN translation AS t" . $i . " ON t" . $i . ".original = t1.original AND t" . $i . ".locale_id = " . $locale->getId() . " ";
-                else $sql .= "LEFT JOIN translation AS t" . $i . " ON t" . $i . ".parent_id = t1.id AND t" . $i . ".locale_id = " . $locale->getId() . " ";
+                $sql .= "LEFT JOIN translation_text AS t" . $i . " ON t" . $i . ".translation_id = t1.id AND t" . $i . ".locale_id = " . $locale->getId() . " ";
                 $i++;
             }
         }
-        $sql .= "WHERE t1.parent_id IS NULL OR t1.parent_id = 0";
 
         $conn = $this->getEntityManager()->getConnection();
         $stmt = $conn->prepare($sql);

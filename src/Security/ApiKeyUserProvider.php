@@ -28,7 +28,7 @@ class ApiKeyUserProvider implements UserProviderInterface
         $user = $this->em->getRepository(UserApiKey::class)
             ->findOneBy(array('token' => $apiKey, 'active' => true), array());
 
-        if ($user) return $user->getUser()->getId();
+        if ($user) return $user->getUser()->getEmail();
         return false;
     }
 

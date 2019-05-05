@@ -17,6 +17,94 @@ use App\Service\LogService;
 
 class LogController extends Controller
 {
+    /**
+    * @Route("/api/v1/log/info/", name="api_log_info"), methods={"GET","HEAD"})
+    */
+    final public function info(Request $request, TranslatorInterface $translator)
+    {
+        $info = array(
+            'api' => array(
+                'list' => '/log/list/',
+                'get' => '/log/get/',
+                'delete' => '/log/delete/'
+            ),
+            'fields' => array(
+                [
+                    'id' => 'id',
+                    'label' => 'id',
+                    'type' => 'integer',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => false,
+                ],
+                [
+                    'id' => 'accountId',
+                    'label' => 'account_id',
+                    'type' => 'integer',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'entity',
+                    'label' => 'entity',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'entityId',
+                    'label' => 'entity_id',
+                    'type' => 'integer',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'log',
+                    'label' => 'log',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => false,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'comment',
+                    'label' => 'comment',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'userIp',
+                    'label' => 'user_ip',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => false,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'creationDate',
+                    'label' => 'date',
+                    'type' => 'datetime',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => true,
+                ]
+            ),
+        );
+        return $this->json(json_encode($info));
+    }
 
     /**
     * @Route("/api/v1/log/list/", name="api_log_list"), methods={"GET","HEAD"})

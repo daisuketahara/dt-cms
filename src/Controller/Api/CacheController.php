@@ -14,6 +14,24 @@ use App\Service\CacheService;
 class CacheController extends Controller
 {
     /**
+    * @Route("/api/v1/cache/info/", name="api_cache_info"), methods={"GET","HEAD"})
+    */
+    final public function info(Request $request, TranslatorInterface $translator)
+    {
+        $info = array(
+            'elements' => array(
+                [
+                    'id' => 'clear-cache',
+                    'label' => 'clear_cache',
+                    'type' => 'button',
+                    'api' => '/cache/clear/'
+                ]
+            ),
+        );
+        return $this->json(json_encode($info));
+    }
+
+    /**
     * @Route("/api/v1/cache/clear/", name="api_clear_cache"), methods={"GET","HEAD"})
     */
     final public function clearCache(Request $request, TranslatorInterface $translator)

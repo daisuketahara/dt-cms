@@ -19,17 +19,6 @@ use App\Service\LogService;
 class AppTranslationController extends Controller
 {
     /**
-    * @Route("/{_locale}/admin/apptranslation/", name="admin_apptranslation"))
-    */
-    final public function list(TranslatorInterface $translator)
-    {
-        return $this->render('apptranslation/admin/list.html.twig', array(
-            'apikey' => 'ce07f59f2eca96d9e3e4dbe2becce743',
-            'page_title' => $translator->trans('Translations'),
-        ));
-    }
-
-    /**
     * @Route("/{_locale}/admin/apptranslation/export/", name="admin_apptranslation_export"))
     */
     final public function export(TranslatorInterface $translator, LogService $log)

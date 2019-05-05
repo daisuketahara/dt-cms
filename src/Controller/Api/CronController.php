@@ -18,6 +18,133 @@ use App\Service\LogService;
 class CronController extends Controller
 {
     /**
+    * @Route("/api/v1/cron/info/", name="api_cron_info"), methods={"GET","HEAD"})
+    */
+    final public function info(Request $request, TranslatorInterface $translator)
+    {
+        $info = array(
+            'api' => array(
+                'list' => '/cron/list/',
+                'get' => '/cron/get/',
+                'insert' => '/cron/insert/',
+                'update' => '/cron/update/',
+                'delete' => '/cron/delete/'
+            ),
+            'fields' => array(
+                [
+                    'id' => 'id',
+                    'label' => 'id',
+                    'type' => 'integer',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => false,
+                ],
+                [
+                    'id' => 'name',
+                    'label' => 'name',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'script',
+                    'label' => 'script',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => false,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'minute',
+                    'label' => 'minute',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => false,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'hour',
+                    'label' => 'hour',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => false,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'day',
+                    'label' => 'day',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => false,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'month',
+                    'label' => 'month',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => false,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'day_of_week',
+                    'label' => 'day_of_week',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => false,
+                    'show_form' => true,
+                ],
+                [
+                    'id' => 'last_run',
+                    'label' => 'last_run',
+                    'type' => 'datetime',
+                    'required' => false,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => false,
+                ],
+                [
+                    'id' => 'next_run',
+                    'label' => 'next_run',
+                    'type' => 'datetime',
+                    'required' => false,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => false,
+                ],
+                [
+                    'id' => 'run_count',
+                    'label' => 'run_count',
+                    'type' => 'text',
+                    'required' => false,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => false,
+                ],
+                [
+                    'id' => 'active',
+                    'label' => 'active',
+                    'type' => 'checkbox',
+                    'required' => false,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ]
+            ),
+        );
+        return $this->json(json_encode($info));
+    }
+
+    /**
     * @Route("/api/v1/cron/list/", name="api_cron_list"), methods={"GET","HEAD"})
     */
     final public function list(Request $request)

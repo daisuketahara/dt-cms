@@ -17,6 +17,42 @@ use App\Service\LogService;
 
 class CountryController extends Controller
 {
+    /**
+    * @Route("/api/v1/country/info/", name="api_country_info"), methods={"GET","HEAD"})
+    */
+    final public function info(Request $request, TranslatorInterface $translator)
+    {
+        $info = array(
+            'api' => array(
+                'list' => '/country/list/',
+                'get' => '/country/get/',
+                'insert' => '/country/insert/',
+                'update' => '/country/update/',
+                'delete' => '/country/delete/'
+            ),
+            'fields' => array(
+                [
+                    'id' => 'id',
+                    'label' => 'id',
+                    'type' => 'integer',
+                    'required' => true,
+                    'editable' => false,
+                    'show_list' => true,
+                    'show_form' => false,
+                ],
+                [
+                    'id' => 'country',
+                    'label' => 'country',
+                    'type' => 'text',
+                    'required' => true,
+                    'editable' => true,
+                    'show_list' => true,
+                    'show_form' => true,
+                ]
+            ),
+        );
+        return $this->json(json_encode($info));
+    }
 
     /**
     * @Route("/api/v1/country/list/", name="api_country_list"), methods={"GET","HEAD"})

@@ -2,90 +2,23 @@
 
 {% block stylesheets %}
 {{ parent() }}
-    <link href="https://fonts.googleapis.com/css?family=Ubuntu" media="screen" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="/css/admin.css?v={{settingservice.getSetting('template.assets.version')}}">
     {{ encore_entry_link_tags('admin') }}
 {% endblock %}
 
 {% block javascripts %}
 {{ parent() }}
-    {{ encore_entry_script_tags('admin') }}
-    <script src="{{ asset('vendor/moment/moment.min.js') }}"></script>
     <script>
-        jQuery('body').addClass('admin-nav-collapsed');
-
+        var translations = {};
+        {% for key,value in translations %}
+        translations['{{key}}'] = '{{value|raw}}';
+        {% endfor %}
     </script>
+    {{ encore_entry_script_tags('admin') }}
 {% endblock %}
 
 {% block body %}
-<div class="admin-container">
-    <div class="admin-navigation">
-        <div class="text-center mb-3 mt-4">
-            <div class="im-user-profile-picture mb-3"></div>
-            <div class="im-user-profile-name mb-3">{{ app.user.getFirstname() }} {{ app.user.getLastname() }}</div>
-            <a class="btn btn-secondary btn-sm" href="/{{ app.request.locale }}/admin/account/">{% trans %}My account{% endtrans %}</a>
-            <a class="btn btn-secondary btn-sm" href="/{{ app.request.locale }}/logout/">{% trans %}Logout{% endtrans %}</a>
-        </div>
-        {% block sidebar %}
-        <nav class="dt-admin-menu">
-            <ul>
-            {% for menuItem in menuservice.getMenu(2) %}
-                <li>
-                    <a href="/{{ app.request.locale }}/{{menuItem.route}}">
-                    {{menuItem.icon|raw}}
-                    <span>{{menuItem.label|trans|raw}}</span>
-                    {% if menuItem.submenu is defined %}<i class="fas fa-angle-right float-right"></i>{% endif %}
-                    </a>
-                {% if menuItem.submenu is defined %}
-                    {% if menuItem.submenu is iterable %}
-                    <ul>
-                        {% for submenu in menuItem.submenu %}
-                        <li><a href="/{{ app.request.locale }}/{{submenu.route}}">{{submenu.icon}}{{submenu.label|trans|raw}}</a></li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                {% endif %}
-                </li>
-            {% endfor %}
-            </ul>
-        </nav>
-        {% endblock %}
-    </div>
-    <main id="admin-content" class="admin-content">
-        <div class="row">
-            <div class="col">{% if page_title is defined %}<h1>{{ page_title|trans|raw }}</h1>{% endif %}</div>
-            <div class="col-auto">{% block topbar %}{% endblock %}</div>
-        </div>
-
-        <!--
-        <?php echo $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->setPartial('partial/breadcrumb'); ?>
-        -->
-        {% for message in app.flashes('error') %}
-            <div class="alert alert-dismissible alert-danger">
-                {{ message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        {% endfor %}
-        {% for message in app.flashes('notice') %}
-            <div class="alert alert-dismissible alert-info">
-                {{ message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        {% endfor %}
-        {% for message in app.flashes('success') %}
-            <div class="alert alert-dismissible alert-success">
-                {{ message }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        {% endfor %}{% block content %}{% endblock %}
-    </main>
-</div>
+<div id="admin-app"></div>
 <footer class="container-fluid">
         &copy; 2014 - {{ "now"|date('Y') }} by InterMention.
         {% trans %}All rights reserved.{% endtrans %}

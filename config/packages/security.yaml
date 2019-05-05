@@ -16,6 +16,18 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        api_public_gettoken:
+            methods: [POST]
+            pattern: ^/api/v1/gettoken/
+            security: false
+        api_public_locale:
+            methods: [GET]
+            pattern: ^/api/v1/locale/list/
+            security: false
+        api_public_translation:
+            methods: [GET]
+            pattern: ^/api/v1/translation/locale/
+            security: false
         api_main:
             pattern: ^/api
             stateless: true
@@ -37,7 +49,6 @@ security:
 
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/(en|nl)/admin, roles: ROLE_ADMIN }
         - { path: ^/api, roles: [ROLE_API,ROLE_ADMIN]  }
 
             # activate different ways to authenticate

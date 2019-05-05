@@ -5,7 +5,7 @@
                 <nav class="editor-nav">
                     <div class="btn-group mb-3" role="group" aria-label="Editor functions">
                         <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownLocaleButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownLocaleButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-on:click="toggleDropdown">
                                 {{translate_name}}
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownLocaleButton">
@@ -19,7 +19,7 @@
                     </div>
                     <div class="btn-group mb-3" role="group" aria-label="Editor select">
                         <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownEditorButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownEditorButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-on:click="toggleDropdown">
                                 {{selected_editor_name}}
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownEditorButton">
@@ -33,7 +33,6 @@
                         <button class="btn btn-primary px-5">{{translations.submit}}</button>
                     </div>
                 </nav>
-
                 <transition name="slide">
                     <div v-if="panel == 'meta'" class="mb-2">
                         <div class="row">
@@ -242,11 +241,6 @@ export default {
     data() {
         return {
             panel: '',
-            locales: [],
-            locale: '',
-            locale_id: 0,
-            default_locale_id: 0,
-            translations: [],
             translate_id: 0,
             translate_name: '',
             page_id: 0,
@@ -268,15 +262,32 @@ export default {
             selected_editor: 'html'
         }
     },
+    computed: {
+        locale () {
+            return this.$store.state.locale;
+        },
+        locale_id () {
+            return this.$store.state.locale_id;
+        },
+        locale_name () {
+            return this.$store.state.locale_name;
+        },
+        locales () {
+            return this.$store.state.locales;
+        },
+        translations () {
+            return this.$store.state.translations;
+        },
+    },
     created() {
-        this.translations = translations;
-        this.domain = domain;
+        this.translate_name = this.locale_name;
+        this.translate_id = this.locale_id;
+        this.domain = 'http://yuna.test';
         this.getRoles();
-        this.getLocales();
         this.getExample();
         this.getElements();
-        if (page_id > 0) {
-            this.page_id = page_id;
+        if (this.$attrs.id > 0) {
+            this.page_id = this.$attrs.id;
             this.getPage();
         }
 
@@ -287,26 +298,8 @@ export default {
         }
     },
     methods: {
-        getLocales: function() {
-            this.locale = document.body.dataset.locale;
-            axios.get('/api/v1/locale/list/', { headers: {"Authorization" : "Bearer " + apikey} })
-            .then(response => {
-                this.locales = JSON.parse(response.data)['data'];
-                for (var i = 0; i < this.locales.length; i++) {
-                    if (this.locale == this.locales[i]['locale']) {
-                        this.locale_id = this.locales[i]['id'];
-                        this.translate_id = this.locales[i]['id'];
-                        this.translate_name = this.locales[i]['name'];
-                    }
-                    if (this.locales[i]['default']) this.default_locale_id = this.locales[i]['id'];
-                }
-            })
-            .catch(e => {
-                this.errors.push(e)
-            });
-        },
         getRoles: function() {
-            axios.get('/api/v1/user/role/list/', { headers: {"Authorization" : "Bearer " + apikey} })
+            axios.get('/api/v1/user/role/list/', { headers: {"Authorization" : "Bearer " + this.$store.state.apikey} })
             .then(response => {
                 this.roles = JSON.parse(response.data)['data'];
             })
@@ -315,6 +308,7 @@ export default {
             });
         },
         setTranslate: function(event) {
+            event.target.parentNode.classList.toggle("d-block");
             this.translate_id = parseInt(event.target.dataset.lid);
 
             for (var i = 0; i < this.locales.length; i++) {
@@ -341,7 +335,7 @@ export default {
 
             let headers = {
                 'Content-Type': 'application/json;charset=UTF-8',
-                "Authorization" : "Bearer " + apikey
+                "Authorization" : "Bearer " + this.$store.state.apikey
             }
 
             let params = {};
@@ -454,7 +448,7 @@ export default {
 
             let headers = {
                 'Content-Type': 'application/json;charset=UTF-8',
-                "Authorization" : "Bearer " + apikey
+                "Authorization" : "Bearer " + this.$store.state.apikey
             }
 
             let params = {};
@@ -499,9 +493,16 @@ export default {
 
         },
         setEditor: function(event) {
+            event.target.parentNode.classList.toggle("d-block");
             this.createCookie('selected_editor', event.target.dataset.editor);
             this.selected_editor = event.target.dataset.editor;
             this.selected_editor_name = event.target.textContent;
+        },
+        toggleDropdown: function(event) {
+            var dropdown = event.target.parentNode.getElementsByClassName('dropdown-menu');
+            for (var i = 0; i < dropdown.length; i++) {
+                dropdown[i].classList.toggle("d-block");
+            }
         },
         showPanel: function(event) {
             if (this.panel != event.target.dataset.panel) this.panel = event.target.dataset.panel;
@@ -538,5 +539,55 @@ export default {
 </script>
 
 <style scoped>
+.editor-nav {
+    z-index: 10;
+}
+
+.slide-enter-active {
+   -moz-transition-duration: 0.3s;
+   -webkit-transition-duration: 0.3s;
+   -o-transition-duration: 0.3s;
+   transition-duration: 0.3s;
+   -moz-transition-timing-function: ease-in;
+   -webkit-transition-timing-function: ease-in;
+   -o-transition-timing-function: ease-in;
+   transition-timing-function: ease-in;
+}
+
+.slide-leave-active {
+   -moz-transition-duration: 0.3s;
+   -webkit-transition-duration: 0.3s;
+   -o-transition-duration: 0.3s;
+   transition-duration: 0.3s;
+   -moz-transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+   -webkit-transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+   -o-transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+   transition-timing-function: cubic-bezier(0, 1, 0.5, 1);
+}
+
+.slide-enter-to, .slide-leave {
+   max-height: 100px;
+   overflow: hidden;
+}
+
+.slide-enter, .slide-leave-to {
+   overflow: hidden;
+   max-height: 0;
+}
+
+#content-editor {
+    display: block;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+}
+
+
+
+#content-editor > button {
+    margin: 0 auto;
+    margin-top: 5rem;
+    margin-bottom: 5rem;
+}
 
 </style>

@@ -14,18 +14,7 @@ use App\Service\SettingService;
 class LogController extends Controller
 {
     /**
-    * @Route("/{_locale}/admin/log/", name="log"))
-    */
-    final public function list(TranslatorInterface $translator)
-    {
-        return $this->render('log/admin/list.html.twig', array(
-            'apikey' => 'ce07f59f2eca96d9e3e4dbe2becce743',
-            'page_title' => $translator->trans('Log'),
-        ));
-    }
-
-    /**
-    * @Route("/cron/log/clear/", name="log_clear")
+    * @Route("/cron/log/clear/", name="cron_log_clear")
     */
     final public function clear(SettingService $setting)
     {

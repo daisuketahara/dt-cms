@@ -1,0 +1,160 @@
+.admin-navigation {
+    float: left;
+    min-height: 96vh;
+    width: 260px;
+    padding-bottom: 30px;
+    z-index: 12;
+    position: relative;
+    border-radius: 0.15rem;
+    -webkit-border-radius: 0.15rem;
+    -moz-border-radius: 0.15rem;
+    -webkit-box-shadow: 0px 4px 17px -4px rgba(102,102,102,1);
+    -moz-box-shadow: 0px 4px 17px -4px rgba(102,102,102,1);
+    box-shadow: 0px 4px 17px -4px rgba(102,102,102,1);
+    color: white;
+
+    * {
+        z-index: 99;
+        position: relative;
+    }
+
+    .admin-logo {
+
+        width: 100%;
+        overflow: hidden;
+        color: #fff;
+
+        a {
+            display: block;
+            width: 100%;
+            height: 70px;
+            color: #fff;
+            font-size: 24px;
+            line-height: 70px;
+            padding-left: 0;
+            text-align: center;
+        }
+        a:hover {
+            text-decoration: none;
+        }
+
+        img {
+            max-height: 100%;
+            max-width: 100%;
+            margin-left: 0 auto;
+        }
+    }
+
+    ul {
+        list-style: none;
+        width: 260px;
+        padding-left: 0;
+        li {
+            width: 100%;
+            text-align: left;
+            position: relative;
+            border-top: 1px solid #555555;
+            a {
+                color: $link-color-reverse;
+                display: block;
+                width: 100%;
+                padding: 14px 5px 14px 20px;
+                -webkit-transition: all 0.25s ease-in-out;
+                -moz-transition: all 0.25s ease-in-out;
+                -o-transition: all 0.25s ease-in-out;
+                transition: all 0.25s ease-in-out;
+                font-weight: 300;
+                font-size: 0.8rem;
+                letter-spacing: 0.1rem;
+                i,
+                .svg-inline--fa {
+                    width: 20px;
+                    margin-right: 0.5rem;
+                    text-align: center;
+                    font-size: 1rem;
+                }
+                i.fa-chevron-right,
+                svg.fa-angle-right {
+                    float: right;
+                }
+                .icon {
+
+                }
+                .label {
+
+                }
+            }
+            a:hover {
+                background-color: rgba(255,255,255,0.2);
+                text-decoration: none;
+            }
+            ul {
+                background-color: rgb(40, 40, 40);
+                display: block;
+                position: absolute;
+                left: 260px;
+                top: 0;
+                padding-left: 0;
+                width: 200px;
+                visibility:hidden;
+                opacity: 0;
+                list-style: none;
+                -webkit-transition: all 0.25s ease-in-out;
+                -moz-transition: all 0.25s ease-in-out;
+                -o-transition: all 0.25s ease-in-out;
+                transition: all 0.25s ease-in-out;
+            }
+        }
+        li:hover {
+
+            ul {
+                visibility: visible;
+                opacity: 1;
+                width: 200px;
+                -webkit-transition: all 0.1s ease-in-out;
+                -moz-transition: all 0.1s ease-in-out;
+                -o-transition: all 0.1s ease-in-out;
+                transition: all 0.1s ease-in-out;
+            }
+        }
+    }
+}
+
+.admin-nav-collapsed {
+
+    .admin-navigation {
+
+        ul {
+            li {
+                a {
+                    span {
+                        display: none;
+                    }
+                }
+            }
+        }
+
+    }
+
+}
+
+.admin-navigation::before,
+.admin-navigation::after {
+    display: block;
+    content: '';
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+.admin-navigation::after {
+    background-color: rgba(40,40,40,0.83);
+}
+.admin-navigation::before {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    overflow: hidden;
+}
