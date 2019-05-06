@@ -44,6 +44,7 @@ class MenuService
         $sql = "SELECT
         	mi.id AS id,
             mi.icon AS icon,
+            mi.active AS active,
         	CASE
                 WHEN mi.label IS NOT NULL AND mi.label <> '' THEN mi.label
                 WHEN pm.id IS NOT NULL AND pm.description IS NOT NULL AND pm.description <> '' THEN pm.description
@@ -87,6 +88,7 @@ class MenuService
             $menuItem['route_name'] = $mainMenuItem['route_name'];
             $menuItem['component'] = $mainMenuItem['component'];
             $menuItem['props'] = $mainMenuItem['props'];
+            $menuItem['active'] = $mainMenuItem['active'];
 
             $mainMenuSub = $this->getSubMenu($mainMenuItem['id']);
 
@@ -97,12 +99,14 @@ class MenuService
 
                     $subMenuItem = array();
                     $subMenuItem['id'] = $mainMenuSubItem['id'];
+                    $subMenuItem['parent_id'] = $mainMenuSubItem['parent_id'];
                     $subMenuItem['icon'] = $mainMenuSubItem['icon'];
                     $subMenuItem['label'] = $mainMenuSubItem['label'];
                     $subMenuItem['route'] = $mainMenuSubItem['route'];
                     $subMenuItem['route_name'] = $mainMenuSubItem['route_name'];
                     $subMenuItem['component'] = $mainMenuSubItem['component'];
                     $subMenuItem['props'] = $mainMenuSubItem['props'];
+                    $subMenuItem['active'] = $mainMenuSubItem['active'];
                     $subMenu[] = $subMenuItem;
                 }
                 if (!empty($subMenu)) $menuItem['submenu'] = $subMenu;
@@ -131,6 +135,8 @@ class MenuService
         $sql = "SELECT
         	mi.id AS id,
             mi.icon AS icon,
+        	mi.parent_id AS parent_id,
+            mi.active AS active,
         	CASE
                 WHEN mi.label IS NOT NULL AND mi.label <> '' THEN mi.label
                 WHEN pm.id IS NOT NULL AND pm.description IS NOT NULL AND pm.description <> '' THEN pm.description

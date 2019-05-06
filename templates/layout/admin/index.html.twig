@@ -2,8 +2,8 @@
 
 {% block stylesheets %}
 {{ parent() }}
-    <link rel="stylesheet" type="text/css" href="/css/admin.css?v={{settingservice.getSetting('template.assets.version')}}">
     {{ encore_entry_link_tags('admin') }}
+    <link rel="stylesheet" type="text/css" href="/css/admin.css?v={{settingservice.getSetting('template.assets.version')}}">
 {% endblock %}
 
 {% block javascripts %}

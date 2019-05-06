@@ -3,8 +3,8 @@
         <ul>
             <li v-for="route in menu" v-if="checkPermission(locale + '_' + route.route_name)">
                 <router-link :to="{name: locale + '_' + route.route_name}">
-                    <span v-html="route.icon"></span>
-                    <span v-if="translations[route.label]" v-html="translations[route.label]"></span>
+                    <span v-if="route.icon" v-html="route.icon"></span>
+                    <span v-if="translations[route.label]" v-html="translations[route.label] || route.label"></span>
                     <span v-else v-html="route.label"></span>
                     <i v-if="route.submenu" class="fas fa-angle-right float-right"></i>
                 </router-link>
@@ -12,7 +12,7 @@
                     <li v-for="subroute in route.submenu" v-if="checkPermission(locale + '_' + subroute.route_name)">
                         <router-link :to="{name: locale + '_' + subroute.route_name}">
                             <span v-if="subroute.icon" v-html="subroute.icon"></span>
-                            <span v-if="translations[subroute.label]" v-html="translations[subroute.label]"></span>
+                            <span v-if="translations[subroute.label]" v-html="translations[subroute.label] || subroute.label"></span>
                             <span v-else v-html="subroute.label"></span>
                         </router-link>
                     </li>
@@ -87,13 +87,13 @@
                     transition: all 0.25s ease-in-out;
                     font-weight: 300;
                     font-size: 0.8rem;
-                    letter-spacing: 0.1rem;
+                    letter-spacing: 0.15rem;
                     span:first-child {
                         display: inline-block;
                         width: 20px;
                         margin-right: 0.5rem;
                         text-align: center;
-                        font-size: 1rem;
+                        font-size: 1.1rem;
                     }
                     i.fa-angle-right {
                         float: right;

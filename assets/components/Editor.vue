@@ -210,25 +210,19 @@
             <div class="col-md-4 col-lg-3">
             </div>
         </div>
-        <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
-            <div v-if="modal" id="im-editor-modal">
-                <div class="im-modal-backdrop">
-                    <div class="im-modal-body p-4">
-                        <div class="im-modal-close" v-on:click="closeModal"><i class="fas fa-times"></i></div>
-                            <div v-if="modal_view == 'elements'" class="row">
-                                <div v-for="(element, index) in elements" class="col-sm-6 col-md-4 col-lg-3 mb-4" :data-element="index">
-                                    <img :src="element.image" :alt="element.title" class="img-fluid w-100 mb-1">
-                                    <h4>
-                                        {{element.title}}
-                                        <button v-on:click.prevent="addElement" class="btn btn-sm btn-secondary float-right" :data-element="element.type">{{translations.select}}</button>
-                                    </h4>
-                                </div>
-                            </div>
-                        </div>
+        <modal name="page-elements" width="80%" height="90%">
+            <div class="container-fluid p-3">
+                <div class="row">
+                    <div v-for="(element, index) in elements" class="col-sm-6 col-md-4 col-lg-3 mb-4" :data-element="index">
+                        <img :src="element.image" :alt="element.title" class="img-fluid w-100 mb-1">
+                        <h4>
+                            {{element.title}}
+                            <button v-on:click.prevent="addElement" class="btn btn-sm btn-secondary float-right" :data-element="element.type">{{translations.select}}</button>
+                        </h4>
                     </div>
                 </div>
             </div>
-        </transition>
+        </modal>
     </form>
 </template>
 
@@ -240,6 +234,10 @@ export default {
     name: "editor",
     data() {
         return {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+                "Authorization" : "Bearer " + this.$store.state.apikey
+            },
             panel: '',
             translate_id: 0,
             translate_name: '',
@@ -250,8 +248,6 @@ export default {
             editor: ClassicEditor, //ClassicEditor,
             editorData: {}, //'<p>Rich-text editor content.</p>',
             editorConfig: {},
-            modal: false,
-            modal_view: '',
             elements: {},
             construct: [],
             construct_css: '',
@@ -299,7 +295,7 @@ export default {
     },
     methods: {
         getRoles: function() {
-            axios.get('/api/v1/user/role/list/', { headers: {"Authorization" : "Bearer " + this.$store.state.apikey} })
+            axios.get('/api/v1/user/role/list/', {headers: this.headers})
             .then(response => {
                 this.roles = JSON.parse(response.data)['data'];
             })
@@ -333,15 +329,10 @@ export default {
 
             let url = '/api/v1/page/get/' + this.page_id + '/';
 
-            let headers = {
-                'Content-Type': 'application/json;charset=UTF-8',
-                "Authorization" : "Bearer " + this.$store.state.apikey
-            }
-
             let params = {};
             if (this.translate_id > 0) params['locale'] = this.translate_id;
 
-            axios.post(url, params, { headers: headers })
+            axios.post(url, params, {headers: this.headers})
             .then(response => {
                 var result = JSON.parse(response.data);
                 if (result.success) {
@@ -413,32 +404,21 @@ export default {
             };
         },
         selectElement: function(event) {
-            this.modal_view = 'elements';
             this.launchModal();
         },
         addElement: function(event) {
             this.construct.push({
                 'type': event.target.dataset.element
             });
-
-
-
-
-
-
-
-            this.modal = false;
+            this.$modal.hide('page-elements');
+            document.getElementById('admin-content').style.zIndex = '11';
         },
         activateElement: function(event) {
             this.active_element = event.target;
         },
         launchModal: function() {
+            this.$modal.show('page-elements');
             document.getElementById('admin-content').style.zIndex = '14';
-            this.modal = true;
-        },
-        closeModal: function() {
-            this.modal = false;
-            document.getElementById('admin-content').style.zIndex = '11';
         },
         update: function(event){
 

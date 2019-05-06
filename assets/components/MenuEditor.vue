@@ -14,69 +14,95 @@
                 <div class="col-md-6">
                     <ul class="menu-editor-list list-group mb-3">
                         <li v-for="(item, index) in menu" class="list-group-item" v-on:click="setActive" :data-id="index">
-                            {{translations[item.label]}}
+                            <span v-html="item.icon"></span>
+                            {{translations[item.label] || item.label}}
                             <span  v-if="item.submenu != undefined && item.submenu.length > 0">
                                 <button v-if="collapse[index]" class="btn btn-sm btn-link" v-on:click="setCollapse" :data-id="index">{{translations.collapse}}</button>
                                 <button v-else class="btn btn-sm btn-link" v-on:click="setCollapse" :data-id="index">{{translations.expand}}</button>
                             </span>
-
-                            <button class="btn btn-sm btn-danger float-right ml-2" v-on:click="removeItem" :data-id="index"><i class="far fa-trash-alt" :data-id="index"></i></button>
-                            <button class="btn btn-sm btn-secondary float-right ml-2" v-on:click="editItem" :data-id="index"><i class="fas fa-pencil-alt" :data-id="index"></i></button>
-                            <button v-if="index > 0" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="index" data-dir="up"><i class="fas fa-angle-up" :data-id="index" data-dir="up"></i></button>
-                            <button v-if="index < menu.length - 1" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="index" data-dir="down"><i class="fas fa-angle-down" :data-id="index" data-dir="down"></i></button>
+                            <span v-if="item_id == 0 && !item_create">
+                                <button class="btn btn-sm btn-danger float-right ml-2" v-on:click="removeItem" :data-id="index"><i class="far fa-trash-alt" :data-id="index"></i></button>
+                                <button class="btn btn-sm btn-secondary float-right ml-2" v-on:click="editItem" :data-id="index"><i class="fas fa-pencil-alt" :data-id="index"></i></button>
+                                <button v-if="index > 0" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="index" data-dir="up"><i class="fas fa-angle-up" :data-id="index" data-dir="up"></i></button>
+                                <button v-if="index < menu.length - 1" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="index" data-dir="down"><i class="fas fa-angle-down" :data-id="index" data-dir="down"></i></button>
+                            </span>
                             <transition name="slide">
-                                <ul v-if="item.submenu != undefined && item.submenu.length > 0 && collapse[index]">
-                                    <li v-for="(subitem, subindex) in item.submenu" class="list-group-item">
-                                        {{subitem.label}}
-                                        <button class="btn btn-sm btn-danger float-right ml-2" v-on:click="removeItem" :data-id="subindex"><i class="far fa-trash-alt" :data-id="subindex"></i></button>
-                                        <button class="btn btn-sm btn-secondary float-right ml-2" v-on:click="editItem" :data-id="subindex" :data-sub="index"><i class="fas fa-pencil-alt" :data-id="subindex" :data-sub="index"></i></button>
-                                        <button v-if="subindex > 0" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="subindex" data-dir="up" :data-sub="index"><i class="fas fa-angle-up" :data-id="subindex" data-dir="up" :data-sub="index"></i></button>
-                                        <button v-if="subindex < item.submenu.length - 1" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="subindex" data-dir="down" :data-sub="index"><i class="fas fa-angle-down" :data-id="subindex" data-dir="down" :data-sub="index"></i></button>
+                                <ul v-if="item.submenu != undefined && item.submenu.length > 0 && collapse[index] == true">
+                                    <li v-for="(subitem, subindex) in item.submenu" class="list-group-item" :data-id="subindex">
+                                        <span v-if="subitem.icon" v-html="subitem.icon"></span>
+                                        {{translations[subitem.label] || subitem.label}}
+                                        <span v-if="item_id == 0 && !item_create">
+                                            <button class="btn btn-sm btn-danger float-right ml-2" v-on:click="removeItem" :data-id="subindex"><i class="far fa-trash-alt" :data-id="subindex"></i></button>
+                                            <button class="btn btn-sm btn-secondary float-right ml-2" v-on:click="editItem" :data-id="subindex" :data-sub="index"><i class="fas fa-pencil-alt" :data-id="subindex" :data-sub="index"></i></button>
+                                            <button v-if="subindex > 0" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="subindex" data-dir="up" :data-sub="index"><i class="fas fa-angle-up" :data-id="subindex" data-dir="up" :data-sub="index"></i></button>
+                                            <button v-if="subindex < item.submenu.length - 1" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="subindex" data-dir="down" :data-sub="index"><i class="fas fa-angle-down" :data-id="subindex" data-dir="down" :data-sub="index"></i></button>
+                                        </span>
                                     </li>
                                 </ul>
                             </transition>
                         </li>
                     </ul>
-                    <button class="btn btn-sm btn-secondary" v-on:click="addItem">{{translations.add_menu_item}}</button>
+                    <div class="row">
+                        <div class="col">
+                            <button class="btn btn-sm btn-primary" v-on:click="addItem">{{translations.save}}</button>
+                        </div>
+                        <div class="col text-right">
+                            <button class="btn btn-sm btn-secondary" v-on:click="addItem">{{translations.add_menu_item}}</button>
+                        </div>
+                    </div>
+
                 </div>
-                <div v-if="item" class="col-md-6">
-                    <div class="form-group">
-                        <label for="item-parent">{{translations.parent}}</label>
-                        <select id="item-parent" name="item-parent" class="form-control" v-model="item.parent">
-                            <option v-for="(item, index) in menu" :value="index">{{translations[item.label]}}</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="item-label">{{translations.text}}</label>
-                        <input type="text" id="item-label" name="item-label" class="form-control" :value="item.label">
-                    </div>
-                    <div class="form-group">
-                        <label for="item-id">ID</label>
-                        <input type="text" id="item-id" name="item-id" class="form-control" :value="item.id">
-                    </div>
-                    <div class="form-group">
-                        <label for="item-text">{{translations.icon}}</label>
-                        <input type="text" id="item-icon" name="item-icon" class="form-control" :value="item.icon">
-                    </div>
-                    <div class="form-group">
-                        <label for="item-page">Page</label>
-                        <input type="text" id="item-page" name="item-page" class="form-control" :value="item.page">
-                    </div>
-                    <div class="form-group">
-                        <label for="item-permission">Permission</label>
-                        <input type="text" id="item-permission" name="item-permission" class="form-control" :value="item.permission">
-                    </div>
-                    <div class="form-group">
-                        <label for="item-custom-route">{{translations.custom_route}}</label>
-                        <input type="text" id="item-custom-route" name="item-custom-route" class="form-control" :value="item.route">
-                    </div>
-                    <div class="checkbox">
-                        <label for="'item-active">
-                            <input type="checkbox" id="item-active" name="item-active" v-model="item.active">
-                            {{translations.active}}
-                        </label>
-                    </div>
-                    <button class="btn btn-sm btn-secondary" v-on:click="addItem">{{translations.submit}}</button>
+                <div v-if="item_id > 0 || item_create" class="col-md-6">
+                    <form v-on:submit.prevent="updateMenu">
+                        <div v-if="item_create" class="form-group">
+                            <label for="item-parent">{{translations.parent}}</label>
+                            <select id="item-parent" name="item-parent" class="form-control" v-model="item.parent_id">
+                                <option v-for="(item, index) in menu" :value="index">{{translations[item.label] || item.label}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="item-label">{{translations.text}}</label>
+                            <input type="text" id="item-label" name="item-label" class="form-control" v-model="item.label">
+                            <span v-if="item.label != undefined && item.label != '' && translations[item.label] == undefined" class="badge badge-warning">{{translations.translation_unknown}}</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="item-text">{{translations.icon}}</label>
+                            <input type="text" id="item-icon" name="item-icon" class="form-control" v-model="item.icon">
+                        </div>
+                        <div class="form-group">
+                            <label for="item-page">Page</label>
+                            <div class="row">
+                                <div class="col-8 pr-0">
+                                    <input type="text" id="item-page" name="item-page" class="form-control" v-model="item.page">
+                                </div>
+                                <div class="col-4">
+                                    <button class="btn btn-secondary w-100" v-on:click.prevent="showPages">{{translations.select_page}}</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="item-permission">Permission</label>
+                            <div class="row">
+                                <div class="col-8 pr-0">
+                                    <input type="text" id="item-permission" name="item-permission" class="form-control" v-model="item.permission">
+                                </div>
+                                <div class="col-4">
+                                    <button class="btn btn-secondary w-100" v-on:click.prevent="showRoutes">{{translations.select_route}}</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="item-custom-route">{{translations.custom_route}}</label>
+                            <input type="text" id="item-custom-route" name="item-custom-route" class="form-control" v-model="item.route">
+                        </div>
+                        <div class="checkbox">
+                            <label for="'item-active">
+                                <input type="checkbox" id="item-active" name="item-active" v-model="item.active">
+                                {{translations.active}}
+                            </label>
+                        </div>
+                        <button class="btn btn-sm btn-secondary">{{translations.ok}}</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -94,9 +120,9 @@
                     <form class="form-inline">
                         <div class="form-group mb-2">
                             <label for="menu-name">{{translations.new_menu}}</label>
-                            <input type="text" class="form-control" id="menu-name" name="menu-name" placeholder="">
+                            <input type="text" class="form-control mx-2" id="menu-name" name="menu-name" placeholder="">
                         </div>
-                        <button type="submit" class="btn btn-secondary mb-2">{{translations.submit}}</button>
+                        <button type="submit" class="btn btn-secondary mb-2">{{translations.create}}</button>
                     </form>
                 </div>
             </div>
@@ -125,10 +151,17 @@
         name: "menueditor",
         data() {
             return {
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    "Authorization" : "Bearer " + this.$store.state.apikey
+                },
                 menus: [],
                 menu_id: 0,
                 menu: [],
                 item: {},
+                item_index: 0,
+                item_id: 0,
+                item_create: false,
                 modal: false,
                 alert: {},
                 collapse: [],
@@ -146,11 +179,7 @@
         methods: {
             getMenus: function() {
 
-                var headers = {
-                    'Content-Type': 'application/json;charset=UTF-8',
-                    "Authorization" : "Bearer " + this.$store.state.apikey
-                }
-                axios.get('/api/v1/navigation/list/', {headers: headers})
+                axios.get('/api/v1/navigation/list/', {headers: this.headers})
                     .then(response => {
                         this.menus = JSON.parse(response.data)['data'];
                     })
@@ -160,11 +189,7 @@
             },
             getMenu: function() {
                 this.collapse = [];
-                var headers = {
-                    'Content-Type': 'application/json;charset=UTF-8',
-                    "Authorization" : "Bearer " + this.$store.state.apikey
-                }
-                axios.get('/api/v1/navigation/get/'+this.menu_id+'/', {headers: headers})
+                axios.get('/api/v1/navigation/get/'+this.menu_id+'/', {headers: this.headers})
                     .then(response => {
                         this.menu = JSON.parse(response.data)['data'];
                         for (var i = 0; i < this.menu.length; i++) {
@@ -183,7 +208,7 @@
                 this.getMenu();
             },
             addItem: function(event) {
-
+                this.item_create = true;
             },
             editItem: function(event) {
                 var index = parseInt(event.target.dataset.id);
@@ -193,6 +218,24 @@
                 if (sub) target = target[sub].submenu;
 
                 this.item = target[index];
+                this.item_index = index;
+                this.item_id = target[index]['id'];
+            },
+            updateMenu: function(event) {
+
+                if (this.item_create) {
+                    if (this.item.parent_id > 0) {
+                        if (this.menu[this.item.parent_id]['submenu'] != undefined) this.menu[this.item.parent_id]['submenu'].push(this.item);
+                        else this.menu[this.item.parent_id]['submenu'] = [this.item];
+                    } else {
+                        this.menu.push(this.item);
+                    }
+                }
+
+                this.item = {};
+                this.item_index = 0;
+                this.item_id = 0;
+                this.item_create = false;
             },
             moveItem: function(event) {
                 var index = parseInt(event.target.dataset.id);
@@ -230,6 +273,11 @@
                 var id = parseInt(event.target.dataset.id);
                 if (this.collapse[id]) this.collapse[id] = false;
                 else this.collapse[id] = true;
+
+                // hotfix for menu collapse
+                var tmp = this.menu;
+                this.menu = [];
+                this.menu = tmp;
             },
             setActive: function(event) {
 

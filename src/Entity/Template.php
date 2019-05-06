@@ -32,7 +32,7 @@ class Template
     protected $description;
 
     /**
-    * @ORM\Column(type="integer", nullable=true)
+    * @ORM\ManyToOne(targetEntity="File")
     */
     protected $image;
 

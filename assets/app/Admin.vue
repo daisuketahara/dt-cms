@@ -30,7 +30,7 @@
                 </main>
             </transition>
         </div>
-        <modal></modal>
+        <v-dialog/>
     </div>
 </template>
 
@@ -39,17 +39,19 @@
 
     import Login from '../components/Login';
     import Navbar from '../components/Navbar';
-    import Modal from '../components/Modal';
 
     export default {
         name: 'Admin',
         components: {
             Login,
-            Navbar,
-            Modal
+            Navbar
         },
         data() {
             return {
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    "Authorization" : "Bearer " + this.$store.state.apikey
+                },
                 init: this.$store.state.init,
                 site: {},
                 block: {}
@@ -359,4 +361,7 @@ body {
     margin: 0 auto;
 }
 
+.v--modal-overlay {
+    background: rgba(0, 0, 0, 0.5);
+}
 </style>

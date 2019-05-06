@@ -4,27 +4,30 @@ html, body {
 }
 
 body {
-min-height: 100vh;
-padding-top: 2vh;
-    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#cedce7+0,596a72+100;Grey+3D+%231 */
-    background: #cedce7; /* Old browsers */
-    background: -moz-linear-gradient(-45deg, #cedce7 0%, #596a72 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(-45deg, #cedce7 0%,#596a72 100%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(135deg, #cedce7 0%,#596a72 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cedce7', endColorstr='#596a72',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-
-	$text-color: 			#333333;
-    $text-color-reverse: 	#ffffff;
-	$bg-color: 				#FFFFFF;
-	$link-color:			#CC4422;
-	$link-color-reverse:	#ffffff;
-
-    // Load template styles
-    @import 'theme';
-    @import 'structure';
-    @import 'navigation';
+    min-height: 100vh;
+    padding-top: 2vh;
+    background: #cedce7;
 }
 
 .zend-developer-toolbar {
     color: #fff !important;
+}
+
+footer {
+    clear: both;
+    text-align: center;
+    font-size: 0.7rem;
+    margin-top: 0.3rem;
+    color: #333;
+    text-shadow: white 1px 1px;
+}
+
+.form-control {
+    background-color: rgba(255, 255, 255, 0.7);
+    border: none !important;
+    border-bottom-color: currentcolor;
+    border-bottom-style: none;
+    border-bottom-width: medium;
+    border-bottom: 1px solid #ccc !important;
+    padding: 12px 8px;
 }

@@ -11,6 +11,10 @@
         name: "filemanagement",
         data() {
             return {
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    "Authorization" : "Bearer " + this.$store.state.apikey
+                },
                 modal: false,
                 alert: {},
                 isShow: false
@@ -22,7 +26,7 @@
             }
         },
         created() {
-            
+
         },
         methods: {
 

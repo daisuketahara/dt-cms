@@ -186,6 +186,10 @@
         name: "DataManager",
         data() {
             return {
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    "Authorization" : "Bearer " + this.$store.state.apikey
+                },
                 mode: 'table',
                 default_locale_id: 0,
                 translate_id: 0,
@@ -238,7 +242,7 @@
         methods: {
             getEntityInfo: function() {
 
-                axios.get('/api/v1'+this.$attrs.info, { headers: {"Authorization" : "Bearer " + this.$store.state.apikey} })
+                axios.get('/api/v1'+this.$attrs.info, {headers: this.headers})
                     .then(response => {
                         var result = JSON.parse(response.data);
                         this.api = result.api;
@@ -337,7 +341,7 @@
             view: function(event) {
 
                 this.form_id = parseInt(event.target.dataset.id);
-                axios.get('/api/v1'+this.api.get + event.target.dataset.id + '/', { headers: {"Authorization" : "Bearer " + this.$store.state.apikey} })
+                axios.get('/api/v1'+this.api.get + event.target.dataset.id + '/', {headers: this.headers})
                     .then(response => {
                         this.form_data = JSON.parse(response.data)['data'];
                         this.mode = 'view';
@@ -354,7 +358,7 @@
 
                 if (this.api.custom_form) {
 
-                    axios.get('/api/v1'+this.api.custom_form, { headers: {"Authorization" : "Bearer " + this.$store.state.apikey} })
+                    axios.get('/api/v1'+this.api.custom_form, {headers: this.headers})
                         .then(response => {
                             var result = JSON.parse(response.data);
                             if (result.success) {
@@ -371,15 +375,10 @@
                 if (this.form_id === 0) this.form_id = parseInt(event.target.dataset.id);
                 let url = '/api/v1'+this.api.get + this.form_id + '/';
 
-                let headers = {
-                    'Content-Type': 'application/json;charset=UTF-8',
-                    "Authorization" : "Bearer " + this.$store.state.apikey
-                }
-
                 let params = {};
                 if (this.translate_id > 0) params['locale'] = this.translate_id;
 
-                axios.post(url, params, { headers: headers })
+                axios.post(url, params, {headers: this.headers})
                     .then(response => {
                         var result = JSON.parse(response.data);
                         if (result.success) {
@@ -464,69 +463,85 @@
 
                 var self = this;
 
-                this.$dialog
-                    .confirm(translations['confirm_delete_text'] + ' ' + translations['want_proceed'])
-                    .then(function(dialog) {
-                        axios.delete('/api/v1'+this.api.delete + event.target.dataset.id + '/', { headers: {"Authorization" : "Bearer " + this.$store.state.apikey} })
-                            .then(response => {
-                                var result = JSON.parse(response.data);
-                                if (result.success) {
-                                    self.list();
-                                    self.setAlert(translations.delete_confirmation, 'success');
-                                } else {
-                                    element.classList.remove("to-delete");
-                                    self.setAlert(result.message, 'error');
-                                }
-                            })
-                            .catch(e => {
-                                this.setAlert(e, 'error');
-                            });
-                    })
-                    .catch(function() {
-                        console.log(e);
-                        element.classList.remove("to-delete");
-                    });
+                this.$modal.show('dialog', {
+                    title: 'Alert!',
+                    text: this.translations.confirm_delete_text + ' ' + this.translations.want_proceed,
+                    buttons: [{
+                        title: this.translations.cancel,
+                        handler: () => {
+                            element.classList.remove("to-delete");
+                            this.$modal.hide('dialog');
+                        }
+                    },
+                    {
+                        title: this.translations.confirm,
+                        handler: () => {
+
+                            this.$modal.hide('dialog');
+                            axios.delete('/api/v1'+this.api.delete + event.target.dataset.id + '/', {headers: this.headers})
+                                .then(response => {
+                                    var result = JSON.parse(response.data);
+                                    if (result.success) {
+                                        self.list();
+                                        self.setAlert(translations.delete_confirmation, 'success');
+                                    } else {
+                                        element.classList.remove("to-delete");
+                                        self.setAlert(result.message, 'error');
+                                    }
+                                })
+                                .catch(e => {
+                                    this.setAlert(e, 'error');
+                                    this.$modal.hide('dialog');
+                                });
+                        }
+                    }]
+                });
             },
             dropMultiple: function(event) {
 
                 var self = this;
 
-                this.$dialog
-                    .confirm(translations['confirm_multiple_delete_text'] + ' ' + translations['want_proceed'])
-                    .then(function(dialog) {
-
-                        var headers = {
-                            'Content-Type': 'application/json;charset=UTF-8',
-                            "Authorization" : "Bearer " + this.$store.state.apikey
+                this.$modal.show('dialog', {
+                    title: 'Alert!',
+                    text: this.translations.confirm_multiple_delete_text + ' ' + this.translations.want_proceed,
+                    buttons: [{
+                        title: this.translations.cancel,
+                        handler: () => {
+                            this.$modal.hide('dialog');
                         }
+                    },
+                    {
+                        title: this.translations.confirm,
+                        handler: () => {
 
-                        let chk_arr =  document.getElementsByName("select-delete[]");
-                        let chklength = chk_arr.length;
-                        let ids = [];
-                        for(var k=0;k< chklength;k++) {
-                            if (chk_arr[k].checked) ids.push(chk_arr[k].value);
+                            let chk_arr =  document.getElementsByName("select-delete[]");
+                            let chklength = chk_arr.length;
+                            let ids = [];
+                            for(var k=0;k< chklength;k++) {
+                                if (chk_arr[k].checked) ids.push(chk_arr[k].value);
+                            }
+
+                            let params = {ids: ids};
+
+                            axios.put('/api/v1'+this.api.delete, params, {headers: this.headers})
+                                .then(response => {
+                                    var result = JSON.parse(response.data);
+
+                                    if (result.success) {
+                                        self.list();
+                                        self.setAlert(translations.delete_confirmation, 'success');
+                                    } else {
+                                        self.setAlert(result.message, 'error');
+                                    }
+                                    this.$modal.hide('dialog');
+                                })
+                                .catch(e => {
+                                    this.setAlert(e, 'error');
+                                    this.$modal.hide('dialog');
+                                });
                         }
-
-                        let params = {ids: ids};
-
-                        axios.put('/api/v1'+this.api.delete, params, {headers: headers})
-                            .then(response => {
-                                var result = JSON.parse(response.data);
-
-                                if (result.success) {
-                                    self.list();
-                                    self.setAlert(translations.delete_confirmation, 'success');
-                                } else {
-                                    self.setAlert(result.message, 'error');
-                                }
-                            })
-                            .catch(e => {
-                                console.log(e);
-                                this.setAlert(e, 'error');
-                            });
-                    })
-                    .catch(function() {
-                    });
+                    }]
+                });
             },
             selectAllDelete: function(event) {
                 let checkboxes = document.getElementsByName('select-delete[]');
@@ -569,7 +584,7 @@
             },
             customButton: function(event){
                 if (event.target.dataset.api) {
-                    axios.get('/api/v1' + event.target.dataset.api, { headers: {"Authorization" : "Bearer " + this.$store.state.apikey} })
+                    axios.get('/api/v1' + event.target.dataset.api, {headers: this.headers})
                         .then(response => {
                             var result = JSON.parse(response.data);
                             if (result.success) {

@@ -7,8 +7,8 @@ import Vue from 'vue';
 import router from '../router';
 import store from '../store';
 import axios from 'axios';
-import VuejsDialog from 'vuejs-dialog';
 import CKEditor from '@ckeditor/ckeditor5-vue';
+import VModal from 'vue-js-modal'
 
 import Admin from '../app/Admin';
 import Editor from '../components/Editor';
@@ -18,14 +18,10 @@ import DataManager from '../components/DataManager';
 import User from '../components/User';
 import FileManager from '../components/FileManager';
 import Dashboard from '../components/Dashboard';
+import Template from '../components/Template';
 
 Vue.use(CKEditor);
-Vue.use(VuejsDialog, {
-    html: true,
-    okText: translations['confirm'],
-    cancelText: translations['cancel'],
-    animation: 'bounce'
-});
+Vue.use(VModal, { dialog: true });
 
 Vue.config.productionTip = false;
 
@@ -65,6 +61,7 @@ new Vue({
                         if (permissions[i]['component'] == 'FileManager') newRoute.component = FileManager;
                         if (permissions[i]['component'] == 'DataManager') newRoute.component = DataManager;
                         if (permissions[i]['component'] == 'User') newRoute.component = User;
+                        if (permissions[i]['component'] == 'Template') newRoute.component = Template;
                         if (permissions[i]['props'] != '') newRoute.props = JSON.parse(permissions[i]['props']);
 
                         var checkExist = this.$router.resolve({path: newRoute.path});

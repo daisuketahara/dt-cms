@@ -59,6 +59,10 @@
         name: "control",
         data() {
             return {
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    "Authorization" : "Bearer " + this.$store.state.apikey
+                },
                 elements: [],
                 form_data: {},
                 alert: {},
@@ -81,7 +85,7 @@
                 var url = event.target.dataset.url;
 
                 if (event.target.dataset.api) {
-                    axios.get('/api/v1'+event.target.dataset.api, { headers: {"Authorization" : "Bearer " + this.$store.state.apikey} })
+                    axios.get('/api/v1'+event.target.dataset.api, {headers: this.headers})
                         .then(response => {
                             var result = JSON.parse(response.data);
                             if (result.success) {
