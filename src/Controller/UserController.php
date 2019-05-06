@@ -27,16 +27,6 @@ use App\Service\LogService;
 
 class UserController extends Controller
 {
-    /**
-    * @Route("/{_locale}/admin/user/", name="admin_user_list"))
-    */
-    final public function list(TranslatorInterface $translator)
-    {
-        return $this->render('user/admin/list.html.twig', array(
-            'apikey' => 'ce07f59f2eca96d9e3e4dbe2becce743',
-            'page_title' => $translator->trans('Users'),
-        ));
-    }
 
     /**
     * @Route("/{_locale}/admin/user/insert/", name="admin_user_insert"))

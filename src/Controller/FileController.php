@@ -22,19 +22,6 @@ use App\Service\LogService;
 class FileController extends Controller
 {
     /**
-    * @Route("/{_locale}/admin/file/", name="admin_file"))
-    */
-    final public function list(TranslatorInterface $translator)
-    {
-        $fileGroups = $this->getDoctrine()->getRepository(FileGroup::class)->findAll();
-
-        return $this->render('file/admin/index.html.twig', array(
-            'page_title' => $translator->trans('Files'),
-            'file_groups' => $fileGroups,
-        ));
-    }
-
-    /**
     * @Route("/ajax/file/get/", name="admin_file_get"))
     */
     final public function getFile(Request $request)

@@ -90,34 +90,6 @@ class PageController extends Controller
     }
 
     /**
-    * @Route("/{_locale}/admin/page/", name="admin_page_list"))
-    */
-    final public function list(TranslatorInterface $translator)
-    {
-        return $this->render('page/admin/list.html.twig', array(
-            'apikey' => 'ce07f59f2eca96d9e3e4dbe2becce743',
-            'page_title' => $translator->trans('Pages'),
-        ));
-    }
-
-    /**
-    * @Route("/{_locale}/admin/page/insert/", name="admin_page_insert"))
-    * @Route("/{_locale}/admin/page/update/{id}/", name="admin_page_update"))
-    */
-    final public function edit($id=0, TranslatorInterface $translator, settingService $setting)
-    {
-        if (!empty($id)) $title = $translator->trans('Edit page');
-        else $title = $translator->trans('Add page');
-
-        return $this->render('page/admin/edit.html.twig', array(
-            'apikey' => 'ce07f59f2eca96d9e3e4dbe2becce743',
-            'page_title' => $title,
-            'page_id' => $id,
-            'domain' => $setting->getSetting('site.url'),
-        ));
-    }
-
-    /**
     * @Route("/{_locale}/page-not-found/", name="site_page_not_found"))
     */
     public function pageNotFound(Request $request)
