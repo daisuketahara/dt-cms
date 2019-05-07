@@ -29,19 +29,16 @@ class AdminController extends Controller
             ->findOneBy(array('locale' => $_locale));
 
         $translations = $this->getDoctrine()
-            ->getRepository(TranslationText::class)
-            ->findBy(['locale' => $locale]);
+            ->getRepository(Translation::class)
+            ->findTranslationsByLocaleId($locale->getId());
 
-        if ($translations) {
-            $translationsOutput = array();
-            foreach($translations as $translation) {
-                if (!empty($translation->getText())) $translationsOutput[$translation->getTranslation()->getTag()] = $translation->getText();
-                else $translationsOutput[$translation->getTranslation()->getTag()] = $translation->getTranslation()->getOriginal();
-            }
+        $translationsOutput = array();
+        foreach($translations as $translation) {
+            $translationsOutput[$translation['tag']] = $translation['text'];
         }
 
-        return $this->render('dashboard/admin/index.html.twig', array(
-            'page_title' => 'Dashboard',
+        return $this->render('layout/admin/index.html.twig', array(
+            'page_title' => 'Admin',
             'translations' => $translationsOutput,
         ));
     }
