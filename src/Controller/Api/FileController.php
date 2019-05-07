@@ -21,23 +21,11 @@ use App\Service\LogService;
 
 class FileController extends Controller
 {
-    /**
-    * @Route("/api/v1/file/", name="api_file_list"))
-    */
-    final public function list(TranslatorInterface $translator)
-    {
-        $fileGroups = $this->getDoctrine()->getRepository(FileGroup::class)->findAll();
-
-        return $this->render('file/admin/index.html.twig', array(
-            'page_title' => $translator->trans('Files'),
-            'file_groups' => $fileGroups,
-        ));
-    }
 
     /**
-    * @Route("/api/v1/file/get/", name="api_file_get"))
+    * @Route("/api/v1/file/list/", name="api_file_list"))
     */
-    final public function getFile(Request $request)
+    final public function getFiles(Request $request)
     {
         $sort_column = $request->request->get('sortColumn', 'id');
         $sort_direction = strtoupper($request->request->get('sortDirection', 'desc'));
@@ -98,9 +86,11 @@ class FileController extends Controller
             $fileId = $fileService->upload($file[0], $group, $hide);
         }
 
-        return new Response(
-            '<html><body>Lucky number:</body></html>'
+        $json = array(
+            'success' => true,
         );
+
+        return $this->json(json_encode($json));
     }
 
     /**
@@ -122,8 +112,10 @@ class FileController extends Controller
         $em->remove($file);
         $em->flush();
 
-        return new Response(
-            '1'
+        $json = array(
+            'success' => true,
         );
+
+        return $this->json(json_encode($json));
     }
 }
