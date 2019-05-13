@@ -1,0 +1,53 @@
+html {
+    width: 100%;
+    height: 100%;
+
+    body {
+        width: 100%;
+    }
+}
+
+
+
+.main-content {
+    height: 100%;
+    padding-top: 120px;
+    -webkit-border-radius: 0.1rem;
+    -moz-border-radius: 0.1rem;
+    border-radius: 0.1rem;
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    label {
+        margin-bottom: 0;
+    }
+}
+
+footer {
+    width: 100%;
+}
+#hero {
+    position: relative;
+}
+#hero:after {
+    content: "";
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 5;
+    background-image: url(/img/curve-bottom.png);
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: bottom center;
+}
+
+.alert {
+
+    p {
+        margin-bottom: 0;
+    }
+}

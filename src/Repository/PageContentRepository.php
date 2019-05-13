@@ -28,7 +28,7 @@ class PageContentRepository extends ServiceEntityRepository
         return $qb->execute();
     }
 
-    public function findByRoute($route)
+    public function findByRoute(string $route)
     {
         return $this->createQueryBuilder('p')
         ->where('p.pageRoute = :routes')

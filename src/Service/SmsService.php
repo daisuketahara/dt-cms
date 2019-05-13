@@ -24,7 +24,7 @@ class SmsService
     }
 
     // http://www.spryng.nl/developers/http-api/
-    public function send($recipient, $message, $reference='') {
+    public function send(string $recipient, string $message, string $reference='') {
 
         $enabled = $this->setting->getSetting('sms.enable');
         $username = $this->setting->getSetting('spryng.username');
@@ -62,7 +62,7 @@ class SmsService
         return false;
     }
 
-    public function sendSmsCode($phone, TranslatorInterface $translator) {
+    public function sendSmsCode(string $phone, TranslatorInterface $translator) {
 
         $smsCode = $this->generateCode();
         $message = $translator->trans('SMS verification code') . ': ' . $smsCode;
@@ -80,7 +80,7 @@ class SmsService
         return $smscode;
     }
 
-    public function validate($smsCode)
+    public function validate(string $smsCode)
     {
         $session = new Session();
         $session->start();

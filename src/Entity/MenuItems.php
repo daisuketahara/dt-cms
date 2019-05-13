@@ -17,17 +17,18 @@ class MenuItems
     private $id;
 
     /**
-    * @ORM\ManyToOne(targetEntity="App\Entity\Menu")
+    * @ORM\ManyToOne(targetEntity="App\Entity\Menu",cascade={"persist"})
+    * @ORM\JoinColumn(onDelete="CASCADE")
     */
     protected $menu;
 
     /**
-    * @ORM\Column(type="integer")
+    * @ORM\Column(type="integer", nullable=true)
     */
     protected $parentId;
 
     /**
-    * @ORM\Column(type="string", length=255)
+    * @ORM\Column(type="string", length=255, nullable=true)
     */
     protected $icon;
 
@@ -35,11 +36,6 @@ class MenuItems
     * @ORM\Column(type="string", length=255)
     */
     protected $label;
-
-    /**
-    * @ORM\ManyToOne(targetEntity="App\Entity\Page")
-    */
-    protected $page;
 
     /**
     * @ORM\ManyToOne(targetEntity="App\Entity\Permission")
@@ -64,7 +60,7 @@ class MenuItems
     /**
     * @ORM\Column(type="integer")
     */
-    protected $order;
+    protected $sort;
 
     /**
     * @ORM\Column(type="boolean")
@@ -192,25 +188,25 @@ class MenuItems
     }
 
     /**
-     * Get the value of Page
+     * Get the value of Permission
      *
      * @return mixed
      */
-    public function getPage()
+    public function getPermission()
     {
-        return $this->page;
+        return $this->permission;
     }
 
     /**
-     * Set the value of Page
+     * Set the value of Permission
      *
-     * @param mixed page
+     * @param mixed permission
      *
      * @return self
      */
-    public function setPage($page)
+    public function setPermission($permission)
     {
-        $this->page = $page;
+        $this->permission = $permission;
 
         return $this;
     }
@@ -288,25 +284,25 @@ class MenuItems
     }
 
     /**
-     * Get the value of Order
+     * Get the value of Sort
      *
      * @return mixed
      */
-    public function getOrder()
+    public function getSort()
     {
-        return $this->order;
+        return $this->sort;
     }
 
     /**
-     * Set the value of Order
+     * Set the value of Sort
      *
-     * @param mixed order
+     * @param mixed sort
      *
      * @return self
      */
-    public function setOrder($order)
+    public function setSort($sort)
     {
-        $this->order = $order;
+        $this->sort = $sort;
 
         return $this;
     }

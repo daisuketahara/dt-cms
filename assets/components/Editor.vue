@@ -1,5 +1,13 @@
 <template>
     <form method="post" v-on:submit.prevent="update">
+        <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
+            <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
+                {{alert.text}}
+            </div>
+            <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
+                {{alert.text}}
+            </div>
+        </transition>
         <div class="row">
             <div class="col-md-8 col-lg-9">
                 <nav class="editor-nav">
@@ -133,7 +141,7 @@
                                     <div v-for="role in roles" class="col-md-2">
                                         <div class="form-check">
                                             <label class="form-check-label">
-                                                <input id="form_role_" name="form_role[]" class="form-check-input" :value="role.id" type="checkbox">
+                                                <input id="form_role_" name="form-role[]" class="form-check-input" :value="role.id" type="checkbox" v-model="page.role[role.id]">
                                                 {{ role.name }}
                                             </label>
                                         </div>
@@ -338,6 +346,7 @@ export default {
                 if (result.success) {
                     if (result['data'].constructor === {}.constructor) {
                         this.page = result['data'];
+                        this.page.role = result['roles'];
                         if (result['data']['construct']) this.construct = JSON.parse(result['data']['construct']);
                         else this.construct = [];
                     } else {
@@ -411,25 +420,18 @@ export default {
                 'type': event.target.dataset.element
             });
             this.$modal.hide('page-elements');
-            document.getElementById('admin-content').style.zIndex = '11';
         },
         activateElement: function(event) {
             this.active_element = event.target;
         },
         launchModal: function() {
             this.$modal.show('page-elements');
-            document.getElementById('admin-content').style.zIndex = '14';
         },
         update: function(event){
 
             this.enableEdit = false;
-            this.page.content = document.getElementById('content-editor').innerHTML;
+            if (this.selected_editor == 'builder') this.page.content = document.getElementById('content-editor').innerHTML;
             this.enableEdit = true;
-
-            let headers = {
-                'Content-Type': 'application/json;charset=UTF-8',
-                "Authorization" : "Bearer " + this.$store.state.apikey
-            }
 
             let params = {};
             params['id'] = this.page_id;
@@ -452,11 +454,12 @@ export default {
             params['publishDate'] = this.page.publishDate;
             params['expireDate'] = this.page.expireDate;
             params['status'] = this.page.status;
+            params['role'] = this.page.role;
 
             let url = '/api/v1/page/insert/';
             if (this.page_id > 0) url = '/api/v1/page/update/'+ this.page_id + '/';
 
-            axios.put(url, params, {headers: headers})
+            axios.put(url, params, {headers: this.headers})
                 .then(response => {
                     var result = JSON.parse(response.data);
 

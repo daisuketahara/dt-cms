@@ -19,8 +19,8 @@ class PermissionRepository extends ServiceEntityRepository
         parent::__construct($registry, Permission::class);
     }
 
-    public function getPermissions() {
-
+    public function getPermissions()
+    {
         $sql = "SELECT p.id, p.route_name, p.description, CASE WHEN pg.name IS NULL THEN 'Other' ELSE pg.name END AS `name`, CASE WHEN pg.name IS NULL THEN 1 ELSE 0 END AS `sort` ";
         $sql .= "FROM permission AS p ";
         $sql .= "LEFT JOIN permission_group AS pg ON pg.id = p.permission_group_id ";
@@ -33,8 +33,8 @@ class PermissionRepository extends ServiceEntityRepository
         return $stmt->fetchAll();
     }
 
-    public function checkUserPermission($path, $token) {
-
+    public function checkUserPermission(string $path, string $token)
+    {
         $sql = "SELECT * FROM ( ";
         $sql .= "SELECT route_name, route ";
         $sql .= "FROM user_api_key AS uak ";
@@ -64,8 +64,8 @@ class PermissionRepository extends ServiceEntityRepository
         return false;
     }
 
-    public function getUserPermissions($email) {
-
+    public function getUserPermissions(string $email)
+    {
         $sql = "SELECT * FROM ( ";
         $sql .= "SELECT p.* ";
         $sql .= "FROM users AS u ";
@@ -82,11 +82,64 @@ class PermissionRepository extends ServiceEntityRepository
         $sql .= "LEFT JOIN permission AS p2 ON p2.id = rp.permission_id ";
         $sql .= "WHERE u.email = '" . $email . "' ";
         $sql .= "AND p2.route IS NOT NULL ";
-        $sql .= ") p2";
+        $sql .= ") p2 ";
+        $sql .= "UNION ";
+        $sql .= "SELECT * FROM ( ";
+        $sql .= "SELECT p3.* ";
+        $sql .= "FROM permission AS p3 ";
+        $sql .= "LEFT JOIN role_permission AS rp3 ON rp3.permission_id = p3.id ";
+        $sql .= "LEFT JOIN user_permission AS up3 ON up3.permission_id = p3.id ";
+        $sql .= "WHERE rp3.role_id IS NULL AND up3.permission_id IS NULL ";
+        $sql .= ") p3";
 
         $conn = $this->getEntityManager()->getConnection();
         $stmt = $conn->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    public function getPermissionRoles(int $permissionId)
+    {
+        $sql = "SELECT * FROM role_permission AS rp ";
+        $sql .= "LEFT JOIN role AS r ON rp.role_id = r.id ";
+        $sql .= "WHERE rp.permission_id=" . $permissionId;
+
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        return $result;
+    }
+
+    public function getAllNavigationRoutesByType(string $type)
+    {
+        $sql = "SELECT
+            	pm.id,
+            	pm.route_name,
+            	CASE
+            		WHEN l.default=1 AND pc.page_route = '' THEN '/'
+            		WHEN l.default=1  THEN CONCAT('/', pc.page_route, '/')
+            		WHEN pc.page_route = '' THEN CONCAT('/', l.locale, '/')
+            		WHEN p.id IS NOT NULL THEN CONCAT('/', l.locale, '/', pc.page_route, '/')
+                    ELSE pm.route
+            	END AS route,
+            	CASE
+            		WHEN p.id IS NOT NULL THEN pc.page_title
+            		WHEN pm.description IS NOT NULL AND pm.description <> '' THEN pm.description
+            		ELSE pm.route_name
+            	END AS label
+            FROM permission AS pm
+            LEFT JOIN page AS p ON pm.page_id = p.id
+            LEFT JOIN page_content AS pc ON pc.page_id = p.id AND pc.locale_id = 1
+            LEFT JOIN locale AS l ON pc.locale_id = l.id
+            WHERE pm.route_name LIKE '" . $type . "_%'";
+
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+
+        return $result;
     }
 }

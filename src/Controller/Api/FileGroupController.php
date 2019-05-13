@@ -107,7 +107,7 @@ class FileGroupController extends Controller
     /**
     * @Route("/api/v1/filegroup/get/{id}/", name="api_filegroup_get"), methods={"GET","HEAD"})
     */
-    final public function getFilegroup($id, Request $request)
+    final public function getFilegroup(int $id, Request $request)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -143,7 +143,7 @@ class FileGroupController extends Controller
     * @Route("/api/v1/filegroup/insert/", name="api_filegroup_insert", methods={"PUT"})
     * @Route("/api/v1/filegroup/update/{id}/", name="api_filegroup_update", methods={"PUT"})
     */
-    final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -218,7 +218,7 @@ class FileGroupController extends Controller
     * @Route("/api/v1/filegroup/delete/", name="api_filegroup_delete", methods={"PUT"})
     * @Route("/api/v1/filegroup/delete/{id}/", name="api_filegroup_delete_multiple", methods={"DELETE"})
     */
-    final public function delete($id=0, LogService $log)
+    final public function delete(int $id=0, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());

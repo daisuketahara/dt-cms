@@ -22,13 +22,13 @@ class CacheService
     }
 
 
-    public function has($key)
+    public function has(string $key)
     {
         if ($this->cache->has($this->prefix.$key)) return true;
         return false;
     }
 
-    public function get($key)
+    public function get(string $key)
     {
         if ($this->has($key)) {
             $value = $this->cache->get($this->prefix.$key);
@@ -37,13 +37,13 @@ class CacheService
         return false;
     }
 
-    public function set($key, $value)
+    public function set(string $key, $value)
     {
         $this->cache->set($this->prefix.$key, $value);
         return true;
     }
 
-    public function delete($key)
+    public function delete(string $key)
     {
         if ($this->has($key)) $this->cache->delete($this->prefix.$key);
         return true;

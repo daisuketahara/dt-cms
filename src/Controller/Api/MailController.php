@@ -155,7 +155,7 @@ class MailController extends Controller
     /**
     * @Route("/api/v1/mail/queue/get/{id}/", name="api_mail_queue_get"), methods={"GET","HEAD"})
     */
-    final public function getMailQueue($id, Request $request)
+    final public function getMailQueue(int $id, Request $request)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -191,7 +191,7 @@ class MailController extends Controller
     * @Route("/api/v1/mail/queue/delete/", name="api_mail_queue_delete", methods={"PUT"})
     * @Route("/api/v1/mail/queue/delete/{id}/", name="api_mail_queue_delete_multiple", methods={"DELETE"})
     */
-    final public function deleteFromQueue($id=0, LogService $log)
+    final public function deleteFromQueue(int $id=0, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -358,7 +358,7 @@ class MailController extends Controller
     /**
     * @Route("/api/v1/mail/template/get/{id}/", name="api_mail_template_get"), methods={"GET","HEAD"})
     */
-    final public function getTemplate($id, Request $request)
+    final public function getTemplate(int $id, Request $request)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -412,7 +412,7 @@ class MailController extends Controller
     * @Route("/api/v1/mail/template/insert/", name="api_mail_template_insert", methods={"PUT"})
     * @Route("/api/v1/mail/template/update/{id}/", name="api_mail_template_update", methods={"PUT"})
     */
-    final public function editTemplate($id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function editTemplate(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -529,7 +529,7 @@ class MailController extends Controller
     * @Route("/api/v1/mail/template/delete/", name="api_mail_template_delete", methods={"PUT"})
     * @Route("/api/v1/mail/template/delete/{id}/", name="api_mail_template_delete_multiple", methods={"DELETE"})
     */
-    final public function deleteTemplate($id=0, LogService $log)
+    final public function deleteTemplate(int $id=0, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());

@@ -116,7 +116,6 @@
             viewFile: function(event) {
                 this.file = this.files[event.currentTarget.dataset.index];
                 this.$modal.show('view-file');
-                document.getElementById('admin-content').style.zIndex = '14';
             },
             uploadFile: function(event) {
                 this.upload = true;

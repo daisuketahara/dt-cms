@@ -107,7 +107,7 @@ class CountryController extends Controller
     /**
     * @Route("/api/v1/country/get/{id}/", name="api_country_get"), methods={"GET","HEAD"})
     */
-    final public function getCountry($id, Request $request)
+    final public function getCountry(int $id, Request $request)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -143,7 +143,7 @@ class CountryController extends Controller
     * @Route("/api/v1/country/insert/", name="api_country_insert", methods={"PUT"})
     * @Route("/api/v1/country/update/{id}/", name="api_country_update", methods={"PUT"})
     */
-    final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -218,7 +218,7 @@ class CountryController extends Controller
     * @Route("/api/v1/country/delete/", name="api_country_delete", methods={"PUT"})
     * @Route("/api/v1/country/delete/{id}/", name="api_country_delete_multiple", methods={"DELETE"})
     */
-    final public function delete($id=0, LogService $log)
+    final public function delete(int $id=0, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());

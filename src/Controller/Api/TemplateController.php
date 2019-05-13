@@ -46,7 +46,7 @@ class TemplateController extends Controller
     /**
     * @Route("/api/v1/template/get/{id}/", name="api_template_get"), methods={"GET","HEAD"})
     */
-    final public function getTemplate($id, Request $request)
+    final public function getTemplate(int $id, Request $request)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -78,86 +78,86 @@ class TemplateController extends Controller
         return $this->json($json);
     }
 
-        /**
-        * @Route("/api/v1/template/update/{id}/", name="api_template_update", methods={"PUT"})
-        */
-        final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
-        {
-            $encoders = array(new XmlEncoder(), new JsonEncoder());
-            $normalizers = array(new ObjectNormalizer());
-            $serializer = new Serializer($normalizers, $encoders);
-            $logMessage = '';
-            $logComment = 'Insert';
+    /**
+    * @Route("/api/v1/template/update/{id}/", name="api_template_update", methods={"PUT"})
+    */
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $serializer = new Serializer($normalizers, $encoders);
+        $logMessage = '';
+        $logComment = 'Insert';
 
-            if (!empty($id)) {
-                $template = $this->getDoctrine()
-                ->getRepository(Template::class)
-                ->find($id);
-                if (!$template) {
-                    $response = [
-                        'success' => false,
-                        'message' => 'Cannot find template',
-                    ];
-                    $json = json_encode($response);
-                    return $this->json($json);
-
-                } else {
-                    $logMessage .= '<i>Old data:</i><br>';
-                    $logMessage .= $serializer->serialize($template, 'json');
-                    $logMessage .= '<br><br>';
-                    $logComment = 'Update';
-                    $message = 'Template has been updated';
-
-                }
-            } else {
+        if (!empty($id)) {
+            $template = $this->getDoctrine()
+            ->getRepository(Template::class)
+            ->find($id);
+            if (!$template) {
                 $response = [
                     'success' => false,
-                    'message' => 'Id cannot be empty',
+                    'message' => 'Cannot find template',
                 ];
-            }
+                $json = json_encode($response);
+                return $this->json($json);
 
-            if ($request->isMethod('PUT')) {
-
-                $params = json_decode(file_get_contents("php://input"),true);
-
-                if (isset($params['customCss'])) $template->setCustomCss($params['customCss']);
-                if (isset($params['customJs'])) $template->setCustomJs($params['customJs']);
-
-
-                if (!empty($errors)) {
-
-                    $response = [
-                        'success' => false,
-                        'message' => $errors,
-                    ];
-                    $json = json_encode($response);
-                    return $this->json($json);
-                }
-
-                $logMessage .= '<i>New data:</i><br>';
+            } else {
+                $logMessage .= '<i>Old data:</i><br>';
                 $logMessage .= $serializer->serialize($template, 'json');
+                $logMessage .= '<br><br>';
+                $logComment = 'Update';
+                $message = 'Template has been updated';
 
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($template);
-                $em->flush();
+            }
+        } else {
+            $response = [
+                'success' => false,
+                'message' => 'Id cannot be empty',
+            ];
+        }
 
-                $log->add('Template', $id, $logMessage, $logComment);
+        if ($request->isMethod('PUT')) {
 
+            $params = json_decode(file_get_contents("php://input"),true);
+
+            if (isset($params['customCss'])) $template->setCustomCss($params['customCss']);
+            if (isset($params['customJs'])) $template->setCustomJs($params['customJs']);
+
+
+            if (!empty($errors)) {
 
                 $response = [
-                    'success' => true,
-                    'message' => $message,
+                    'success' => false,
+                    'message' => $errors,
                 ];
+                $json = json_encode($response);
+                return $this->json($json);
             }
 
-            $json = json_encode($response);
-            return $this->json($json);
+            $logMessage .= '<i>New data:</i><br>';
+            $logMessage .= $serializer->serialize($template, 'json');
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($template);
+            $em->flush();
+
+            $log->add('Template', $id, $logMessage, $logComment);
+
+
+            $response = [
+                'success' => true,
+                'message' => $message,
+            ];
         }
+
+        $json = json_encode($response);
+        return $this->json($json);
+    }
 
     /**
     * @Route("/api/v1/template/compile/{id}/", name="api_template_compile"))
     */
-    public function compile($id, TranslatorInterface $translator, LogService $log, Filesystem $fileSystem)
+    public function compile(int $id, TranslatorInterface $translator, LogService $log, Filesystem $fileSystem)
     {
         ini_set('max_execution_time', 300);
 

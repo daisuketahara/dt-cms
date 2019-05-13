@@ -146,7 +146,7 @@ class BlockController extends Controller
     /**
     * @Route("/api/v1/block/get/{id}/", name="api_block_get"), methods={"GET","HEAD"})
     */
-    final public function getBlock($id, Request $request)
+    final public function getBlock(int $id, Request $request)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -200,7 +200,7 @@ class BlockController extends Controller
     * @Route("/api/v1/block/insert/", name="api_block_insert", methods={"PUT"})
     * @Route("/api/v1/block/update/{id}/", name="api_block_update", methods={"PUT"})
     */
-    final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -315,7 +315,7 @@ class BlockController extends Controller
     * @Route("/api/v1/block/delete/", name="api_block_delete", methods={"PUT"})
     * @Route("/api/v1/block/delete/{id}/", name="api_block_delete_multiple", methods={"DELETE"})
     */
-    final public function delete($id=0, LogService $log)
+    final public function delete(int $id=0, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());

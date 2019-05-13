@@ -152,7 +152,7 @@ class LocaleController extends Controller
     /**
     * @Route("/api/v1/locale/get/{id}/", name="api_locale_get"), methods={"GET","HEAD"})
     */
-    final public function getLocale($id, Request $request)
+    final public function getLocale(int $id, Request $request)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -188,7 +188,7 @@ class LocaleController extends Controller
     * @Route("/api/v1/locale/insert/", name="api_locale_insert", methods={"PUT"})
     * @Route("/api/v1/locale/update/{id}/", name="api_locale_update", methods={"PUT"})
     */
-    final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -278,7 +278,7 @@ class LocaleController extends Controller
     * @Route("/api/v1/locale/delete/", name="api_locale_delete", methods={"PUT"})
     * @Route("/api/v1/locale/delete/{id}/", name="api_locale_delete_multiple", methods={"DELETE"})
     */
-    final public function delete($id=0, LogService $log)
+    final public function delete(int $id=0, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());

@@ -117,7 +117,7 @@ class SettingController extends Controller
     /**
     * @Route("/api/v1/setting/get/{id}/", name="api_setting_get"), methods={"GET","HEAD"})
     */
-    final public function getSetting($id, Request $request)
+    final public function getSetting(int $id, Request $request)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -153,7 +153,7 @@ class SettingController extends Controller
     * @Route("/api/v1/setting/insert/", name="api_setting_insert", methods={"PUT"})
     * @Route("/api/v1/setting/update/{id}/", name="api_setting_update", methods={"PUT"})
     */
-    final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -234,7 +234,7 @@ class SettingController extends Controller
     * @Route("/api/v1/setting/delete/", name="api_setting_delete", methods={"PUT"})
     * @Route("/api/v1/setting/delete/{id}/", name="api_setting_delete_multiple", methods={"DELETE"})
     */
-    final public function delete($id=0, LogService $log)
+    final public function delete(int $id=0, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());

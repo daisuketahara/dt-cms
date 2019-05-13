@@ -24,7 +24,7 @@ class MailQueueRepository extends ServiceEntityRepository
         return $qb->setMaxResults(30)->execute();
     }
 
-    public function deleteOldRecords($days)
+    public function deleteOldRecords(int $days)
     {
         $sql = "DELETE FROM mail_queue WHERE creation_date < NOW() - INTERVAL " . $days . " DAY";
 

@@ -2,7 +2,3 @@
 controllers:
     resource: ../src/Controller/
     type: annotation
-
-app_extra:
-    resource: .
-    type: extra

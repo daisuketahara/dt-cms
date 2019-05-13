@@ -134,7 +134,7 @@ class RedirectController extends Controller
     /**
     * @Route("/api/v1/redirect/get/{id}/", name="api_redirect_get"), methods={"GET","HEAD"})
     */
-    final public function getRedirect($id, Request $request)
+    final public function getRedirect(int $id, Request $request)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -170,7 +170,7 @@ class RedirectController extends Controller
     * @Route("/api/v1/redirect/insert/", name="api_redirect_insert", methods={"PUT"})
     * @Route("/api/v1/redirect/update/{id}/", name="api_redirect_update", methods={"PUT"})
     */
-    final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -254,7 +254,7 @@ class RedirectController extends Controller
     * @Route("/api/v1/redirect/delete/", name="api_redirect_delete", methods={"PUT"})
     * @Route("/api/v1/redirect/delete/{id}/", name="api_redirect_delete_multiple", methods={"DELETE"})
     */
-    final public function delete($id=0, LogService $log)
+    final public function delete(int $id=0, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());

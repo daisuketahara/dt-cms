@@ -22,7 +22,7 @@ class BlockService
         $this->requestStack = $requestStack;
     }
 
-    public function getBlock($key)
+    public function getBlock(string $key)
     {
         $cache = new CacheService();
 

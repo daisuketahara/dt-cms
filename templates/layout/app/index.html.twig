@@ -1,0 +1,30 @@
+{% extends "layout/index.html.twig" %}
+
+{% block stylesheets %}
+{{ parent() }}
+    {{ encore_entry_link_tags('app') }}
+    <link rel="stylesheet" type="text/css" href="/css/app.css?v={{settingservice.getSetting('template.assets.version')}}">
+    <link rel="shortcut icon" href="{{ asset('favicon.png') }}" type="image/png">
+{% endblock %}
+
+{% block body %}
+    <div id="app"></div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+    <script>
+        var translations = {};
+        {% for key,value in translations %}
+        translations['{{key}}'] = '{{value|raw}}';
+        {% endfor %}
+    </script>
+    {{ encore_entry_script_tags('app') }}
+    <script>
+    </script>
+{% endblock %}
+
+{% block tracking %}
+    {% set trackingCode = settingservice.getSetting('site.tracking') %}
+    {{trackingCode|raw}}
+{% endblock %}

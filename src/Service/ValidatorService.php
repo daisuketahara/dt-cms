@@ -11,7 +11,7 @@ class ValidatorService
 
     }
 
-    public function vat($vatid, LogService $log)
+    public function vat(string $vatid, LogService $log)
     {
         if (!empty($vatid)) {
             $vatid = str_replace(' ','', trim($vatid));

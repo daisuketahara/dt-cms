@@ -15,7 +15,7 @@ class AppTranslationRepository extends ServiceEntityRepository
         parent::__construct($registry, AppTranslation::class);
     }
 
-    public function findTranslationsList($where='', $order='', $limit=0, $offset=0)
+    public function findTranslationsList(string $where='', array $order=[], int $limit=0, int $offset=0)
     {
 
         $sql = "SELECT t.id, t.tag, ";
@@ -31,7 +31,7 @@ class AppTranslationRepository extends ServiceEntityRepository
         return $stmt->fetchAll();
     }
 
-    public function countTranslationsList($where='')
+    public function countTranslationsList(string $where='')
     {
 
         $sql = "SELECT COUNT(*) AS amount FROM app_translation AS t
@@ -47,7 +47,7 @@ class AppTranslationRepository extends ServiceEntityRepository
         return $stmt->fetch()['amount'];
     }
 
-    public function findTranslationsByLocaleId($localeId)
+    public function findTranslationsByLocaleId(int $localeId)
     {
         $qb = $this->createQueryBuilder('t')
         ->andWhere('t.locale = :locale')
@@ -57,7 +57,7 @@ class AppTranslationRepository extends ServiceEntityRepository
         return $qb->execute();
     }
 
-    public function findTranslation($tag, $localeId)
+    public function findTranslation(string $tag, int $localeId)
     {
         $qb = $this->createQueryBuilder('t')
         ->andWhere('t.tag = :tag')

@@ -22,10 +22,9 @@ class MenuService
         $this->requestStack = $requestStack;
     }
 
-    public function getMenu($menuId, $useCache=true)
+    public function getMenu(int $menuId, bool $useCache=true)
     {
         $cache = new CacheService();
-        $session = new Session();
         $_locale = $this->requestStack->getCurrentRequest()->getLocale();
 
         $locale = $this->em->getRepository(Locale::class)
@@ -61,14 +60,15 @@ class MenuService
         	END AS route,
             pm.route_name AS route_name,
             pm.component AS component,
+            pm.id AS permission_id,
             pm.props AS props
         FROM menu_items AS mi
         LEFT JOIN permission AS pm ON mi.permission_id = pm.id
-        LEFT JOIN page AS p ON p.status = 1 AND mi.page_id = p.id
+        LEFT JOIN page AS p ON p.status = 1 AND pm.page_id = p.id
         LEFT JOIN page_content AS pc ON p.id = pc.page_id AND pc.locale_id = " . $locale->getId() . "
         LEFT JOIN locale AS l ON l.id = pc.locale_id
-        WHERE mi.menu_id = " . $menuId . " AND mi.active = 1 AND mi.parent_id = 0
-        ORDER BY mi.order ASC";
+        WHERE mi.menu_id = " . $menuId . " AND mi.active = 1 AND (mi.parent_id = 0 OR mi.parent_id IS NULL)
+        ORDER BY mi.sort ASC";
 
         $conn = $this->em->getConnection();
         $stmt = $conn->prepare($sql);
@@ -87,6 +87,7 @@ class MenuService
             $menuItem['route'] = $mainMenuItem['route'];
             $menuItem['route_name'] = $mainMenuItem['route_name'];
             $menuItem['component'] = $mainMenuItem['component'];
+            $menuItem['permission_id'] = $mainMenuItem['permission_id'];
             $menuItem['props'] = $mainMenuItem['props'];
             $menuItem['active'] = $mainMenuItem['active'];
 
@@ -105,6 +106,7 @@ class MenuService
                     $subMenuItem['route'] = $mainMenuSubItem['route'];
                     $subMenuItem['route_name'] = $mainMenuSubItem['route_name'];
                     $subMenuItem['component'] = $mainMenuSubItem['component'];
+                    $subMenuItem['permission_id'] = $mainMenuSubItem['permission_id'];
                     $subMenuItem['props'] = $mainMenuSubItem['props'];
                     $subMenuItem['active'] = $mainMenuSubItem['active'];
                     $subMenu[] = $subMenuItem;
@@ -119,9 +121,8 @@ class MenuService
         return $menu;
     }
 
-    public function getSubMenu($parentId)
+    public function getSubMenu(int $parentId)
     {
-        $session = new Session();
         $_locale = $this->requestStack->getCurrentRequest()->getLocale();
 
         $locale = $this->em->getRepository(Locale::class)
@@ -153,14 +154,15 @@ class MenuService
         	END AS route,
             pm.route_name AS route_name,
             pm.component AS component,
+            pm.id AS permission_id,
             pm.props AS props
         FROM menu_items AS mi
         LEFT JOIN permission AS pm ON mi.permission_id = pm.id
-        LEFT JOIN page AS p ON p.status = 1 AND mi.page_id = p.id
+        LEFT JOIN page AS p ON p.status = 1 AND pm.page_id = p.id
         LEFT JOIN page_content AS pc ON p.id = pc.page_id AND pc.locale_id = " . $locale->getId() . "
         LEFT JOIN locale AS l ON l.id = pc.locale_id
         WHERE mi.active = 1 AND mi.parent_id = " . $parentId . "
-        ORDER BY mi.order ASC";
+        ORDER BY mi.sort ASC";
 
         $conn = $this->em->getConnection();
         $stmt = $conn->prepare($sql);

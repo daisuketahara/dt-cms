@@ -23,7 +23,7 @@ class MailService
         $this->setting = $setting;
     }
 
-    public function addToQueue($toEmail, $tag='', $localeId=0, $variables=array(), $fromName='', $fromEmail='', $toName='')
+    public function addToQueue(string $toEmail, string $tag='', int $localeId=0, array $variables=array(), string $fromName='', string $fromEmail='', string $toName='')
     {
         $mail = new MailQueue();
         $request = Request::createFromGlobals();

@@ -18,8 +18,7 @@ export default new Vuex.Store({
         default_locale: '',
         default_locale_id: 0,
         menu: [],
-        permissions: [],
-        pages: []
+        permissions: []
     },
     mutations: {
         setInit (state, init) {
@@ -39,9 +38,6 @@ export default new Vuex.Store({
         },
         setPermissions (state, permissions) {
             state.permissions = permissions;
-        },
-        setPages (state, pages) {
-            state.pages = pages;
         },
         setLocales (state, locales) {
             state.locales = locales;

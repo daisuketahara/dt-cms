@@ -14,7 +14,7 @@
                     <tr>
                         <th width="30"><input type="checkbox" v-on:click="selectAllDelete"></th>
                         <th v-for="column in columns" v-if="column.show_list == true" :data-column="column.id">
-                            {{translations[column.label]}}
+                            {{translations[column.label] || column.label}}
                             <a class="table-sort" v-on:click="sortlist" :data-id="column.id" data-dir="asc">
                                 <i v-if="column.id === sort.id && sort.dir === 'desc'" class="fa fa-sort-down" aria-hidden="true"></i>
                                 <i v-else-if="column.id === sort.id && sort.dir === 'asc'" class="fa fa-sort-up" aria-hidden="true"></i>
@@ -22,8 +22,8 @@
                             </a>
                         </th>
                         <th width="160">
-                            <button v-if="api.insert" class="btn btn-success btn-sm" v-on:click="add"><i class="fa fa-plus" aria-hidden="true"></i> {{translations.new}}</button>
-                            <button v-if="settings.insert" class="btn btn-success btn-sm" :data-url="settings.insert" v-on:click="customButton"><i class="fa fa-plus" aria-hidden="true" :data-url="settings.insert"></i> {{translations.new}}</button>
+                            <button v-if="api.insert" class="btn btn-success btn-sm" v-on:click="add"><i class="fa fa-plus" aria-hidden="true"></i> {{translations.new || 'New'}}</button>
+                            <button v-if="settings.insert" class="btn btn-success btn-sm" :data-url="settings.insert" v-on:click="customButton"><i class="fa fa-plus" aria-hidden="true" :data-url="settings.insert"></i> {{translations.new || 'New'}}</button>
                         </th>
                     </tr>
                     <tr class="table-filter">
@@ -409,11 +409,6 @@
             },
             update: function(event) {
 
-                let headers = {
-                    'Content-Type': 'application/json;charset=UTF-8',
-                    "Authorization" : "Bearer " + this.$store.state.apikey
-                }
-
                 let params = {};
                 if (this.translate_id > 0) params['locale'] = this.translate_id;
                 for (var i = 0; i < this.columns.length; i++) {
@@ -440,7 +435,7 @@
                 let url = '/api/v1'+this.api.insert;
                 if (this.form_id > 0) url = '/api/v1'+this.api.update + this.form_id + '/';
 
-                axios.put(url, params, {headers: headers})
+                axios.put(url, params, {headers: this.headers})
                     .then(response => {
                         var result = JSON.parse(response.data);
 

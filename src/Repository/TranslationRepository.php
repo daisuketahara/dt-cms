@@ -15,7 +15,7 @@ class TranslationRepository extends ServiceEntityRepository
         parent::__construct($registry, Translation::class);
     }
 
-    public function findTranslationsList($where='', $order='', $limit=0, $offset=0)
+    public function findTranslationsList(string $where='', array $order=[], int $limit=0, int $offset=0)
     {
         $sql = "SELECT t.id, t.tag, t.original, ";
         $sql .= "CONCAT(CAST(ROUND(((SELECT COUNT(*) FROM translation_text AS t2 WHERE t2.text <> '' AND t2.text IS NOT NULL AND t2.translation_id=t.id)/(SELECT COUNT(*) FROM locale AS l WHERE l.active=1))*100) AS CHAR(3)),'%') AS complete ";
@@ -35,7 +35,7 @@ class TranslationRepository extends ServiceEntityRepository
         return $stmt->fetchAll();
     }
 
-    public function countTranslationsList($where='')
+    public function countTranslationsList(string $where='')
     {
 
         $sql = "SELECT COUNT(*) AS amount FROM translation AS t WHERE 1=1";
@@ -50,7 +50,7 @@ class TranslationRepository extends ServiceEntityRepository
         return $stmt->fetch()['amount'];
     }
 
-    public function findTranslationsByLocaleId($localeId)
+    public function findTranslationsByLocaleId(int $localeId)
     {
         $sql = "SELECT t.tag, t.original, ";
         $sql .= "CASE WHEN tt.text IS NOT NULL THEN tt.text ELSE t.original END AS text ";
@@ -65,7 +65,7 @@ class TranslationRepository extends ServiceEntityRepository
         return $stmt->fetchAll();
     }
 
-    public function findTranslation($original, $localeId)
+    public function findTranslation(string $original, int $localeId)
     {
         $qb = $this->createQueryBuilder('t')
         ->andWhere('t.original = :original')

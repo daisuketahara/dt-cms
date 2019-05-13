@@ -10,7 +10,6 @@ import '@fortawesome/fontawesome-free/js/all';
 const $ = require('jquery');
 global.$ = global.jQuery = $;
 
-var contactForm = require('./contact-form.js');
 var setLocale;
 
 var app = {

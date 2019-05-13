@@ -170,7 +170,7 @@ class TranslationController extends Controller
     /**
     * @Route("/api/v1/translation/get/{id}/", name="api_translation_get"), methods={"GET","HEAD"})
     */
-    final public function getTranslation($id, Request $request)
+    final public function getTranslation(int $id, Request $request)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -228,7 +228,7 @@ class TranslationController extends Controller
     * @Route("/api/v1/translation/insert/", name="api_translation_insert", methods={"PUT"})
     * @Route("/api/v1/translation/update/{id}/", name="api_translation_update", methods={"PUT"})
     */
-    final public function update($id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function update(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -322,7 +322,7 @@ class TranslationController extends Controller
     * @Route("/api/v1/translation/delete/", name="api_translation_delete", methods={"PUT"})
     * @Route("/api/v1/translation/delete/{id}/", name="api_translation_delete_multiple", methods={"DELETE"})
     */
-    final public function delete($id=0, LogService $log)
+    final public function delete(int $id=0, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -505,7 +505,7 @@ class TranslationController extends Controller
     /**
     * @Route("/api/v1/translation/locale/{locale}", name="api_translation_by_locale"), methods={"GET","HEAD"))
     */
-    final public function getTranslationsByLocale($locale)
+    final public function getTranslationsByLocale(string $locale)
     {
         $locale = $this->getDoctrine()
             ->getRepository(Locale::class)

@@ -160,7 +160,7 @@ class PageController extends Controller
     /**
     * @Route("/api/v1/page/get/{id}/", name="api_page_get"), methods={"GET","HEAD"})
     */
-    final public function getPage($id, Request $request)
+    final public function getPage(int $id, Request $request)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -189,9 +189,29 @@ class PageController extends Controller
             }
 
             if ($page) {
+
+                // Check page permission
+                $permission = $this->getDoctrine()
+                    ->getRepository(Permission::class)
+                    ->findOneBy(array('page' => $page->getPage()));
+
+                $pageRoles = array();
+                if ($permission) {
+                    $roles = $this->getDoctrine()
+                        ->getRepository(Permission::class)
+                        ->getPermissionRoles($permission->getId());
+
+                    if ($roles) {
+                        foreach ($roles as $role) {
+                            $pageRoles[$role['role_id']] = true;
+                        }
+                    }
+                }
+
                 $response = [
                     'success' => true,
                     'data' => $page,
+                    'roles' => $pageRoles,
                 ];
             } else {
                 $response = [
@@ -214,7 +234,7 @@ class PageController extends Controller
     * @Route("/api/v1/page/insert/", name="api_page_insert", methods={"PUT"})
     * @Route("/api/v1/page/update/{id}/", name="api_page_update", methods={"PUT"})
     */
-    final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -334,6 +354,59 @@ class PageController extends Controller
             $em->flush();
             $id = $page->getId();
 
+            // Get permission group
+            $permissionGroup = $this->getDoctrine()
+                ->getRepository(PermissionGroup::class)
+                ->findOneBy(array('name' => 'Pages'));
+
+            // Create permission group for pages if not exists
+            if (!$permissionGroup) {
+                $permissionGroup = new PermissionGroup();
+                $permissionGroup->setName('Pages');
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($permissionGroup);
+                $em->flush();
+            }
+
+            // Check page permission
+            $permission = $this->getDoctrine()
+                ->getRepository(Permission::class)
+                ->findOneBy(array('page' => $page->getPage()));
+
+            // Create permission for page if not exists
+            if (!$permission) $permission = new Permission();
+
+            $pageRoute = strtolower(str_replace('/', '_', $page->getPageRoute()));
+            $pageRoute = strtolower(str_replace('-', '_', $pageRoute));
+
+            $permission->setRouteName('page_' . $pageRoute);
+            $permission->setDescription($page->getPageTitle());
+            $permission->setPermissionGroup($permissionGroup);
+            $permission->setPage($page->getPage());
+            $permission->setComponent('Page');
+            $permission->setProps('{"id": ' . $page->getPage()->getId() . '}');
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($permission);
+            $em->flush();
+
+
+            if (!empty($params['role'])) $formRoles = $params['role'];
+            $roles = $this->getDoctrine()
+                ->getRepository(Role::class)
+                ->findAll();
+
+            foreach($roles as $role) {
+
+                if (!empty($formRoles) && !empty($formRoles[$role->getId()])) {
+                    $role->addPermission($permission);
+                    $em->persist($role);
+                } else {
+                    $role->removePermission($permission);
+                    $em->persist($role);
+                }
+            }
+            $em->flush();
+
             $log->add('Page', $id, $logMessage, $logComment);
 
             $response = [
@@ -347,7 +420,7 @@ class PageController extends Controller
         return $this->json($json);
     }
 
-    final public function edit2($id=0, Request $request, TranslatorInterface $translator, LogService $log, KernelInterface $kernel)
+    final public function edit2(int $id=0, Request $request, TranslatorInterface $translator, LogService $log, KernelInterface $kernel)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -629,7 +702,7 @@ class PageController extends Controller
     * @Route("/api/v1/page/delete/", name="api_page_delete", methods={"PUT"})
     * @Route("/api/v1/page/delete/{id}/", name="api_page_delete_multiple", methods={"DELETE"})
     */
-    final public function delete($id=0, LogService $log)
+    final public function delete(int $id=0, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -671,4 +744,44 @@ class PageController extends Controller
         return $this->json($json);
     }
 
+    /**
+    * @Route("/api/v1/page/{id}/{_locale}/", name="api_page_content"), methods={"GET","HEAD"})
+    */
+    final public function getPageContent(int $id, $_locale, Request $request)
+    {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $serializer = new Serializer($normalizers, $encoders);
+
+        $locale = $this->getDoctrine()
+            ->getRepository(Locale::class)
+            ->findOneBy(['locale' => $_locale]);
+
+        if (!empty($id)) {
+
+            $page = $this->getDoctrine()
+            ->getRepository(PageContent::class)
+            ->findOneBy(['page' => $id, 'locale' => $locale]);
+
+            if ($page) {
+                $response = [
+                    'success' => true,
+                    'data' => $page,
+                ];
+            } else {
+                $response = [
+                    'success' => false,
+                    'message' => 'Cannot find page',
+                ];
+            }
+        } else {
+            $response = [
+                'success' => false,
+                'message' => 'Id cannot be empty',
+            ];
+        }
+
+        $json = $serializer->serialize($response, 'json');
+        return $this->json($json);
+    }
 }

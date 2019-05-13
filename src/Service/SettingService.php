@@ -19,7 +19,7 @@ class SettingService
         $this->container = $container;
     }
 
-    public function getSetting($key)
+    public function getSetting(string $key)
     {
         $cache = new CacheService();
 

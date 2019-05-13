@@ -23,7 +23,7 @@ class FileService extends Controller
         $this->container = $container;
     }
 
-    public function upload(UploadedFile $uploadedFile, $group=0, $hide=false)
+    public function upload(UploadedFile $uploadedFile, int $group=0, bool $hide=false)
     {
         $filePath = $this->get('kernel')->getProjectDir() . '/';
         if (empty($hide)) $filePath .= 'public/';
@@ -71,7 +71,7 @@ class FileService extends Controller
         return $this->targetDirectory;
     }
 
-    public function getFile($id)
+    public function getFile(int $id)
     {
         $file = $this->em->getRepository(File::class)
             ->find($id);
@@ -80,7 +80,7 @@ class FileService extends Controller
         return false;
     }
 
-    public function slugify($text)
+    public function slugify(string $text)
     {
         $text = preg_replace('~[^\pL\d]+~u', '-', $text);
         $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);

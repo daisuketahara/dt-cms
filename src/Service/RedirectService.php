@@ -14,7 +14,7 @@ class RedirectService
         $this->em = $em;
     }
 
-    public function getRedirect($pageRoute)
+    public function getRedirect(string $pageRoute)
     {
         $redirect = $this->em->getRepository(Redirect::class)
         ->findBy(array('oldPageRoute' => $pageRoute, 'active' => 1), array());
@@ -23,7 +23,7 @@ class RedirectService
         return false;
     }
 
-    public function addRedirect($oldPageRoute, $newPageRoute)
+    public function addRedirect(string $oldPageRoute, string $newPageRoute)
     {
         // Check if page route exists
         $redirect = $this->getRedirect($oldPageRoute);

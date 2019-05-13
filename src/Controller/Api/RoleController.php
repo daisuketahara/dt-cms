@@ -186,7 +186,7 @@ class RoleController extends Controller
     /**
     * @Route("/api/v1/user/role/get/{id}/", name="api_user_role_get"), methods={"GET","HEAD"})
     */
-    final public function getRole($id, Request $request)
+    final public function getRole(int $id, Request $request)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -222,7 +222,7 @@ class RoleController extends Controller
     * @Route("/api/v1/user/role/insert/", name="api_user_role_insert", methods={"PUT"})
     * @Route("/api/v1/user/role/update/{id}/", name="api_user_role_update", methods={"PUT"})
     */
-    final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -316,7 +316,7 @@ class RoleController extends Controller
     * @Route("/api/v1/user/role/delete/", name="api_user_role_delete", methods={"PUT"})
     * @Route("/api/v1/user/role/delete/{id}/", name="api_user_role_delete_multiple", methods={"DELETE"})
     */
-    final public function delete($id=0, LogService $log)
+    final public function delete(int $id=0, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -355,4 +355,5 @@ class RoleController extends Controller
         $json = json_encode($response);
         return $this->json($json);
     }
+
 }

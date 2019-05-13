@@ -9,7 +9,7 @@
             </div>
         </transition>
         <div v-if="menu_id > 0">
-            <button class="btn btn-sm btn-secondary mb-3" v-on:click="gotoList">{{translations.go_back}}</button>
+            <button class="btn btn-sm btn-secondary mb-3" v-on:click="gotoList">{{translations.go_back || 'Go back'}}</button>
             <div class="row">
                 <div class="col-md-6">
                     <ul class="menu-editor-list list-group mb-3">
@@ -17,25 +17,25 @@
                             <span v-html="item.icon"></span>
                             {{translations[item.label] || item.label}}
                             <span  v-if="item.submenu != undefined && item.submenu.length > 0">
-                                <button v-if="collapse[index]" class="btn btn-sm btn-link" v-on:click="setCollapse" :data-id="index">{{translations.collapse}}</button>
-                                <button v-else class="btn btn-sm btn-link" v-on:click="setCollapse" :data-id="index">{{translations.expand}}</button>
+                                <button v-if="collapse[index]" class="btn btn-sm btn-link" v-on:click="setCollapse" :data-id="index">{{translations.collapse || 'Collapse'}}</button>
+                                <button v-else class="btn btn-sm btn-link" v-on:click="setCollapse" :data-id="index">{{translations.expand || 'Expand'}}</button>
                             </span>
-                            <span v-if="item_id == 0 && !item_create">
-                                <button class="btn btn-sm btn-danger float-right ml-2" v-on:click="removeItem" :data-id="index"><i class="far fa-trash-alt" :data-id="index"></i></button>
-                                <button class="btn btn-sm btn-secondary float-right ml-2" v-on:click="editItem" :data-id="index"><i class="fas fa-pencil-alt" :data-id="index"></i></button>
-                                <button v-if="index > 0" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="index" data-dir="up"><i class="fas fa-angle-up" :data-id="index" data-dir="up"></i></button>
-                                <button v-if="index < menu.length - 1" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="index" data-dir="down"><i class="fas fa-angle-down" :data-id="index" data-dir="down"></i></button>
+                            <span>
+                                <button :disabled="disable_buttons" class="btn btn-sm btn-danger float-right ml-2" v-on:click="removeItem" :data-id="index"><i class="far fa-trash-alt" :data-id="index"></i></button>
+                                <button :disabled="disable_buttons" class="btn btn-sm btn-secondary float-right ml-2" v-on:click="editItem" :data-id="index"><i class="fas fa-pencil-alt" :data-id="index"></i></button>
+                                <button :disabled="disable_buttons" v-if="index > 0" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="index" data-dir="up"><i class="fas fa-angle-up" :data-id="index" data-dir="up"></i></button>
+                                <button :disabled="disable_buttons" v-if="index < menu.length - 1" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="index" data-dir="down"><i class="fas fa-angle-down" :data-id="index" data-dir="down"></i></button>
                             </span>
                             <transition name="slide">
                                 <ul v-if="item.submenu != undefined && item.submenu.length > 0 && collapse[index] == true">
-                                    <li v-for="(subitem, subindex) in item.submenu" class="list-group-item" :data-id="subindex">
+                                    <li v-for="(subitem, subindex) in item.submenu" class="list-group-item" :data-parent-id="index" :data-id="subindex">
                                         <span v-if="subitem.icon" v-html="subitem.icon"></span>
                                         {{translations[subitem.label] || subitem.label}}
-                                        <span v-if="item_id == 0 && !item_create">
-                                            <button class="btn btn-sm btn-danger float-right ml-2" v-on:click="removeItem" :data-id="subindex"><i class="far fa-trash-alt" :data-id="subindex"></i></button>
-                                            <button class="btn btn-sm btn-secondary float-right ml-2" v-on:click="editItem" :data-id="subindex" :data-sub="index"><i class="fas fa-pencil-alt" :data-id="subindex" :data-sub="index"></i></button>
-                                            <button v-if="subindex > 0" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="subindex" data-dir="up" :data-sub="index"><i class="fas fa-angle-up" :data-id="subindex" data-dir="up" :data-sub="index"></i></button>
-                                            <button v-if="subindex < item.submenu.length - 1" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="subindex" data-dir="down" :data-sub="index"><i class="fas fa-angle-down" :data-id="subindex" data-dir="down" :data-sub="index"></i></button>
+                                        <span>
+                                            <button :disabled="disable_buttons" class="btn btn-sm btn-danger float-right ml-2" v-on:click="removeItem" :data-parent="index" :data-id="subindex"><i class="far fa-trash-alt" :data-parent="index" :data-id="subindex"></i></button>
+                                            <button :disabled="disable_buttons" class="btn btn-sm btn-secondary float-right ml-2" v-on:click="editItem" :data-id="subindex" :data-sub="index"><i class="fas fa-pencil-alt" :data-id="subindex" :data-sub="index"></i></button>
+                                            <button :disabled="disable_buttons" v-if="subindex > 0" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="subindex" data-dir="up" :data-sub="index"><i class="fas fa-angle-up" :data-id="subindex" data-dir="up" :data-sub="index"></i></button>
+                                            <button :disabled="disable_buttons" v-if="subindex < item.submenu.length - 1" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="subindex" data-dir="down" :data-sub="index"><i class="fas fa-angle-down" :data-id="subindex" data-dir="down" :data-sub="index"></i></button>
                                         </span>
                                     </li>
                                 </ul>
@@ -44,10 +44,10 @@
                     </ul>
                     <div class="row">
                         <div class="col">
-                            <button class="btn btn-sm btn-primary" v-on:click="addItem">{{translations.save}}</button>
+                            <button class="btn btn-sm btn-primary" v-on:click="saveMenu">{{translations.save || 'Save'}}</button>
                         </div>
                         <div class="col text-right">
-                            <button class="btn btn-sm btn-secondary" v-on:click="addItem">{{translations.add_menu_item}}</button>
+                            <button class="btn btn-sm btn-secondary" v-on:click="addItem">{{translations.add_menu_item || 'Add menu item'}}</button>
                         </div>
                     </div>
 
@@ -55,53 +55,39 @@
                 <div v-if="item_id > 0 || item_create" class="col-md-6">
                     <form v-on:submit.prevent="updateMenu">
                         <div v-if="item_create" class="form-group">
-                            <label for="item-parent">{{translations.parent}}</label>
+                            <label for="item-parent">{{translations.parent || 'Parent'}}</label>
                             <select id="item-parent" name="item-parent" class="form-control" v-model="item.parent_id">
+                                <option value=""></option>
                                 <option v-for="(item, index) in menu" :value="index">{{translations[item.label] || item.label}}</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="item-label">{{translations.text}}</label>
+                            <label for="item-label">{{translations.text || 'Text'}}</label>
                             <input type="text" id="item-label" name="item-label" class="form-control" v-model="item.label">
-                            <span v-if="item.label != undefined && item.label != '' && translations[item.label] == undefined" class="badge badge-warning">{{translations.translation_unknown}}</span>
+                            <span v-if="item.label != undefined && item.label != '' && translations[item.label] == undefined" class="badge badge-warning">{{translations.translation_unknown || 'Translation does not exist'}}</span>
                         </div>
                         <div class="form-group">
-                            <label for="item-text">{{translations.icon}}</label>
+                            <label for="item-text">{{translations.icon || 'Icon'}}</label>
                             <input type="text" id="item-icon" name="item-icon" class="form-control" v-model="item.icon">
                         </div>
                         <div class="form-group">
-                            <label for="item-page">Page</label>
+                            <label for="item-permission">{{translations.route || 'Route'}}</label>
                             <div class="row">
                                 <div class="col-8 pr-0">
-                                    <input type="text" id="item-page" name="item-page" class="form-control" v-model="item.page">
+                                    <input type="text" id="item-route" name="item-route" class="form-control" v-model="item.route">
                                 </div>
                                 <div class="col-4">
-                                    <button class="btn btn-secondary w-100" v-on:click.prevent="showPages">{{translations.select_page}}</button>
+                                    <button class="btn btn-secondary w-100" v-on:click.prevent="showRoutes">{{translations.select_route || 'Select route'}}</button>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="item-permission">Permission</label>
-                            <div class="row">
-                                <div class="col-8 pr-0">
-                                    <input type="text" id="item-permission" name="item-permission" class="form-control" v-model="item.permission">
-                                </div>
-                                <div class="col-4">
-                                    <button class="btn btn-secondary w-100" v-on:click.prevent="showRoutes">{{translations.select_route}}</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="item-custom-route">{{translations.custom_route}}</label>
-                            <input type="text" id="item-custom-route" name="item-custom-route" class="form-control" v-model="item.route">
                         </div>
                         <div class="checkbox">
                             <label for="'item-active">
                                 <input type="checkbox" id="item-active" name="item-active" v-model="item.active">
-                                {{translations.active}}
+                                {{translations.active || 'Active'}}
                             </label>
                         </div>
-                        <button class="btn btn-sm btn-secondary">{{translations.ok}}</button>
+                        <button class="btn btn-sm btn-secondary">{{translations.ok || 'OK'}}</button>
                     </form>
                 </div>
             </div>
@@ -112,34 +98,57 @@
                     <ul class="list-group">
                         <li v-for="menu in menus" class="list-group-item">
                             {{menu.name}}
-                            <button class="btn btn-sm btn-secondary float-right" v-on:click="editMenu" :data-id="menu.id">{{translations.edit}}</button>
+                            <button class="btn btn-sm btn-danger float-right ml-2" v-on:click="removeMenu" :data-id="menu.id">
+                                <i class="far fa-trash-alt" :data-id="menu.id"></i>
+                            </button>
+                            <button class="btn btn-sm btn-secondary float-right" v-on:click="editMenu" :data-id="menu.id">
+                                {{translations.edit || 'Edit'}}
+                            </button>
                         </li>
                     </ul>
                 </div>
                 <div class="col-md-6">
-                    <form class="form-inline">
+                    <form class="form-inline" v-on:submit.prevent="createMenu">
                         <div class="form-group mb-2">
-                            <label for="menu-name">{{translations.new_menu}}</label>
-                            <input type="text" class="form-control mx-2" id="menu-name" name="menu-name" placeholder="">
+                            <label for="menu-name">{{translations.new_menu || 'Create new menu'}}</label>
+                            <input type="text" class="form-control mx-2" id="menu-name" name="menu-name" v-model="new_menu_name" placeholder="">
                         </div>
-                        <button type="submit" class="btn btn-secondary mb-2">{{translations.create}}</button>
+                        <button type="submit" class="btn btn-secondary mb-2">{{translations.create || 'Create'}}</button>
                     </form>
                 </div>
             </div>
         </div>
-
-        <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
-            <div v-if="modal" id="im-editor-modal">
-                <div class="im-modal-backdrop">
-                    <div class="im-modal-body p-4">
-                        <div class="im-modal-close" v-on:click="closeModal"><i class="fas fa-times"></i></div>
-
-
-
+        <modal name="route-modal" width="80%" height="90%">
+            <div class="p-4">
+                <h3 v-if="available_pages.length > 0">{{translations.pages || 'Pages'}}</h3>
+                <div v-if="available_pages.length > 0" class="row">
+                    <div v-for="item in available_pages" class="col-sm-6 col-md-4 col-lg-3 mb-2">
+                        <button class="btn btn-secondary w-100" v-on:click="setRoute" :data-id="item.id" :data-route="item.route">
+                            {{translations[item.label] || item.label}}<br>
+                            <span class="font-xs">{{item.route}}</span>
+                        </button>
+                    </div>
+                </div>
+                <h3 v-if="available_app.length > 0">{{translations.modules || 'Modules'}}</h3>
+                <div v-if="available_app.length > 0" class="row">
+                    <div v-for="item in available_app" class="col-sm-6 col-md-4 col-lg-3 mb-2">
+                        <button class="btn btn-secondary w-100" v-on:click="setRoute" :data-id="item.id" :data-route="item.route">
+                            {{translations[item.label] || item.label}}<br>
+                            <span class="font-xs">{{item.route}}</span>
+                        </button>
+                    </div>
+                </div>
+                <h3 v-if="available_admin.length > 0">{{translations.admin || 'Admin'}}</h3>
+                <div v-if="available_admin.length > 0" class="row">
+                    <div v-for="item in available_admin" class="col-sm-6 col-md-4 col-lg-3 mb-2">
+                        <button class="btn btn-secondary w-100" v-on:click="setRoute" :data-id="item.id" :data-route="item.route">
+                            {{translations[item.label] || item.label}}<br>
+                            <span class="font-xs">{{item.route}}</span>
+                        </button>
                     </div>
                 </div>
             </div>
-        </transition>
+        </modal>
     </div>
 </template>
 
@@ -158,6 +167,7 @@
                 menus: [],
                 menu_id: 0,
                 menu: [],
+                new_menu_name: '',
                 item: {},
                 item_index: 0,
                 item_id: 0,
@@ -165,11 +175,16 @@
                 modal: false,
                 alert: {},
                 collapse: [],
-                isShow: false
+                isShow: false,
+                disable_buttons: false,
+                available_pages: [],
+                available_app: [],
+                available_admin: [],
             }
         },
         created() {
             this.getMenus();
+            this.getRoutes();
         },
         computed: {
             translations () {
@@ -195,6 +210,7 @@
                         for (var i = 0; i < this.menu.length; i++) {
                             this.collapse[i] = false;
                         }
+                        this.disable_buttons = false;
                     })
                     .catch(e => {
                         this.setAlert(e, 'error');
@@ -202,13 +218,85 @@
             },
             createMenu: function() {
 
+                let params = {};
+                params['name'] = this.new_menu_name;
+
+                let url = '/api/v1/navigation/create/';
+
+                axios.put(url, params, {headers: this.headers})
+                    .then(response => {
+                        var result = JSON.parse(response.data);
+
+                        if (result.success) {
+                            this.setAlert(translations.saved, 'success');
+                            this.new_menu_name = '';
+                            this.getMenus();
+                        } else {
+                            this.setAlert(result.message, 'error');
+                        }
+                    })
+                    .catch(e => {
+                        this.errors.push(e)
+                    });
+            },
+            removeMenu: function(event) {
+
+                var self = this;
+
+                this.$modal.show('dialog', {
+                    title: 'Alert!',
+                    text: this.translations.confirm_delete_menu + ' ' + this.translations.want_proceed,
+                    buttons: [{
+                        title: this.translations.cancel,
+                        handler: () => {
+                            this.$modal.hide('dialog');
+                        }
+                    },
+                    {
+                        title: this.translations.confirm,
+                        handler: () => {
+
+                            this.$modal.hide('dialog');
+                            axios.delete('/api/v1/navigation/delete/' + event.target.dataset.id + '/', {headers: this.headers})
+                                .then(response => {
+                                    var result = JSON.parse(response.data);
+                                    if (result.success) {
+                                        self.getMenus();
+                                        self.setAlert(translations.delete_confirmation, 'success');
+                                    } else {
+                                        self.setAlert(result.message, 'error');
+                                    }
+                                })
+                                .catch(e => {
+                                    this.setAlert(e, 'error');
+                                    this.$modal.hide('dialog');
+                                });
+                        }
+                    }]
+                });
+
+            },
+            getRoutes: function() {
+
+                axios.get('/api/v1/navigation/routes/', {headers: this.headers})
+                    .then(response => {
+                        var result = JSON.parse(response.data);
+                        this.available_pages = result.pages;
+                        this.available_app = result.app;
+                        this.available_admin = result.admin;
+                    })
+                    .catch(e => {
+                        this.setAlert(e, 'error');
+                    });
             },
             editMenu: function() {
                 this.menu_id = parseInt(event.target.dataset.id);
+                this.disable_buttons = true;
                 this.getMenu();
             },
             addItem: function(event) {
                 this.item_create = true;
+                this.disable_buttons = true;
             },
             editItem: function(event) {
                 var index = parseInt(event.target.dataset.id);
@@ -220,11 +308,13 @@
                 this.item = target[index];
                 this.item_index = index;
                 this.item_id = target[index]['id'];
+                this.item_create = false;
+                this.disable_buttons = true;
             },
             updateMenu: function(event) {
 
                 if (this.item_create) {
-                    if (this.item.parent_id > 0) {
+                    if (this.item.parent_id != undefined && this.menu[this.item.parent_id]['submenu'] != '') {
                         if (this.menu[this.item.parent_id]['submenu'] != undefined) this.menu[this.item.parent_id]['submenu'].push(this.item);
                         else this.menu[this.item.parent_id]['submenu'] = [this.item];
                     } else {
@@ -236,6 +326,25 @@
                 this.item_index = 0;
                 this.item_id = 0;
                 this.item_create = false;
+                this.disable_buttons = false;
+            },
+            saveMenu: function() {
+
+                let url = '/api/v1/navigation/update/'+ this.menu_id + '/';
+
+                axios.put(url, this.menu, {headers: this.headers})
+                    .then(response => {
+                        var result = JSON.parse(response.data);
+
+                        if (result.success) {
+                            this.setAlert(translations.saved, 'success');
+                        } else {
+                            this.setAlert(result.message, 'error');
+                        }
+                    })
+                    .catch(e => {
+                        this.errors.push(e)
+                    });
             },
             moveItem: function(event) {
                 var index = parseInt(event.target.dataset.id);
@@ -267,7 +376,11 @@
 
             },
             removeItem: function(event) {
-                this.menu.splice(parseInt(event.target.dataset.id), 1);
+                var id = event.target.dataset.id;
+                var parent = event.target.dataset.parent;
+
+                if (parent != undefined) this.menu[parent]['submenu'].splice(id, 1);
+                else this.menu.splice(id, 1);
             },
             setCollapse: function(event) {
                 var id = parseInt(event.target.dataset.id);
@@ -289,13 +402,13 @@
                 this.collapse = [];
                 this.menu_id = 0;
             },
-            launchModal: function() {
-                document.getElementById('admin-content').style.zIndex = '14';
-                this.modal = true;
+            showRoutes: function() {
+                this.$modal.show('route-modal');
             },
-            closeModal: function() {
-                this.modal = false;
-                document.getElementById('admin-content').style.zIndex = '11';
+            setRoute: function(event) {
+                this.item.permission_id = parseInt(event.target.dataset.id);
+                this.item.route = event.target.dataset.route;
+                this.$modal.hide('route-modal');
             },
             setAlert: function(text, type) {
                 var self = this;
@@ -309,6 +422,8 @@
 
 <style lang="scss" scoped>
 .menu-editor-list {
+
+    overflow: hidden;
 
     li:hover {
         background-color: #efefef;

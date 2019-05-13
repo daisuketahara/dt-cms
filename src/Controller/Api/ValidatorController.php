@@ -15,7 +15,7 @@ class ValidatorController extends Controller
     /**
     * @Route("/api/v1/validate/smscode/{smscode}/", name="api_validate_smscode", methods={"GET","HEAD"})
     */
-    final public function smscode($smscode, Request $request, SmsService $sms)
+    final public function smscode(string $smscode, Request $request, SmsService $sms)
     {
         $result = $sms->validate($smsCode);
 
@@ -29,7 +29,7 @@ class ValidatorController extends Controller
     /**
     * @Route("/api/v1/validate/iban/{iban}/", name="api_validate_iban", methods={"GET","HEAD"})
     */
-    final public function iban($iban, Request $request, ValidatorService $validator)
+    final public function iban(string $iban, Request $request, ValidatorService $validator)
     {
         $result = $validator->iban($iban);
 
@@ -43,7 +43,7 @@ class ValidatorController extends Controller
     /**
     * @Route("/api/v1/validate/vat/{vat}/", name="api_validate_vat", methods={"GET","HEAD"})
     */
-    final public function vat($vat, Request $request, ValidatorService $validator)
+    final public function vat(string $vat, Request $request, ValidatorService $validator)
     {
         $result = $validator->vat($vat);
 

@@ -13,7 +13,7 @@ class LogRepository extends ServiceEntityRepository
         parent::__construct($registry, Log::class);
     }
 
-    public function deleteOldRecords($days)
+    public function deleteOldRecords(int $days)
     {
         $sql = "DELETE FROM log WHERE creation_date < NOW() - INTERVAL " . $days . " DAY";
 

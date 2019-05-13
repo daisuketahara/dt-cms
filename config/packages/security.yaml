@@ -28,6 +28,14 @@ security:
             methods: [GET]
             pattern: ^/api/v1/translation/locale/
             security: false
+        api_public_routes:
+            methods: [GET]
+            pattern: ^/api/v1/app-routes/
+            security: false
+        api_public_page:
+            methods: [GET]
+            pattern: ^/api/v1/page/
+            security: false
         api_main:
             pattern: ^/api
             stateless: true
@@ -37,18 +45,8 @@ security:
         main:
             anonymous: ~
             provider: db_provider
-            form_login:
-                login_path: login
-                check_path: login
-                default_target_path: admin_dashboard
-                use_referer: true
-                csrf_token_generator: security.csrf.token_manager
-            logout:
-                path: logout
-                target: /en/login
 
     access_control:
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api, roles: [ROLE_API,ROLE_ADMIN]  }
 
             # activate different ways to authenticate

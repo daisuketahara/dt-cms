@@ -1,3 +1,92 @@
 @import "~bootstrap/scss/bootstrap";
 @import '~animate.css';
 @import '~vuejs-dialog/dist/vuejs-dialog.min.css';
+
+.admin-sidebar {
+    nav.navbar {
+        position: relative;
+        z-index: 2;
+        padding: 0;
+        ul {
+            position: relative;
+            z-index: 2;
+            list-style: none;
+            width: 260px;
+            padding-left: 0;
+            li {
+                width: 100%;
+                text-align: left;
+                position: relative;
+                border-top: 1px solid #555555;
+                a {
+                    color: white;
+                    display: block;
+                    width: 100%;
+                    padding: 14px 5px 14px 20px;
+                    -webkit-transition: all 0.25s ease-in-out;
+                    -moz-transition: all 0.25s ease-in-out;
+                    -o-transition: all 0.25s ease-in-out;
+                    transition: all 0.25s ease-in-out;
+                    font-weight: 300;
+                    font-size: 0.8rem;
+                    letter-spacing: 0.15rem;
+                    span:first-child {
+                        display: inline-block;
+                        width: 20px;
+                        margin-right: 0.5rem;
+                        text-align: center;
+                        font-size: 1.1rem;
+                    }
+                    i.fa-angle-right {
+                        float: right;
+                        position: relative;
+                        top: 0.3rem;
+                        right: 0.3rem;
+                    }
+                    .icon {
+
+                    }
+                    .label {
+
+                    }
+                }
+                a:hover {
+                    background-color: rgba(255,255,255,0.2);
+                    text-decoration: none;
+                }
+                ul {
+                    background-color: rgb(40, 40, 40);
+                    display: block;
+                    position: absolute;
+                    left: 260px;
+                    top: 0;
+                    padding-left: 0;
+                    width: 200px;
+                    visibility:hidden;
+                    opacity: 0;
+                    list-style: none;
+                    -webkit-transition: all 0.25s ease-in-out;
+                    -moz-transition: all 0.25s ease-in-out;
+                    -o-transition: all 0.25s ease-in-out;
+                    transition: all 0.25s ease-in-out;
+
+                    a span {
+                        font-size: 0.8rem !important;
+                    }
+                }
+            }
+            li:hover {
+
+                ul {
+                    visibility: visible;
+                    opacity: 1;
+                    width: 200px;
+                    -webkit-transition: all 0.1s ease-in-out;
+                    -moz-transition: all 0.1s ease-in-out;
+                    -o-transition: all 0.1s ease-in-out;
+                    transition: all 0.1s ease-in-out;
+                }
+            }
+        }
+    }
+}

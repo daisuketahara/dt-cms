@@ -17,7 +17,7 @@ class LogService
         $this->em = $em;
     }
 
-    public function add($entity='',$entityId=0,$logtext='',$comment='')
+    public function add(string $entity='', int $entityId=0, string $logtext='', string $comment='')
     {
         $log = new Log();
         $request = Request::createFromGlobals();

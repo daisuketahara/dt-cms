@@ -38,7 +38,7 @@
                 </div>
             </div>
             <div v-else-if="element.type === 'button'" class="form-group">
-                <button class="btn btn-sm btn-secondary" :data-id="element.id" :data-api="element.api" :data-url="element.url" v-on:click.prevent="customButton">{{element.label}}</button>
+                <button class="btn btn-sm btn-secondary" :data-id="element.id" :data-api="element.api" :data-url="element.url" v-on:click.prevent="customButton">{{translations[element.label] || element.label}}</button>
             </div>
             <div v-else class="form-group">
                 <label :for="'form-'+element.id">{{element.label}}</label>
@@ -66,6 +66,7 @@
                 elements: [],
                 form_data: {},
                 alert: {},
+                api: {},
                 editor: ClassicEditor, //ClassicEditor,
                 editorData: {}, //'<p>Rich-text editor content.</p>',
                 editorConfig: {
@@ -74,15 +75,28 @@
             }
         },
         created() {
-            this.elements = elements;
-            this.api = api;
-            this.translations = translations;
+            this.getElements ();
+        },
+        computed: {
+            translations () {
+                return this.$store.state.translations;
+            },
         },
         methods: {
+            getElements: function() {
+                axios.get('/api/v1'+this.$attrs.info, {headers: this.headers})
+                    .then(response => {
+                        var result = JSON.parse(response.data);
+                        this.elements = result.elements;
 
+                        if (result['settings'] != undefined) this.settings = result['settings'];
+                        else this.settings = {};
+                    })
+                    .catch(e => {
+                        this.setAlert(e, 'error');
+                    });
+            },
             customButton: function(event){
-                var api = event.target.dataset.api;
-                var url = event.target.dataset.url;
 
                 if (event.target.dataset.api) {
                     axios.get('/api/v1'+event.target.dataset.api, {headers: this.headers})

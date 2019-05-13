@@ -5,7 +5,7 @@ import '../scss/admin.scss';
 
 import Vue from 'vue';
 import router from '../router';
-import store from '../store';
+import store from '../store/admin.js';
 import axios from 'axios';
 import CKEditor from '@ckeditor/ckeditor5-vue';
 import VModal from 'vue-js-modal'
@@ -38,7 +38,7 @@ new Vue({
     },
     methods: {
         getRoutes() {
-            axios.get('/api/v1/navigation/admin-routes/', { headers: {"Authorization" : "Bearer " + this.$store.state.apikey} })
+            axios.get('/api/v1/admin-routes/', { headers: {"Authorization" : "Bearer " + this.$store.state.apikey} })
                 .then(response => {
 
                     var menu = JSON.parse(response.data)['menu'];

@@ -20,6 +20,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 use App\Entity\Permission;
+use App\Entity\PermissionGroup;
 use App\Service\LogService;
 
 class PermissionController extends Controller
@@ -166,7 +167,7 @@ class PermissionController extends Controller
     /**
     * @Route("/api/v1/permission/get/{id}/", name="api_permission_get"), methods={"GET","HEAD"})
     */
-    final public function getPermission($id, Request $request)
+    final public function getPermission(int $id, Request $request)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -202,7 +203,7 @@ class PermissionController extends Controller
     * @Route("/api/v1/permission/insert/", name="api_permission_insert", methods={"PUT"})
     * @Route("/api/v1/permission/update/{id}/", name="api_permission_update", methods={"PUT"})
     */
-    final public function edit($id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -284,7 +285,7 @@ class PermissionController extends Controller
     * @Route("/api/v1/permission/delete/", name="api_permission_delete", methods={"PUT"})
     * @Route("/api/v1/permission/delete/{id}/", name="api_permission_delete_multiple", methods={"DELETE"})
     */
-    final public function delete($id=0, LogService $log)
+    final public function delete(int $id=0, LogService $log)
     {
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
@@ -327,8 +328,8 @@ class PermissionController extends Controller
     /**
     * @Route("/api/v1/permission/populate/", name="api_permission_populate"), methods={"GET","HEAD"})
     */
-    final public function populate(TranslatorInterface $translator, LogService $log, KernelInterface $kernel) {
-
+    final public function populate(TranslatorInterface $translator, LogService $log, KernelInterface $kernel)
+    {
         $application = new Application($kernel);
         $application->setAutoExit(false);
 
@@ -388,6 +389,7 @@ class PermissionController extends Controller
                 }
 
                 $path = str_replace('/{_locale}', '', $route['path']);
+                $path = str_replace('{id}', ':id', $path);
 
                 $permission->setRouteName($route['name']);
                 $permission->setRoute($path);
@@ -405,6 +407,79 @@ class PermissionController extends Controller
             'message'=> $translator->trans('Missing permissions scan completed'),
         ];
         $json = json_encode($response);
+        return $this->json($json);
+    }
+
+    /**
+    * @Route("/api/v1/permission/fields/", name="api_permission_fields"), methods={"GET","HEAD"})
+    */
+    final public function getPermissionFields(Request $request)
+    {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $serializer = new Serializer($normalizers, $encoders);
+
+        $permissionGroups = $this->getDoctrine()
+            ->getRepository(PermissionGroup::class)
+            ->findAll();
+
+        $info = array();
+
+        if ($permissionGroups)
+        foreach($permissionGroups as $permissionGroup) {
+
+            $permissions = $this->getDoctrine()
+                ->getRepository(Permission::class)
+                ->findBy(['permissionGroup' => $permissionGroup->getId()]);
+
+            $options = array();
+            if ($permissions) {
+                foreach($permissions as $permission) {
+                    $label = $permission->getDescription();
+                    if (empty($label)) $label = $permission->getRouteName();
+                    $options[$permission->getId()] = $label;
+                }
+
+                $info[] = [
+                    'id' => 'permissions',
+                    'label' => $permissionGroup->getName(),
+                    'type' => 'checkboxes',
+                    'options' => $options,
+                    'required' => false,
+                    'editable' => true,
+                    'show_list' => false,
+                    'show_form' => true,
+                ];
+            }
+        }
+
+        $permissions = $this->getDoctrine()
+        ->getRepository(Permission::class)
+        ->findBy(['permissionGroup' => null]);
+
+        $options = array();
+        if ($permissions) {
+            foreach($permissions as $permission) {
+                $label = $permission->getDescription();
+                if (empty($label)) $label = $permission->getRouteName();
+                $options[$permission->getId()] = $label;
+            }
+
+            $info[] = [
+                'id' => 'permissions',
+                'label' => 'Other',
+                'type' => 'checkboxes',
+                'options' => $options,
+                'required' => false,
+                'editable' => true,
+                'show_list' => false,
+                'show_form' => true,
+            ];
+        }
+        $json = $serializer->serialize([
+            'success' => true,
+            'data' => $info
+        ], 'json');
         return $this->json($json);
     }
 }
