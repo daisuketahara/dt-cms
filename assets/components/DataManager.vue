@@ -32,7 +32,7 @@
                             <input type="text" :id="'filter-'+column.id" :name="'filter-'+column.id" placeholder="filter" v-on:keyup="filterlist">
                         </td>
                         <td class="text-right pr-2 pt-1">
-                            <button class="btn btn-secondary btn-sm text-white pointer ml-1" v-on:click="resetFilter">{{translations.reset_filter}}</button>
+                            <button class="btn btn-secondary btn-sm text-white pointer ml-1" v-on:click="resetFilter">{{translations.reset_filter || 'Reset filter'}}</button>
                         </td>
                     </tr>
                 </thead>
@@ -55,7 +55,7 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-3">
-                        <button class="btn btn-danger btn-sm" v-on:click="dropMultiple">{{translations.delete_selected}}</button>
+                        <button class="btn btn-danger btn-sm" v-on:click="dropMultiple">{{translations.delete_selected || 'Delete selected'}}</button>
                     </div>
                     <div class="col-9">
                         <select class="select-limit form-control form-inline" v-on:change="change_amount">
@@ -95,17 +95,17 @@
             <table class="table table-hover table-striped">
                 <tbody>
                     <tr v-for="column in columns">
-                        <th>{{translations[column.label]}}</th>
+                        <th>{{translations[column.label] || column.label}}</th>
                         <td>{{form_data[column.id]}}</td>
                     </tr>
                 </tbody>
             </table>
             <div class="row">
                 <div class="col">
-                    <button class="btn btn-primary" v-on:click.prevent="edit" :data-id="form_id">{{translations.edit}}</button>
+                    <button class="btn btn-primary" v-on:click.prevent="edit" :data-id="form_id">{{translations.edit || 'Edit'}}</button>
                 </div>
                 <div class="col text-right">
-                    <button class="btn btn-primary" v-on:click.prevent="gotoList">{{translations.back_to_list}}</button>
+                    <button class="btn btn-primary" v-on:click.prevent="gotoList">{{translations.back_to_list || 'Back to list'}}</button>
                 </div>
             </div>
         </div>
@@ -129,14 +129,14 @@
                         <div class="checkbox">
                             <label :for="'form-'+column.id">
                                 <input type="checkbox" :id="'form-'+column.id" :name="'form-'+column.id" v-model="form_data[column.id]">
-                                {{translations[column.label]}}
+                                {{translations[column.label] || column.label}}
                             </label>
                         </div>
                     </div>
                     <div v-else-if="column.type === 'checkboxes' && (column.editable || (form_id === 0 && column.show_form))" class="form-group">
                         <h4>
-                            {{translations[column.label]}}
-                            <button class="btn btn-sm btn-link" v-on:click.prevent="toggleCheckboxes" data-status="0">{{translations.select_all}}</button>
+                            {{translations[column.label] || column.label}}
+                            <button class="btn btn-sm btn-link" v-on:click.prevent="toggleCheckboxes" data-status="0">{{translations.select_all || 'Select all'}}</button>
                         </h4>
                         <div class="row">
                             <div v-for="(description, index) in column.options" class="col-sm-6 col-md-4 col-lg-3">
@@ -150,7 +150,7 @@
                         </div>
                     </div>
                     <div v-else-if="column.editable || (form_id === 0 && column.show_form)" class="form-group">
-                        <label :for="'form-'+column.id">{{translations[column.label]}}</label>
+                        <label :for="'form-'+column.id">{{translations[column.label || column.label]}}</label>
                         <input v-if="column.type === 'text'" type="text" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" v-model="form_data[column.id]">
                         <input v-else-if="column.type === 'email'" type="email" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" v-model="form_data[column.id]">
                         <vue-tel-input v-else-if="column.type === 'email'" v-model="form_data[column.id]" class="form-control" :preferredCountries="['nl', 'be', 'gb']"></vue-tel-input>
@@ -163,10 +163,10 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <button class="btn btn-primary">{{translations.submit}}</button>
+                        <button class="btn btn-primary">{{translations.submit || 'Submit'}}</button>
                     </div>
                     <div class="col text-right">
-                        <button class="btn btn-primary" v-on:click.prevent="gotoList">{{translations.back_to_list}}</button>
+                        <button class="btn btn-primary" v-on:click.prevent="gotoList">{{translations.back_to_list || 'back to list'}}</button>
                     </div>
                 </div>
             </form>
