@@ -150,7 +150,7 @@
                         </div>
                     </div>
                     <div v-else-if="column.editable || (form_id === 0 && column.show_form)" class="form-group">
-                        <label :for="'form-'+column.id">{{translations[column.label || column.label]}}</label>
+                        <label :for="'form-'+column.id">{{translations[column.label] || column.label}}</label>
                         <input v-if="column.type === 'text'" type="text" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" v-model="form_data[column.id]">
                         <input v-else-if="column.type === 'email'" type="email" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" v-model="form_data[column.id]">
                         <vue-tel-input v-else-if="column.type === 'email'" v-model="form_data[column.id]" class="form-control" :preferredCountries="['nl', 'be', 'gb']"></vue-tel-input>
