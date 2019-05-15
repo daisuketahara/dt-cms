@@ -24,13 +24,13 @@ class User implements AdvancedUserInterface, \Serializable
     private $id;
 
     /**
-    * @ORM\Column(type="string", length=255)
+    * @ORM\Column(type="string", length=255, nullable=true)
     * @Assert\NotBlank()
     */
     private $firstname;
 
     /**
-    * @ORM\Column(type="string", length=255)
+    * @ORM\Column(type="string", length=255, nullable=true)
     */
     private $lastname;
 
@@ -49,6 +49,11 @@ class User implements AdvancedUserInterface, \Serializable
     * @ORM\Column(type="string", length=60, unique=true, nullable=true)
     */
     private $phone;
+
+    /**
+    * @ORM\Column(type="string", length=60, unique=true, nullable=true)
+    */
+    private $mobile;
 
     /**
     * @ORM\ManyToOne(targetEntity="App\Entity\Locale")
@@ -235,6 +240,34 @@ class User implements AdvancedUserInterface, \Serializable
     public function setPhone($phone)
     {
         $this->phone = $phone;
+
+        return $this;
+    }
+
+    /**
+    * Set the value of Mobile
+    *
+    * @param mixed mobile
+    *
+    * @return self
+    */
+    public function setMobile($mobile)
+    {
+        $this->mobile = $mobile;
+
+        return $this;
+    }
+
+    /**
+    * Set the value of Roles
+    *
+    * @param mixed roles
+    *
+    * @return self
+    */
+    public function setRoles($roles)
+    {
+        $this->roles = $roles;
 
         return $this;
     }
@@ -445,7 +478,6 @@ class User implements AdvancedUserInterface, \Serializable
         return $this->active;
     }
 
-
     /** @see \Serializable::serialize() */
     public function serialize()
     {
@@ -469,144 +501,155 @@ class User implements AdvancedUserInterface, \Serializable
             $this->active,
             // see section on salt below
             // $this->salt
-            ) = unserialize($serialized);
-        }
-
-        /**
-        * Get the value of Information
-        *
-        * @return mixed
-        */
-        public function getInformation()
-        {
-            return $this->information;
-        }
-
-        /**
-        * Set the value of Information
-        *
-        * @param mixed information
-        *
-        * @return self
-        */
-        public function setInformation($information)
-        {
-            $this->information = $information;
-
-            return $this;
-        }
-
-
-        /**
-        * Get the value of Note
-        *
-        * @return mixed
-        */
-        public function getNote()
-        {
-            return $this->note;
-        }
-
-        /**
-        * Set the value of Note
-        *
-        * @param mixed note
-        *
-        * @return self
-        */
-        public function setNote($note)
-        {
-            $this->note = $note;
-
-            return $this;
-        }
-
-        /**
-        * Get the value of Permissions
-        *
-        * @return mixed
-        */
-        public function getPermissions()
-        {
-            return $this->permissions;
-        }
-
-        /**
-        * Set the value of Permissions
-        *
-        * @param mixed permissions
-        *
-        * @return self
-        */
-        public function setPermissions($permissions)
-        {
-            $this->permissions = $permissions;
-
-            return $this;
-        }
-
-        /**
-        * @param Permission $permission
-        */
-        public function addPermission(Permission $permission)
-        {
-            if ($this->permissions->contains($permission)) {
-                return;
-            }
-            $this->permissions->add($permission);
-        }
-
-        /**
-        * @param Permission $permission
-        */
-        public function removePermission(Permission $permission)
-        {
-            if (!$this->permissions->contains($permission)) {
-                return;
-            }
-            $this->permissions->removeElement($permission);
-        }
-
-        /**
-        * Get the value of roles
-        *
-        * @return mixed
-        */
-        public function getRoles()
-        {
-            //return $this->roles;
-            return array('ROLE_ADMIN', 'ROLE_SUPER_ADMIN');
-        }
-
-        /**
-        * Get the value of roles
-        *
-        * @return mixed
-        */
-        public function getUserRoles()
-        {
-            return $this->roles;
-        }
-
-        /**
-        * @param Role $role
-        */
-        public function addRole(Role $role)
-        {
-            if ($this->roles->contains($role)) {
-                return;
-            }
-            $this->roles->add($role);
-        }
-
-        /**
-        * @param Role $role
-        */
-        public function removeRole(Role $role)
-        {
-            if (!$this->roles->contains($role)) {
-                return;
-            }
-            $this->roles->removeElement($role);
-        }
+        ) = unserialize($serialized);
     }
+
+    /**
+    * Get the value of Information
+    *
+    * @return mixed
+    */
+    public function getInformation()
+    {
+        return $this->information;
+    }
+
+    /**
+    * Set the value of Information
+    *
+    * @param mixed information
+    *
+    * @return self
+    */
+    public function setInformation($information)
+    {
+        $this->information = $information;
+
+        return $this;
+    }
+
+
+    /**
+    * Get the value of Note
+    *
+    * @return mixed
+    */
+    public function getNote()
+    {
+        return $this->note;
+    }
+
+    /**
+    * Set the value of Note
+    *
+    * @param mixed note
+    *
+    * @return self
+    */
+    public function setNote($note)
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    /**
+    * Get the value of Permissions
+    *
+    * @return mixed
+    */
+    public function getPermissions()
+    {
+        return $this->permissions;
+    }
+
+    /**
+    * Set the value of Permissions
+    *
+    * @param mixed permissions
+    *
+    * @return self
+    */
+    public function setPermissions($permissions)
+    {
+        $this->permissions = $permissions;
+
+        return $this;
+    }
+
+    /**
+    * @param Permission $permission
+    */
+    public function addPermission(Permission $permission)
+    {
+        if ($this->permissions->contains($permission)) {
+            return;
+        }
+        $this->permissions->add($permission);
+    }
+
+    /**
+    * @param Permission $permission
+    */
+    public function removePermission(Permission $permission)
+    {
+        if (!$this->permissions->contains($permission)) {
+            return;
+        }
+        $this->permissions->removeElement($permission);
+    }
+
+    /**
+    * Get the value of roles
+    *
+    * @return mixed
+    */
+    public function getRoles()
+    {
+        //return $this->roles;
+        return array('ROLE_ADMIN', 'ROLE_SUPER_ADMIN');
+    }
+
+    /**
+    * Get the value of roles
+    *
+    * @return mixed
+    */
+    public function getUserRoles()
+    {
+        return $this->roles;
+    }
+
+    /**
+    * @param Role $role
+    */
+    public function addRole(Role $role)
+    {
+        if ($this->roles->contains($role)) {
+            return;
+        }
+        $this->roles->add($role);
+    }
+
+    /**
+    * @param Role $role
+    */
+    public function removeRole(Role $role)
+    {
+        if (!$this->roles->contains($role)) {
+            return;
+        }
+        $this->roles->removeElement($role);
+    }
+
+    /**
+    * Get the value of Mobile
+    *
+    * @return mixed
+    */
+    public function getMobile()
+    {
+        return $this->mobile;
+    }
+
+}
