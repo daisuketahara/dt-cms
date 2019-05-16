@@ -311,8 +311,11 @@
                         let column = this.columns[i]['id'];
                         let value = document.getElementById('filter-' + column).value;
 
+                        let alias = '';
+                        if (this.columns[i].alias != undefined) alias = this.columns[i].alias + '.';
+
                         if (i !== 0) this.filter += '&';
-                        this.filter += column + '=' + encodeURI(value);
+                        this.filter += alias + column + '=' + encodeURI(value);
                     }
                 }
 
@@ -620,6 +623,8 @@
     text-align: left;
 }
 .data-manager-table {
+
+    font-size: 0.9rem;
 
     thead {
 
