@@ -40,6 +40,7 @@
                     <tr v-for="item in data" :key="item.id" :id="'row-'+item.id">
                         <td><input type="checkbox" name="select-delete[]" class="select-delete" :value="item.id" v-on:click="markToDelete"></td>
                         <td v-for="column in columns" v-if="column.show_list == true">
+                            <span v-if="typeof column.object !== 'undefined' && typeof column.object2 !== 'undefined'">{{item[column.object][column.object2][column.id]}}</span>
                             <span v-if="typeof column.object !== 'undefined'">{{item[column.object][column.id]}}</span>
                             <span v-else>{{item[column.id]}}</span>
                         </td>
