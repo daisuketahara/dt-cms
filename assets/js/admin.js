@@ -9,6 +9,7 @@ import store from '../store/admin.js';
 import axios from 'axios';
 import CKEditor from '@ckeditor/ckeditor5-vue';
 import VModal from 'vue-js-modal'
+import Paginate from 'vuejs-paginate'
 
 import Admin from '../app/Admin';
 import Editor from '../components/Editor';
@@ -22,6 +23,7 @@ import Template from '../components/Template';
 
 Vue.use(CKEditor);
 Vue.use(VModal, { dialog: true });
+Vue.component('paginate', Paginate);
 
 Vue.config.productionTip = false;
 

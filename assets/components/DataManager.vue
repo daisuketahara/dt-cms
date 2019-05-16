@@ -65,21 +65,19 @@
                             <option value="100">100</option>
                             <option value="250">250</option>
                         </select>
-                        <nav v-if="pages > 1" aria-label="List navigation">
-                            <ul class="pagination justify-content-end">
-                                <li v-if="offset > 0" class="page-item">
-                                    <a class="page-link" href="#" aria-label="Previous" data-offset="1" v-on:click="gotopage">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-                                <li v-for="n in pages" :class="{ 'page-item': true, 'active' : n == (offset+1)}"><a class="page-link" href="#" :data-offset="n" v-on:click="gotopage">{{n}}</a></li>
-                                <li v-if="offset < pages-1">
-                                    <a class="page-link" href="#" aria-label="Next" :data-offset="pages" v-on:click="gotopage">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <paginate
+                            :page-count="pages"
+                            :click-handler="gotopage"
+                            :prev-text="translations.previous || 'Previous'"
+                            :next-text="translations.next || 'Next'"
+                            :container-class="'list-inline float-right'"
+                            :page-class="'list-inline-item'"
+                            :page-link-class="'btn btn-secondary'"
+                            :prev-class="'list-inline-item'"
+                            :prev-link-class="'btn btn-secondary'"
+                            :next-class="'list-inline-item'"
+                            :next-link-class="'btn btn-secondary'">
+                        </paginate>
                     </div>
                 </div>
                 <div v-if="buttons.length > 0">
@@ -329,8 +327,8 @@
                 }
                 this.list();
             },
-            gotopage: function(event) {
-                this.offset = event.target.dataset.offset - 1;
+            gotopage: function(page) {
+                this.offset = page - 1;
                 this.list();
             },
             change_amount: function(event) {
