@@ -35,6 +35,11 @@ class User implements AdvancedUserInterface, \Serializable
     private $lastname;
 
     /**
+    * @ORM\Column(type="string", length=1)
+    */
+    private $gender;
+
+    /**
     * @ORM\Column(type="string", length=60, unique=true)
     */
     private $email;
@@ -207,6 +212,30 @@ class User implements AdvancedUserInterface, \Serializable
     {
         $this->lastname = $lastname;
 
+        return $this;
+    }
+
+    /**
+     * Get the value of Gender
+     *
+     * @return mixed
+     */
+    public function getGender()
+    {
+        return $this->gender;
+    }
+
+    /**
+     * Set the value of Gender
+     *
+     * @param mixed gender
+     *
+     * @return self
+     */
+    public function setGender($gender)
+    {
+        $this->gender = $gender;
+ 
         return $this;
     }
 
@@ -651,5 +680,4 @@ class User implements AdvancedUserInterface, \Serializable
     {
         return $this->mobile;
     }
-
 }
