@@ -46,12 +46,12 @@ class User implements AdvancedUserInterface, \Serializable
     private $password;
 
     /**
-    * @ORM\Column(type="string", length=60, unique=true, nullable=true)
+    * @ORM\Column(type="string", length=60, nullable=true)
     */
     private $phone;
 
     /**
-    * @ORM\Column(type="string", length=60, unique=true, nullable=true)
+    * @ORM\Column(type="string", length=60, nullable=true)
     */
     private $mobile;
 
