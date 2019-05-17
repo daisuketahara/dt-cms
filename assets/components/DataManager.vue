@@ -267,11 +267,6 @@
             },
             list: function() {
 
-                var headers = {
-                    'Content-Type': 'application/json;charset=UTF-8',
-                    "Authorization" : "Bearer " + this.$store.state.apikey
-                }
-
                 let params = {};
                 params.offset = this.offset * this.limit;
                 params.limit = this.limit;
@@ -280,7 +275,7 @@
                 params.filter = this.filter;
                 params.locale = this.$store.state.locale_id;
 
-                axios.post('/api/v1'+this.api.list, params, {headers: headers})
+                axios.post('/api/v1'+this.api.list, params, {headers: this.headers})
                     .then(response => {
                         this.data = JSON.parse(response.data)['data'];
                         this.total = parseInt(JSON.parse(response.data)['total']);
