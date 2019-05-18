@@ -17,11 +17,6 @@ class Vat
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Country")
-     */
-    protected $country;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     protected $name;
