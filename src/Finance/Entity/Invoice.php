@@ -28,7 +28,7 @@ class Invoice
     protected $invoiceDate;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Finance\Entity\InvoiceLines")
+     * @ORM\ManyToMany(targetEntity="App\Finance\Entity\InvoiceLine")
      */
     protected $invoiceLines;
 
