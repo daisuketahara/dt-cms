@@ -35,7 +35,7 @@ class User implements AdvancedUserInterface, \Serializable
     private $lastname;
 
     /**
-    * @ORM\Column(type="string", length=1)
+    * @ORM\Column(type="string", length=1, nullable=true)
     */
     private $gender;
 
@@ -235,7 +235,7 @@ class User implements AdvancedUserInterface, \Serializable
     public function setGender($gender)
     {
         $this->gender = $gender;
- 
+
         return $this;
     }
 
