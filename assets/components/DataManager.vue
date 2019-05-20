@@ -15,7 +15,7 @@
                         <th width="30"><input type="checkbox" v-on:click="selectAllDelete"></th>
                         <th v-for="column in columns" v-if="column.show_list == true" :data-column="column.id">
                             {{translations[column.label] || column.label}}
-                            <a class="table-sort" v-on:click="sortlist" :data-id="column.id" data-dir="asc">
+                            <a class="table-sort" v-on:click="sortlist" :data-id="column.id" :data-alias="column.alias" data-dir="asc">
                                 <i v-if="column.id === sort.id && sort.dir === 'desc'" class="fa fa-sort-down" aria-hidden="true"></i>
                                 <i v-else-if="column.id === sort.id && sort.dir === 'asc'" class="fa fa-sort-up" aria-hidden="true"></i>
                                 <i v-else class="fa fa-sort" aria-hidden="true"></i>
