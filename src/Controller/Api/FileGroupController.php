@@ -17,6 +17,14 @@ use App\Service\LogService;
 
 class FileGroupController extends Controller
 {
+    private $serializer;
+
+    public function __construct() {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $this->serializer = new Serializer($normalizers, $encoders);
+    }
+
     /**
     * @Route("/api/v1/filegroup/info/", name="api_filegroup_info"), methods={"GET","HEAD"})
     */
@@ -90,16 +98,12 @@ class FileGroupController extends Controller
         $qb->setFirstResult($offset);
         $filegroups = $qb->getQuery()->getResult();
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $json = array(
             'total' => $count,
             'data' => $filegroups,
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -109,10 +113,6 @@ class FileGroupController extends Controller
     */
     final public function getFilegroup(int $id, Request $request)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         if (!empty($id)) {
             $filegroup = $this->getDoctrine()
             ->getRepository(FileGroup::class)
@@ -135,7 +135,7 @@ class FileGroupController extends Controller
             ];
         }
 
-        $json = $serializer->serialize($response, 'json');
+        $json = $this->serializer->serialize($response, 'json');
         return $this->json($json);
     }
 
@@ -145,9 +145,6 @@ class FileGroupController extends Controller
     */
     final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
         $logMessage = '';
         $logComment = 'Insert';
 
@@ -165,7 +162,7 @@ class FileGroupController extends Controller
 
             } else {
                 $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $serializer->serialize($filegroup, 'json');
+                $logMessage .= $this->serializer->serialize($filegroup, 'json');
                 $logMessage .= '<br><br>';
                 $logComment = 'Update';
                 $message = 'Filegroup has been updated';
@@ -194,7 +191,7 @@ class FileGroupController extends Controller
             }
 
             $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $serializer->serialize($filegroup, 'json');
+            $logMessage .= $this->serializer->serialize($filegroup, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($filegroup);
@@ -220,10 +217,6 @@ class FileGroupController extends Controller
     */
     final public function delete(int $id=0, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
         elseif (!empty($id)) $toRemove = array($id);
@@ -236,7 +229,7 @@ class FileGroupController extends Controller
 
                 if ($filegroup) {
                     $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $serializer->serialize($filegroup, 'json');
+                    $logMessage .= $this->serializer->serialize($filegroup, 'json');
 
                     $log->add('Filegroup', $id, $logMessage, 'Delete');
 

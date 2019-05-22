@@ -21,6 +21,13 @@ use App\Service\LogService;
 
 class FileController extends Controller
 {
+    private $serializer;
+
+    public function __construct() {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $this->serializer = new Serializer($normalizers, $encoders);
+    }
 
     /**
     * @Route("/api/v1/file/list/", name="api_file_list"))
@@ -60,16 +67,12 @@ class FileController extends Controller
             ->findBy($where, array($sort_column => $sort_direction), $limit, $offset);
         }
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $json = array(
             'total' => 6,
             'data' => $files
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -101,11 +104,8 @@ class FileController extends Controller
         $em = $this->getDoctrine()->getManager();
         $file = $em->getRepository(File::class)->find($id);
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
         $logMessage = '<i>Data:</i><br>';
-        $logMessage .= $serializer->serialize($file, 'json');
+        $logMessage .= $this->serializer->serialize($file, 'json');
 
         $log->add('File', $id, $logMessage, 'Delete');
 

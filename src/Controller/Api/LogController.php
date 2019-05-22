@@ -17,6 +17,14 @@ use App\Service\LogService;
 
 class LogController extends Controller
 {
+    private $serializer;
+
+    public function __construct() {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $this->serializer = new Serializer($normalizers, $encoders);
+    }
+
     /**
     * @Route("/api/v1/log/info/", name="api_log_info"), methods={"GET","HEAD"})
     */
@@ -142,16 +150,12 @@ class LogController extends Controller
         $qb->setFirstResult($offset);
         $logs = $qb->getQuery()->getResult();
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $json = array(
             'total' => $count,
             'data' => $logs,
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -161,10 +165,6 @@ class LogController extends Controller
     */
     final public function getLog($id, Request $request)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         if (!empty($id)) {
             $log = $this->getDoctrine()
             ->getRepository(Log::class)
@@ -187,7 +187,7 @@ class LogController extends Controller
             ];
         }
 
-        $json = $serializer->serialize($response, 'json');
+        $json = $this->serializer->serialize($response, 'json');
         return $this->json($json);
     }
 
@@ -197,10 +197,6 @@ class LogController extends Controller
     */
     final public function delete($id=0)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
         elseif (!empty($id)) $toRemove = array($id);

@@ -25,6 +25,14 @@ use App\Service\LogService;
 
 class AppTranslationController extends Controller
 {
+    private $serializer;
+
+    public function __construct() {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $this->serializer = new Serializer($normalizers, $encoders);
+    }
+
     /**
     * @Route("/api/v1/apptranslation/info/", name="api_apptranslation_info"), methods={"GET","HEAD"})
     */
@@ -133,16 +141,12 @@ class AppTranslationController extends Controller
         ->getRepository(AppTranslation::class)
         ->findTranslationsList($where, array($sort_column, $sort_direction), $limit, $offset);
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $json = array(
             'total' => $count,
             'data' => $apptranslations,
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -152,10 +156,6 @@ class AppTranslationController extends Controller
     */
     final public function getAppTranslation(int $id, Request $request)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         if (!empty($id)) {
             $apptranslation = $this->getDoctrine()
             ->getRepository(AppTranslation::class)
@@ -197,7 +197,7 @@ class AppTranslationController extends Controller
             ];
         }
 
-        $json = $serializer->serialize($response, 'json');
+        $json = $this->serializer->serialize($response, 'json');
         return $this->json($json);
     }
 
@@ -207,9 +207,6 @@ class AppTranslationController extends Controller
     */
     final public function update(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
         $logMessage = '';
         $logComment = 'Insert';
 
@@ -227,7 +224,7 @@ class AppTranslationController extends Controller
 
             } else {
                 $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $serializer->serialize($apptranslation, 'json');
+                $logMessage .= $this->serializer->serialize($apptranslation, 'json');
                 $logMessage .= '<br><br>';
                 $logComment = 'Update';
                 $message = 'AppTranslation has been updated';
@@ -289,7 +286,7 @@ class AppTranslationController extends Controller
             }
 
             $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $serializer->serialize($data, 'json');
+            $logMessage .= $this->serializer->serialize($data, 'json');
             $log->add('AppTranslation', $id, $logMessage, $logComment);
 
             $response = [
@@ -308,10 +305,6 @@ class AppTranslationController extends Controller
     */
     final public function delete(int $id=0, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
         elseif (!empty($id)) $toRemove = array($id);
@@ -325,7 +318,7 @@ class AppTranslationController extends Controller
                 if ($apptranslation) {
 
                     $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $serializer->serialize($apptranslation, 'json');
+                    $logMessage .= $this->serializer->serialize($apptranslation, 'json');
 
                     $log->add('AppTranslation', $id, $logMessage, 'Delete');
 

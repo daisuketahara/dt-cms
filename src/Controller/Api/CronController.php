@@ -17,6 +17,14 @@ use App\Service\LogService;
 
 class CronController extends Controller
 {
+    private $serializer;
+
+    public function __construct() {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $this->serializer = new Serializer($normalizers, $encoders);
+    }
+
     /**
     * @Route("/api/v1/cron/info/", name="api_cron_info"), methods={"GET","HEAD"})
     */
@@ -180,16 +188,12 @@ class CronController extends Controller
         $qb->setFirstResult($offset);
         $crons = $qb->getQuery()->getResult();
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $json = array(
             'total' => $count,
             'data' => $crons,
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -199,10 +203,6 @@ class CronController extends Controller
     */
     final public function getCron(int $id, Request $request)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         if (!empty($id)) {
             $cron = $this->getDoctrine()
             ->getRepository(Cron::class)
@@ -225,7 +225,7 @@ class CronController extends Controller
             ];
         }
 
-        $json = $serializer->serialize($response, 'json');
+        $json = $this->serializer->serialize($response, 'json');
         return $this->json($json);
     }
 
@@ -235,9 +235,6 @@ class CronController extends Controller
     */
     final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
         $logMessage = '';
         $logComment = 'Insert';
 
@@ -255,7 +252,7 @@ class CronController extends Controller
 
             } else {
                 $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $serializer->serialize($cron, 'json');
+                $logMessage .= $this->serializer->serialize($cron, 'json');
                 $logMessage .= '<br><br>';
                 $logComment = 'Update';
                 $message = 'Cron has been updated';
@@ -305,7 +302,7 @@ class CronController extends Controller
             }
 
             $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $serializer->serialize($cron, 'json');
+            $logMessage .= $this->serializer->serialize($cron, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($cron);
@@ -331,10 +328,6 @@ class CronController extends Controller
     */
     final public function delete(int $id=0, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
         elseif (!empty($id)) $toRemove = array($id);
@@ -347,7 +340,7 @@ class CronController extends Controller
 
                 if ($cron) {
                     $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $serializer->serialize($cron, 'json');
+                    $logMessage .= $this->serializer->serialize($cron, 'json');
 
                     $log->add('Cron', $id, $logMessage, 'Delete');
 

@@ -17,6 +17,14 @@ use App\Service\LogService;
 
 class LocaleController extends Controller
 {
+    private $serializer;
+
+    public function __construct() {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $this->serializer = new Serializer($normalizers, $encoders);
+    }
+
     /**
     * @Route("/api/v1/locale/info/", name="api_locale_info"), methods={"GET","HEAD"})
     */
@@ -135,16 +143,12 @@ class LocaleController extends Controller
         $qb->setFirstResult($offset);
         $locales = $qb->getQuery()->getResult();
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $json = array(
             'total' => $count,
             'data' => $locales,
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -154,10 +158,6 @@ class LocaleController extends Controller
     */
     final public function getLocale(int $id, Request $request)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         if (!empty($id)) {
             $locale = $this->getDoctrine()
             ->getRepository(Locale::class)
@@ -180,7 +180,7 @@ class LocaleController extends Controller
             ];
         }
 
-        $json = $serializer->serialize($response, 'json');
+        $json = $this->serializer->serialize($response, 'json');
         return $this->json($json);
     }
 
@@ -190,9 +190,6 @@ class LocaleController extends Controller
     */
     final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
         $logMessage = '';
         $logComment = 'Insert';
 
@@ -210,7 +207,7 @@ class LocaleController extends Controller
 
             } else {
                 $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $serializer->serialize($locale, 'json');
+                $logMessage .= $this->serializer->serialize($locale, 'json');
                 $logMessage .= '<br><br>';
                 $logComment = 'Update';
                 $message = 'Locale has been updated';
@@ -254,7 +251,7 @@ class LocaleController extends Controller
             }
 
             $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $serializer->serialize($locale, 'json');
+            $logMessage .= $this->serializer->serialize($locale, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($locale);
@@ -280,10 +277,6 @@ class LocaleController extends Controller
     */
     final public function delete(int $id=0, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
         elseif (!empty($id)) $toRemove = array($id);
@@ -296,7 +289,7 @@ class LocaleController extends Controller
 
                 if ($locale) {
                     $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $serializer->serialize($locale, 'json');
+                    $logMessage .= $this->serializer->serialize($locale, 'json');
 
                     $log->add('Locale', $id, $logMessage, 'Delete');
 

@@ -22,6 +22,14 @@ use App\Service\SettingService;
 
 class MailController extends Controller
 {
+    private $serializer;
+
+    public function __construct() {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $this->serializer = new Serializer($normalizers, $encoders);
+    }
+
     /**
     * @Route("/api/v1/mail/queue/info/", name="api_mail_queue_info"), methods={"GET","HEAD"})
     */
@@ -138,16 +146,12 @@ class MailController extends Controller
         $qb->setFirstResult($offset);
         $mailqueues = $qb->getQuery()->getResult();
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $json = array(
             'total' => $count,
             'data' => $mailqueues,
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -157,10 +161,6 @@ class MailController extends Controller
     */
     final public function getMailQueue(int $id, Request $request)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         if (!empty($id)) {
             $mailqueue = $this->getDoctrine()
             ->getRepository(MailQueue::class)
@@ -183,7 +183,7 @@ class MailController extends Controller
             ];
         }
 
-        $json = $serializer->serialize($response, 'json');
+        $json = $this->serializer->serialize($response, 'json');
         return $this->json($json);
     }
 
@@ -193,10 +193,6 @@ class MailController extends Controller
     */
     final public function deleteFromQueue(int $id=0, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
         elseif (!empty($id)) $toRemove = array($id);
@@ -209,7 +205,7 @@ class MailController extends Controller
 
                 if ($mailqueue) {
                     $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $serializer->serialize($mailqueue, 'json');
+                    $logMessage .= $this->serializer->serialize($mailqueue, 'json');
 
                     $log->add('MailQueue', $id, $logMessage, 'Delete');
 
@@ -341,16 +337,12 @@ class MailController extends Controller
         $qb->setFirstResult($offset);
         $mailTemplates = $qb->getQuery()->getResult();
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $json = array(
             'total' => $count,
             'data' => $mailTemplates,
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -360,10 +352,6 @@ class MailController extends Controller
     */
     final public function getTemplate(int $id, Request $request)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['locale'])) {
             $localeId = $params['locale'];
@@ -404,7 +392,7 @@ class MailController extends Controller
             ];
         }
 
-        $json = $serializer->serialize($response, 'json');
+        $json = $this->serializer->serialize($response, 'json');
         return $this->json($json);
     }
 
@@ -414,9 +402,6 @@ class MailController extends Controller
     */
     final public function editTemplate(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
         $logMessage = '';
         $logComment = 'Insert';
 
@@ -458,7 +443,7 @@ class MailController extends Controller
             } else {
 
                 $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $serializer->serialize($mailTemplate, 'json');
+                $logMessage .= $this->serializer->serialize($mailTemplate, 'json');
                 $logMessage .= '<br><br>';
                 $logComment = 'Update';
                 $message = 'MailTemplate has been updated';
@@ -505,7 +490,7 @@ class MailController extends Controller
             }
 
             $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $serializer->serialize($mailTemplate, 'json');
+            $logMessage .= $this->serializer->serialize($mailTemplate, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($mailTemplate);
@@ -531,10 +516,6 @@ class MailController extends Controller
     */
     final public function deleteTemplate(int $id=0, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
         elseif (!empty($id)) $toRemove = array($id);
@@ -547,7 +528,7 @@ class MailController extends Controller
 
                 if ($mailTemplate) {
                     $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $serializer->serialize($mailTemplate, 'json');
+                    $logMessage .= $this->serializer->serialize($mailTemplate, 'json');
 
                     $log->add('MailTemplate', $id, $logMessage, 'Delete');
 

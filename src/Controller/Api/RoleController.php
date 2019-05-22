@@ -21,6 +21,14 @@ use App\Service\LogService;
 
 class RoleController extends Controller
 {
+    private $serializer;
+
+    public function __construct() {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $this->serializer = new Serializer($normalizers, $encoders);
+    }
+
     /**
     * @Route("/api/v1/user/role/info/", name="api_user_role_info"), methods={"GET","HEAD"})
     */
@@ -169,16 +177,12 @@ class RoleController extends Controller
         $qb->setFirstResult($offset);
         $roles = $qb->getQuery()->getResult();
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $json = array(
             'total' => $count,
             'data' => $roles,
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -188,10 +192,6 @@ class RoleController extends Controller
     */
     final public function getRole(int $id, Request $request)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         if (!empty($id)) {
             $role = $this->getDoctrine()
             ->getRepository(Role::class)
@@ -214,7 +214,7 @@ class RoleController extends Controller
             ];
         }
 
-        $json = $serializer->serialize($response, 'json');
+        $json = $this->serializer->serialize($response, 'json');
         return $this->json($json);
     }
 
@@ -224,9 +224,6 @@ class RoleController extends Controller
     */
     final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
         $logMessage = '';
         $logComment = 'Insert';
 
@@ -244,7 +241,7 @@ class RoleController extends Controller
 
             } else {
                 $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $serializer->serialize($role, 'json');
+                $logMessage .= $this->serializer->serialize($role, 'json');
                 $logMessage .= '<br><br>';
                 $logComment = 'Update';
                 $message = 'Role has been updated';
@@ -291,7 +288,7 @@ class RoleController extends Controller
             }
 
             $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $serializer->serialize($role, 'json');
+            $logMessage .= $this->serializer->serialize($role, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($role);
@@ -318,10 +315,6 @@ class RoleController extends Controller
     */
     final public function delete(int $id=0, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
         elseif (!empty($id)) $toRemove = array($id);
@@ -334,7 +327,7 @@ class RoleController extends Controller
 
                 if ($role) {
                     $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $serializer->serialize($role, 'json');
+                    $logMessage .= $this->serializer->serialize($role, 'json');
 
                     $log->add('Role', $id, $logMessage, 'Delete');
 

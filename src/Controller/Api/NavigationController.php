@@ -23,6 +23,14 @@ use App\Service\LogService;
 
 class NavigationController extends Controller
 {
+    private $serializer;
+
+    public function __construct() {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $this->serializer = new Serializer($normalizers, $encoders);
+    }
+
     /**
     * @Route("/api/v1/navigation/list/", name="api_navigation_menu_list"), methods={"GET","HEAD"})
     */
@@ -32,14 +40,14 @@ class NavigationController extends Controller
 
         $encoders = array(new XmlEncoder(), new JsonEncoder());
         $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
+        $this->serializer = new Serializer($normalizers, $encoders);
 
         $json = array(
             'success' => true,
             'data' => $menus,
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -50,17 +58,12 @@ class NavigationController extends Controller
     final public function getMenuItems($id, MenuService $menuService)
     {
         $items = $menuService->getMenu($id, false);
-
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $json = array(
             'success' => true,
             'data' => $items,
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -243,10 +246,6 @@ class NavigationController extends Controller
         $pages = $this->getDoctrine()->getRepository(Page::class)->getUserPages($email);
         $permissions = $this->getDoctrine()->getRepository(Permission::class)->getUserPermissions($email);
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $json = array(
             'success' => true,
             'menu' => $menu,
@@ -254,7 +253,7 @@ class NavigationController extends Controller
             'permissions' => $permissions,
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -270,17 +269,13 @@ class NavigationController extends Controller
         $email = $this->getUser()->getUsername();
         $permissions = $this->getDoctrine()->getRepository(Permission::class)->getUserPermissions($email);
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $json = array(
             'success' => true,
             'menu' => $menu,
             'permissions' => $permissions,
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -290,10 +285,6 @@ class NavigationController extends Controller
     */
     final public function getAllRoutes(MenuService $menuService)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $pages = $this->getDoctrine()->getRepository(Permission::class)->getAllNavigationRoutesByType('page');
         $app = $this->getDoctrine()->getRepository(Permission::class)->getAllNavigationRoutesByType('app');
         $admin = $this->getDoctrine()->getRepository(Permission::class)->getAllNavigationRoutesByType('admin');
@@ -305,7 +296,7 @@ class NavigationController extends Controller
             'admin' => $admin,
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
         return $this->json($json);
     }
 }

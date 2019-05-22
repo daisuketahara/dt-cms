@@ -17,6 +17,14 @@ use App\Service\LogService;
 
 class CountryController extends Controller
 {
+    private $serializer;
+
+    public function __construct() {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $this->serializer = new Serializer($normalizers, $encoders);
+    }
+
     /**
     * @Route("/api/v1/country/info/", name="api_country_info"), methods={"GET","HEAD"})
     */
@@ -90,16 +98,12 @@ class CountryController extends Controller
         $qb->setFirstResult($offset);
         $countries = $qb->getQuery()->getResult();
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $json = array(
             'total' => $count,
             'data' => $countries,
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -109,10 +113,6 @@ class CountryController extends Controller
     */
     final public function getCountry(int $id, Request $request)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         if (!empty($id)) {
             $country = $this->getDoctrine()
             ->getRepository(Country::class)
@@ -135,7 +135,7 @@ class CountryController extends Controller
             ];
         }
 
-        $json = $serializer->serialize($response, 'json');
+        $json = $this->serializer->serialize($response, 'json');
         return $this->json($json);
     }
 
@@ -145,9 +145,6 @@ class CountryController extends Controller
     */
     final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
         $logMessage = '';
         $logComment = 'Insert';
 
@@ -165,7 +162,7 @@ class CountryController extends Controller
 
             } else {
                 $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $serializer->serialize($country, 'json');
+                $logMessage .= $this->serializer->serialize($country, 'json');
                 $logMessage .= '<br><br>';
                 $logComment = 'Update';
                 $message = 'Country has been updated';
@@ -194,7 +191,7 @@ class CountryController extends Controller
             }
 
             $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $serializer->serialize($country, 'json');
+            $logMessage .= $this->serializer->serialize($country, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($country);
@@ -220,10 +217,6 @@ class CountryController extends Controller
     */
     final public function delete(int $id=0, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
         elseif (!empty($id)) $toRemove = array($id);
@@ -236,7 +229,7 @@ class CountryController extends Controller
 
                 if ($country) {
                     $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $serializer->serialize($country, 'json');
+                    $logMessage .= $this->serializer->serialize($country, 'json');
 
                     $log->add('Country', $id, $logMessage, 'Delete');
 

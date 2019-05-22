@@ -18,6 +18,14 @@ use App\Service\CacheService;
 
 class SettingController extends Controller
 {
+    private $serializer;
+
+    public function __construct() {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $this->serializer = new Serializer($normalizers, $encoders);
+    }
+
     /**
     * @Route("/api/v1/setting/info/", name="api_setting_info"), methods={"GET","HEAD"})
     */
@@ -100,16 +108,12 @@ class SettingController extends Controller
         $qb->setFirstResult($offset);
         $settings = $qb->getQuery()->getResult();
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $json = array(
             'total' => $count,
             'data' => $settings,
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -119,10 +123,6 @@ class SettingController extends Controller
     */
     final public function getSetting(int $id, Request $request)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         if (!empty($id)) {
             $setting = $this->getDoctrine()
             ->getRepository(Setting::class)
@@ -145,7 +145,7 @@ class SettingController extends Controller
             ];
         }
 
-        $json = $serializer->serialize($response, 'json');
+        $json = $this->serializer->serialize($response, 'json');
         return $this->json($json);
     }
 
@@ -155,9 +155,6 @@ class SettingController extends Controller
     */
     final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
         $logMessage = '';
         $logComment = 'Insert';
 
@@ -175,7 +172,7 @@ class SettingController extends Controller
 
             } else {
                 $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $serializer->serialize($setting, 'json');
+                $logMessage .= $this->serializer->serialize($setting, 'json');
                 $logMessage .= '<br><br>';
                 $logComment = 'Update';
                 $message = 'Setting has been updated';
@@ -207,7 +204,7 @@ class SettingController extends Controller
             }
 
             $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $serializer->serialize($setting, 'json');
+            $logMessage .= $this->serializer->serialize($setting, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($setting);
@@ -236,10 +233,6 @@ class SettingController extends Controller
     */
     final public function delete(int $id=0, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
         elseif (!empty($id)) $toRemove = array($id);
@@ -252,7 +245,7 @@ class SettingController extends Controller
 
                 if ($setting) {
                     $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $serializer->serialize($setting, 'json');
+                    $logMessage .= $this->serializer->serialize($setting, 'json');
 
                     $log->add('Setting', $id, $logMessage, 'Delete');
 

@@ -17,6 +17,14 @@ use App\Service\LogService;
 
 class RedirectController extends Controller
 {
+    private $serializer;
+
+    public function __construct() {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $this->serializer = new Serializer($normalizers, $encoders);
+    }
+
     /**
     * @Route("/api/v1/redirect/info/", name="api_redirect_info"), methods={"GET","HEAD"})
     */
@@ -117,16 +125,12 @@ class RedirectController extends Controller
         $qb->setFirstResult($offset);
         $redirects = $qb->getQuery()->getResult();
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $json = array(
             'total' => $count,
             'data' => $redirects,
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -136,10 +140,6 @@ class RedirectController extends Controller
     */
     final public function getRedirect(int $id, Request $request)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         if (!empty($id)) {
             $redirect = $this->getDoctrine()
             ->getRepository(Redirect::class)
@@ -162,7 +162,7 @@ class RedirectController extends Controller
             ];
         }
 
-        $json = $serializer->serialize($response, 'json');
+        $json = $this->serializer->serialize($response, 'json');
         return $this->json($json);
     }
 
@@ -172,9 +172,6 @@ class RedirectController extends Controller
     */
     final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
         $logMessage = '';
         $logComment = 'Insert';
 
@@ -192,7 +189,7 @@ class RedirectController extends Controller
 
             } else {
                 $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $serializer->serialize($redirect, 'json');
+                $logMessage .= $this->serializer->serialize($redirect, 'json');
                 $logMessage .= '<br><br>';
                 $logComment = 'Update';
                 $message = 'Redirect has been updated';
@@ -230,7 +227,7 @@ class RedirectController extends Controller
             }
 
             $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $serializer->serialize($redirect, 'json');
+            $logMessage .= $this->serializer->serialize($redirect, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($redirect);
@@ -256,10 +253,6 @@ class RedirectController extends Controller
     */
     final public function delete(int $id=0, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
         elseif (!empty($id)) $toRemove = array($id);
@@ -272,7 +265,7 @@ class RedirectController extends Controller
 
                 if ($redirect) {
                     $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $serializer->serialize($redirect, 'json');
+                    $logMessage .= $this->serializer->serialize($redirect, 'json');
 
                     $log->add('Redirect', $id, $logMessage, 'Delete');
 

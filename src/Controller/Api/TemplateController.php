@@ -19,6 +19,13 @@ use App\Service\LogService;
 
 class TemplateController extends Controller
 {
+    private $serializer;
+
+    public function __construct() {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $this->serializer = new Serializer($normalizers, $encoders);
+    }
 
     /**
     * @Route("/api/v1/template/list/", name="api_template_list"), methods={"GET","HEAD"})
@@ -29,16 +36,12 @@ class TemplateController extends Controller
             ->getRepository(Template::class)
             ->findAll();
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $json = array(
             'success' => true,
             'data' => $templates,
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -48,10 +51,6 @@ class TemplateController extends Controller
     */
     final public function getTemplate(int $id, Request $request)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         if (!empty($id)) {
             $template = $this->getDoctrine()
             ->getRepository(Template::class)
@@ -74,7 +73,7 @@ class TemplateController extends Controller
             ];
         }
 
-        $json = $serializer->serialize($response, 'json');
+        $json = $this->serializer->serialize($response, 'json');
         return $this->json($json);
     }
 
@@ -83,9 +82,6 @@ class TemplateController extends Controller
     */
     final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
         $logMessage = '';
         $logComment = 'Insert';
 
@@ -103,7 +99,7 @@ class TemplateController extends Controller
 
             } else {
                 $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $serializer->serialize($template, 'json');
+                $logMessage .= $this->serializer->serialize($template, 'json');
                 $logMessage .= '<br><br>';
                 $logComment = 'Update';
                 $message = 'Template has been updated';
@@ -135,7 +131,7 @@ class TemplateController extends Controller
             }
 
             $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $serializer->serialize($template, 'json');
+            $logMessage .= $this->serializer->serialize($template, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($template);

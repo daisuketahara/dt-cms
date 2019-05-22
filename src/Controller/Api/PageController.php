@@ -33,6 +33,14 @@ use App\Service\RedirectService;
 
 class PageController extends Controller
 {
+    private $serializer;
+
+    public function __construct() {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $this->serializer = new Serializer($normalizers, $encoders);
+    }
+
     /**
     * @Route("/api/v1/page/info/", name="api_page_info"), methods={"GET","HEAD"})
     */
@@ -143,16 +151,12 @@ class PageController extends Controller
         $qb->setFirstResult($offset);
         $pages = $qb->getQuery()->getResult();
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $json = array(
             'total' => $count,
             'data' => $pages,
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -162,10 +166,6 @@ class PageController extends Controller
     */
     final public function getPage(int $id, Request $request)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['locale'])) {
             $localeId = $params['locale'];
@@ -226,7 +226,7 @@ class PageController extends Controller
             ];
         }
 
-        $json = $serializer->serialize($response, 'json');
+        $json = $this->serializer->serialize($response, 'json');
         return $this->json($json);
     }
 
@@ -236,10 +236,6 @@ class PageController extends Controller
     */
     final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $logMessage = '';
         $logComment = 'Insert';
 
@@ -287,7 +283,7 @@ class PageController extends Controller
             } else {
 
                 $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $serializer->serialize($page, 'json');
+                $logMessage .= $this->serializer->serialize($page, 'json');
                 $logMessage .= '<br><br>';
                 $logComment = 'Update';
                 $message = 'Page has been updated';
@@ -315,7 +311,7 @@ class PageController extends Controller
             }
 
             if (isset($params['content'])) $page->setContent($params['content']);
-            if (isset($params['construct'])) $page->setConstruct($serializer->serialize($params['construct'], 'json'));
+            if (isset($params['construct'])) $page->setConstruct($this->serializer->serialize($params['construct'], 'json'));
             if (isset($params['customCss'])) $page->setCustomCss($params['customCss']);
             if (isset($params['customJs'])) $page->setCustomJs($params['customJs']);
             if (isset($params['disableLayout'])) $page->setDisableLayout($params['disableLayout']);
@@ -347,7 +343,7 @@ class PageController extends Controller
             }
 
             $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $serializer->serialize($page, 'json');
+            $logMessage .= $this->serializer->serialize($page, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($page);
@@ -422,9 +418,6 @@ class PageController extends Controller
 
     final public function edit2(int $id=0, Request $request, TranslatorInterface $translator, LogService $log, KernelInterface $kernel)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
         $logMessage = '';
         $logComment = 'Insert';
         $urlLocale = '';
@@ -474,7 +467,7 @@ class PageController extends Controller
 
             if ($page) {
                 $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $serializer->serialize($page, 'json');
+                $logMessage .= $this->serializer->serialize($page, 'json');
                 $logMessage .= '<br><br>';
                 $logComment = 'Update';
             }
@@ -568,7 +561,7 @@ class PageController extends Controller
             $page->setLastModified(new \DateTime());
 
             $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $serializer->serialize($page, 'json');
+            $logMessage .= $this->serializer->serialize($page, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($page);
@@ -704,10 +697,6 @@ class PageController extends Controller
     */
     final public function delete(int $id=0, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
         elseif (!empty($id)) $toRemove = array($id);
@@ -720,7 +709,7 @@ class PageController extends Controller
 
                 if ($page) {
                     $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $serializer->serialize($page, 'json');
+                    $logMessage .= $this->serializer->serialize($page, 'json');
 
                     $log->add('Page', $id, $logMessage, 'Delete');
 
@@ -749,10 +738,6 @@ class PageController extends Controller
     */
     final public function getPageContent(int $id, $_locale, Request $request)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $locale = $this->getDoctrine()
             ->getRepository(Locale::class)
             ->findOneBy(['locale' => $_locale]);
@@ -781,7 +766,7 @@ class PageController extends Controller
             ];
         }
 
-        $json = $serializer->serialize($response, 'json');
+        $json = $this->serializer->serialize($response, 'json');
         return $this->json($json);
     }
 }

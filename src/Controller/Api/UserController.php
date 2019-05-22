@@ -27,6 +27,14 @@ use App\Service\LogService;
 
 class UserController extends Controller
 {
+    private $serializer;
+
+    public function __construct() {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $this->serializer = new Serializer($normalizers, $encoders);
+    }
+
     /**
     * @Route("/api/v1/user/info/", name="api_user_info"), methods={"GET","HEAD"})
     */
@@ -126,16 +134,12 @@ class UserController extends Controller
         $qb->setFirstResult($offset);
         $users = $qb->getQuery()->getResult();
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $json = array(
             'total' => $count,
             'data' => $users,
         );
 
-        $json = $serializer->serialize($json, 'json');
+        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -145,10 +149,6 @@ class UserController extends Controller
     */
     final public function getUserData(int $id, Request $request)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         if (!empty($id)) {
             $user = $this->getDoctrine()
             ->getRepository(User::class)
@@ -172,7 +172,7 @@ class UserController extends Controller
             ];
         }
 
-        $json = $serializer->serialize($response, 'json');
+        $json = $this->serializer->serialize($response, 'json');
         return $this->json($json);
     }
 
@@ -182,9 +182,6 @@ class UserController extends Controller
     */
     final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log, UserPasswordEncoderInterface $encoder)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
         $logMessage = '';
         $logComment = 'Insert';
         $errors = array();
@@ -197,7 +194,7 @@ class UserController extends Controller
                 $error[] = 'User does not exist';
             } else {
                 $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $serializer->serialize($user, 'json');
+                $logMessage .= $this->serializer->serialize($user, 'json');
                 $logMessage .= '<br><br>';
                 $logComment = 'Update';
             }
@@ -255,7 +252,7 @@ class UserController extends Controller
         }
 
         $logMessage .= '<i>New data:</i><br>';
-        $logMessage .= $serializer->serialize($user, 'json');
+        $logMessage .= $this->serializer->serialize($user, 'json');
 
         if (isset($params['information']['companyName'])) $userinfo->setCompanyName($params['information']['companyName']);
         if (isset($params['information']['website'])) $userinfo->setWebsite($params['information']['website']);
@@ -273,11 +270,11 @@ class UserController extends Controller
         if (isset($params['information']['billingCountry'])) $userinfo->setBillingCountry($params['information']['billingCountry']);
 
         $user->setInformation($userinfo);
-        $logMessage .= $serializer->serialize($userinfo, 'json');
+        $logMessage .= $this->serializer->serialize($userinfo, 'json');
 
         if (isset($params['note']['note'])) $usernote->setNote($params['note']['note']);
         $user->setNote($usernote);
-        $logMessage .= $serializer->serialize($usernote, 'json');
+        $logMessage .= $this->serializer->serialize($usernote, 'json');
 
         $userRoles = $user->getUserRoles();
         if (!empty($userRoles)) {
@@ -336,10 +333,6 @@ class UserController extends Controller
     */
     final public function delete(int $id=0, LogService $log)
     {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $serializer = new Serializer($normalizers, $encoders);
-
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
         elseif (!empty($id)) $toRemove = array($id);
@@ -352,7 +345,7 @@ class UserController extends Controller
 
                 if ($user) {
                     $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $serializer->serialize($user, 'json');
+                    $logMessage .= $this->serializer->serialize($user, 'json');
 
                     $log->add('User', $id, $logMessage, 'Delete');
 
