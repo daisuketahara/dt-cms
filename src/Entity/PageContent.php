@@ -3,13 +3,11 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use ApiPlatform\Core\Annotation\ApiResource;
 
 use App\Entity\Locale;
 use App\Entity\Page;
 
 /**
-* @ApiResource
 * @ORM\Entity(repositoryClass="App\Repository\PageContentRepository")
 */
 class PageContent
