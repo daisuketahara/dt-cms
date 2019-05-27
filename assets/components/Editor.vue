@@ -178,44 +178,72 @@
                 <textarea v-if="selected_editor == 'html'" id="page-content" class="form-control mb-2" v-model="page.content" rows="24"></textarea>
                 <ckeditor v-if="selected_editor == 'editor'" :editor="editor" v-model="page.content" :config="editorConfig"></ckeditor>
                 <div v-if="selected_editor == 'builder'" id="content-editor" class="mt-2">
-                    <div v-for="element in construct" class="container-fluid">
-                        <div v-if="element.type == 'text_left_image_right'" class="row" v-on:click="activateElement">
+                    <div v-for="(element, index) in construct" class="container-fluid">
+                        <div v-if="element.type == 'text_left_image_right'" :id="element.id" class="row" v-on:click="activateElement(index)">
                             <div class="col-sm-6 wrap-content" :contenteditable="enableEdit">
-                                <h3>{{element.title}}</h3>
-                                {{element.text}}
-                                <a href="#" class="btn btn-lg btn-secondary" :contenteditable="enableEdit">{{element.cta_button_text}}</a>
+                                <h3 class="component-title" v-html="element.parts.title.content"></h3>
+                                <div class="component-text" v-html="element.parts.text.content"></div>
+                                <a href="#" class="component-button btn btn-lg btn-secondary" :contenteditable="enableEdit">{{element.parts.button.content}}</a>
                             </div>
-                            <div class="col-sm-6 bg-image"></div>
+                            <div class="col-sm-6 component-image"></div>
                         </div>
-                        <div v-else-if="element.type == 'text_right_image_left'" class="row" v-on:click="activateElement">
-                            <div class="col-sm-6 bg-image"></div>
+                        <div v-else-if="element.type == 'text_right_image_left'" :id="element.id" class="row" v-on:click="activateElement(index)">
+                            <div class="col-sm-6 component-image"></div>
                             <div class="col-sm-6 wrap-content" :contenteditable="enableEdit">
-                                <h3>{{element.title}}</h3>
-                                {{element.text}}
-                                <a href="#" class="btn btn-lg btn-secondary" :contenteditable="enableEdit">{{element.cta_button_text}}</a>
+                                <h3 class="component-title" v-html="element.parts.title.content"></h3>
+                                <div class="component-text" v-html="element.parts.text.content"></div>
+                                <a href="#" class="component-button btn btn-lg btn-secondary" :contenteditable="enableEdit">{{element.parts.button.content}}</a>
                             </div>
                         </div>
-                        <div v-else-if="element.type == 'block'" class="" :contenteditable="enableEdit" v-on:click="activateElement">
-                            <h3>{{element.title}}</h3>
-                            {{element.text}}
-                            <a href="#" class="btn btn-lg btn-secondary" :contenteditable="enableEdit">{{element.cta_button_text}}</a>
+                        <div v-else-if="element.type == 'block'" :id="element.id" class="" :contenteditable="enableEdit" v-on:click="activateElement(index)">
+                            <h3 class="component-title" v-html="element.parts.title.content"></h3>
+                            <div class="component-text" v-html="element.parts.text.content"></div>
+                            <a href="#" class="component-button btn btn-lg btn-secondary" :contenteditable="enableEdit">{{element.parts.button.content}}</a>
                         </div>
                     </div>
                     <div v-if="enableEdit" class="text-center mt-3 py-5">
                         <button class="btn btn-lg btn-secondary" v-on:click.prevent="selectElement"><i class="fas fa-plus"></i> {{translations.add_element}}</button>
                     </div>
                 </div>
-
-
-
-
-
-
-
-
-
             </div>
-            <div class="col-md-4 col-lg-3">
+            <div class="col-md-4 col-lg-3 component-settings">
+                <div v-if="active_component !== false" class="card">
+                    <div class="card-header" id="headingOne">
+                        {{translations.component || 'Component'}}
+                        <i class="fas fa-chevron-circle-down float-right"></i>
+                    </div>
+                    <div class="card-body collapse show">
+                        <settings :settings="construct[active_component].settings"></settings>
+                    </div>
+                    <div v-if="construct[active_component].parts.title != undefined" class="card-header" id="headingOne">
+                        {{translations.title || 'Title'}}
+                        <i class="fas fa-chevron-circle-left float-right"></i>
+                    </div>
+                    <div v-if="construct[active_component].parts.title != undefined" class="card-body collapse show">
+                        <settings :settings="construct[active_component].parts.title.settings"></settings>
+                    </div>
+                    <div v-if="construct[active_component].parts.text != undefined" class="card-header" id="headingOne">
+                        {{translations.content || 'Content'}}
+                        <i class="fas fa-chevron-circle-left float-right"></i>
+                    </div>
+                    <div v-if="construct[active_component].parts.text != undefined" class="card-body collapse show">
+                        <settings :settings="construct[active_component].parts.text.settings"></settings>
+                    </div>
+                    <div v-if="construct[active_component].parts.button != undefined" class="card-header" id="headingOne">
+                        {{translations.button || 'Button'}}
+                        <i class="fas fa-chevron-circle-left float-right"></i>
+                    </div>
+                    <div v-if="construct[active_component].parts.button != undefined" class="card-body collapse show">
+                        <settings :settings="construct[active_component].parts.button.settings"></settings>
+                    </div>
+                    <div v-if="construct[active_component].parts.image != undefined" class="card-header" id="headingOne">
+                        {{translations.image || 'Image'}}
+                        <i class="fas fa-chevron-circle-left float-right"></i>
+                    </div>
+                    <div v-if="construct[active_component].parts.image != undefined" class="card-body collapse show">
+                        <settings :settings="construct[active_component].parts.image.settings"></settings>
+                    </div>
+                </div>
             </div>
         </div>
         <modal name="page-elements" width="80%" height="90%">
@@ -235,293 +263,1231 @@
 </template>
 
 <script>
-import axios from 'axios';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+    import axios from 'axios';
+    import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+    import EditorSettings from '../components/EditorSettings'
 
-export default {
-    name: "editor",
-    data() {
-        return {
-            headers: {
-                'Content-Type': 'application/json;charset=UTF-8',
-                "Authorization" : "Bearer " + this.$store.state.apikey
-            },
-            panel: '',
-            translate_id: 0,
-            translate_name: '',
-            page_id: 0,
-            page: {},
-            roles: [],
-            alert: {},
-            editor: ClassicEditor, //ClassicEditor,
-            editorData: {}, //'<p>Rich-text editor content.</p>',
-            editorConfig: {},
-            elements: {},
-            construct: [],
-            construct_css: '',
-            enableEdit: true,
-            active_element: '',
-            example: {},
-            selected_editor_name: 'HTML',
-            selected_editor: 'html'
-        }
-    },
-    computed: {
-        locale () {
-            return this.$store.state.locale;
+    export default {
+        name: "editor",
+        components: {
+            'settings': EditorSettings
         },
-        locale_id () {
-            return this.$store.state.locale_id;
-        },
-        locale_name () {
-            return this.$store.state.locale_name;
-        },
-        locales () {
-            return this.$store.state.locales;
-        },
-        translations () {
-            return this.$store.state.translations;
-        },
-    },
-    created() {
-        this.translate_name = this.locale_name;
-        this.translate_id = this.locale_id;
-        this.domain = 'http://yuna.test';
-        this.getRoles();
-        this.getExample();
-        this.getElements();
-        if (this.$attrs.id > 0) {
-            this.page_id = this.$attrs.id;
-            this.getPage();
-        }
-
-        var checkSelectedEditor = this.readCookie('selected_editor');
-        if (checkSelectedEditor) {
-            this.selected_editor = checkSelectedEditor;
-            this.selected_editor_name = checkSelectedEditor;
-        }
-    },
-    methods: {
-        getRoles: function() {
-            axios.get('/api/v1/user/role/list/', {headers: this.headers})
-            .then(response => {
-                this.roles = JSON.parse(response.data)['data'];
-            })
-            .catch(e => {
-                this.errors.push(e)
-            });
-        },
-        setTranslate: function(event) {
-            event.target.parentNode.classList.toggle("d-block");
-            this.translate_id = parseInt(event.target.dataset.lid);
-
-            for (var i = 0; i < this.locales.length; i++) {
-                if (this.translate_id == this.locales[i]['id']) this.translate_name = this.locales[i]['name'];
+        data() {
+            return {
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    "Authorization" : "Bearer " + this.$store.state.apikey
+                },
+                panel: '',
+                translate_id: 0,
+                translate_name: '',
+                page_id: 0,
+                page: {},
+                roles: [],
+                alert: {},
+                editor: ClassicEditor, //ClassicEditor,
+                editorData: {}, //'<p>Rich-text editor content.</p>',
+                editorConfig: {},
+                elements: {},
+                construct: [],
+                construct_css: '',
+                enableEdit: true,
+                active_component: false,
+                active_element: '',
+                example: {},
+                selected_editor_name: 'HTML',
+                selected_editor: 'html',
             }
-
-            this.getPage();
         },
-        getExample: function() {
-
-            this.example = {
-                title: 'Title goes here',
-                bg_image: '/img/img-placeholder.png',
-                btn_txt: 'Button text',
-                text_short: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-                text_medium: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugifffat nulla pariatur.',
-            };
-
-            this.example.text_long = this.example.text_short + ' ' + this.example.text_short;
+        computed: {
+            locale () {
+                return this.$store.state.locale;
+            },
+            locale_id () {
+                return this.$store.state.locale_id;
+            },
+            locale_name () {
+                return this.$store.state.locale_name;
+            },
+            locales () {
+                return this.$store.state.locales;
+            },
+            translations () {
+                return this.$store.state.translations;
+            },
         },
-        getPage: function() {
+        created() {
+            this.translate_name = this.locale_name;
+            this.translate_id = this.locale_id;
+            this.domain = 'http://yuna.test';
+            this.getRoles();
+            this.getExample();
+            this.getElements();
+            if (this.$attrs.id > 0) {
+                this.page_id = this.$attrs.id;
+                this.getPage();
+            }
+            var checkSelectedEditor = this.readCookie('selected_editor');
+            if (checkSelectedEditor) {
+                this.selected_editor = checkSelectedEditor;
+                this.selected_editor_name = checkSelectedEditor;
+            }
+        },
+        methods: {
+            getRoles: function() {
+                axios.get('/api/v1/user/role/list/', {headers: this.headers})
+                .then(response => {
+                    this.roles = JSON.parse(response.data)['data'];
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                });
+            },
+            setTranslate: function(event) {
+                event.target.parentNode.classList.toggle("d-block");
+                this.translate_id = parseInt(event.target.dataset.lid);
 
-            let url = '/api/v1/page/get/' + this.page_id + '/';
-
-            let params = {};
-            if (this.translate_id > 0) params['locale'] = this.translate_id;
-
-            axios.post(url, params, {headers: this.headers})
-            .then(response => {
-                var result = JSON.parse(response.data);
-                if (result.success) {
-                    if (result['data'].constructor === {}.constructor) {
-                        this.page = result['data'];
-                        this.page.role = result['roles'];
-                        if (result['data']['construct']) this.construct = JSON.parse(result['data']['construct']);
-                        else this.construct = [];
-                    } else {
-                        this.page = {};
-                        this.construct = [];
-                    }
-                } else {
-                    this.setAlert(result.message, 'error');
+                for (var i = 0; i < this.locales.length; i++) {
+                    if (this.translate_id == this.locales[i]['id']) this.translate_name = this.locales[i]['name'];
                 }
-            })
-            .catch(e => {
-                this.setAlert(e, 'error');
-                this.errors.push(e)
-            });
-        },
-        getElements: function() {
-            this.elements = {
-                text_left_image_right: {
-                    'title': this.translations.text_left_image_right,
-                    'image': this.example.bg_image,
-                    'options': {
-                        'title': this.example.title,
-                        'text': '<p>' + this.example.text_medium + '</p>',
-                        'cta_button': this.example.btn_txt,
-                        'bg_image': this.example.bg_image
-                    }
-                },
-                text_right_image_left: {
-                    'title': this.translations.text_right_image_left,
-                    'image': this.example.bg_image,
-                    'options': {
-                        'title': this.example.title,
-                        'text': '<p>' + this.example.text_medium + '</p>',
-                        'cta_button': this.example.btn_txt,
-                        'bg_image': this.example.bg_image
-                    }
-                },
-                block: {
-                    'title': this.translations.block,
-                    'image': this.example.bg_image,
-                    'options': {
-                        'title': this.example.title,
-                        'text': '<p>' + this.example.text_medium + '</p>',
-                        'cta_button': this.example.btn_txt,
-                        'bg_image': this.example.bg_image
-                    }
-                },
-                html: {
-                    'title': this.translations.html,
-                    'image': this.example.bg_image
-                },
-                slider: {
-                    'title': this.translations.slider,
-                    'image': this.example.bg_image
-                },
-                collapse: {
-                    'title': this.translations.collapse,
-                    'image': this.example.bg_image
-                },
-                hero: {
-                    'title': this.translations.collapse,
-                    'image': this.example.bg_image
-                }
-            };
-        },
-        selectElement: function(event) {
-            this.launchModal();
-        },
-        addElement: function(event) {
-            this.construct.push({
-                'type': event.target.dataset.element
-            });
-            this.$modal.hide('page-elements');
-        },
-        activateElement: function(event) {
-            this.active_element = event.target;
-        },
-        launchModal: function() {
-            this.$modal.show('page-elements');
-        },
-        update: function(event){
 
-            this.enableEdit = false;
-            if (this.selected_editor == 'builder') this.page.content = document.getElementById('content-editor').innerHTML;
-            this.enableEdit = true;
+                this.getPage();
+            },
+            getExample: function() {
 
-            let params = {};
-            params['id'] = this.page_id;
-            params['content'] = this.page.content;
-            params['construct'] = this.construct;
-            params['customCss'] = this.page.customCss;
-            params['customJs'] = this.page.customJs;
-            params['disableLayout'] = this.page.disableLayout;
-            params['locale'] = this.translate_id;
-            params['mainImage'] = this.page.mainImage;
-            params['metaCustom'] = this.page.metaCustom;
-            params['metaDescription'] = this.page.metaDescription;
-            params['metaKeywords'] = this.page.metaKeywords;
-            params['metaTitle'] = this.page.metaTitle;
-            params['pageRoute'] = this.page.pageRoute;
-            params['pageTitle'] = this.page.pageTitle;
-            params['pageWeight'] = this.page.pageWeight;
-            params['pageWidth'] = this.page.pageWidth;
-            params['pageTitle'] = this.page.pageTitle;
-            params['publishDate'] = this.page.publishDate;
-            params['expireDate'] = this.page.expireDate;
-            params['status'] = this.page.status;
-            params['role'] = this.page.role;
+                this.example = {
+                    title: 'Title goes here',
+                    bg_image: '/img/img-placeholder.png',
+                    btn_txt: 'Button text',
+                    text_short: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                    text_medium: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugifffat nulla pariatur.',
+                };
 
-            let url = '/api/v1/page/insert/';
-            if (this.page_id > 0) url = '/api/v1/page/update/'+ this.page_id + '/';
+                this.example.text_long = this.example.text_short + ' ' + this.example.text_short;
+            },
+            getPage: function() {
 
-            axios.put(url, params, {headers: this.headers})
+                let url = '/api/v1/page/get/' + this.page_id + '/';
+
+                let params = {};
+                if (this.translate_id > 0) params['locale'] = this.translate_id;
+
+                axios.post(url, params, {headers: this.headers})
                 .then(response => {
                     var result = JSON.parse(response.data);
-
                     if (result.success) {
-                        this.page_id = parseInt(result['id']);
-                        this.setAlert(translations.saved, 'success');
+                        if (result['data'].constructor === {}.constructor) {
+                            this.page = result['data'];
+                            this.page.role = result['roles'];
+                            if (result['data']['construct']) this.construct = JSON.parse(result['data']['construct']);
+                            else this.construct = [];
+                        } else {
+                            this.page = {};
+                            this.construct = [];
+                        }
                     } else {
                         this.setAlert(result.message, 'error');
                     }
                 })
                 .catch(e => {
+                    this.setAlert(e, 'error');
                     this.errors.push(e)
                 });
+            },
+            getElements: function() {
+                this.elements = {
+                    text_left_image_right: {
+                        type: 'text_left_image_right',
+                        title: this.translations.text_left_image_right,
+                        image: this.example.bg_image,
+                        settings: {
+                            width: '',
+                            height: '',
+                            min_width: '',
+                            min_height: '',
+                            max_width: '',
+                            max_height: '',
+                            display: '',
+                            overflow: 'visible',
+                            padding: {
+                                top: '20',
+                                right: '20',
+                                bottom: '20',
+                                left: '20',
+                            },
+                            margin: {
+                                top: '0',
+                                right: '0',
+                                bottom: '0',
+                                left: '0',
+                            },
+                            font_weight: '',
+                            font_size: '',
+                            line_height: '1.6em',
+                            color: {
+                                hex: '#000000',
+                                hsl: { h: 150, s: 0, l: 0, a: 1 },
+                                hsv: { h: 150, s: 0, v: 0, a: 1 },
+                                rgba: { r: 0, g: 0, b: 0, a: 1 },
+                                a: 1
+                            },
+                            text_shadow: '',
+                            text_align: '',
+                            font_style: '',
+                            text_decoration: '',
+                            background_color: {
+                                hex: '#FFFFFF',
+                                hsl: { h: 150, s: 0, l: 1, a: 1 },
+                                hsv: { h: 150, s: 0, v: 1, a: 1 },
+                                rgba: { r: 255, g: 255, b: 255, a: 1 },
+                                a: 1
+                            },
+                            background_image: '',
+                            background_size: '',
+                            background_position: '',
+                            background_position_x: 0,
+                            background_position_y: 0,
+                            background_repeat: '',
+                            background_attachment: '',
+                            box_shadow: '',
+                            border_top: '',
+                            border_right: '',
+                            border_bottom: '',
+                            border_left: '',
+                            border_radius: 0,
+                        },
+                        parts: {
+                            title: {
+                                content: this.example.title,
+                                settings: {
+                                    width: '',
+                                    height: '',
+                                    min_width: '',
+                                    min_height: '',
+                                    max_width: '',
+                                    max_height: '',
+                                    display: '',
+                                    overflow: 'visible',
+                                    padding: {
+                                        top: '20',
+                                        right: '20',
+                                        bottom: '20',
+                                        left: '20',
+                                    },
+                                    margin: {
+                                        top: '0',
+                                        right: '0',
+                                        bottom: '0',
+                                        left: '0',
+                                    },
+                                    tag: 'h3',
+                                    font_weight: '',
+                                    font_size: '',
+                                    line_height: '1.6em',
+                                    color: {
+                                        hex: '#000000',
+                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
+                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
+                                        a: 1
+                                    },
+                                    text_shadow: '',
+                                    text_align: '',
+                                    font_style: '',
+                                    text_decoration: '',
+                                    background_color: {
+                                        hex: '#FFFFFF',
+                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
+                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
+                                        a: 1
+                                    },
+                                    background_image: '',
+                                    background_size: '',
+                                    background_position: '',
+                                    background_position_x: 0,
+                                    background_position_y: 0,
+                                    background_repeat: '',
+                                    background_attachment: '',
+                                    box_shadow: '',
+                                    border_top: '',
+                                    border_right: '',
+                                    border_bottom: '',
+                                    border_left: '',
+                                    border_radius: 0,
+                                },
+                            },
+                            text: {
+                                content: '<p>' + this.example.text_medium + '</p>',
+                                settings: {
+                                    width: '',
+                                    height: '',
+                                    min_width: '',
+                                    min_height: '',
+                                    max_width: '',
+                                    max_height: '',
+                                    display: '',
+                                    overflow: 'visible',
+                                    padding: {
+                                        top: '20',
+                                        right: '20',
+                                        bottom: '20',
+                                        left: '20',
+                                    },
+                                    margin: {
+                                        top: '0',
+                                        right: '0',
+                                        bottom: '0',
+                                        left: '0',
+                                    },
+                                    font_weight: '',
+                                    font_size: '',
+                                    line_height: '1.6em',
+                                    color: {
+                                        hex: '#000000',
+                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
+                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
+                                        a: 1
+                                    },
+                                    text_shadow: '',
+                                    text_align: '',
+                                    font_style: '',
+                                    text_decoration: '',
+                                    background_color: {
+                                        hex: '#FFFFFF',
+                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
+                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
+                                        a: 1
+                                    },
+                                    background_image: '',
+                                    background_size: '',
+                                    background_position: '',
+                                    background_position_x: 0,
+                                    background_position_y: 0,
+                                    background_repeat: '',
+                                    background_attachment: '',
+                                    box_shadow: '',
+                                    border_top: '',
+                                    border_right: '',
+                                    border_bottom: '',
+                                    border_left: '',
+                                    border_radius: 0,
+                                },
+                            },
+                            button: {
+                                content: this.example.btn_txt,
+                                settings: {
+                                    width: '',
+                                    height: '',
+                                    min_width: '',
+                                    min_height: '',
+                                    max_width: '',
+                                    max_height: '',
+                                    display: '',
+                                    overflow: 'visible',
+                                    padding: {
+                                        top: '20',
+                                        right: '20',
+                                        bottom: '20',
+                                        left: '20',
+                                    },
+                                    margin: {
+                                        top: '0',
+                                        right: '0',
+                                        bottom: '0',
+                                        left: '0',
+                                    },
+                                    font_weight: '',
+                                    font_size: '',
+                                    line_height: '1.6em',
+                                    color: {
+                                        hex: '#000000',
+                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
+                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
+                                        a: 1
+                                    },
+                                    text_shadow: '',
+                                    text_align: '',
+                                    font_style: '',
+                                    text_decoration: '',
+                                    background_color: {
+                                        hex: '#FFFFFF',
+                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
+                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
+                                        a: 1
+                                    },
+                                    background_image: '',
+                                    background_size: '',
+                                    background_position: '',
+                                    background_position_x: 0,
+                                    background_position_y: 0,
+                                    background_repeat: '',
+                                    background_attachment: '',
+                                    box_shadow: '',
+                                    border_top: '',
+                                    border_right: '',
+                                    border_bottom: '',
+                                    border_left: '',
+                                    border_radius: 0,
+                                },
+                            },
+                            image: {
+                                settings: {
+                                    background_color: {
+                                        hex: '#FFFFFF',
+                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
+                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
+                                        a: 1
+                                    },
+                                    background_image: this.example.bg_image,
+                                    background_size: 'cover',
+                                    background_position: 'center center',
+                                    background_position_x: 0,
+                                    background_position_y: 0,
+                                    background_repeat: 'repeat',
+                                    background_attachment: 'scroll',
+                                }
+                            },
+                        }
+                    },
+                    text_right_image_left: {
+                        type: 'text_right_image_left',
+                        title: this.translations.text_right_image_left,
+                        image: this.example.bg_image,
+                        settings: {
+                            width: '',
+                            height: '',
+                            min_width: '',
+                            min_height: '',
+                            max_width: '',
+                            max_height: '',
+                            display: '',
+                            overflow: 'visible',
+                            padding: {
+                                top: '20',
+                                right: '20',
+                                bottom: '20',
+                                left: '20',
+                            },
+                            margin: {
+                                top: '0',
+                                right: '0',
+                                bottom: '0',
+                                left: '0',
+                            },
+                            font_weight: '',
+                            font_size: '',
+                            line_height: '1.6em',
+                            color: {
+                                hex: '#000000',
+                                hsl: { h: 150, s: 0, l: 0, a: 1 },
+                                hsv: { h: 150, s: 0, v: 0, a: 1 },
+                                rgba: { r: 0, g: 0, b: 0, a: 1 },
+                                a: 1
+                            },
+                            text_shadow: '',
+                            text_align: '',
+                            font_style: '',
+                            text_decoration: '',
+                            background_color: {
+                                hex: '#FFFFFF',
+                                hsl: { h: 150, s: 0, l: 1, a: 1 },
+                                hsv: { h: 150, s: 0, v: 1, a: 1 },
+                                rgba: { r: 255, g: 255, b: 255, a: 1 },
+                                a: 1
+                            },
+                            background_image: '',
+                            background_size: '',
+                            background_position: '',
+                            background_position_x: 0,
+                            background_position_y: 0,
+                            background_repeat: '',
+                            background_attachment: '',
+                            box_shadow: '',
+                            border_top: '',
+                            border_right: '',
+                            border_bottom: '',
+                            border_left: '',
+                            border_radius: 0,
+                        },
+                        parts: {
+                            title: {
+                                content: this.example.title,
+                                settings: {
+                                    width: '',
+                                    height: '',
+                                    min_width: '',
+                                    min_height: '',
+                                    max_width: '',
+                                    max_height: '',
+                                    display: '',
+                                    overflow: 'visible',
+                                    padding: {
+                                        top: '20',
+                                        right: '20',
+                                        bottom: '20',
+                                        left: '20',
+                                    },
+                                    margin: {
+                                        top: '0',
+                                        right: '0',
+                                        bottom: '0',
+                                        left: '0',
+                                    },
+                                    tag: 'h3',
+                                    font_weight: '',
+                                    font_size: '',
+                                    line_height: '1.6em',
+                                    color: {
+                                        hex: '#000000',
+                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
+                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
+                                        a: 1
+                                    },
+                                    text_shadow: '',
+                                    text_align: '',
+                                    font_style: '',
+                                    text_decoration: '',
+                                    background_color: {
+                                        hex: '#FFFFFF',
+                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
+                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
+                                        a: 1
+                                    },
+                                    background_image: '',
+                                    background_size: '',
+                                    background_position: '',
+                                    background_position_x: 0,
+                                    background_position_y: 0,
+                                    background_repeat: '',
+                                    background_attachment: '',
+                                    box_shadow: '',
+                                    border_top: '',
+                                    border_right: '',
+                                    border_bottom: '',
+                                    border_left: '',
+                                    border_radius: 0,
+                                },
+                            },
+                            text: {
+                                content: '<p>' + this.example.text_medium + '</p>',
+                                settings: {
+                                    width: '',
+                                    height: '',
+                                    min_width: '',
+                                    min_height: '',
+                                    max_width: '',
+                                    max_height: '',
+                                    display: '',
+                                    overflow: 'visible',
+                                    padding: {
+                                        top: '20',
+                                        right: '20',
+                                        bottom: '20',
+                                        left: '20',
+                                    },
+                                    margin: {
+                                        top: '0',
+                                        right: '0',
+                                        bottom: '0',
+                                        left: '0',
+                                    },
+                                    font_weight: '',
+                                    font_size: '',
+                                    line_height: '1.6em',
+                                    color: {
+                                        hex: '#000000',
+                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
+                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
+                                        a: 1
+                                    },
+                                    text_shadow: '',
+                                    text_align: '',
+                                    font_style: '',
+                                    text_decoration: '',
+                                    background_color: {
+                                        hex: '#FFFFFF',
+                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
+                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
+                                        a: 1
+                                    },
+                                    background_image: '',
+                                    background_size: '',
+                                    background_position: '',
+                                    background_position_x: 0,
+                                    background_position_y: 0,
+                                    background_repeat: '',
+                                    background_attachment: '',
+                                    box_shadow: '',
+                                    border_top: '',
+                                    border_right: '',
+                                    border_bottom: '',
+                                    border_left: '',
+                                    border_radius: 0,
+                                },
+                            },
+                            button: {
+                                content: this.example.btn_txt,
+                                settings: {
+                                    width: '',
+                                    height: '',
+                                    min_width: '',
+                                    min_height: '',
+                                    max_width: '',
+                                    max_height: '',
+                                    display: '',
+                                    overflow: 'visible',
+                                    padding: {
+                                        top: '20',
+                                        right: '20',
+                                        bottom: '20',
+                                        left: '20',
+                                    },
+                                    margin: {
+                                        top: '0',
+                                        right: '0',
+                                        bottom: '0',
+                                        left: '0',
+                                    },
+                                    font_weight: '',
+                                    font_size: '',
+                                    line_height: '1.6em',
+                                    color: {
+                                        hex: '#000000',
+                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
+                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
+                                        a: 1
+                                    },
+                                    text_shadow: '',
+                                    text_align: '',
+                                    font_style: '',
+                                    text_decoration: '',
+                                    background_color: {
+                                        hex: '#FFFFFF',
+                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
+                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
+                                        a: 1
+                                    },
+                                    background_image: '',
+                                    background_size: '',
+                                    background_position: '',
+                                    background_position_x: 0,
+                                    background_position_y: 0,
+                                    background_repeat: '',
+                                    background_attachment: '',
+                                    box_shadow: '',
+                                    border_top: '',
+                                    border_right: '',
+                                    border_bottom: '',
+                                    border_left: '',
+                                    border_radius: 0,
+                                },
+                            },
+                            image: {
+                                settings: {
+                                    background_color: {
+                                        hex: '#FFFFFF',
+                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
+                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
+                                        a: 1
+                                    },
+                                    background_image: this.example.bg_image,
+                                    background_size: 'cover',
+                                    background_position: 'center center',
+                                    background_position_x: 0,
+                                    background_position_y: 0,
+                                    background_repeat: 'repeat',
+                                    background_attachment: 'scroll',
+                                }
+                            },
+                        }
+                    },
+                    block: {
+                        type: 'block',
+                        title: this.translations.block,
+                        image: this.example.bg_image,
+                        settings: {
+                            width: '',
+                            height: '',
+                            min_width: '',
+                            min_height: '',
+                            max_width: '',
+                            max_height: '',
+                            display: '',
+                            overflow: 'visible',
+                            padding: {
+                                top: '20',
+                                right: '20',
+                                bottom: '20',
+                                left: '20',
+                            },
+                            margin: {
+                                top: '20',
+                                right: '20',
+                                bottom: '20',
+                                left: '20',
+                            },
+                            font_weight: '',
+                            font_size: '',
+                            line_height: '1.6em',
+                            color: {
+                                hex: '#000000',
+                                hsl: { h: 150, s: 0, l: 0, a: 1 },
+                                hsv: { h: 150, s: 0, v: 0, a: 1 },
+                                rgba: { r: 0, g: 0, b: 0, a: 1 },
+                                a: 1
+                            },
+                            text_shadow: '',
+                            text_align: '',
+                            font_style: '',
+                            text_decoration: '',
+                            background_color: {
+                                hex: '#FFFFFF',
+                                hsl: { h: 150, s: 0, l: 1, a: 1 },
+                                hsv: { h: 150, s: 0, v: 1, a: 1 },
+                                rgba: { r: 255, g: 255, b: 255, a: 1 },
+                                a: 1
+                            },
+                            background_image: '',
+                            background_size: '',
+                            background_position: '',
+                            background_position_x: 0,
+                            background_position_y: 0,
+                            background_repeat: '',
+                            background_attachment: '',
+                            box_shadow: '',
+                            border_top: '',
+                            border_right: '',
+                            border_bottom: '',
+                            border_left: '',
+                            border_radius: 0,
+                        },
+                        parts: {
+                            title: {
+                                content: this.example.title,
+                                settings: {
+                                    width: '',
+                                    height: '',
+                                    min_width: '',
+                                    min_height: '',
+                                    max_width: '',
+                                    max_height: '',
+                                    display: '',
+                                    overflow: 'visible',
+                                    padding: {
+                                        top: '20',
+                                        right: '20',
+                                        bottom: '20',
+                                        left: '20',
+                                    },
+                                    margin: {
+                                        top: '20',
+                                        right: '20',
+                                        bottom: '20',
+                                        left: '20',
+                                    },
+                                    tag: 'h3',
+                                    font_weight: '',
+                                    font_size: '',
+                                    line_height: '1.6em',
+                                    color: {
+                                        hex: '#000000',
+                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
+                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
+                                        a: 1
+                                    },
+                                    text_shadow: '',
+                                    text_align: '',
+                                    font_style: '',
+                                    text_decoration: '',
+                                    background_color: {
+                                        hex: '#FFFFFF',
+                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
+                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
+                                        a: 1
+                                    },
+                                    background_image: '',
+                                    background_size: '',
+                                    background_position: '',
+                                    background_position_x: 0,
+                                    background_position_y: 0,
+                                    background_repeat: '',
+                                    background_attachment: '',
+                                    box_shadow: '',
+                                    border_top: '',
+                                    border_right: '',
+                                    border_bottom: '',
+                                    border_left: '',
+                                    border_radius: 0,
+                                },
+                            },
+                            text: {
+                                content: '<p>' + this.example.text_medium + '</p>',
+                                settings: {
+                                    width: '',
+                                    height: '',
+                                    min_width: '',
+                                    min_height: '',
+                                    max_width: '',
+                                    max_height: '',
+                                    display: '',
+                                    overflow: 'visible',
+                                    padding: {
+                                        top: '20',
+                                        right: '20',
+                                        bottom: '20',
+                                        left: '20',
+                                    },
+                                    margin: {
+                                        top: '20',
+                                        right: '20',
+                                        bottom: '20',
+                                        left: '20',
+                                    },
+                                    font_weight: '',
+                                    font_size: '',
+                                    line_height: '1.6em',
+                                    color: {
+                                        hex: '#000000',
+                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
+                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
+                                        a: 1
+                                    },
+                                    text_shadow: '',
+                                    text_align: '',
+                                    font_style: '',
+                                    text_decoration: '',
+                                    background_color: {
+                                        hex: '#FFFFFF',
+                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
+                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
+                                        a: 1
+                                    },
+                                    background_image: '',
+                                    background_size: '',
+                                    background_position: '',
+                                    background_position_x: 0,
+                                    background_position_y: 0,
+                                    background_repeat: '',
+                                    background_attachment: '',
+                                    box_shadow: '',
+                                    border_top: '',
+                                    border_right: '',
+                                    border_bottom: '',
+                                    border_left: '',
+                                    border_radius: 0,
+                                },
+                            },
+                            button: {
+                                content: this.example.btn_txt,
+                                settings: {
+                                    width: '',
+                                    height: '',
+                                    min_width: '',
+                                    min_height: '',
+                                    max_width: '',
+                                    max_height: '',
+                                    display: '',
+                                    overflow: 'visible',
+                                    padding: {
+                                        top: '20',
+                                        right: '20',
+                                        bottom: '20',
+                                        left: '20',
+                                    },
+                                    margin: {
+                                        top: '20',
+                                        right: '20',
+                                        bottom: '20',
+                                        left: '20',
+                                    },
+                                    font_weight: '',
+                                    font_size: '',
+                                    line_height: '1.6em',
+                                    color: {
+                                        hex: '#000000',
+                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
+                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
+                                        a: 1
+                                    },
+                                    text_shadow: '',
+                                    text_align: '',
+                                    font_style: '',
+                                    text_decoration: '',
+                                    background_color: {
+                                        hex: '#FFFFFF',
+                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
+                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
+                                        a: 1
+                                    },
+                                    background_image: '',
+                                    background_size: '',
+                                    background_position: '',
+                                    background_position_x: 0,
+                                    background_position_y: 0,
+                                    background_repeat: '',
+                                    background_attachment: '',
+                                    box_shadow: '',
+                                    border_top: '',
+                                    border_right: '',
+                                    border_bottom: '',
+                                    border_left: '',
+                                    border_radius: 0,
+                                },
+                            },
+                        }
+                    },
+                    html: {
+                        type: 'html',
+                        title: this.translations.html,
+                        image: this.example.bg_image,
+                        settings: {
+                            width: '',
+                            height: '',
+                            min_width: '',
+                            min_height: '',
+                            max_width: '',
+                            max_height: '',
+                            display: '',
+                            overflow: 'visible',
+                            padding: {
+                                top: '20',
+                                right: '20',
+                                bottom: '20',
+                                left: '20',
+                            },
+                            margin: {
+                                top: '20',
+                                right: '20',
+                                bottom: '20',
+                                left: '20',
+                            },
+                            font_weight: '',
+                            font_size: '',
+                            line_height: '1.6em',
+                            color: {
+                                hex: '#000000',
+                                hsl: { h: 150, s: 0, l: 0, a: 1 },
+                                hsv: { h: 150, s: 0, v: 0, a: 1 },
+                                rgba: { r: 0, g: 0, b: 0, a: 1 },
+                                a: 1
+                            },
+                            text_shadow: '',
+                            text_align: '',
+                            font_style: '',
+                            text_decoration: '',
+                            background_color: {
+                                hex: '#FFFFFF',
+                                hsl: { h: 150, s: 0, l: 1, a: 1 },
+                                hsv: { h: 150, s: 0, v: 1, a: 1 },
+                                rgba: { r: 255, g: 255, b: 255, a: 1 },
+                                a: 1
+                            },
+                            background_image: '',
+                            background_size: '',
+                            background_position: '',
+                            background_position_x: 0,
+                            background_position_y: 0,
+                            background_repeat: '',
+                            background_attachment: '',
+                            box_shadow: '',
+                            border_top: '',
+                            border_right: '',
+                            border_bottom: '',
+                            border_left: '',
+                            border_radius: 0,
+                        },
+                        parts: {
+                            text: {
+                                content: '<p>' + this.example.text_medium + '</p>',
+                                settings: {
+                                    width: '',
+                                    height: '',
+                                    min_width: '',
+                                    min_height: '',
+                                    max_width: '',
+                                    max_height: '',
+                                    display: '',
+                                    overflow: 'visible',
+                                    padding: {
+                                        top: '20',
+                                        right: '20',
+                                        bottom: '20',
+                                        left: '20',
+                                    },
+                                    margin: {
+                                        top: '20',
+                                        right: '20',
+                                        bottom: '20',
+                                        left: '20',
+                                    },
+                                    font_weight: '',
+                                    font_size: '',
+                                    line_height: '1.6em',
+                                    color: {
+                                        hex: '#000000',
+                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
+                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
+                                        a: 1
+                                    },
+                                    text_shadow: '',
+                                    text_align: '',
+                                    font_style: '',
+                                    text_decoration: '',
+                                    background_color: {
+                                        hex: '#FFFFFF',
+                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
+                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
+                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
+                                        a: 1
+                                    },
+                                    background_image: '',
+                                    background_size: '',
+                                    background_position: '',
+                                    background_position_x: 0,
+                                    background_position_y: 0,
+                                    background_repeat: '',
+                                    background_attachment: '',
+                                    box_shadow: '',
+                                    border_top: '',
+                                    border_right: '',
+                                    border_bottom: '',
+                                    border_left: '',
+                                    border_radius: 0,
+                                },
+                            },
+                        }
+                    },
+                    slider: {
+                        type: 'slider',
+                        title: this.translations.slider,
+                        image: this.example.bg_image
+                    },
+                    collapse: {
+                        type: 'collapse',
+                        title: this.translations.collapse,
+                        image: this.example.bg_image
+                    },
+                    hero: {
+                        type: 'hero',
+                        title: this.translations.hero,
+                        image: this.example.bg_image
+                    }
+                };
+            },
+            selectElement: function(event) {
+                this.launchModal();
+            },
+            launchModal: function() {
+                this.$modal.show('page-elements');
+            },
+            addElement: function(event) {
 
-        },
-        setEditor: function(event) {
-            event.target.parentNode.classList.toggle("d-block");
-            this.createCookie('selected_editor', event.target.dataset.editor);
-            this.selected_editor = event.target.dataset.editor;
-            this.selected_editor_name = event.target.textContent;
-        },
-        toggleDropdown: function(event) {
-            var dropdown = event.target.parentNode.getElementsByClassName('dropdown-menu');
-            for (var i = 0; i < dropdown.length; i++) {
-                dropdown[i].classList.toggle("d-block");
+                if (!Date.now) Date.now = function() { return new Date().getTime(); }
+                var timestamp = Math.floor(Date.now() / 1000);
+
+                var elements = this.elements[event.target.dataset.element];
+                elements.id = 'component-'+timestamp;
+
+                this.construct.push(elements);
+                this.generateCss();
+                this.$modal.hide('page-elements');
+            },
+            activateElement: function(index) {
+                this.active_component = index;
+            },
+            generateCss: function() {
+                var css = "";
+                for(var i=0;i< this.construct.length;i++) {
+
+                    var id = this.construct[i].id;
+                    var settings = this.construct[i].settings;
+                    var parts = this.construct[i].parts;
+                    var properties = this.readCssProperties(settings);
+                    if (properties != '') css += "#" + id + " {" + properties + "} ";
+
+                    for (var key in parts) {
+                        var element = 'component-' + key;
+                        var properties = this.readCssProperties(parts[key].settings);
+                        if (properties != '') css += "#" + id + " ." + element + " {" + properties + "} ";
+                    }
+
+                    /* Create style document */
+                    var element = document.getElementById('page-style');
+                    if (element !== null) element.parentNode.removeChild(element);
+                    var style = document.createElement('style');
+                    style.type = 'text/css';
+                    style.setAttribute('id', 'page-style');
+                    style.appendChild(document.createTextNode(css));
+                    document.getElementsByTagName("head")[0].appendChild(style);
+                }
+            },
+            readCssProperties:function(settings) {
+
+                var css = "";
+                if (typeof settings.width !== 'undefined' && settings.width != '') css+= "width: " + settings.width + "; ";
+                if (typeof settings.height !== 'undefined' && settings.height != '') css+= "height: " + settings.height + "; ";
+                if (typeof settings.min_width !== 'undefined' && settings.min_width != '') css+= "min-width: " + settings.min_width + "; ";
+                if (typeof settings.min_height !== 'undefined' && settings.min_height != '') css+= "min-height: " + settings.min_height + "; ";
+                if (typeof settings.max_width !== 'undefined' && settings.max_width != '') css+= "max-width: " + settings.max_width + "; ";
+                if (typeof settings.max_height !== 'undefined' && settings.max_height != '') css+= "max-height: " + settings.max_height + "; ";
+                if (typeof settings.display !== 'undefined' && settings.display != '') css+= "display: " + settings.display + "; ";
+                if (typeof settings.overflow !== 'undefined' && settings.overflow != '') css+= "overflow: " + settings.overflow + "; ";
+                if (typeof settings.padding !== 'undefined') {
+                    if (settings.padding.top != '') css+= "padding-top: " + settings.padding.top + "; ";
+                    if (settings.padding.right != '') css+= "padding-right: " + settings.padding.right + "; ";
+                    if (settings.padding.bottom != '') css+= "padding-bottom: " + settings.padding.bottom + "; ";
+                    if (settings.padding.left != '') css+= "padding-left: " + settings.padding.left + "; ";
+                }
+                if (typeof settings.margin !== 'undefined') {
+                    if (settings.margin.top != '') css+= "padding-top: " + settings.margin.top + "; ";
+                    if (settings.margin.right != '') css+= "padding-right: " + settings.margin.right + "; ";
+                    if (settings.margin.bottom != '') css+= "padding-bottom: " + settings.margin.bottom + "; ";
+                    if (settings.margin.left != '') css+= "padding-left: " + settings.margin.left + "; ";
+                }
+                if (typeof settings.font_weight !== 'undefined' && settings.font_weight != '') css+= "font-weight: " + settings.font_weight + "; ";
+                if (typeof settings.font_size !== 'undefined' && settings.font_size != '') css+= "font-size: " + settings.font_size + "; ";
+                if (typeof settings.line_height !== 'undefined' && settings.line_height != '') css+= "line-height: " + settings.line_height + "; ";
+                if (typeof settings.color !== 'undefined') {
+                    if (settings.color.hex != '') css+= "color: " + settings.color.hex + "; ";
+                }
+                if (typeof settings.text_shadow !== 'undefined' && settings.text_shadow != '') css+= "text-shadow: " + settings.text_shadow + "; ";
+                if (typeof settings.text_align !== 'undefined' && settings.text_align != '') css+= "text-align: " + settings.text_align + "; ";
+                if (typeof settings.font_style !== 'undefined' && settings.font_style != '') css+= "font-style: " + settings.font_style + "; ";
+                if (typeof settings.text_decoration !== 'undefined' && settings.text_decoration != '') css+= "text-decoration: " + settings.text_decoration + "; ";
+                if (typeof settings.background_color !== 'undefined') {
+                    if (settings.background_color.hex != '') css+= "background-color: " + settings.background_color.hex + "; ";
+                }
+                if (typeof settings.background_image !== 'undefined' && settings.background_image != '') css+= "background-image: url(" + settings.background_image + "); ";
+                if (typeof settings.background_size !== 'undefined' && settings.background_size != '') css+= "background-size: " + settings.background_size + "; ";
+                if (typeof settings.background_position !== 'undefined' && settings.background_position != '') css+= "background-position: " + settings.background_position + "; ";
+                if (typeof settings.background_repeat !== 'undefined' && settings.background_repeat != '') css+= "background-repeat: " + settings.background_repeat + "; ";
+                if (typeof settings.background_attachment !== 'undefined' && settings.background_attachment != '') css+= "background-attachment: " + settings.background_attachment + "; ";
+                if (typeof settings.box_shadow !== 'undefined' && settings.box_shadow != '') css+= "box-shadow: " + settings.box_shadow + "; ";
+                //if (settings.border.top != '') css+= "border-top: " + settings.border.top + "; ";
+                //if (settings.border.right != '') css+= "border-right: " + settings.border.right + "; ";
+                //if (settings.border.bottom != '') css+= "border-bottom: " + settings.border.bottom + "; ";
+                //if (settings.border.left != '') css+= "border-left: " + settings.border.left + "; ";
+                //if (typeof settings.border_radius !== 'undefined' && settings.border_radius != '') css+= "border-radius: " + settings.border_radius + "; ";
+                return css;
+            },
+            update: function(event){
+
+                this.enableEdit = false;
+                if (this.selected_editor == 'builder') this.page.content = document.getElementById('content-editor').innerHTML;
+                this.enableEdit = true;
+
+                let params = {};
+                params['id'] = this.page_id;
+                params['content'] = this.page.content;
+                params['construct'] = this.construct;
+                params['customCss'] = this.page.customCss;
+                params['customJs'] = this.page.customJs;
+                params['disableLayout'] = this.page.disableLayout;
+                params['locale'] = this.translate_id;
+                params['mainImage'] = this.page.mainImage;
+                params['metaCustom'] = this.page.metaCustom;
+                params['metaDescription'] = this.page.metaDescription;
+                params['metaKeywords'] = this.page.metaKeywords;
+                params['metaTitle'] = this.page.metaTitle;
+                params['pageRoute'] = this.page.pageRoute;
+                params['pageTitle'] = this.page.pageTitle;
+                params['pageWeight'] = this.page.pageWeight;
+                params['pageWidth'] = this.page.pageWidth;
+                params['pageTitle'] = this.page.pageTitle;
+                params['publishDate'] = this.page.publishDate;
+                params['expireDate'] = this.page.expireDate;
+                params['status'] = this.page.status;
+                params['role'] = this.page.role;
+
+                let url = '/api/v1/page/insert/';
+                if (this.page_id > 0) url = '/api/v1/page/update/'+ this.page_id + '/';
+
+                axios.put(url, params, {headers: this.headers})
+                    .then(response => {
+                        var result = JSON.parse(response.data);
+
+                        if (result.success) {
+                            this.page_id = parseInt(result['id']);
+                            this.setAlert(translations.saved, 'success');
+                        } else {
+                            this.setAlert(result.message, 'error');
+                        }
+                    })
+                    .catch(e => {
+                        this.errors.push(e)
+                    });
+
+            },
+            setEditor: function(event) {
+                event.target.parentNode.classList.toggle("d-block");
+                this.createCookie('selected_editor', event.target.dataset.editor);
+                this.selected_editor = event.target.dataset.editor;
+                this.selected_editor_name = event.target.textContent;
+            },
+            toggleDropdown: function(event) {
+                var dropdown = event.target.parentNode.getElementsByClassName('dropdown-menu');
+                for (var i = 0; i < dropdown.length; i++) {
+                    dropdown[i].classList.toggle("d-block");
+                }
+            },
+            showPanel: function(event) {
+                if (this.panel != event.target.dataset.panel) this.panel = event.target.dataset.panel;
+                else this.panel = '';
+            },
+            setAlert: function(text, type) {
+                var self = this;
+                this.alert = {text: text, type: type};
+                setTimeout(function() { self.alert = {}; }, 5000);
+            },
+            createCookie: function(name, value, days) {
+                var expires;
+                if (days) {
+                    var date = new Date();
+                    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                    expires = "; expires=" + date.toGMTString();
+                } else {
+                    expires = "";
+                }
+                document.cookie = escape(name) + "=" + escape(value) + expires + "; path=/;";
+            },
+            readCookie: function(name) {
+                var nameEQ = escape(name) + "=";
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                    if (c.indexOf(nameEQ) === 0) return unescape(c.substring(nameEQ.length, c.length));
+                }
+                return false;
             }
-        },
-        showPanel: function(event) {
-            if (this.panel != event.target.dataset.panel) this.panel = event.target.dataset.panel;
-            else this.panel = '';
-        },
-        setAlert: function(text, type) {
-            var self = this;
-            this.alert = {text: text, type: type};
-            setTimeout(function() { self.alert = {}; }, 5000);
-        },
-        createCookie: function(name, value, days) {
-            var expires;
-            if (days) {
-                var date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = "; expires=" + date.toGMTString();
-            } else {
-                expires = "";
-            }
-            document.cookie = escape(name) + "=" + escape(value) + expires + "; path=/;";
-        },
-        readCookie: function(name) {
-            var nameEQ = escape(name) + "=";
-            var ca = document.cookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) === 0) return unescape(c.substring(nameEQ.length, c.length));
-            }
-            return false;
         }
     }
-}
 </script>
 
-<style scoped>
+<style lang="scss">
+
+@import '../scss/components.scss';
+
 .editor-nav {
     z-index: 10;
 }
@@ -572,5 +1538,6 @@ export default {
     margin-top: 5rem;
     margin-bottom: 5rem;
 }
+
 
 </style>
