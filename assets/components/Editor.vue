@@ -178,27 +178,27 @@
                 <textarea v-if="selected_editor == 'html'" id="page-content" class="form-control mb-2" v-model="page.content" rows="24"></textarea>
                 <ckeditor v-if="selected_editor == 'editor'" :editor="editor" v-model="page.content" :config="editorConfig"></ckeditor>
                 <div v-if="selected_editor == 'builder'" id="content-editor" class="mt-2">
-                    <div v-for="(element, index) in construct" class="container-fluid">
-                        <div v-if="element.type == 'text_left_image_right'" :id="element.id" class="row" v-on:click="activateElement(index)">
-                            <div class="col-sm-6 wrap-content" :contenteditable="enableEdit">
-                                <h3 class="component-title" v-html="element.parts.title.content"></h3>
-                                <div class="component-text" v-html="element.parts.text.content"></div>
-                                <a href="#" class="component-button btn btn-lg btn-secondary" :contenteditable="enableEdit">{{element.parts.button.content}}</a>
+                    <div v-for="(element, index) in construct">
+                        <div v-if="element.type == 'text_left_image_right'" :id="element.id" v-bind:class="{ component: true, row: true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
+                            <div class="col-sm-6 wrap-content">
+                                <h3 v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
+                                <div v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" :contenteditable="enableEdit" v-html="element.parts.text.content" v-on:click.stop="setActiveElement(element.parts.text, index);"></div>
+                                <a href="#" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
                             </div>
-                            <div class="col-sm-6 component-image"></div>
+                            <div v-bind:class="{ 'col-sm-6': true, 'component-image': true, active: element.parts.image.selected == true}" v-on:click.stop="setActiveElement(element.parts.image, index);"></div>
                         </div>
-                        <div v-else-if="element.type == 'text_right_image_left'" :id="element.id" class="row" v-on:click="activateElement(index)">
-                            <div class="col-sm-6 component-image"></div>
-                            <div class="col-sm-6 wrap-content" :contenteditable="enableEdit">
-                                <h3 class="component-title" v-html="element.parts.title.content"></h3>
-                                <div class="component-text" v-html="element.parts.text.content"></div>
-                                <a href="#" class="component-button btn btn-lg btn-secondary" :contenteditable="enableEdit">{{element.parts.button.content}}</a>
+                        <div v-else-if="element.type == 'text_right_image_left'" :id="element.id" v-bind:class="{ component: true, row: true, active: element.selected == true}" v-on:click.stop="setActiveElement(element);">
+                            <div v-bind:class="{ 'col-sm-6': true, 'component-image': true, active: element.parts.image.selected == true}" v-on:click.stop="setActiveElement(element.parts.image, index);"></div>
+                            <div class="col-sm-6 wrap-content">
+                                <h3 v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
+                                <div v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" :contenteditable="enableEdit" v-html="element.parts.text.content" v-on:click.stop="setActiveElement(element.parts.text, index);"></div>
+                                <a href="#" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
                             </div>
                         </div>
-                        <div v-else-if="element.type == 'block'" :id="element.id" class="" :contenteditable="enableEdit" v-on:click="activateElement(index)">
-                            <h3 class="component-title" v-html="element.parts.title.content"></h3>
-                            <div class="component-text" v-html="element.parts.text.content"></div>
-                            <a href="#" class="component-button btn btn-lg btn-secondary" :contenteditable="enableEdit">{{element.parts.button.content}}</a>
+                        <div v-else-if="element.type == 'block'" :id="element.id" class="" v-bind:class="{ 'component-block': true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
+                            <h3 v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
+                            <div v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" :contenteditable="enableEdit" v-html="element.parts.text.content" v-on:click.stop="setActiveElement(element.parts.text, index);"></div>
+                            <a href="#" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
                         </div>
                     </div>
                     <div v-if="enableEdit" class="text-center mt-3 py-5">
@@ -208,39 +208,44 @@
             </div>
             <div class="col-md-4 col-lg-3 component-settings">
                 <div v-if="active_component !== false" class="card">
-                    <div class="card-header" id="headingOne">
+                    <div class="card-header" id="component-settings" v-on:click="setActiveElement(construct[active_component], active_component);">
                         {{translations.component || 'Component'}}
-                        <i class="fas fa-chevron-circle-down float-right"></i>
+                        <i v-if="construct[active_component].selected == true" class="fas fa-chevron-down float-right"></i>
+                        <i v-else class="fas fa-chevron-left float-right"></i>
                     </div>
-                    <div class="card-body collapse show">
+                    <div v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].selected == true}">
                         <settings :settings="construct[active_component].settings"></settings>
                     </div>
-                    <div v-if="construct[active_component].parts.title != undefined" class="card-header" id="headingOne">
+                        <div class="card-header" id="component-title-settings" v-on:click="setActiveElement(construct[active_component].parts.title, active_component);">
                         {{translations.title || 'Title'}}
-                        <i class="fas fa-chevron-circle-left float-right"></i>
+                        <i v-if="construct[active_component].parts.title.selected == true" class="fas fa-chevron-down float-right"></i>
+                        <i v-else class="fas fa-chevron-left float-right"></i>
                     </div>
-                    <div v-if="construct[active_component].parts.title != undefined" class="card-body collapse show">
+                    <div v-if="construct[active_component].parts.title != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.title.selected == true}">
                         <settings :settings="construct[active_component].parts.title.settings"></settings>
                     </div>
-                    <div v-if="construct[active_component].parts.text != undefined" class="card-header" id="headingOne">
+                        <div class="card-header" id="component-text-settings" v-on:click="setActiveElement(construct[active_component].parts.text, active_component);">
                         {{translations.content || 'Content'}}
-                        <i class="fas fa-chevron-circle-left float-right"></i>
+                        <i v-if="construct[active_component].parts.text.selected == true" class="fas fa-chevron-down float-right"></i>
+                        <i v-else class="fas fa-chevron-left float-right"></i>
                     </div>
-                    <div v-if="construct[active_component].parts.text != undefined" class="card-body collapse show">
+                    <div v-if="construct[active_component].parts.text != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.text.selected == true}">
                         <settings :settings="construct[active_component].parts.text.settings"></settings>
                     </div>
-                    <div v-if="construct[active_component].parts.button != undefined" class="card-header" id="headingOne">
+                        <div class="card-header" id="component-button-settings" v-on:click="setActiveElement(construct[active_component].parts.button, active_component);">
                         {{translations.button || 'Button'}}
-                        <i class="fas fa-chevron-circle-left float-right"></i>
+                        <i v-if="construct[active_component].parts.button.selected == true" class="fas fa-chevron-down float-right"></i>
+                        <i v-else class="fas fa-chevron-left float-right"></i>
                     </div>
-                    <div v-if="construct[active_component].parts.button != undefined" class="card-body collapse show">
+                    <div v-if="construct[active_component].parts.button != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.button.selected == true}">
                         <settings :settings="construct[active_component].parts.button.settings"></settings>
                     </div>
-                    <div v-if="construct[active_component].parts.image != undefined" class="card-header" id="headingOne">
+                        <div class="card-header" id="component-image-settings" v-on:click="setActiveElement(construct[active_component].parts.image, active_component);">
                         {{translations.image || 'Image'}}
-                        <i class="fas fa-chevron-circle-left float-right"></i>
+                        <i v-if="construct[active_component].parts.image.selected == true" class="fas fa-chevron-down float-right"></i>
+                        <i v-else class="fas fa-chevron-left float-right"></i>
                     </div>
-                    <div v-if="construct[active_component].parts.image != undefined" class="card-body collapse show">
+                    <div v-if="construct[active_component].parts.image != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.image.selected == true}">
                         <settings :settings="construct[active_component].parts.image.settings"></settings>
                     </div>
                 </div>
@@ -293,7 +298,6 @@
                 construct_css: '',
                 enableEdit: true,
                 active_component: false,
-                active_element: '',
                 example: {},
                 selected_editor_name: 'HTML',
                 selected_editor: 'html',
@@ -381,6 +385,7 @@
                             this.page.role = result['roles'];
                             if (result['data']['construct']) this.construct = JSON.parse(result['data']['construct']);
                             else this.construct = [];
+                            this.generateCss();
                         } else {
                             this.page = {};
                             this.construct = [];
@@ -400,6 +405,8 @@
                         type: 'text_left_image_right',
                         title: this.translations.text_left_image_right,
                         image: this.example.bg_image,
+                        active: true,
+                        selected: false,
                         settings: {
                             width: '',
                             height: '',
@@ -410,10 +417,10 @@
                             display: '',
                             overflow: 'visible',
                             padding: {
-                                top: '20',
-                                right: '20',
-                                bottom: '20',
-                                left: '20',
+                                top: '0',
+                                right: '0',
+                                bottom: '0',
+                                left: '0',
                             },
                             margin: {
                                 top: '0',
@@ -435,13 +442,7 @@
                             text_align: '',
                             font_style: '',
                             text_decoration: '',
-                            background_color: {
-                                hex: '#FFFFFF',
-                                hsl: { h: 150, s: 0, l: 1, a: 1 },
-                                hsv: { h: 150, s: 0, v: 1, a: 1 },
-                                rgba: { r: 255, g: 255, b: 255, a: 1 },
-                                a: 1
-                            },
+                            background_color: {},
                             background_image: '',
                             background_size: '',
                             background_position: '',
@@ -459,6 +460,7 @@
                         parts: {
                             title: {
                                 content: this.example.title,
+                                selected: false,
                                 settings: {
                                     width: '',
                                     height: '',
@@ -469,16 +471,16 @@
                                     display: '',
                                     overflow: 'visible',
                                     padding: {
-                                        top: '20',
-                                        right: '20',
-                                        bottom: '20',
-                                        left: '20',
-                                    },
-                                    margin: {
                                         top: '0',
                                         right: '0',
                                         bottom: '0',
                                         left: '0',
+                                    },
+                                    margin: {
+                                        top: '15px',
+                                        right: '15px',
+                                        bottom: '15px',
+                                        left: '15px',
                                     },
                                     tag: 'h3',
                                     font_weight: '',
@@ -495,13 +497,7 @@
                                     text_align: '',
                                     font_style: '',
                                     text_decoration: '',
-                                    background_color: {
-                                        hex: '#FFFFFF',
-                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
-                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
-                                        a: 1
-                                    },
+                                    background_color: {},
                                     background_image: '',
                                     background_size: '',
                                     background_position: '',
@@ -519,6 +515,7 @@
                             },
                             text: {
                                 content: '<p>' + this.example.text_medium + '</p>',
+                                selected: false,
                                 settings: {
                                     width: '',
                                     height: '',
@@ -529,10 +526,10 @@
                                     display: '',
                                     overflow: 'visible',
                                     padding: {
-                                        top: '20',
-                                        right: '20',
-                                        bottom: '20',
-                                        left: '20',
+                                        top: '0',
+                                        right: '0',
+                                        bottom: '0',
+                                        left: '0',
                                     },
                                     margin: {
                                         top: '0',
@@ -551,16 +548,10 @@
                                         a: 1
                                     },
                                     text_shadow: '',
-                                    text_align: '',
+                                    text_align: 'left',
                                     font_style: '',
                                     text_decoration: '',
-                                    background_color: {
-                                        hex: '#FFFFFF',
-                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
-                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
-                                        a: 1
-                                    },
+                                    background_color: {},
                                     background_image: '',
                                     background_size: '',
                                     background_position: '',
@@ -578,6 +569,7 @@
                             },
                             button: {
                                 content: this.example.btn_txt,
+                                selected: false,
                                 settings: {
                                     width: '',
                                     height: '',
@@ -588,38 +580,32 @@
                                     display: '',
                                     overflow: 'visible',
                                     padding: {
-                                        top: '20',
-                                        right: '20',
-                                        bottom: '20',
-                                        left: '20',
+                                        top: '5px',
+                                        right: '25px',
+                                        bottom: '5px',
+                                        left: '25px',
                                     },
                                     margin: {
                                         top: '0',
                                         right: '0',
-                                        bottom: '0',
+                                        bottom: '15px',
                                         left: '0',
                                     },
                                     font_weight: '',
                                     font_size: '',
                                     line_height: '1.6em',
                                     color: {
-                                        hex: '#000000',
-                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
-                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
-                                        a: 1
-                                    },
-                                    text_shadow: '',
-                                    text_align: '',
-                                    font_style: '',
-                                    text_decoration: '',
-                                    background_color: {
                                         hex: '#FFFFFF',
                                         hsl: { h: 150, s: 0, l: 1, a: 1 },
                                         hsv: { h: 150, s: 0, v: 1, a: 1 },
                                         rgba: { r: 255, g: 255, b: 255, a: 1 },
                                         a: 1
                                     },
+                                    text_shadow: '',
+                                    text_align: '',
+                                    font_style: '',
+                                    text_decoration: '',
+                                    background_color: {},
                                     background_image: '',
                                     background_size: '',
                                     background_position: '',
@@ -636,14 +622,9 @@
                                 },
                             },
                             image: {
+                                selected: false,
                                 settings: {
-                                    background_color: {
-                                        hex: '#FFFFFF',
-                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
-                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
-                                        a: 1
-                                    },
+                                    background_color: {},
                                     background_image: this.example.bg_image,
                                     background_size: 'cover',
                                     background_position: 'center center',
@@ -659,6 +640,8 @@
                         type: 'text_right_image_left',
                         title: this.translations.text_right_image_left,
                         image: this.example.bg_image,
+                        active: true,
+                        selected: false,
                         settings: {
                             width: '',
                             height: '',
@@ -669,10 +652,10 @@
                             display: '',
                             overflow: 'visible',
                             padding: {
-                                top: '20',
-                                right: '20',
-                                bottom: '20',
-                                left: '20',
+                                top: '0',
+                                right: '0',
+                                bottom: '0',
+                                left: '0',
                             },
                             margin: {
                                 top: '0',
@@ -694,13 +677,7 @@
                             text_align: '',
                             font_style: '',
                             text_decoration: '',
-                            background_color: {
-                                hex: '#FFFFFF',
-                                hsl: { h: 150, s: 0, l: 1, a: 1 },
-                                hsv: { h: 150, s: 0, v: 1, a: 1 },
-                                rgba: { r: 255, g: 255, b: 255, a: 1 },
-                                a: 1
-                            },
+                            background_color: {},
                             background_image: '',
                             background_size: '',
                             background_position: '',
@@ -718,6 +695,7 @@
                         parts: {
                             title: {
                                 content: this.example.title,
+                                selected: false,
                                 settings: {
                                     width: '',
                                     height: '',
@@ -728,16 +706,16 @@
                                     display: '',
                                     overflow: 'visible',
                                     padding: {
-                                        top: '20',
-                                        right: '20',
-                                        bottom: '20',
-                                        left: '20',
-                                    },
-                                    margin: {
                                         top: '0',
                                         right: '0',
                                         bottom: '0',
                                         left: '0',
+                                    },
+                                    margin: {
+                                        top: '15px',
+                                        right: '15px',
+                                        bottom: '15px',
+                                        left: '15px',
                                     },
                                     tag: 'h3',
                                     font_weight: '',
@@ -754,13 +732,7 @@
                                     text_align: '',
                                     font_style: '',
                                     text_decoration: '',
-                                    background_color: {
-                                        hex: '#FFFFFF',
-                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
-                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
-                                        a: 1
-                                    },
+                                    background_color: {},
                                     background_image: '',
                                     background_size: '',
                                     background_position: '',
@@ -778,6 +750,7 @@
                             },
                             text: {
                                 content: '<p>' + this.example.text_medium + '</p>',
+                                selected: false,
                                 settings: {
                                     width: '',
                                     height: '',
@@ -788,15 +761,15 @@
                                     display: '',
                                     overflow: 'visible',
                                     padding: {
-                                        top: '20',
-                                        right: '20',
-                                        bottom: '20',
-                                        left: '20',
+                                        top: '0',
+                                        right: '0',
+                                        bottom: '0',
+                                        left: '0',
                                     },
                                     margin: {
                                         top: '0',
                                         right: '0',
-                                        bottom: '0',
+                                        bottom: '15px',
                                         left: '0',
                                     },
                                     font_weight: '',
@@ -813,13 +786,7 @@
                                     text_align: '',
                                     font_style: '',
                                     text_decoration: '',
-                                    background_color: {
-                                        hex: '#FFFFFF',
-                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
-                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
-                                        a: 1
-                                    },
+                                    background_color: {},
                                     background_image: '',
                                     background_size: '',
                                     background_position: '',
@@ -837,6 +804,7 @@
                             },
                             button: {
                                 content: this.example.btn_txt,
+                                selected: false,
                                 settings: {
                                     width: '',
                                     height: '',
@@ -847,38 +815,32 @@
                                     display: '',
                                     overflow: 'visible',
                                     padding: {
-                                        top: '20',
-                                        right: '20',
-                                        bottom: '20',
-                                        left: '20',
+                                        top: '5px',
+                                        right: '25px',
+                                        bottom: '5px',
+                                        left: '25px',
                                     },
                                     margin: {
                                         top: '0',
                                         right: '0',
-                                        bottom: '0',
+                                        bottom: '15px',
                                         left: '0',
                                     },
                                     font_weight: '',
                                     font_size: '',
                                     line_height: '1.6em',
                                     color: {
-                                        hex: '#000000',
-                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
-                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
-                                        a: 1
-                                    },
-                                    text_shadow: '',
-                                    text_align: '',
-                                    font_style: '',
-                                    text_decoration: '',
-                                    background_color: {
                                         hex: '#FFFFFF',
                                         hsl: { h: 150, s: 0, l: 1, a: 1 },
                                         hsv: { h: 150, s: 0, v: 1, a: 1 },
                                         rgba: { r: 255, g: 255, b: 255, a: 1 },
                                         a: 1
                                     },
+                                    text_shadow: '',
+                                    text_align: '',
+                                    font_style: '',
+                                    text_decoration: '',
+                                    background_color: {},
                                     background_image: '',
                                     background_size: '',
                                     background_position: '',
@@ -895,14 +857,9 @@
                                 },
                             },
                             image: {
+                                selected: false,
                                 settings: {
-                                    background_color: {
-                                        hex: '#FFFFFF',
-                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
-                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
-                                        a: 1
-                                    },
+                                    background_color: {},
                                     background_image: this.example.bg_image,
                                     background_size: 'cover',
                                     background_position: 'center center',
@@ -918,6 +875,8 @@
                         type: 'block',
                         title: this.translations.block,
                         image: this.example.bg_image,
+                        active: true,
+                        selected: false,
                         settings: {
                             width: '',
                             height: '',
@@ -928,16 +887,16 @@
                             display: '',
                             overflow: 'visible',
                             padding: {
-                                top: '20',
-                                right: '20',
-                                bottom: '20',
-                                left: '20',
+                                top: '0',
+                                right: '0',
+                                bottom: '0',
+                                left: '0',
                             },
                             margin: {
-                                top: '20',
-                                right: '20',
-                                bottom: '20',
-                                left: '20',
+                                top: '0',
+                                right: '0',
+                                bottom: '0',
+                                left: '0',
                             },
                             font_weight: '',
                             font_size: '',
@@ -953,13 +912,7 @@
                             text_align: '',
                             font_style: '',
                             text_decoration: '',
-                            background_color: {
-                                hex: '#FFFFFF',
-                                hsl: { h: 150, s: 0, l: 1, a: 1 },
-                                hsv: { h: 150, s: 0, v: 1, a: 1 },
-                                rgba: { r: 255, g: 255, b: 255, a: 1 },
-                                a: 1
-                            },
+                            background_color: {},
                             background_image: '',
                             background_size: '',
                             background_position: '',
@@ -977,6 +930,7 @@
                         parts: {
                             title: {
                                 content: this.example.title,
+                                selected: false,
                                 settings: {
                                     width: '',
                                     height: '',
@@ -987,16 +941,16 @@
                                     display: '',
                                     overflow: 'visible',
                                     padding: {
-                                        top: '20',
-                                        right: '20',
-                                        bottom: '20',
-                                        left: '20',
+                                        top: '0',
+                                        right: '0',
+                                        bottom: '0',
+                                        left: '0',
                                     },
                                     margin: {
-                                        top: '20',
-                                        right: '20',
-                                        bottom: '20',
-                                        left: '20',
+                                        top: '15px',
+                                        right: '15px',
+                                        bottom: '15px',
+                                        left: '15px',
                                     },
                                     tag: 'h3',
                                     font_weight: '',
@@ -1013,13 +967,7 @@
                                     text_align: '',
                                     font_style: '',
                                     text_decoration: '',
-                                    background_color: {
-                                        hex: '#FFFFFF',
-                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
-                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
-                                        a: 1
-                                    },
+                                    background_color: {},
                                     background_image: '',
                                     background_size: '',
                                     background_position: '',
@@ -1037,6 +985,7 @@
                             },
                             text: {
                                 content: '<p>' + this.example.text_medium + '</p>',
+                                selected: false,
                                 settings: {
                                     width: '',
                                     height: '',
@@ -1047,16 +996,16 @@
                                     display: '',
                                     overflow: 'visible',
                                     padding: {
-                                        top: '20',
-                                        right: '20',
-                                        bottom: '20',
-                                        left: '20',
+                                        top: '0',
+                                        right: '0',
+                                        bottom: '15px',
+                                        left: '0',
                                     },
                                     margin: {
-                                        top: '20',
-                                        right: '20',
-                                        bottom: '20',
-                                        left: '20',
+                                        top: '0',
+                                        right: '0',
+                                        bottom: '5px',
+                                        left: '0',
                                     },
                                     font_weight: '',
                                     font_size: '',
@@ -1072,13 +1021,7 @@
                                     text_align: '',
                                     font_style: '',
                                     text_decoration: '',
-                                    background_color: {
-                                        hex: '#FFFFFF',
-                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
-                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
-                                        a: 1
-                                    },
+                                    background_color: {},
                                     background_image: '',
                                     background_size: '',
                                     background_position: '',
@@ -1096,6 +1039,7 @@
                             },
                             button: {
                                 content: this.example.btn_txt,
+                                selected: false,
                                 settings: {
                                     width: '',
                                     height: '',
@@ -1106,38 +1050,32 @@
                                     display: '',
                                     overflow: 'visible',
                                     padding: {
-                                        top: '20',
-                                        right: '20',
-                                        bottom: '20',
-                                        left: '20',
+                                        top: '5px',
+                                        right: '25px',
+                                        bottom: '5px',
+                                        left: '25px',
                                     },
                                     margin: {
-                                        top: '20',
-                                        right: '20',
-                                        bottom: '20',
-                                        left: '20',
+                                        top: '0',
+                                        right: '0',
+                                        bottom: '15px',
+                                        left: '0',
                                     },
                                     font_weight: '',
                                     font_size: '',
                                     line_height: '1.6em',
                                     color: {
-                                        hex: '#000000',
-                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
-                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
-                                        a: 1
-                                    },
-                                    text_shadow: '',
-                                    text_align: '',
-                                    font_style: '',
-                                    text_decoration: '',
-                                    background_color: {
                                         hex: '#FFFFFF',
                                         hsl: { h: 150, s: 0, l: 1, a: 1 },
                                         hsv: { h: 150, s: 0, v: 1, a: 1 },
                                         rgba: { r: 255, g: 255, b: 255, a: 1 },
                                         a: 1
                                     },
+                                    text_shadow: '',
+                                    text_align: '',
+                                    font_style: '',
+                                    text_decoration: '',
+                                    background_color: {},
                                     background_image: '',
                                     background_size: '',
                                     background_position: '',
@@ -1159,6 +1097,8 @@
                         type: 'html',
                         title: this.translations.html,
                         image: this.example.bg_image,
+                        active: true,
+                        selected: false,
                         settings: {
                             width: '',
                             height: '',
@@ -1169,16 +1109,16 @@
                             display: '',
                             overflow: 'visible',
                             padding: {
-                                top: '20',
-                                right: '20',
-                                bottom: '20',
-                                left: '20',
+                                top: '20px',
+                                right: '20px',
+                                bottom: '20px',
+                                left: '20px',
                             },
                             margin: {
-                                top: '20',
-                                right: '20',
-                                bottom: '20',
-                                left: '20',
+                                top: '0',
+                                right: '0',
+                                bottom: '0',
+                                left: '0',
                             },
                             font_weight: '',
                             font_size: '',
@@ -1194,13 +1134,7 @@
                             text_align: '',
                             font_style: '',
                             text_decoration: '',
-                            background_color: {
-                                hex: '#FFFFFF',
-                                hsl: { h: 150, s: 0, l: 1, a: 1 },
-                                hsv: { h: 150, s: 0, v: 1, a: 1 },
-                                rgba: { r: 255, g: 255, b: 255, a: 1 },
-                                a: 1
-                            },
+                            background_color: {},
                             background_image: '',
                             background_size: '',
                             background_position: '',
@@ -1218,6 +1152,7 @@
                         parts: {
                             text: {
                                 content: '<p>' + this.example.text_medium + '</p>',
+                                selected: false,
                                 settings: {
                                     width: '',
                                     height: '',
@@ -1228,16 +1163,16 @@
                                     display: '',
                                     overflow: 'visible',
                                     padding: {
-                                        top: '20',
-                                        right: '20',
-                                        bottom: '20',
-                                        left: '20',
+                                        top: '0',
+                                        right: '0',
+                                        bottom: '0',
+                                        left: '0',
                                     },
                                     margin: {
-                                        top: '20',
-                                        right: '20',
-                                        bottom: '20',
-                                        left: '20',
+                                        top: '0',
+                                        right: '0',
+                                        bottom: '0',
+                                        left: '0',
                                     },
                                     font_weight: '',
                                     font_size: '',
@@ -1253,13 +1188,7 @@
                                     text_align: '',
                                     font_style: '',
                                     text_decoration: '',
-                                    background_color: {
-                                        hex: '#FFFFFF',
-                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
-                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
-                                        a: 1
-                                    },
+                                    background_color: {},
                                     background_image: '',
                                     background_size: '',
                                     background_position: '',
@@ -1280,17 +1209,23 @@
                     slider: {
                         type: 'slider',
                         title: this.translations.slider,
-                        image: this.example.bg_image
+                        image: this.example.bg_image,
+                        active: false,
+                        selected: false,
                     },
                     collapse: {
                         type: 'collapse',
                         title: this.translations.collapse,
-                        image: this.example.bg_image
+                        image: this.example.bg_image,
+                        active: false,
+                        selected: false,
                     },
                     hero: {
                         type: 'hero',
                         title: this.translations.hero,
-                        image: this.example.bg_image
+                        image: this.example.bg_image,
+                        active: false,
+                        selected: false,
                     }
                 };
             },
@@ -1305,15 +1240,40 @@
                 if (!Date.now) Date.now = function() { return new Date().getTime(); }
                 var timestamp = Math.floor(Date.now() / 1000);
 
-                var elements = this.elements[event.target.dataset.element];
-                elements.id = 'component-'+timestamp;
+                var element = this.copyElement(this.elements[event.target.dataset.element]);
+                element.id = 'component-'+timestamp;
+                this.construct.push(element);
 
-                this.construct.push(elements);
                 this.generateCss();
                 this.$modal.hide('page-elements');
             },
-            activateElement: function(index) {
+            copyElement: function(o) {
+            	let output, v, key
+            	output = Array.isArray(o) ? [] : {}
+
+            	for (key in o) {
+            		v = o[key]
+            		if(v) {
+            			output[key] = (typeof v === "object") ? this.copyElement(v) : v
+            		} else {
+            			output[key] = v
+            		}
+            	}
+            	return output;
+            },
+            setActiveElement: function(element, index) {
+
+                for (var i = 0; i < this.construct.length; i++) {
+                    this.construct[i].selected = false;
+
+                    var parts = this.construct[i].parts;
+                    for (var x in parts) {
+                        parts[x].selected = false;
+                    }
+                }
+                element.selected = true;
                 this.active_component = index;
+
             },
             generateCss: function() {
                 var css = "";
@@ -1359,10 +1319,10 @@
                     if (settings.padding.left != '') css+= "padding-left: " + settings.padding.left + "; ";
                 }
                 if (typeof settings.margin !== 'undefined') {
-                    if (settings.margin.top != '') css+= "padding-top: " + settings.margin.top + "; ";
-                    if (settings.margin.right != '') css+= "padding-right: " + settings.margin.right + "; ";
-                    if (settings.margin.bottom != '') css+= "padding-bottom: " + settings.margin.bottom + "; ";
-                    if (settings.margin.left != '') css+= "padding-left: " + settings.margin.left + "; ";
+                    if (settings.margin.top != '') css+= "margin-top: " + settings.margin.top + "; ";
+                    if (settings.margin.right != '') css+= "margin-right: " + settings.margin.right + "; ";
+                    if (settings.margin.bottom != '') css+= "margin-bottom: " + settings.margin.bottom + "; ";
+                    if (settings.margin.left != '') css+= "margin-left: " + settings.margin.left + "; ";
                 }
                 if (typeof settings.font_weight !== 'undefined' && settings.font_weight != '') css+= "font-weight: " + settings.font_weight + "; ";
                 if (typeof settings.font_size !== 'undefined' && settings.font_size != '') css+= "font-size: " + settings.font_size + "; ";
@@ -1537,6 +1497,15 @@
     margin: 0 auto;
     margin-top: 5rem;
     margin-bottom: 5rem;
+}
+
+.component.active,
+.component-block.active,
+.component-title.active,
+.component-text.active,
+.component-button.active,
+.component-image.active {
+    border: 2px dashed red !important;
 }
 
 
