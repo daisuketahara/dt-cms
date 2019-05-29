@@ -6,10 +6,6 @@ require('../vendor/onsen-ui/css/onsen-css-components.min.css');
 require('animate.css');
 import '@fortawesome/fontawesome-free/js/all';
 
-// var $ = require('jquery');
-const $ = require('jquery');
-global.$ = global.jQuery = $;
-
 var setLocale;
 
 var app = {
