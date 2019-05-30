@@ -1,11 +1,9 @@
 {
     "devDependencies": {
-        "@fortawesome/fontawesome-free": "^5.6.3",
-        "@symfony/webpack-encore": "^0.22.0",
-        "bootstrap": "^4.2.1",
-        "jquery": "^3.3.1",
-        "node-sass": "^4.11.0",
-        "popper.js": "^1.14.6",
+        "@fortawesome/fontawesome-free": "^5.8.2",
+        "@symfony/webpack-encore": "^0.22.4",
+        "bootstrap": "^4.3.1",
+        "node-sass": "^4.12.0",
         "sass-loader": "^7.0.1",
         "webpack-notifier": "^1.6.0"
     },
@@ -19,27 +17,31 @@
     },
     "dependencies": {
         "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic",
+        "@ckeditor/ckeditor5-build-inline": "^12.1.0",
+        "@ckeditor/ckeditor5-editor-classic": "^12.1.0",
+        "@ckeditor/ckeditor5-editor-inline": "^12.1.0",
         "@ckeditor/ckeditor5-vue": "ckeditor/ckeditor5-vue",
         "@fullcalendar/core": "^4.1.0",
         "@fullcalendar/daygrid": "^4.1.0",
         "@fullcalendar/interaction": "^4.1.0",
         "@fullcalendar/timegrid": "^4.1.0",
-        "@fullcalendar/vue": "^4.1.0",
+        "@fullcalendar/vue": "^4.1.1",
         "animate.css": "^3.7.0",
         "axios": "^0.18.0",
         "hamburgers": "^1.1.3",
         "moment": "^2.24.0",
         "vue": "^2.6.10",
         "vue-codemirror": "^4.0.6",
+        "vue-color": "^2.7.0",
         "vue-highlightjs": "^1.3.3",
         "vue-js-modal": "^1.3.31",
         "vue-loader": "^15.7.0",
         "vue-router": "^3.0.6",
-        "vue-tel-input": "^2.1.3",
+        "vue-tel-input": "^2.1.5",
         "vue-template-compiler": "^2.6.10",
         "vuejs-datepicker": "^1.5.4",
         "vuejs-dialog": "^1.4.0",
         "vuejs-paginate": "^2.1.0",
-        "vuex": "^3.1.0"
+        "vuex": "^3.1.1"
     }
 }

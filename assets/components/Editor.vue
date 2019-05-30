@@ -182,7 +182,7 @@
                         <div v-if="element.type == 'text_left_image_right'" :id="element.id" v-bind:class="{ component: true, row: true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
                             <div class="col-sm-6 wrap-content">
                                 <h3 v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
-                                <div v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" :contenteditable="enableEdit" v-html="element.parts.text.content" v-on:click.stop="setActiveElement(element.parts.text, index);"></div>
+                                <ckeditor :editor="inlineEditor" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-model="element.parts.text.content" :config="inlineEditorConfig" @focus="setActiveElement(element.parts.text, index);"></ckeditor>
                                 <a href="#" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
                             </div>
                             <div v-bind:class="{ 'col-sm-6': true, 'component-image': true, active: element.parts.image.selected == true}" v-on:click.stop="setActiveElement(element.parts.image, index);"></div>
@@ -191,13 +191,13 @@
                             <div v-bind:class="{ 'col-sm-6': true, 'component-image': true, active: element.parts.image.selected == true}" v-on:click.stop="setActiveElement(element.parts.image, index);"></div>
                             <div class="col-sm-6 wrap-content">
                                 <h3 v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
-                                <div v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" :contenteditable="enableEdit" v-html="element.parts.text.content" v-on:click.stop="setActiveElement(element.parts.text, index);"></div>
+                                <ckeditor :editor="inlineEditor" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-model="element.parts.text.content" :config="inlineEditorConfig" @focus="setActiveElement(element.parts.text, index);"></ckeditor>
                                 <a href="#" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
                             </div>
                         </div>
                         <div v-else-if="element.type == 'block'" :id="element.id" class="" v-bind:class="{ 'component-block': true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
                             <h3 v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
-                            <div v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" :contenteditable="enableEdit" v-html="element.parts.text.content" v-on:click.stop="setActiveElement(element.parts.text, index);"></div>
+                            <ckeditor :editor="inlineEditor" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-model="element.parts.text.content" :config="inlineEditorConfig" @focus="setActiveElement(element.parts.text, index);"></ckeditor>
                             <a href="#" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
                         </div>
                     </div>
@@ -216,7 +216,7 @@
                     <div v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].selected == true}">
                         <settings :settings="construct[active_component].settings"></settings>
                     </div>
-                        <div class="card-header" id="component-title-settings" v-on:click="setActiveElement(construct[active_component].parts.title, active_component);">
+                    <div v-if="construct[active_component].parts.title != undefined" class="card-header" id="component-title-settings" v-on:click="setActiveElement(construct[active_component].parts.title, active_component);">
                         {{translations.title || 'Title'}}
                         <i v-if="construct[active_component].parts.title.selected == true" class="fas fa-chevron-down float-right"></i>
                         <i v-else class="fas fa-chevron-left float-right"></i>
@@ -224,7 +224,7 @@
                     <div v-if="construct[active_component].parts.title != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.title.selected == true}">
                         <settings :settings="construct[active_component].parts.title.settings"></settings>
                     </div>
-                        <div class="card-header" id="component-text-settings" v-on:click="setActiveElement(construct[active_component].parts.text, active_component);">
+                    <div v-if="construct[active_component].parts.text != undefined" class="card-header" id="component-text-settings" v-on:click="setActiveElement(construct[active_component].parts.text, active_component);">
                         {{translations.content || 'Content'}}
                         <i v-if="construct[active_component].parts.text.selected == true" class="fas fa-chevron-down float-right"></i>
                         <i v-else class="fas fa-chevron-left float-right"></i>
@@ -232,7 +232,7 @@
                     <div v-if="construct[active_component].parts.text != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.text.selected == true}">
                         <settings :settings="construct[active_component].parts.text.settings"></settings>
                     </div>
-                        <div class="card-header" id="component-button-settings" v-on:click="setActiveElement(construct[active_component].parts.button, active_component);">
+                    <div v-if="construct[active_component].parts.button != undefined" class="card-header" id="component-button-settings" v-on:click="setActiveElement(construct[active_component].parts.button, active_component);">
                         {{translations.button || 'Button'}}
                         <i v-if="construct[active_component].parts.button.selected == true" class="fas fa-chevron-down float-right"></i>
                         <i v-else class="fas fa-chevron-left float-right"></i>
@@ -240,7 +240,7 @@
                     <div v-if="construct[active_component].parts.button != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.button.selected == true}">
                         <settings :settings="construct[active_component].parts.button.settings"></settings>
                     </div>
-                        <div class="card-header" id="component-image-settings" v-on:click="setActiveElement(construct[active_component].parts.image, active_component);">
+                    <div v-if="construct[active_component].parts.image != undefined" class="card-header" id="component-image-settings" v-on:click="setActiveElement(construct[active_component].parts.image, active_component);">
                         {{translations.image || 'Image'}}
                         <i v-if="construct[active_component].parts.image.selected == true" class="fas fa-chevron-down float-right"></i>
                         <i v-else class="fas fa-chevron-left float-right"></i>
@@ -270,6 +270,7 @@
 <script>
     import axios from 'axios';
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+    import InlineEditor from '@ckeditor/ckeditor5-build-inline';
     import EditorSettings from '../components/EditorSettings'
 
     export default {
@@ -293,6 +294,11 @@
                 editor: ClassicEditor, //ClassicEditor,
                 editorData: {}, //'<p>Rich-text editor content.</p>',
                 editorConfig: {},
+                inlineEditor: InlineEditor, //InlineEditor,
+                inlineEditorData: {}, //'<p>Rich-text editor content.</p>',
+                inlineEditorConfig: {
+                    toolbar: [ 'heading',  'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', '|', 'link' ]
+                },
                 elements: {},
                 construct: [],
                 construct_css: '',
