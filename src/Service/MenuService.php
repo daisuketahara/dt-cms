@@ -22,7 +22,7 @@ class MenuService
         $this->requestStack = $requestStack;
     }
 
-    public function getMenu(int $menuId, bool $useCache=true)
+    public function getMenu(int $menuId, bool $useCache=true, $edit=false)
     {
         $cache = new CacheService();
         $_locale = $this->requestStack->getCurrentRequest()->getLocale();
@@ -67,8 +67,9 @@ class MenuService
         LEFT JOIN page AS p ON p.status = 1 AND pm.page_id = p.id
         LEFT JOIN page_content AS pc ON p.id = pc.page_id AND pc.locale_id = " . $locale->getId() . "
         LEFT JOIN locale AS l ON l.id = pc.locale_id
-        WHERE mi.menu_id = " . $menuId . " AND mi.active = 1 AND (mi.parent_id = 0 OR mi.parent_id IS NULL)
-        ORDER BY mi.sort ASC";
+        WHERE mi.menu_id = " . $menuId . " AND (mi.parent_id = 0 OR mi.parent_id IS NULL) ";
+        if (empty($edit)) $sql .= "AND mi.active = 1 ";
+        $sql .= "ORDER BY mi.sort ASC";
 
         $conn = $this->em->getConnection();
         $stmt = $conn->prepare($sql);

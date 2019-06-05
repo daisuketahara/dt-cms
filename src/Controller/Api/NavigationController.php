@@ -12,11 +12,13 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
+use App\Entity\Locale;
 use App\Entity\Menu;
 use App\Entity\MenuItems;
 use App\Entity\Page;
 use App\Entity\PageContent;
 use App\Entity\Permission;
+use App\Service\CacheService;
 use App\Service\MenuService;
 use App\Service\LogService;
 
@@ -57,7 +59,23 @@ class NavigationController extends Controller
     */
     final public function getMenuItems($id, MenuService $menuService)
     {
-        $items = $menuService->getMenu($id, false);
+        $items = $menuService->getMenu($id, true);
+        $json = array(
+            'success' => true,
+            'data' => $items,
+        );
+
+        $json = $this->serializer->serialize($json, 'json');
+
+        return $this->json($json);
+    }
+
+    /**
+    * @Route("/api/v1/navigation/get-to-edit/{id}/", name="api_navigation_menu_items_edit"), methods={"GET","HEAD"})
+    */
+    final public function getMenuItemsToEdit($id, MenuService $menuService)
+    {
+        $items = $menuService->getMenu($id, false, true);
         $json = array(
             'success' => true,
             'data' => $items,
@@ -106,7 +124,6 @@ class NavigationController extends Controller
     */
     final public function delete(int $id=0, LogService $log)
     {
-
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
         elseif (!empty($id)) $toRemove = array($id);
@@ -168,6 +185,7 @@ class NavigationController extends Controller
 
                     if (isset($item['icon'])) $menuItem->setIcon($item['icon']);
                     if (isset($item['active'])) $menuItem->setActive($item['active']);
+                    else $menuItem->setActive(false);
 
                     if (isset($item['permission_id'])) {
                         $permission = $this->getDoctrine()
@@ -218,6 +236,15 @@ class NavigationController extends Controller
                 $json = json_encode([
                     'success' => true,
                 ]);
+
+                $cache = new CacheService();
+
+                $locales = $this->getDoctrine()
+                    ->getRepository(Locale::class)
+                    ->findAll();
+                foreach($locales as $locale) {
+                    $cache->delete('menu.' . $locale->getId() . '.' . $id);
+                }
 
             } else {
                 $json = json_encode([

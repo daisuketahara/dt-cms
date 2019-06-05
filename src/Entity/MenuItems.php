@@ -65,7 +65,7 @@ class MenuItems
     /**
     * @ORM\Column(type="boolean")
     */
-    protected $active;
+    protected $active = false;
 
     /**
      * Get the value of Id

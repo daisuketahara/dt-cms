@@ -204,7 +204,7 @@
             },
             getMenu: function() {
                 this.collapse = [];
-                axios.get('/api/v1/navigation/get/'+this.menu_id+'/', {headers: this.headers})
+                axios.get('/api/v1/navigation/get-to-edit/'+this.menu_id+'/', {headers: this.headers})
                     .then(response => {
                         this.menu = JSON.parse(response.data)['data'];
                         for (var i = 0; i < this.menu.length; i++) {
@@ -338,6 +338,14 @@
 
                         if (result.success) {
                             this.setAlert(translations.saved, 'success');
+
+                            this.$parent.$parent.getRoutes();
+
+
+
+
+
+
                         } else {
                             this.setAlert(result.message, 'error');
                         }
