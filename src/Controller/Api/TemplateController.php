@@ -164,15 +164,8 @@ class TemplateController extends Controller
         try {
             $scss = new Compiler();
             $scss->setFormatter('Leafo\\ScssPhp\\Formatter\\Crunched');
-            $scss->setImportPaths(array(
-                'assets/scss/',
-                'assets/vendor/',
-                'vendor',
-                'vendor/twbs/bootstrap/scss',
-                'templates/layout/' . $template->getTag() . '/scss',
-            ));
 
-            $css = $scss->compile('@import "index.scss";');
+            $css = $scss->compile('@import "templates/layout/' . $template->getTag() . '/scss/index.scss";');
             $css .= $scss->compile($template->getCustomCss());
 
             if (file_exists('public/css/' . $template->getTag() . '.css')) unlink('public/css/' . $template->getTag() . '.css');
@@ -199,8 +192,6 @@ class TemplateController extends Controller
             'assets/vendor/signature_pad/docs/js/signature_pad.umd.js' => 'public/vendor/signature-pad/signature-pad.js',
             'assets/vendor/dymo/DYMO.Label.Framework.2.0.2.js' => 'public/vendor/dymo-framework.js',
             'assets/vendor/JsBarcode.all.min.js' => 'public/vendor/JsBarcode.all.min.js',
-            'assets/vendor/intl-tel-input-14.0.0/build' => 'public/vendor/intl-tel-input',
-            'vendor/bassjobsen/bootstrap-3-typeahead/bootstrap3-typeahead.min.js' => 'public/vendor/typeahead/bootstrap3-typeahead.min.js',
             'vendor/nnnick/chartjs/dist' => 'public/vendor/chartjs',
             'vendor/moment/moment/min' => 'public/vendor/moment',
         );
