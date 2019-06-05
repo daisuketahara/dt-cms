@@ -151,10 +151,10 @@
                         </div>
                     </div>
                     <div v-if="panel == 'css'" class="mb-2">
-                        <textarea class="form-control" rows="6" v-model="page.customCss"></textarea>
+                        <codemirror v-model="page.customCss" :options="cmCssOptions"></codemirror>
                     </div>
                     <div v-if="panel == 'js'" class="mb-2">
-                        <textarea class="form-control" rows="6" v-model="page.customJs"></textarea>
+                        <codemirror v-model="page.customJs" :options="cmJsOptions"></codemirror>
                     </div>
                 </transition>
                 <div class="form-group mb-2">
@@ -271,12 +271,14 @@
     import axios from 'axios';
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
     import InlineEditor from '@ckeditor/ckeditor5-build-inline';
-    import EditorSettings from '../components/EditorSettings'
+    import EditorSettings from '../components/EditorSettings';
+    import { codemirror } from 'vue-codemirror';
 
     export default {
         name: "editor",
         components: {
-            'settings': EditorSettings
+            'settings': EditorSettings,
+            codemirror
         },
         data() {
             return {
@@ -307,6 +309,18 @@
                 example: {},
                 selected_editor_name: 'HTML',
                 selected_editor: 'html',
+                cmCssOptions: {
+                    tabSize: 4,
+                    theme: 'base16-light',
+                    mode: 'text/css',
+                    lineNumbers: true,
+                },
+                cmJsOptions: {
+                    tabSize: 4,
+                    theme: 'base16-light',
+                    mode: 'text/javascript',
+                    lineNumbers: true,
+                },
             }
         },
         computed: {
