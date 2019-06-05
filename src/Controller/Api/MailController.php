@@ -414,6 +414,12 @@ class MailController extends Controller
             ->find($localeId);
         }
 
+        if (empty($locale)) {
+            $locale = $this->getDoctrine()
+            ->getRepository(Locale::class)
+            ->getDefaultLocale();
+        }
+
         if (!empty($id)) {
 
             $mailTemplate = $this->getDoctrine()
@@ -461,16 +467,10 @@ class MailController extends Controller
                 if (!empty($params['tag'])) $parent->setTag($params['tag']);
                 else $errors[] = 'Tag cannot be empty';
                 $mailTemplate->setMailTemplate($parent);
-
-                if (empty($locale)) {
-
-                    $locale= $this->getDoctrine()
-                    ->getRepository(Locale::class)
-                    ->getDefaultLocale();
-                    $mailTemplate->setLocale($locale);
-                }
             }
 
+            $mailTemplate->setLocale($locale);
+            
             if (!empty($params['name'])) $mailTemplate->setName($params['name']);
             else $errors[] = 'Name cannot be empty';
 

@@ -214,6 +214,12 @@ class BlockController extends Controller
             ->find($localeId);
         }
 
+        if (empty($locale)) {
+            $locale = $this->getDoctrine()
+            ->getRepository(Locale::class)
+            ->getDefaultLocale();
+        }
+
         if (!empty($id)) {
 
             $block = $this->getDoctrine()
@@ -261,16 +267,9 @@ class BlockController extends Controller
                 if (!empty($params['tag'])) $parent->setTag($params['tag']);
                 else $errors[] = 'Tag cannot be empty';
                 $block->setBlock($parent);
-
-                if (empty($locale)) {
-
-                    $locale= $this->getDoctrine()
-                    ->getRepository(Locale::class)
-                    ->getDefaultLocale();
-                    $block->setLocale($locale);
-                }
             }
 
+            $block->setLocale($locale);
             if (!empty($params['name'])) $block->setName($params['name']);
             else $errors[] = 'Name cannot be empty';
 
