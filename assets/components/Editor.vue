@@ -166,15 +166,6 @@
                     </div>
                     <input type="text" class="form-control" id="page-route" name="page-route" :value="page.pageRoute" aria-describedby="basic-addon3">
                 </div>
-
-
-
-
-
-
-
-
-
                 <textarea v-if="selected_editor == 'html'" id="page-content" class="form-control mb-2" v-model="page.content" rows="24"></textarea>
                 <ckeditor v-if="selected_editor == 'editor'" :editor="editor" v-model="page.content" :config="editorConfig"></ckeditor>
                 <div v-if="selected_editor == 'builder'" id="content-editor" class="mt-2">
@@ -182,7 +173,9 @@
                         <div v-if="element.type == 'text_left_image_right'" :id="element.id" v-bind:class="{ component: true, row: true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
                             <div class="col-sm-6 wrap-content">
                                 <h3 v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
-                                <ckeditor :editor="inlineEditor" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-model="element.parts.text.content" :config="inlineEditorConfig" @focus="setActiveElement(element.parts.text, index);"></ckeditor>
+                                <div v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
+                                    <ckeditor :editor="inlineEditor" v-model="element.parts.text.content" :config="inlineEditorConfig"></ckeditor>
+                                </div>
                                 <a href="#" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
                             </div>
                             <div v-bind:class="{ 'col-sm-6': true, 'component-image': true, active: element.parts.image.selected == true}" v-on:click.stop="setActiveElement(element.parts.image, index);"></div>
@@ -191,13 +184,17 @@
                             <div v-bind:class="{ 'col-sm-6': true, 'component-image': true, active: element.parts.image.selected == true}" v-on:click.stop="setActiveElement(element.parts.image, index);"></div>
                             <div class="col-sm-6 wrap-content">
                                 <h3 v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
-                                <ckeditor :editor="inlineEditor" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-model="element.parts.text.content" :config="inlineEditorConfig" @focus="setActiveElement(element.parts.text, index);"></ckeditor>
+                                <div v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
+                                    <ckeditor :editor="inlineEditor" v-model="element.parts.text.content" :config="inlineEditorConfig"></ckeditor>
+                                </div>
                                 <a href="#" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
                             </div>
                         </div>
                         <div v-else-if="element.type == 'block'" :id="element.id" class="" v-bind:class="{ 'component-block': true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
                             <h3 v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
-                            <ckeditor :editor="inlineEditor" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-model="element.parts.text.content" :config="inlineEditorConfig" @focus="setActiveElement(element.parts.text, index);"></ckeditor>
+                            <div v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
+                                <ckeditor :editor="inlineEditor" v-model="element.parts.text.content" :config="inlineEditorConfig"></ckeditor>
+                            </div>
                             <a href="#" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
                         </div>
                     </div>
