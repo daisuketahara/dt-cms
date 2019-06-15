@@ -1,27 +1,29 @@
-{% extends "layout/index.html.twig" %}
-
-{% block stylesheets %}
-{{ parent() }}
-    {{ encore_entry_link_tags('admin') }}
-    <link rel="stylesheet" type="text/css" href="/css/admin.css?v={{settingservice.getSetting('template.assets.version')}}">
-{% endblock %}
-
-{% block javascripts %}
-{{ parent() }}
-    <script>
-        var translations = {};
-        {% for key,value in translations %}
-        translations['{{key}}'] = '{{value|raw}}';
-        {% endfor %}
-    </script>
-    {{ encore_entry_script_tags('admin') }}
-{% endblock %}
-
-{% block body %}
-<div id="admin-app"></div>
-<footer class="container-fluid">
-        &copy; 2014 - {{ "now"|date('Y') }} by InterMention.
-        {% trans %}All rights reserved.{% endtrans %}
-        {{constant('APPLICATION_VERSION')}}
-</footer>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="profile" href="http://gmpg.org/xfn/11">
+        <title>{% trans %}Admin{% endtrans %} - {{settingservice.getSetting('site.name')|striptags}}</title>
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        {{ encore_entry_link_tags('admin') }}
+        <link rel="stylesheet" type="text/css" href="/css/admin.css?v={{settingservice.getSetting('template.assets.version')}}">
+        <script src="https://kit.fontawesome.com/f4e4c62af9.js"></script>
+    </head>
+    <body data-locale="{{ app.request.locale }}">
+        <div id="admin-app"></div>
+        <footer class="container-fluid">
+            &copy; 2014 - {{ "now"|date('Y') }} by InterMention.
+            {% trans %}All rights reserved.{% endtrans %}
+            {{constant('APPLICATION_VERSION')}}
+        </footer>
+        <script>
+            var translations = {};
+            {% for key,value in translations %}
+            translations['{{key}}'] = '{{value|raw}}';
+            {% endfor %}
+        </script>
+        {{ encore_entry_script_tags('admin') }}
+    </body>
+</html>

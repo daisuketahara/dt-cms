@@ -6,6 +6,7 @@ twig:
     globals:
         blockservice: '@App\Service\BlockService'
         localeservice: '@App\Service\LocaleService'
+        menuservice: '@App\Service\MenuService'
         settingservice: '@App\Service\SettingService'
         templateservice: '@App\Service\TemplateService'
     form_themes: ['bootstrap_4_layout.html.twig']

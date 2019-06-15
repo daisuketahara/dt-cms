@@ -15,14 +15,20 @@ class PageRepository extends ServiceEntityRepository
 
     public function getActivePages()
     {
-        $qb = $this->createQueryBuilder('p')
-        ->andWhere('p.status = :status')
-        ->andWhere('p.publishDate <= :publishDate')
-        ->setParameter('status', 1)
-        ->setParameter('publishDate', date('Y-m-d'))
-        ->getQuery();
+        $sql = "SELECT l.locale, l.default AS locale_default, pc.page_route
+                FROM page AS p
+                LEFT JOIN page_content AS pc ON pc.page_id = p.id
+                LEFT JOIN locale AS l ON pc.locale_id = l.id
+                WHERE p.publish_date < NOW()
+                AND p.status = 1
+                AND (p.expire_date > NOW() OR p.expire_date IS NULL)";
 
-        return $qb->execute();
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        //$stmt->execute(['price' => 10]);
+        $stmt->execute();
+
+        return $stmt->fetchAll();;
     }
 
     public function getUserPages(string $email)

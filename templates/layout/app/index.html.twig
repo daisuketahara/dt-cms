@@ -1,30 +1,94 @@
-{% extends "layout/index.html.twig" %}
-
-{% block stylesheets %}
-{{ parent() }}
-    {{ encore_entry_link_tags('app') }}
-    <link rel="stylesheet" type="text/css" href="/css/app.css?v={{settingservice.getSetting('template.assets.version')}}">
-    <link rel="shortcut icon" href="{{ asset('favicon.png') }}" type="image/png">
-{% endblock %}
-
-{% block body %}
-    <div id="app"></div>
-{% endblock %}
-
-{% block javascripts %}
-{{ parent() }}
-    <script>
-        var translations = {};
-        {% for key,value in translations %}
-        translations['{{key}}'] = '{{value|raw}}';
-        {% endfor %}
-    </script>
-    {{ encore_entry_script_tags('app') }}
-    <script>
-    </script>
-{% endblock %}
-
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="profile" href="http://gmpg.org/xfn/11">
+        <title>{% block title %}{% if meta_title is defined %}{{ meta_title }}{% else %}{{ page_title }}{% endif %} - {{settingservice.getSetting('site.name')|striptags}}{% endblock %}</title>
+{% set template = templateservice.getTemplate() %}
 {% block tracking %}
-    {% set trackingCode = settingservice.getSetting('site.tracking') %}
-    {{trackingCode|raw}}
+        {% set trackingCode = settingservice.getSetting('site.tracking') %}
+        {{trackingCode|raw}}
 {% endblock %}
+
+{% block meta %}
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        {% if meta_keywords is defined %}<meta name="keywords" content="{{ meta_keywords }}">{% endif %}
+
+        {% if meta_description is defined %}<meta name="description" content="{{ meta_description }}">{% endif %}
+
+        <meta property="og:type" content="website">
+        {% if meta_title is defined %}<meta property="og:title" content="{{ meta_title }}">{% endif %}
+
+        {% if meta_description is defined %}<meta property="og:description" content="{{ meta_description }}">{% endif %}
+
+        <meta property="og:url" content="{{settingservice.getSetting('site.url')}}">
+        <meta property="og:site_name" content="{{settingservice.getSetting('site.name')|striptags}}">
+        {% if page_image is defined %}
+        <meta property="og:image" content="{{page_image.url}}">
+        <meta property="og:image:width" content="{{page_image.width}}">
+        <meta property="og:image:height" content="{{page_image.height}}">
+        {% endif %}
+        <meta property="og:locale" content="en_US">
+        {% if meta_title is defined %}<meta name="twitter:text:title" content="{{ meta_title }}">{% endif %}
+
+        <meta name="twitter:card" content="summary">
+{% endblock %}
+{% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+        <link rel="stylesheet" type="text/css" href="/css/app.css?v={{settingservice.getSetting('template.assets.version')}}">
+        <link rel="shortcut icon" href="{{ asset('favicon.png') }}" type="image/png">
+{% endblock %}
+        {{blockservice.getBlock('head')|raw}}
+    </head>
+    <body data-locale="{{ app.request.locale }}">
+
+        {% if template.settings.header == 'topfixed' %}
+        {% include 'layout/app/components/header-topfixes.html.twig' %}
+        {% endif %}
+
+        {% if template.settings.header == 'overlay' %}
+        {% include 'layout/app/components/header-overlay.html.twig' %}
+        {% endif %}
+
+
+        <main class="main-content">
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-dismissible alert-danger">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+            {% for message in app.flashes('notice') %}
+                <div class="alert alert-dismissible alert-info">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-dismissible alert-success">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+            {% block content %}{% endblock %}
+        </main>
+        {{blockservice.getBlock('footer')|raw}}
+        <footer class="container-fluid font-12">
+                &copy; {{ "now"|date('Y') }} {{settingservice.getSetting('company.name')}}.
+                {% trans %}All rights reserved.{% endtrans %}
+        </footer>
+{% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+{% endblock %}
+        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-Bx4pytHkyTDy3aJKjGkGoHPt3tvv6zlwwjc3iqN7ktaiEMLDPqLSZYts2OjKcBx1" crossorigin="anonymous">
+        <!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">-->
+    </body>
+</html>

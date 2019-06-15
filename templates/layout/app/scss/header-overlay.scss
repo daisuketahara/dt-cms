@@ -1,3 +1,40 @@
+#logo {
+    position: fixed;
+    top: 0.3rem;
+    left: 0.3rem;
+    z-index: 9999;
+    width: 70px;
+    height: 70px;
+    text-align: center;
+    line-height: 64px;
+}
+
+#logo img {
+    max-width: 100%;
+    width: 100%;
+}
+
+@media screen and (min-width: 768px) {
+    #logo {
+        width: 90px;
+        height: 90px;
+        line-height: 80px;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    #logo {
+        width: 124px;
+        height: 124px;
+        line-height: 118px;
+    }
+}
+
+.menu-open #logo {
+    background: none;
+    border-color: transparent;
+}
+
 #menu-button {
     position: fixed;
     top: 0.3rem;
@@ -48,7 +85,8 @@
     border-color: transparent;
 }
 
-#navigation {
+#header-overlay-backdrop {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -102,7 +140,7 @@
 
 @media screen and (min-width: 768px) {
 
-    #navigation {
+    #header-overlay-backdrop {
 
         .navbar-nav {
             display: inline-block;
@@ -121,7 +159,7 @@
 
 @media screen and (min-width: 992px) {
 
-    #navigation {
+    #header-overlay-backdrop {
         .col-lg-6 {
             height: 100vh;
             text-align: center;

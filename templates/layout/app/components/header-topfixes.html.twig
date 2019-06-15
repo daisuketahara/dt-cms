@@ -1,0 +1,35 @@
+<nav id="header-topfixed" class="navbar navbar-expand-md fixed-top navbar-dark bg-dark">
+    <a class="navbar-brand" href="{{ asset('/') }}">{{settingservice.getSetting('site.logo')|raw}}</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
+        {% for menuItem in menuservice.getMenu(1) %}
+            <li class="nav-item">
+                <a href="/{{menuItem.route}}" class="nav-link">
+                {{menuItem.label|raw}}
+                {% if menuItem.submenu is defined %}<i class="fas fa-angle-down"></i>{% endif %}
+                </a>
+            {% if menuItem.submenu is defined %}
+                {% if menuItem.submenu is iterable %}
+                <ul>
+                    {% for submenu in menuItem.submenu %}
+                    <li><a href="/{{submenu.route}}">{{submenu.label|raw}}</a></li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            {% endif %}
+            </li>
+        {% endfor %}
+        {% set activeLocales = localeservice.getActiveLocales() %}
+        {% if activeLocales is not empty %}
+            {% for activeLocale in activeLocales %}
+            <li>
+                <a href="{% if activeLocale.default is not empty %}/{% else %}/{{activeLocale.locale}}/{% endif %}" class="nav-link">[{{activeLocale.isoCode}}]</a>
+            </li>
+            {% endfor %}
+        {% endif %}
+        </ul>
+    </div>
+</nav>

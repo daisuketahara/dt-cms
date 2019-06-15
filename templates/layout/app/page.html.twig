@@ -1,0 +1,29 @@
+{% extends 'layout/app/index.html.twig' %}
+
+{% block content %}
+    {{content|raw}}
+{% endblock %}
+
+{% block meta %}
+    {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+    {% if custom_css %}
+    {{custom_css|raw}}
+    {% endif %}
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% if custom_js %}
+    <script>
+    {% if custom_js %}
+    {{custom_js|raw}}
+    {% endif %}
+    </script>
+    {% endif %}
+{% endblock %}

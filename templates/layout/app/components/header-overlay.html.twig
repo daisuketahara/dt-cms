@@ -1,0 +1,43 @@
+
+        <div id="logo">
+            <a href="/">
+                <img src="/intermention-logo-2018.png" class="img-fluid" alt="InterMention">
+            </a>
+        </div>
+        <div id="menu-button">
+            <button class="hamburger hamburger--elastic" type="button" aria-label="Menu" aria-controls="navigation"><!-- is-active -->
+                <span class="hamburger-box">
+                    <span class="hamburger-inner"></span>
+                </span>
+            </button>
+            <div class="menu-text">Menu</div>
+        </div>
+        <div id="header-overlay-backdrop">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 align-middle">
+                        <span class="align-helper"></span>
+                        <navbar></navbar>
+                    </div>
+                    <div class="col-lg-6">
+                        <span class="align-helper"></span>
+                        <div id="navigation-functions" class="d-inline-block align-middle">
+                            <h3>{% trans %}Contactdetails{% endtrans %}</h3>
+                            <ul id="contact-info" class="list-unstyled">
+                                <li><i class="fas fa-phone"></i> +31 (0)85 0600 700</li>
+                                <li><i class="fab fa-whatsapp"></i> +31 (0)6 2114 6320</li>
+                                <li><i class="fas fa-at"></i> <a href="mailto:info@intermention.com">info@intermention.com</a></li>
+                            </ul>
+                            <h3>{% trans %}Switch language{% endtrans %}</h3>
+                            <ul class="language-switcher list-inline">
+                                <li v-for="locale in locales" class="list-inline-item">
+                                    <button class="btn btn-sm btn-link" v-on:click="setLocale" :data-locale="locale.locale">
+                                        <img class="img-fluid" :src="'/img/flags/' + locale.lcid + '.png'" :alt="locale.name" :data-locale="locale.locale">
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>

@@ -10,16 +10,97 @@
                 </div>
             </transition>
             <form v-on:submit.prevent="save">
+                <div v-if="template.id == 1" class="form-group">
+                    <label>{{translations.header || 'Header'}}</label>
+                    <div class="row">
+                        <div class="col-sm-6 col-md-3">
+                            <div class="template-header-img"></div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="template-header" id="template-header-1" value="standard" v-model="template.settings.header">
+                                <label class="form-check-label" for="template-header-1">
+                                    {{translations.standard || 'Standard'}}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="template-header-img"></div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="template-header" id="template-header-2" value="topfixed" v-model="template.settings.header">
+                                <label class="form-check-label" for="template-header-2">
+                                    {{translations.top_fixed || 'Top Fixed'}}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="template-header-img"></div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="template-header" id="template-header-3" value="overlay" v-model="template.settings.header">
+                                <label class="form-check-label" for="template-header-3">
+                                    {{translations.overlay || 'Overlay'}}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="template-header-img"></div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="template-header" id="template-header-4" value="none" v-model="template.settings.header">
+                                <label class="form-check-label" for="template-header-4">
+                                    {{translations.none || 'None'}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="template.id == 1" class="form-group">
+                    <label>{{translations.footer || 'Footer'}}</label>
+                    <div class="row">
+                        <div class="col-sm-6 col-md-3">
+                            <div class="template-header-img"></div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="template-footer" id="template-footer-1" value="standard" v-model="template.settings.footer">
+                                <label class="form-check-label" for="template-footer-1">
+                                    {{translations.standard || 'Standard'}}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="template-header-img"></div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="template-footer" id="template-footer-2" value="bottomfixed" v-model="template.settings.footer">
+                                <label class="form-check-label" for="template-footer-2">
+                                    {{translations.bottom_fixed || 'Bottom Fixed'}}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="template-header-img"></div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="template-footer" id="template-footer-3" value="overlay" v-model="template.settings.footer">
+                                <label class="form-check-label" for="template-footer-3">
+                                    {{translations.overlay || 'Overlay'}}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <div class="template-header-img"></div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="template-footer" id="template-footer-4" value="none" v-model="template.settings.footer">
+                                <label class="form-check-label" for="template-footer-4">
+                                    {{translations.none || 'None'}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group">
-                    <label>{{translations.css}}</label>
+                    <label>{{translations.custom_css || 'Custom CSS'}}</label>
                     <codemirror v-model="template.customCss" :options="cmCssOptions"></codemirror>
                 </div>
                 <div class="form-group">
-                    <label>{{translations.javascript}}</label>
+                    <label>{{translations.custom_javascript || 'Custom Javascript'}}</label>
                     <codemirror v-model="template.customJs" :options="cmJsOptions"></codemirror>
                 </div>
                 <button class="btn btn-secondary">{{translations.submit}}</button>
-                <button class="btn btn-secondary" v-on:click.prevent="compile" :data-id="template.id">{{translations.compile}}</button>
                 <button class="btn btn-secondary float-right" v-on:click.prevent="gotoList">{{translations.back_to_list}}</button>
             </form>
         </div>
@@ -51,7 +132,7 @@
 <script>
     import axios from 'axios';
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-    import { codemirror } from 'vue-codemirror'
+    import { codemirror } from 'vue-codemirror';
 
     import 'codemirror/lib/codemirror.css'
     import 'codemirror/theme/base16-light.css'
@@ -68,7 +149,9 @@
                     "Authorization" : "Bearer " + this.$store.state.apikey
                 },
                 view: 'list',
-                template: {},
+                template: {
+                    settings: {}
+                },
                 templates: [],
                 data: {},
                 editor: ClassicEditor,
@@ -115,6 +198,7 @@
                 axios.get('/api/v1/template/get/'+id+'/', {headers: this.headers})
                     .then(response => {
                         this.template = JSON.parse(response.data)['data'];
+                        if (this.template.settings == '')  this.template.settings = {};
                         this.view = 'template';
                     })
                     .catch(e => {
@@ -124,18 +208,6 @@
             save() {
                 var id = event.target.dataset.id;
                 axios.put('/api/v1/template/update/'+this.template.id+'/', this.template, {headers: this.headers})
-                    .then(response => {
-                        var result = JSON.parse(response.data);
-                        if (result.success) this.setAlert(result.message, 'success');
-                        else this.setAlert(result.message, 'error');
-                    })
-                    .catch(e => {
-                        this.setAlert(e, 'error');
-                    });
-            },
-            compile() {
-                var id = event.target.dataset.id;
-                axios.get('/api/v1/template/compile/'+id+'/', {headers: this.headers})
                     .then(response => {
                         var result = JSON.parse(response.data);
                         if (result.success) this.setAlert(result.message, 'success');
@@ -159,6 +231,14 @@
 </script>
 
 <style lang="scss" scoped>
+    .template-header-img {
+        height: 200px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        background-image: url(/img/img-placeholder.png);
+    }
+
     .template-img {
         width: 100%;
         height: 200px;

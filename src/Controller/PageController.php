@@ -67,7 +67,7 @@ class PageController extends Controller
             $css = $customCss;
         }
 
-        return $this->render('page/page.html.twig', array(
+        return $this->render('layout/app/page.html.twig', array(
             'page_title' => $page->getPageTitle(),
             'content' => $page->getContent(),
             'meta_title' => $metaTitle,

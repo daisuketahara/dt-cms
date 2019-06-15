@@ -10,7 +10,6 @@ import axios from 'axios';
 import VModal from 'vue-js-modal'
 
 import App from '../app/App';
-import Page from '../components/Page';
 
 Vue.use(VModal, { dialog: true });
 
