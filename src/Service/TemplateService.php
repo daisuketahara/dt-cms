@@ -31,10 +31,9 @@ class TemplateService
         $template = $this->em->getRepository(Template::class)
         ->findBy(array('frontend' => 1), array());
 
-        $templateFile = 'layout/' . $template[0]->getTag() . '/index.html.twig';
-        $cache->set('template.front', $templateFile);
+        $cache->set('template.front', $template[0]);
 
-        return $templateFile;
+        return $template[0];
     }
 
     public function getAdminTemplate()
