@@ -42,7 +42,7 @@ class Locale
     protected $isoCode;
 
     /**
-    * @ORM\Column(type="boolean", unique=true)
+    * @ORM\Column(type="boolean")
     */
     protected $default;
 
