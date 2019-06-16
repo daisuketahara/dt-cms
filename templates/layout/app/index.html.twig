@@ -40,19 +40,18 @@
         <link rel="stylesheet" type="text/css" href="/css/app.css?v={{settingservice.getSetting('template.assets.version')}}">
         <link rel="shortcut icon" href="{{ asset('favicon.png') }}" type="image/png">
 {% endblock %}
+        <script src="https://kit.fontawesome.com/f4e4c62af9.js"></script>
         {{blockservice.getBlock('head')|raw}}
     </head>
     <body data-locale="{{ app.request.locale }}">
 
-        {% if template.settings.header == 'topfixed' %}
-        {% include 'layout/app/components/header-topfixes.html.twig' %}
+        {% if template.settings.header == 'standard' %}
+            {% include 'layout/app/components/header.html.twig' %}
+        {% elseif template.settings.header == 'top' %}
+            {% include 'layout/app/components/header-top.html.twig' %}
+        {% elseif template.settings.header == 'overlay' %}
+            {% include 'layout/app/components/header-overlay.html.twig' %}
         {% endif %}
-
-        {% if template.settings.header == 'overlay' %}
-        {% include 'layout/app/components/header-overlay.html.twig' %}
-        {% endif %}
-
-
         <main class="main-content">
             {% for message in app.flashes('error') %}
                 <div class="alert alert-dismissible alert-danger">
@@ -80,15 +79,13 @@
             {% endfor %}
             {% block content %}{% endblock %}
         </main>
-        {{blockservice.getBlock('footer')|raw}}
-        <footer class="container-fluid font-12">
-                &copy; {{ "now"|date('Y') }} {{settingservice.getSetting('company.name')}}.
-                {% trans %}All rights reserved.{% endtrans %}
-        </footer>
+        {% if template.settings.footer == 'standard' %}
+            {% include 'layout/app/components/footer.html.twig' %}
+        {% elseif template.settings.footer == 'top' %}
+            {% include 'layout/app/components/footer-bottom.html.twig' %}
+        {% endif %}
 {% block javascripts %}
         {{ encore_entry_script_tags('app') }}
 {% endblock %}
-        <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-Bx4pytHkyTDy3aJKjGkGoHPt3tvv6zlwwjc3iqN7ktaiEMLDPqLSZYts2OjKcBx1" crossorigin="anonymous">
-        <!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">-->
     </body>
 </html>

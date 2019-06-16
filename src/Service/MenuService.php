@@ -51,7 +51,7 @@ class MenuService
                 WHEN p.id IS NOT NULL THEN pc.page_title
             END AS label,
         	CASE
-        		WHEN pm.id IS NOT NULL THEN pm.route
+        		WHEN pm.route IS NOT NULL THEN pm.route
         		WHEN p.id IS NOT NULL AND l.default = 0 AND pc.page_route = '' THEN CONCAT(l.locale,'/')
         		WHEN p.id IS NOT NULL AND l.default = 0 THEN CONCAT(l.locale,'/',pc.page_route,'/')
         		WHEN p.id IS NOT NULL AND pc.page_route = '' THEN ''

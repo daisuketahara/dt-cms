@@ -3,8 +3,11 @@
     height: 4rem;
 
     .navbar-brand {
+        padding-top: 0.4rem;
+        padding-bottom: 0.4rem;
+
         img {
-            max-height: 60px;
+            max-height: 50px;
         }
     }
 
@@ -12,8 +15,11 @@
         li {
             a {
                 color: white;
-                text-transform: capitalize;
-                letter-spacing: 0.1rem;
+                text-transform: uppercase;
+                letter-spacing: 0.2rem;
+                font-weight: 400;
+                font-size: 1rem;
+                padding: 1rem;
             }
         }
     }
