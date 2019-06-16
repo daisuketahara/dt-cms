@@ -1,6 +1,7 @@
-
 <footer class="container-fluid font-12">
     {{blockservice.getBlock('footer')|raw}}
-    &copy; {{ "now"|date('Y') }} {{settingservice.getSetting('company.name')}}.
-    {% trans %}All rights reserved.{% endtrans %}
+    <div class="text-center">
+        &copy; {{ "now"|date('Y') }} {{settingservice.getSetting('company.name')}}.
+        {% trans %}All rights reserved.{% endtrans %}
+    </div>
 </footer>

@@ -1,6 +1,8 @@
-#header-topfixed {
+#header-top {
 
     height: 4rem;
+    -webkit-transition: all 1s ease;
+    transition: all 1s ease;
 
     .navbar-brand {
         padding-top: 0.4rem;
