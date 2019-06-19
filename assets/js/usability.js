@@ -26,7 +26,7 @@
     };
 
     function addScrollToTop() {
-        if (body_height > window_height) {
+        if (body_height > window_height+200) {
 	        var button = document.createElement('a');
 			button.id = 'site-scroll-to-top';
 			button.className = 'pointer';
@@ -54,7 +54,7 @@
 	}
 
     function addScrollDown() {
-        if (body_height > window_height) {
+        if (body_height > window_height+400) {
 	        var button = document.createElement('a');
 			button.id = 'site-scroll-down';
 			button.className = 'animated infinite rubberBand pointer';
