@@ -26,7 +26,7 @@
     };
 
     function addScrollToTop() {
-        if (body_height > window_height+200) {
+        if (body_height > window_height+400) {
 	        var button = document.createElement('a');
 			button.id = 'site-scroll-to-top';
 			button.className = 'pointer';
