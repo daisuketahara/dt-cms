@@ -171,40 +171,85 @@
                 <div v-if="selected_editor == 'builder'" id="content-editor" class="mt-2">
                     <div v-for="(element, index) in construct">
                         <div v-if="element.type == 'text_left_image_right'" :id="element.id" v-bind:class="{ component: true, row: true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
+                            <div v-if="element.selected === true" class="component-functions">
+                                <button v-if="index < construct.length-1" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementDown(index)"><i class="far fa-chevron-down"></i></button>
+                                <button v-if="index > 0" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementUp(index)"><i class="far fa-chevron-up"></i></button>
+                                <button class="btn btn-sm btn-danger" v-on:click.prevent="removeElement(index)"><i class="fal fa-trash-alt"></i></button>
+                            </div>
                             <div class="col-sm-6 wrap-content">
-                                <h3 v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
-                                <div v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
+                                <h3 v-if="element.parts.title.settings.display!='none'" v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
+                                <div v-if="element.parts.text.settings.display!='none'" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
                                     <ckeditor :editor="inlineEditor" v-model="element.parts.text.content" :config="inlineEditorConfig"></ckeditor>
                                 </div>
-                                <a href="#" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
+                                <a v-if="element.parts.button.settings.display!='none'" ::data-href="element.parts.button.settings.href" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
                             </div>
                             <div v-bind:class="{ 'col-sm-6': true, 'component-image': true, active: element.parts.image.selected == true}" v-on:click.stop="setActiveElement(element.parts.image, index);"></div>
                         </div>
-                        <div v-else-if="element.type == 'text_right_image_left'" :id="element.id" v-bind:class="{ component: true, row: true, active: element.selected == true}" v-on:click.stop="setActiveElement(element);">
+                        <div v-else-if="element.type == 'text_right_image_left'" :id="element.id" v-bind:class="{ component: true, row: true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
+                            <div v-if="element.selected === true" class="component-functions">
+                                <button v-if="index < construct.length-1" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementDown(index)"><i class="far fa-chevron-down"></i></button>
+                                <button v-if="index > 0" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementUp(index)"><i class="far fa-chevron-up"></i></button>
+                                <button class="btn btn-sm btn-danger" v-on:click.prevent="removeElement(index)"><i class="fal fa-trash-alt"></i></button>
+                            </div>
                             <div v-bind:class="{ 'col-sm-6': true, 'component-image': true, active: element.parts.image.selected == true}" v-on:click.stop="setActiveElement(element.parts.image, index);"></div>
                             <div class="col-sm-6 wrap-content">
-                                <h3 v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
-                                <div v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
+                                <h3 v-if="element.parts.title.settings.display!='none'" v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
+                                <div v-if="element.parts.text.settings.display!='none'" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
                                     <ckeditor :editor="inlineEditor" v-model="element.parts.text.content" :config="inlineEditorConfig"></ckeditor>
                                 </div>
-                                <a href="#" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
+                                <a v-if="element.parts.button.settings.display!='none'" :data-href="element.parts.button.settings.href" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
                             </div>
                         </div>
-                        <div v-else-if="element.type == 'block'" :id="element.id" class="" v-bind:class="{ 'component-block': true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
-                            <h3 v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
-                            <div v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
+                        <div v-else-if="element.type == 'text_text'" :id="element.id" v-bind:class="{ component: true, row: true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
+                            <div v-if="element.selected === true" class="component-functions">
+                                <button v-if="index < construct.length-1" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementDown(index)"><i class="far fa-chevron-down"></i></button>
+                                <button v-if="index > 0" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementUp(index)"><i class="far fa-chevron-up"></i></button>
+                                <button class="btn btn-sm btn-danger" v-on:click.prevent="removeElement(index)"><i class="fal fa-trash-alt"></i></button>
+                            </div>
+                            <div class="col-sm-6 wrap-content">
+                                <h3 v-if="element.parts.title.settings.display!='none'" v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
+                                <div v-if="element.parts.text.settings.display!='none'" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
+                                    <ckeditor :editor="inlineEditor" v-model="element.parts.text.content" :config="inlineEditorConfig"></ckeditor>
+                                </div>
+                                <a v-if="element.parts.button.settings.display!='none'" :data-href="element.parts.button.settings.href" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
+                            </div>
+                            <div class="col-sm-6 wrap-content">
+                                <h3 v-if="element.parts.title2.settings.display!='none'" v-bind:class="{ 'component-title2': true, active: element.parts.title2.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title2.content" v-on:click.stop="setActiveElement(element.parts.title2, index);"></h3>
+                                <div v-if="element.parts.text2.settings.display!='none'" v-bind:class="{ 'component-text2': true, active: element.parts.text2.selected == true}" v-on:click.stop="setActiveElement(element.parts.text2, index);">
+                                    <ckeditor :editor="inlineEditor" v-model="element.parts.text2.content" :config="inlineEditorConfig"></ckeditor>
+                                </div>
+                                <a v-if="element.parts.button2.settings.display!='none'" :data-href="element.parts.button2.settings.href" v-bind:class="{ 'component-button2': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button2.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button2, index);">{{element.parts.button2.content}}</a>
+                            </div>
+                        </div>
+                        <div v-else-if="element.type == 'image_image'" :id="element.id" v-bind:class="{ 'component': true, row: true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
+                            <div v-if="element.selected === true" class="component-functions">
+                                <button v-if="index < construct.length-1" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementDown(index)"><i class="far fa-chevron-down"></i></button>
+                                <button v-if="index > 0" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementUp(index)"><i class="far fa-chevron-up"></i></button>
+                                <button class="btn btn-sm btn-danger" v-on:click.prevent="removeElement(index)"><i class="fal fa-trash-alt"></i></button>
+                            </div>
+                            <div v-bind:class="{ 'col-sm-6': true, 'component-image': true, active: element.parts.image.selected == true}" v-on:click.stop="setActiveElement(element.parts.image, index);"></div>
+                            <div v-bind:class="{ 'col-sm-6': true, 'component-image2': true, active: element.parts.image2.selected == true}" v-on:click.stop="setActiveElement(element.parts.image2, index);"></div>
+                        </div>
+                        <div v-else-if="element.type == 'block'" :id="element.id" class="" v-bind:class="{ 'component-block': true, 'px-3': true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
+                            <div v-if="element.selected === true" class="component-functions">
+                                <button v-if="index < construct.length-1" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementDown(index)"><i class="far fa-chevron-down"></i></button>
+                                <button v-if="index > 0" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementUp(index)"><i class="far fa-chevron-up"></i></button>
+                                <button class="btn btn-sm btn-danger" v-on:click.prevent="removeElement(index)"><i class="fal fa-trash-alt"></i></button>
+                            </div>
+                            <h3 v-if="element.parts.title.settings.display!='none'" v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
+                            <div v-if="element.parts.text.settings.display!='none'" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
                                 <ckeditor :editor="inlineEditor" v-model="element.parts.text.content" :config="inlineEditorConfig"></ckeditor>
                             </div>
-                            <a href="#" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
+                            <a v-if="element.parts.button.settings.display!='none'" :data-href="element.parts.button.settings.href" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
                         </div>
                     </div>
-                    <div v-if="enableEdit" class="text-center mt-3 py-5">
-                        <button class="btn btn-lg btn-secondary" v-on:click.prevent="selectElement"><i class="fas fa-plus"></i> {{translations.add_element}}</button>
+                    <div v-if="enableEdit === true" class="text-center mt-3 py-5">
+                        <button class="btn btn-lg btn-warning" v-on:click.prevent="selectElement"><i class="fas fa-plus"></i> {{translations.add_element}}</button>
                     </div>
                 </div>
             </div>
             <div class="col-md-4 col-lg-3 component-settings">
-                <div v-if="active_component !== false" class="card">
+                <div v-if="typeof active_component !== 'undefined' && active_component !== false" class="card">
                     <div class="card-header" id="component-settings" v-on:click="setActiveElement(construct[active_component], active_component);">
                         {{translations.component || 'Component'}}
                         <i v-if="construct[active_component].selected == true" class="fas fa-chevron-down float-right"></i>
@@ -237,6 +282,30 @@
                     <div v-if="construct[active_component].parts.button != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.button.selected == true}">
                         <settings :settings="construct[active_component].parts.button.settings"></settings>
                     </div>
+                    <div v-if="construct[active_component].parts.title2 != undefined" class="card-header" id="component-title-settings" v-on:click="setActiveElement(construct[active_component].parts.title2, active_component);">
+                        {{translations.title || 'Title'}} 2
+                        <i v-if="construct[active_component].parts.title2.selected == true" class="fas fa-chevron-down float-right"></i>
+                        <i v-else class="fas fa-chevron-left float-right"></i>
+                    </div>
+                    <div v-if="construct[active_component].parts.title2 != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.title2.selected == true}">
+                        <settings :settings="construct[active_component].parts.title2.settings"></settings>
+                    </div>
+                    <div v-if="construct[active_component].parts.text2 != undefined" class="card-header" id="component-text-settings" v-on:click="setActiveElement(construct[active_component].parts.text2, active_component);">
+                        {{translations.content || 'Content'}} 2
+                        <i v-if="construct[active_component].parts.text2.selected == true" class="fas fa-chevron-down float-right"></i>
+                        <i v-else class="fas fa-chevron-left float-right"></i>
+                    </div>
+                    <div v-if="construct[active_component].parts.text2 != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.text2.selected == true}">
+                        <settings :settings="construct[active_component].parts.text2.settings"></settings>
+                    </div>
+                    <div v-if="construct[active_component].parts.button2 != undefined" class="card-header" id="component-button-settings" v-on:click="setActiveElement(construct[active_component].parts.button2, active_component);">
+                        {{translations.button || 'Button'}} 2
+                        <i v-if="construct[active_component].parts.button2.selected == true" class="fas fa-chevron-down float-right"></i>
+                        <i v-else class="fas fa-chevron-left float-right"></i>
+                    </div>
+                    <div v-if="construct[active_component].parts.button2 != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.button2.selected == true}">
+                        <settings :settings="construct[active_component].parts.button2.settings"></settings>
+                    </div>
                     <div v-if="construct[active_component].parts.image != undefined" class="card-header" id="component-image-settings" v-on:click="setActiveElement(construct[active_component].parts.image, active_component);">
                         {{translations.image || 'Image'}}
                         <i v-if="construct[active_component].parts.image.selected == true" class="fas fa-chevron-down float-right"></i>
@@ -245,13 +314,21 @@
                     <div v-if="construct[active_component].parts.image != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.image.selected == true}">
                         <settings :settings="construct[active_component].parts.image.settings"></settings>
                     </div>
+                    <div v-if="construct[active_component].parts.image2 != undefined" class="card-header" id="component-image-settings" v-on:click="setActiveElement(construct[active_component].parts.image2, active_component);">
+                        {{translations.image || 'Image'}} 2
+                        <i v-if="construct[active_component].parts.image2.selected == true" class="fas fa-chevron-down float-right"></i>
+                        <i v-else class="fas fa-chevron-left float-right"></i>
+                    </div>
+                    <div v-if="construct[active_component].parts.image2 != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.image2.selected == true}">
+                        <settings :settings="construct[active_component].parts.image2.settings"></settings>
+                    </div>
                 </div>
             </div>
         </div>
         <modal name="page-elements" width="80%" height="90%">
             <div class="container-fluid p-3">
                 <div class="row">
-                    <div v-for="(element, index) in elements" class="col-sm-6 col-md-4 col-lg-3 mb-4" :data-element="index">
+                    <div v-for="(element, index) in elements" v-if="element.active == true" class="col-sm-6 col-md-4 col-lg-3 mb-4" :data-element="index">
                         <img :src="element.image" :alt="element.title" class="img-fluid w-100 mb-1">
                         <h4>
                             {{element.title}}
@@ -261,6 +338,9 @@
                 </div>
             </div>
         </modal>
+        <modal name="html-editor" width="80%" height="90%">
+
+        </modal>
     </form>
 </template>
 
@@ -269,13 +349,11 @@
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
     import InlineEditor from '@ckeditor/ckeditor5-build-inline';
     import EditorSettings from '../components/EditorSettings';
-    import { codemirror } from 'vue-codemirror';
 
     export default {
         name: "editor",
         components: {
-            'settings': EditorSettings,
-            codemirror
+            'settings': EditorSettings
         },
         data() {
             return {
@@ -417,6 +495,239 @@
                 });
             },
             getElements: function() {
+
+                var component_settings = {
+                    display: '',
+                    width: '',
+                    height: '',
+                    min_width: '',
+                    min_height: '',
+                    max_width: '',
+                    max_height: '',
+                    display: '',
+                    overflow: 'visible',
+                    padding: {
+                        top: '0',
+                        right: '0',
+                        bottom: '0',
+                        left: '0',
+                    },
+                    margin: {
+                        top: '0',
+                        right: '0',
+                        bottom: '0',
+                        left: '0',
+                    },
+                    font_weight: '',
+                    font_size: '',
+                    line_height: '1.6em',
+                    color: {
+                        hex: '#000000',
+                        hsl: { h: 150, s: 0, l: 0, a: 1 },
+                        hsv: { h: 150, s: 0, v: 0, a: 1 },
+                        rgba: { r: 0, g: 0, b: 0, a: 1 },
+                        a: 1
+                    },
+                    text_shadow: '',
+                    text_align: '',
+                    font_style: '',
+                    text_decoration: '',
+                    background_color: {},
+                    background_image: '',
+                    background_size: '',
+                    background_position: '',
+                    background_position_x: 0,
+                    background_position_y: 0,
+                    background_repeat: '',
+                    background_attachment: '',
+                    box_shadow: '',
+                    border_color: {},
+                    border_width: 0,
+                    border_width_unit: 'px',
+                    border_radius: 0,
+                    border_radius_unit: 'px',
+                    border_style: 'solid',
+                    custom_css: '',
+                };
+                var title_settings = {
+                    display: '',
+                    width: '',
+                    height: '',
+                    min_width: '',
+                    min_height: '',
+                    max_width: '',
+                    max_height: '',
+                    display: '',
+                    overflow: 'visible',
+                    padding: {
+                        top: '0',
+                        right: '0',
+                        bottom: '0',
+                        left: '0',
+                    },
+                    margin: {
+                        top: '15px',
+                        right: '0',
+                        bottom: '15px',
+                        left: '0',
+                    },
+                    tag: 'h3',
+                    font_weight: '',
+                    font_size: '',
+                    line_height: '1.6em',
+                    color: {
+                        hex: '#000000',
+                        hsl: { h: 150, s: 0, l: 0, a: 1 },
+                        hsv: { h: 150, s: 0, v: 0, a: 1 },
+                        rgba: { r: 0, g: 0, b: 0, a: 1 },
+                        a: 1
+                    },
+                    text_shadow: '',
+                    text_align: '',
+                    font_style: '',
+                    text_decoration: '',
+                    background_color: {},
+                    background_image: '',
+                    background_size: '',
+                    background_position: '',
+                    background_position_x: 0,
+                    background_position_y: 0,
+                    background_repeat: '',
+                    background_attachment: '',
+                    box_shadow: '',
+                    border_color: {},
+                    border_width: 0,
+                    border_width_unit: 'px',
+                    border_radius: 0,
+                    border_radius_unit: 'px',
+                    border_style: 'solid',
+                    custom_css: '',
+                };
+                var text_settings = {
+                    display: '',
+                    width: '',
+                    height: '',
+                    min_width: '',
+                    min_height: '',
+                    max_width: '',
+                    max_height: '',
+                    display: '',
+                    overflow: 'visible',
+                    padding: {
+                        top: '0',
+                        right: '0',
+                        bottom: '0',
+                        left: '0',
+                    },
+                    margin: {
+                        top: '0',
+                        right: '0',
+                        bottom: '15px',
+                        left: '0',
+                    },
+                    font_weight: '',
+                    font_size: '',
+                    line_height: '1.6em',
+                    color: {
+                        hex: '#000000',
+                        hsl: { h: 150, s: 0, l: 0, a: 1 },
+                        hsv: { h: 150, s: 0, v: 0, a: 1 },
+                        rgba: { r: 0, g: 0, b: 0, a: 1 },
+                        a: 1
+                    },
+                    text_shadow: '',
+                    text_align: '',
+                    font_style: '',
+                    text_decoration: '',
+                    background_color: {},
+                    background_image: '',
+                    background_size: '',
+                    background_position: '',
+                    background_position_x: 0,
+                    background_position_y: 0,
+                    background_repeat: '',
+                    background_attachment: '',
+                    box_shadow: '',
+                    border_color: {},
+                    border_width: 0,
+                    border_width_unit: 'px',
+                    border_radius: 0,
+                    border_radius_unit: 'px',
+                    border_style: 'solid',
+                    custom_css: '',
+                };
+                var button_settings = {
+                    display: '',
+                    href: '',
+                    width: '',
+                    height: '',
+                    min_width: '',
+                    min_height: '',
+                    max_width: '',
+                    max_height: '',
+                    display: '',
+                    overflow: 'visible',
+                    padding: {
+                        top: '5px',
+                        right: '25px',
+                        bottom: '5px',
+                        left: '25px',
+                    },
+                    margin: {
+                        top: '0',
+                        right: '0',
+                        bottom: '15px',
+                        left: '0',
+                    },
+                    font_weight: '',
+                    font_size: '',
+                    line_height: '1.6em',
+                    color: {
+                        hex: '#FFFFFF',
+                        hsl: { h: 150, s: 0, l: 1, a: 1 },
+                        hsv: { h: 150, s: 0, v: 1, a: 1 },
+                        rgba: { r: 255, g: 255, b: 255, a: 1 },
+                        a: 1
+                    },
+                    text_shadow: '',
+                    text_align: '',
+                    font_style: '',
+                    text_decoration: '',
+                    background_color: {},
+                    background_image: '',
+                    background_size: '',
+                    background_position: '',
+                    background_position_x: 0,
+                    background_position_y: 0,
+                    background_repeat: '',
+                    background_attachment: '',
+                    box_shadow: '',
+                    border_color: {},
+                    border_width: 0,
+                    border_width_unit: 'px',
+                    border_radius: 0,
+                    border_radius_unit: 'px',
+                    border_style: 'solid',
+                    custom_css: '',
+                };
+                var image_settings = {
+                    background_color: {},
+                    background_image: this.example.bg_image,
+                    background_size: 'cover',
+                    background_position: 'center center',
+                    background_position_x: 0,
+                    background_position_y: 0,
+                    background_repeat: 'repeat',
+                    background_attachment: 'scroll',
+                    border_color: {},
+                    border_width: 0,
+                    border_width_unit: 'px',
+                    border_radius: 0,
+                    border_radius_unit: 'px',
+                    border_style: 'solid',
+                    custom_css: '',
+                };
+
                 this.elements = {
                     text_left_image_right: {
                         type: 'text_left_image_right',
@@ -424,232 +735,26 @@
                         image: this.example.bg_image,
                         active: true,
                         selected: false,
-                        settings: {
-                            width: '',
-                            height: '',
-                            min_width: '',
-                            min_height: '',
-                            max_width: '',
-                            max_height: '',
-                            display: '',
-                            overflow: 'visible',
-                            padding: {
-                                top: '0',
-                                right: '0',
-                                bottom: '0',
-                                left: '0',
-                            },
-                            margin: {
-                                top: '0',
-                                right: '0',
-                                bottom: '0',
-                                left: '0',
-                            },
-                            font_weight: '',
-                            font_size: '',
-                            line_height: '1.6em',
-                            color: {
-                                hex: '#000000',
-                                hsl: { h: 150, s: 0, l: 0, a: 1 },
-                                hsv: { h: 150, s: 0, v: 0, a: 1 },
-                                rgba: { r: 0, g: 0, b: 0, a: 1 },
-                                a: 1
-                            },
-                            text_shadow: '',
-                            text_align: '',
-                            font_style: '',
-                            text_decoration: '',
-                            background_color: {},
-                            background_image: '',
-                            background_size: '',
-                            background_position: '',
-                            background_position_x: 0,
-                            background_position_y: 0,
-                            background_repeat: '',
-                            background_attachment: '',
-                            box_shadow: '',
-                            border_top: '',
-                            border_right: '',
-                            border_bottom: '',
-                            border_left: '',
-                            border_radius: 0,
-                        },
+                        settings: component_settings,
                         parts: {
                             title: {
                                 content: this.example.title,
                                 selected: false,
-                                settings: {
-                                    width: '',
-                                    height: '',
-                                    min_width: '',
-                                    min_height: '',
-                                    max_width: '',
-                                    max_height: '',
-                                    display: '',
-                                    overflow: 'visible',
-                                    padding: {
-                                        top: '0',
-                                        right: '0',
-                                        bottom: '0',
-                                        left: '0',
-                                    },
-                                    margin: {
-                                        top: '15px',
-                                        right: '15px',
-                                        bottom: '15px',
-                                        left: '15px',
-                                    },
-                                    tag: 'h3',
-                                    font_weight: '',
-                                    font_size: '',
-                                    line_height: '1.6em',
-                                    color: {
-                                        hex: '#000000',
-                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
-                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
-                                        a: 1
-                                    },
-                                    text_shadow: '',
-                                    text_align: '',
-                                    font_style: '',
-                                    text_decoration: '',
-                                    background_color: {},
-                                    background_image: '',
-                                    background_size: '',
-                                    background_position: '',
-                                    background_position_x: 0,
-                                    background_position_y: 0,
-                                    background_repeat: '',
-                                    background_attachment: '',
-                                    box_shadow: '',
-                                    border_top: '',
-                                    border_right: '',
-                                    border_bottom: '',
-                                    border_left: '',
-                                    border_radius: 0,
-                                },
+                                settings: title_settings,
                             },
                             text: {
                                 content: '<p>' + this.example.text_medium + '</p>',
                                 selected: false,
-                                settings: {
-                                    width: '',
-                                    height: '',
-                                    min_width: '',
-                                    min_height: '',
-                                    max_width: '',
-                                    max_height: '',
-                                    display: '',
-                                    overflow: 'visible',
-                                    padding: {
-                                        top: '0',
-                                        right: '0',
-                                        bottom: '0',
-                                        left: '0',
-                                    },
-                                    margin: {
-                                        top: '0',
-                                        right: '0',
-                                        bottom: '0',
-                                        left: '0',
-                                    },
-                                    font_weight: '',
-                                    font_size: '',
-                                    line_height: '1.6em',
-                                    color: {
-                                        hex: '#000000',
-                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
-                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
-                                        a: 1
-                                    },
-                                    text_shadow: '',
-                                    text_align: 'left',
-                                    font_style: '',
-                                    text_decoration: '',
-                                    background_color: {},
-                                    background_image: '',
-                                    background_size: '',
-                                    background_position: '',
-                                    background_position_x: 0,
-                                    background_position_y: 0,
-                                    background_repeat: '',
-                                    background_attachment: '',
-                                    box_shadow: '',
-                                    border_top: '',
-                                    border_right: '',
-                                    border_bottom: '',
-                                    border_left: '',
-                                    border_radius: 0,
-                                },
+                                settings: text_settings,
                             },
                             button: {
                                 content: this.example.btn_txt,
                                 selected: false,
-                                settings: {
-                                    width: '',
-                                    height: '',
-                                    min_width: '',
-                                    min_height: '',
-                                    max_width: '',
-                                    max_height: '',
-                                    display: '',
-                                    overflow: 'visible',
-                                    padding: {
-                                        top: '5px',
-                                        right: '25px',
-                                        bottom: '5px',
-                                        left: '25px',
-                                    },
-                                    margin: {
-                                        top: '0',
-                                        right: '0',
-                                        bottom: '15px',
-                                        left: '0',
-                                    },
-                                    font_weight: '',
-                                    font_size: '',
-                                    line_height: '1.6em',
-                                    color: {
-                                        hex: '#FFFFFF',
-                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
-                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
-                                        a: 1
-                                    },
-                                    text_shadow: '',
-                                    text_align: '',
-                                    font_style: '',
-                                    text_decoration: '',
-                                    background_color: {},
-                                    background_image: '',
-                                    background_size: '',
-                                    background_position: '',
-                                    background_position_x: 0,
-                                    background_position_y: 0,
-                                    background_repeat: '',
-                                    background_attachment: '',
-                                    box_shadow: '',
-                                    border_top: '',
-                                    border_right: '',
-                                    border_bottom: '',
-                                    border_left: '',
-                                    border_radius: 0,
-                                },
+                                settings: button_settings,
                             },
                             image: {
                                 selected: false,
-                                settings: {
-                                    background_color: {},
-                                    background_image: this.example.bg_image,
-                                    background_size: 'cover',
-                                    background_position: 'center center',
-                                    background_position_x: 0,
-                                    background_position_y: 0,
-                                    background_repeat: 'repeat',
-                                    background_attachment: 'scroll',
-                                }
+                                settings: image_settings,
                             },
                         }
                     },
@@ -659,232 +764,84 @@
                         image: this.example.bg_image,
                         active: true,
                         selected: false,
-                        settings: {
-                            width: '',
-                            height: '',
-                            min_width: '',
-                            min_height: '',
-                            max_width: '',
-                            max_height: '',
-                            display: '',
-                            overflow: 'visible',
-                            padding: {
-                                top: '0',
-                                right: '0',
-                                bottom: '0',
-                                left: '0',
-                            },
-                            margin: {
-                                top: '0',
-                                right: '0',
-                                bottom: '0',
-                                left: '0',
-                            },
-                            font_weight: '',
-                            font_size: '',
-                            line_height: '1.6em',
-                            color: {
-                                hex: '#000000',
-                                hsl: { h: 150, s: 0, l: 0, a: 1 },
-                                hsv: { h: 150, s: 0, v: 0, a: 1 },
-                                rgba: { r: 0, g: 0, b: 0, a: 1 },
-                                a: 1
-                            },
-                            text_shadow: '',
-                            text_align: '',
-                            font_style: '',
-                            text_decoration: '',
-                            background_color: {},
-                            background_image: '',
-                            background_size: '',
-                            background_position: '',
-                            background_position_x: 0,
-                            background_position_y: 0,
-                            background_repeat: '',
-                            background_attachment: '',
-                            box_shadow: '',
-                            border_top: '',
-                            border_right: '',
-                            border_bottom: '',
-                            border_left: '',
-                            border_radius: 0,
-                        },
+                        settings: component_settings,
                         parts: {
                             title: {
                                 content: this.example.title,
                                 selected: false,
-                                settings: {
-                                    width: '',
-                                    height: '',
-                                    min_width: '',
-                                    min_height: '',
-                                    max_width: '',
-                                    max_height: '',
-                                    display: '',
-                                    overflow: 'visible',
-                                    padding: {
-                                        top: '0',
-                                        right: '0',
-                                        bottom: '0',
-                                        left: '0',
-                                    },
-                                    margin: {
-                                        top: '15px',
-                                        right: '15px',
-                                        bottom: '15px',
-                                        left: '15px',
-                                    },
-                                    tag: 'h3',
-                                    font_weight: '',
-                                    font_size: '',
-                                    line_height: '1.6em',
-                                    color: {
-                                        hex: '#000000',
-                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
-                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
-                                        a: 1
-                                    },
-                                    text_shadow: '',
-                                    text_align: '',
-                                    font_style: '',
-                                    text_decoration: '',
-                                    background_color: {},
-                                    background_image: '',
-                                    background_size: '',
-                                    background_position: '',
-                                    background_position_x: 0,
-                                    background_position_y: 0,
-                                    background_repeat: '',
-                                    background_attachment: '',
-                                    box_shadow: '',
-                                    border_top: '',
-                                    border_right: '',
-                                    border_bottom: '',
-                                    border_left: '',
-                                    border_radius: 0,
-                                },
+                                settings: title_settings,
                             },
                             text: {
                                 content: '<p>' + this.example.text_medium + '</p>',
                                 selected: false,
-                                settings: {
-                                    width: '',
-                                    height: '',
-                                    min_width: '',
-                                    min_height: '',
-                                    max_width: '',
-                                    max_height: '',
-                                    display: '',
-                                    overflow: 'visible',
-                                    padding: {
-                                        top: '0',
-                                        right: '0',
-                                        bottom: '0',
-                                        left: '0',
-                                    },
-                                    margin: {
-                                        top: '0',
-                                        right: '0',
-                                        bottom: '15px',
-                                        left: '0',
-                                    },
-                                    font_weight: '',
-                                    font_size: '',
-                                    line_height: '1.6em',
-                                    color: {
-                                        hex: '#000000',
-                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
-                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
-                                        a: 1
-                                    },
-                                    text_shadow: '',
-                                    text_align: '',
-                                    font_style: '',
-                                    text_decoration: '',
-                                    background_color: {},
-                                    background_image: '',
-                                    background_size: '',
-                                    background_position: '',
-                                    background_position_x: 0,
-                                    background_position_y: 0,
-                                    background_repeat: '',
-                                    background_attachment: '',
-                                    box_shadow: '',
-                                    border_top: '',
-                                    border_right: '',
-                                    border_bottom: '',
-                                    border_left: '',
-                                    border_radius: 0,
-                                },
+                                settings: text_settings,
                             },
                             button: {
                                 content: this.example.btn_txt,
                                 selected: false,
-                                settings: {
-                                    width: '',
-                                    height: '',
-                                    min_width: '',
-                                    min_height: '',
-                                    max_width: '',
-                                    max_height: '',
-                                    display: '',
-                                    overflow: 'visible',
-                                    padding: {
-                                        top: '5px',
-                                        right: '25px',
-                                        bottom: '5px',
-                                        left: '25px',
-                                    },
-                                    margin: {
-                                        top: '0',
-                                        right: '0',
-                                        bottom: '15px',
-                                        left: '0',
-                                    },
-                                    font_weight: '',
-                                    font_size: '',
-                                    line_height: '1.6em',
-                                    color: {
-                                        hex: '#FFFFFF',
-                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
-                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
-                                        a: 1
-                                    },
-                                    text_shadow: '',
-                                    text_align: '',
-                                    font_style: '',
-                                    text_decoration: '',
-                                    background_color: {},
-                                    background_image: '',
-                                    background_size: '',
-                                    background_position: '',
-                                    background_position_x: 0,
-                                    background_position_y: 0,
-                                    background_repeat: '',
-                                    background_attachment: '',
-                                    box_shadow: '',
-                                    border_top: '',
-                                    border_right: '',
-                                    border_bottom: '',
-                                    border_left: '',
-                                    border_radius: 0,
-                                },
+                                settings: button_settings,
                             },
                             image: {
                                 selected: false,
-                                settings: {
-                                    background_color: {},
-                                    background_image: this.example.bg_image,
-                                    background_size: 'cover',
-                                    background_position: 'center center',
-                                    background_position_x: 0,
-                                    background_position_y: 0,
-                                    background_repeat: 'repeat',
-                                    background_attachment: 'scroll',
-                                }
+                                settings: image_settings,
+                            },
+                        }
+                    },
+                    text_text: {
+                        type: 'text_text',
+                        title: this.translations.text_text,
+                        image: this.example.bg_image,
+                        active: true,
+                        selected: false,
+                        settings: component_settings,
+                        parts: {
+                            title: {
+                                content: this.example.title,
+                                selected: false,
+                                settings: title_settings,
+                            },
+                            text: {
+                                content: '<p>' + this.example.text_medium + '</p>',
+                                selected: false,
+                                settings: text_settings,
+                            },
+                            button: {
+                                content: this.example.btn_txt,
+                                selected: false,
+                                settings: button_settings,
+                            },
+                            title2: {
+                                content: this.example.title,
+                                selected: false,
+                                settings: title_settings,
+                            },
+                            text2: {
+                                content: '<p>' + this.example.text_medium + '</p>',
+                                selected: false,
+                                settings: text_settings,
+                            },
+                            button2: {
+                                content: this.example.btn_txt,
+                                selected: false,
+                                settings: button_settings,
+                            },
+                        }
+                    },
+                    image_image: {
+                        type: 'image_image',
+                        title: this.translations.image_image,
+                        image: this.example.bg_image,
+                        active: true,
+                        selected: false,
+                        settings: component_settings,
+                        parts: {
+                            image: {
+                                selected: false,
+                                settings: image_settings
+                            },
+                            image2: {
+                                selected: false,
+                                settings: image_settings
                             },
                         }
                     },
@@ -894,219 +851,22 @@
                         image: this.example.bg_image,
                         active: true,
                         selected: false,
-                        settings: {
-                            width: '',
-                            height: '',
-                            min_width: '',
-                            min_height: '',
-                            max_width: '',
-                            max_height: '',
-                            display: '',
-                            overflow: 'visible',
-                            padding: {
-                                top: '0',
-                                right: '0',
-                                bottom: '0',
-                                left: '0',
-                            },
-                            margin: {
-                                top: '0',
-                                right: '0',
-                                bottom: '0',
-                                left: '0',
-                            },
-                            font_weight: '',
-                            font_size: '',
-                            line_height: '1.6em',
-                            color: {
-                                hex: '#000000',
-                                hsl: { h: 150, s: 0, l: 0, a: 1 },
-                                hsv: { h: 150, s: 0, v: 0, a: 1 },
-                                rgba: { r: 0, g: 0, b: 0, a: 1 },
-                                a: 1
-                            },
-                            text_shadow: '',
-                            text_align: '',
-                            font_style: '',
-                            text_decoration: '',
-                            background_color: {},
-                            background_image: '',
-                            background_size: '',
-                            background_position: '',
-                            background_position_x: 0,
-                            background_position_y: 0,
-                            background_repeat: '',
-                            background_attachment: '',
-                            box_shadow: '',
-                            border_top: '',
-                            border_right: '',
-                            border_bottom: '',
-                            border_left: '',
-                            border_radius: 0,
-                        },
+                        settings: component_settings,
                         parts: {
                             title: {
                                 content: this.example.title,
                                 selected: false,
-                                settings: {
-                                    width: '',
-                                    height: '',
-                                    min_width: '',
-                                    min_height: '',
-                                    max_width: '',
-                                    max_height: '',
-                                    display: '',
-                                    overflow: 'visible',
-                                    padding: {
-                                        top: '0',
-                                        right: '0',
-                                        bottom: '0',
-                                        left: '0',
-                                    },
-                                    margin: {
-                                        top: '15px',
-                                        right: '15px',
-                                        bottom: '15px',
-                                        left: '15px',
-                                    },
-                                    tag: 'h3',
-                                    font_weight: '',
-                                    font_size: '',
-                                    line_height: '1.6em',
-                                    color: {
-                                        hex: '#000000',
-                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
-                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
-                                        a: 1
-                                    },
-                                    text_shadow: '',
-                                    text_align: '',
-                                    font_style: '',
-                                    text_decoration: '',
-                                    background_color: {},
-                                    background_image: '',
-                                    background_size: '',
-                                    background_position: '',
-                                    background_position_x: 0,
-                                    background_position_y: 0,
-                                    background_repeat: '',
-                                    background_attachment: '',
-                                    box_shadow: '',
-                                    border_top: '',
-                                    border_right: '',
-                                    border_bottom: '',
-                                    border_left: '',
-                                    border_radius: 0,
-                                },
+                                settings: title_settings,
                             },
                             text: {
                                 content: '<p>' + this.example.text_medium + '</p>',
                                 selected: false,
-                                settings: {
-                                    width: '',
-                                    height: '',
-                                    min_width: '',
-                                    min_height: '',
-                                    max_width: '',
-                                    max_height: '',
-                                    display: '',
-                                    overflow: 'visible',
-                                    padding: {
-                                        top: '0',
-                                        right: '0',
-                                        bottom: '15px',
-                                        left: '0',
-                                    },
-                                    margin: {
-                                        top: '0',
-                                        right: '0',
-                                        bottom: '5px',
-                                        left: '0',
-                                    },
-                                    font_weight: '',
-                                    font_size: '',
-                                    line_height: '1.6em',
-                                    color: {
-                                        hex: '#000000',
-                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
-                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
-                                        a: 1
-                                    },
-                                    text_shadow: '',
-                                    text_align: '',
-                                    font_style: '',
-                                    text_decoration: '',
-                                    background_color: {},
-                                    background_image: '',
-                                    background_size: '',
-                                    background_position: '',
-                                    background_position_x: 0,
-                                    background_position_y: 0,
-                                    background_repeat: '',
-                                    background_attachment: '',
-                                    box_shadow: '',
-                                    border_top: '',
-                                    border_right: '',
-                                    border_bottom: '',
-                                    border_left: '',
-                                    border_radius: 0,
-                                },
+                                settings: text_settings,
                             },
                             button: {
                                 content: this.example.btn_txt,
                                 selected: false,
-                                settings: {
-                                    width: '',
-                                    height: '',
-                                    min_width: '',
-                                    min_height: '',
-                                    max_width: '',
-                                    max_height: '',
-                                    display: '',
-                                    overflow: 'visible',
-                                    padding: {
-                                        top: '5px',
-                                        right: '25px',
-                                        bottom: '5px',
-                                        left: '25px',
-                                    },
-                                    margin: {
-                                        top: '0',
-                                        right: '0',
-                                        bottom: '15px',
-                                        left: '0',
-                                    },
-                                    font_weight: '',
-                                    font_size: '',
-                                    line_height: '1.6em',
-                                    color: {
-                                        hex: '#FFFFFF',
-                                        hsl: { h: 150, s: 0, l: 1, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 1, a: 1 },
-                                        rgba: { r: 255, g: 255, b: 255, a: 1 },
-                                        a: 1
-                                    },
-                                    text_shadow: '',
-                                    text_align: '',
-                                    font_style: '',
-                                    text_decoration: '',
-                                    background_color: {},
-                                    background_image: '',
-                                    background_size: '',
-                                    background_position: '',
-                                    background_position_x: 0,
-                                    background_position_y: 0,
-                                    background_repeat: '',
-                                    background_attachment: '',
-                                    box_shadow: '',
-                                    border_top: '',
-                                    border_right: '',
-                                    border_bottom: '',
-                                    border_left: '',
-                                    border_radius: 0,
-                                },
+                                settings: button_settings,
                             },
                         }
                     },
@@ -1116,110 +876,12 @@
                         image: this.example.bg_image,
                         active: true,
                         selected: false,
-                        settings: {
-                            width: '',
-                            height: '',
-                            min_width: '',
-                            min_height: '',
-                            max_width: '',
-                            max_height: '',
-                            display: '',
-                            overflow: 'visible',
-                            padding: {
-                                top: '20px',
-                                right: '20px',
-                                bottom: '20px',
-                                left: '20px',
-                            },
-                            margin: {
-                                top: '0',
-                                right: '0',
-                                bottom: '0',
-                                left: '0',
-                            },
-                            font_weight: '',
-                            font_size: '',
-                            line_height: '1.6em',
-                            color: {
-                                hex: '#000000',
-                                hsl: { h: 150, s: 0, l: 0, a: 1 },
-                                hsv: { h: 150, s: 0, v: 0, a: 1 },
-                                rgba: { r: 0, g: 0, b: 0, a: 1 },
-                                a: 1
-                            },
-                            text_shadow: '',
-                            text_align: '',
-                            font_style: '',
-                            text_decoration: '',
-                            background_color: {},
-                            background_image: '',
-                            background_size: '',
-                            background_position: '',
-                            background_position_x: 0,
-                            background_position_y: 0,
-                            background_repeat: '',
-                            background_attachment: '',
-                            box_shadow: '',
-                            border_top: '',
-                            border_right: '',
-                            border_bottom: '',
-                            border_left: '',
-                            border_radius: 0,
-                        },
+                        settings: component_settings,
                         parts: {
                             text: {
                                 content: '<p>' + this.example.text_medium + '</p>',
                                 selected: false,
-                                settings: {
-                                    width: '',
-                                    height: '',
-                                    min_width: '',
-                                    min_height: '',
-                                    max_width: '',
-                                    max_height: '',
-                                    display: '',
-                                    overflow: 'visible',
-                                    padding: {
-                                        top: '0',
-                                        right: '0',
-                                        bottom: '0',
-                                        left: '0',
-                                    },
-                                    margin: {
-                                        top: '0',
-                                        right: '0',
-                                        bottom: '0',
-                                        left: '0',
-                                    },
-                                    font_weight: '',
-                                    font_size: '',
-                                    line_height: '1.6em',
-                                    color: {
-                                        hex: '#000000',
-                                        hsl: { h: 150, s: 0, l: 0, a: 1 },
-                                        hsv: { h: 150, s: 0, v: 0, a: 1 },
-                                        rgba: { r: 0, g: 0, b: 0, a: 1 },
-                                        a: 1
-                                    },
-                                    text_shadow: '',
-                                    text_align: '',
-                                    font_style: '',
-                                    text_decoration: '',
-                                    background_color: {},
-                                    background_image: '',
-                                    background_size: '',
-                                    background_position: '',
-                                    background_position_x: 0,
-                                    background_position_y: 0,
-                                    background_repeat: '',
-                                    background_attachment: '',
-                                    box_shadow: '',
-                                    border_top: '',
-                                    border_right: '',
-                                    border_bottom: '',
-                                    border_left: '',
-                                    border_radius: 0,
-                                },
+                                settings: text_settings,
                             },
                         }
                     },
@@ -1247,9 +909,6 @@
                 };
             },
             selectElement: function(event) {
-                this.launchModal();
-            },
-            launchModal: function() {
                 this.$modal.show('page-elements');
             },
             addElement: function(event) {
@@ -1280,6 +939,13 @@
             },
             setActiveElement: function(element, index) {
 
+                this.setElementInactive();
+                element.selected = true;
+                this.active_component = index;
+
+            },
+            setElementInactive: function() {
+                // Set all elements inactive
                 for (var i = 0; i < this.construct.length; i++) {
                     this.construct[i].selected = false;
 
@@ -1288,9 +954,21 @@
                         parts[x].selected = false;
                     }
                 }
-                element.selected = true;
-                this.active_component = index;
-
+            },
+            removeElement: function(index) {
+                this.construct.splice(index, 1);
+                this.generateCss();
+                this.active_component = false;
+            },
+            moveElementDown: function(index) {
+                var tmp = this.construct[index+1];
+                this.construct[index+1] = this.construct[index];
+                this.construct[index] = tmp;
+            },
+            moveElementUp: function(index) {
+                var tmp = this.construct[index-1];
+                this.construct[index-1] = this.construct[index];
+                this.construct[index] = tmp;
             },
             generateCss: function() {
                 var css = "";
@@ -1307,27 +985,29 @@
                         var properties = this.readCssProperties(parts[key].settings);
                         if (properties != '') css += "#" + id + " ." + element + " {" + properties + "} ";
                     }
-
-                    /* Create style document */
-                    var element = document.getElementById('page-style');
-                    if (element !== null) element.parentNode.removeChild(element);
-                    var style = document.createElement('style');
-                    style.type = 'text/css';
-                    style.setAttribute('id', 'page-style');
-                    style.appendChild(document.createTextNode(css));
-                    document.getElementsByTagName("head")[0].appendChild(style);
                 }
+
+                this.construct_css = css;
+
+                /* Create style document */
+                var element = document.getElementById('page-style');
+                if (element !== null) element.parentNode.removeChild(element);
+                var style = document.createElement('style');
+                style.type = 'text/css';
+                style.setAttribute('id', 'page-style');
+                style.appendChild(document.createTextNode(css));
+                document.getElementsByTagName("head")[0].appendChild(style);
             },
             readCssProperties:function(settings) {
 
                 var css = "";
+                
                 if (typeof settings.width !== 'undefined' && settings.width != '') css+= "width: " + settings.width + "; ";
                 if (typeof settings.height !== 'undefined' && settings.height != '') css+= "height: " + settings.height + "; ";
                 if (typeof settings.min_width !== 'undefined' && settings.min_width != '') css+= "min-width: " + settings.min_width + "; ";
                 if (typeof settings.min_height !== 'undefined' && settings.min_height != '') css+= "min-height: " + settings.min_height + "; ";
                 if (typeof settings.max_width !== 'undefined' && settings.max_width != '') css+= "max-width: " + settings.max_width + "; ";
                 if (typeof settings.max_height !== 'undefined' && settings.max_height != '') css+= "max-height: " + settings.max_height + "; ";
-                if (typeof settings.display !== 'undefined' && settings.display != '') css+= "display: " + settings.display + "; ";
                 if (typeof settings.overflow !== 'undefined' && settings.overflow != '') css+= "overflow: " + settings.overflow + "; ";
                 if (typeof settings.padding !== 'undefined') {
                     if (settings.padding.top != '') css+= "padding-top: " + settings.padding.top + "; ";
@@ -1360,60 +1040,85 @@
                 if (typeof settings.background_repeat !== 'undefined' && settings.background_repeat != '') css+= "background-repeat: " + settings.background_repeat + "; ";
                 if (typeof settings.background_attachment !== 'undefined' && settings.background_attachment != '') css+= "background-attachment: " + settings.background_attachment + "; ";
                 if (typeof settings.box_shadow !== 'undefined' && settings.box_shadow != '') css+= "box-shadow: " + settings.box_shadow + "; ";
-                //if (settings.border.top != '') css+= "border-top: " + settings.border.top + "; ";
-                //if (settings.border.right != '') css+= "border-right: " + settings.border.right + "; ";
-                //if (settings.border.bottom != '') css+= "border-bottom: " + settings.border.bottom + "; ";
-                //if (settings.border.left != '') css+= "border-left: " + settings.border.left + "; ";
-                //if (typeof settings.border_radius !== 'undefined' && settings.border_radius != '') css+= "border-radius: " + settings.border_radius + "; ";
+
+                if (typeof settings.border_radius !== 'undefined' && settings.border_radius > 0) css+= "border-radius: " + settings.border_radius + settings.border_radius_unit + "; ";
+                if (typeof settings.border_width !== 'undefined' && settings.border_width > 0) {
+                    css+= "border-width: " + settings.border_width + settings.border_width_unit + "; ";
+                    if (typeof settings.border_style !== 'undefined' && settings.border_style != '') css+= "border-style: " + settings.border_style + "; ";
+                    if (typeof settings.border_color !== 'undefined') {
+                        if (settings.border_color.hex != '') css+= "border-color: " + settings.border_color.hex + "; ";
+                    }
+                }
+
+                if (typeof settings.custom_css !== 'undefined' && settings.custom_css != '') {
+                    var lines = settings.custom_css.split('\n');
+                    for(var i = 0;i < lines.length;i++) {
+                        var line = lines[i];
+                        css += line.trim() + ';';
+                    }
+                }
+
                 return css;
             },
             update: function(event){
 
+                this.setElementInactive();
                 this.enableEdit = false;
-                if (this.selected_editor == 'builder') this.page.content = document.getElementById('content-editor').innerHTML;
-                this.enableEdit = true;
+                var self = this;
 
-                let params = {};
-                params['id'] = this.page_id;
-                params['content'] = this.page.content;
-                params['construct'] = this.construct;
-                params['customCss'] = this.page.customCss;
-                params['customJs'] = this.page.customJs;
-                params['disableLayout'] = this.page.disableLayout;
-                params['locale'] = this.translate_id;
-                params['mainImage'] = this.page.mainImage;
-                params['metaCustom'] = this.page.metaCustom;
-                params['metaDescription'] = this.page.metaDescription;
-                params['metaKeywords'] = this.page.metaKeywords;
-                params['metaTitle'] = this.page.metaTitle;
-                params['pageRoute'] = this.page.pageRoute;
-                params['pageTitle'] = this.page.pageTitle;
-                params['pageWeight'] = this.page.pageWeight;
-                params['pageWidth'] = this.page.pageWidth;
-                params['pageTitle'] = this.page.pageTitle;
-                params['publishDate'] = this.page.publishDate;
-                params['expireDate'] = this.page.expireDate;
-                params['status'] = this.page.status;
-                params['role'] = this.page.role;
+                setTimeout(function() {
+                    if (self.selected_editor == 'builder') {
+                        let content = document.getElementById('content-editor').innerHTML;
+                        content = content.replace(new RegExp('contenteditable="true"', 'g'), '');
+                        content = content.replace(new RegExp('contenteditable="false"', 'g'), '');
+                        content = content.replace(new RegExp('data-href', 'g'), 'href');
+                        self.page.content = content;
+                    }
 
-                let url = '/api/v1/page/insert/';
-                if (this.page_id > 0) url = '/api/v1/page/update/'+ this.page_id + '/';
+                    let params = {};
+                    params['id'] = self.page_id;
+                    params['content'] = self.page.content;
+                    params['construct'] = self.construct;
+                    params['constructCss'] = self.construct_css;
+                    params['customCss'] = self.page.customCss;
+                    params['customJs'] = self.page.customJs;
+                    params['disableLayout'] = self.page.disableLayout;
+                    params['locale'] = self.translate_id;
+                    params['mainImage'] = self.page.mainImage;
+                    params['metaCustom'] = self.page.metaCustom;
+                    params['metaDescription'] = self.page.metaDescription;
+                    params['metaKeywords'] = self.page.metaKeywords;
+                    params['metaTitle'] = self.page.metaTitle;
+                    params['pageRoute'] = self.page.pageRoute;
+                    params['pageTitle'] = self.page.pageTitle;
+                    params['pageWeight'] = self.page.pageWeight;
+                    params['pageWidth'] = self.page.pageWidth;
+                    params['pageTitle'] = self.page.pageTitle;
+                    params['publishDate'] = self.page.publishDate;
+                    params['expireDate'] = self.page.expireDate;
+                    params['status'] = self.page.status;
+                    params['role'] = self.page.role;
 
-                axios.put(url, params, {headers: this.headers})
-                    .then(response => {
-                        var result = JSON.parse(response.data);
+                    let url = '/api/v1/page/insert/';
+                    if (self.page_id > 0) url = '/api/v1/page/update/'+ self.page_id + '/';
 
-                        if (result.success) {
-                            this.page_id = parseInt(result['id']);
-                            this.setAlert(translations.saved, 'success');
-                        } else {
-                            this.setAlert(result.message, 'error');
-                        }
-                    })
-                    .catch(e => {
-                        this.errors.push(e)
-                    });
+                    axios.put(url, params, {headers: self.headers})
+                        .then(response => {
+                            var result = JSON.parse(response.data);
 
+                            if (result.success) {
+                                self.page_id = parseInt(result['id']);
+                                self.setAlert(translations.saved, 'success');
+                            } else {
+                                self.setAlert(result.message, 'error');
+                            }
+                            self.enableEdit = true;
+                        })
+                        .catch(e => {
+                            self.errors.push(e);
+                            self.enableEdit = true;
+                        });
+                }, 2);
             },
             setEditor: function(event) {
                 event.target.parentNode.classList.toggle("d-block");
@@ -1519,11 +1224,31 @@
 .component.active,
 .component-block.active,
 .component-title.active,
+.component-title2.active,
 .component-text.active,
+.component-text2.active,
 .component-button.active,
-.component-image.active {
+.component-button2.active,
+.component-image.active,
+.component-image2.active {
     border: 2px dashed red !important;
 }
 
+.remove-element {
+    display: none;
+}
+
+.component, .component-block {
+    position: relative;
+}
+
+.component.active .component-functions,
+.component-block.active .component-functions {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+}
 
 </style>

@@ -68,7 +68,7 @@
     import axios from 'axios';
 
     export default {
-        name: "filemanagement",
+        name: "filemanager",
         data() {
             return {
                 headers: {

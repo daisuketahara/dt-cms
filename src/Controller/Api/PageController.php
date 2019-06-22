@@ -312,6 +312,7 @@ class PageController extends Controller
 
             if (isset($params['content'])) $page->setContent($params['content']);
             if (isset($params['construct'])) $page->setConstruct($this->serializer->serialize($params['construct'], 'json'));
+            if (isset($params['constructCss'])) $page->setConstructCss($params['constructCss']);
             if (isset($params['customCss'])) $page->setCustomCss($params['customCss']);
             if (isset($params['customJs'])) $page->setCustomJs($params['customJs']);
             if (isset($params['disableLayout'])) $page->setDisableLayout($params['disableLayout']);

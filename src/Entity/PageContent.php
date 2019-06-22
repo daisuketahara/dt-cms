@@ -51,6 +51,11 @@ class PageContent
     protected $construct;
 
     /**
+    * @ORM\Column(type="text")
+    */
+    protected $constructCss;
+
+    /**
     * @ORM\Column(type="string", length=255)
     */
     protected $metaTitle;
@@ -264,6 +269,30 @@ class PageContent
     public function setConstruct($construct)
     {
         $this->construct = $construct;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Construct Css
+     *
+     * @return mixed
+     */
+    public function getConstructCss()
+    {
+        return $this->constructCss;
+    }
+
+    /**
+     * Set the value of Construct Css
+     *
+     * @param mixed constructCss
+     *
+     * @return self
+     */
+    public function setConstructCss($constructCss)
+    {
+        $this->constructCss = $constructCss;
 
         return $this;
     }

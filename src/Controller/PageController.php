@@ -59,10 +59,12 @@ class PageController extends Controller
         if (empty($metaTitle)) $metaTitle = $page->getPageTitle();
 
         $customCss = $page->getCustomCss();
+        $constructCss = $page->getConstructCss();
         try {
             $scss = new Compiler();
             $scss->setFormatter('Leafo\\ScssPhp\\Formatter\\Crunched');
             $css = $scss->compile($customCss);
+            $css .= $scss->compile($constructCss);
         } catch(Exception $e) {
             $css = $customCss;
         }
