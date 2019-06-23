@@ -327,10 +327,7 @@
             </div>
         </div>
         <modal name="filemanager-modal" width="80%" height="90%">
-            <filemanager></filemanager>
-        </modal>
-        <modal name="filemanager-modal" width="80%" height="90%">
-            <filemanager></filemanager>
+            <filemanager :select="true" @choosen="setBackgroundImage"></filemanager>
         </modal>
         <modal name="available-routes" width="80%" height="90%">
             <div class="p-4">
@@ -443,7 +440,12 @@
                 this.settings.href = event.target.dataset.route;
                 this.$modal.hide('available-routes');
             },
+            setBackgroundImage(image) {
+                this.settings.background_image = image;
+                this.$parent.generateCss();
+                this.$modal.hide('filemanager-modal');
 
+            }
         }
     }
 </script>

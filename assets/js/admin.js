@@ -25,7 +25,7 @@ import Template from '../components/Template';
 Vue.use(CKEditor);
 Vue.use(VueCodemirror);
 Vue.use(VModal, { dialog: true });
-Vue.use(FileManager);
+Vue.component('filemanager', FileManager);
 Vue.component('paginate', Paginate);
 
 Vue.config.productionTip = false;

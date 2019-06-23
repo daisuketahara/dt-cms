@@ -1001,7 +1001,7 @@
             readCssProperties:function(settings) {
 
                 var css = "";
-                
+
                 if (typeof settings.width !== 'undefined' && settings.width != '') css+= "width: " + settings.width + "; ";
                 if (typeof settings.height !== 'undefined' && settings.height != '') css+= "height: " + settings.height + "; ";
                 if (typeof settings.min_width !== 'undefined' && settings.min_width != '') css+= "min-width: " + settings.min_width + "; ";

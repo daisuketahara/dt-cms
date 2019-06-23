@@ -34,16 +34,16 @@
                     <div id="file-upload-drop" class="mt-4">
                         <h2>{{translations.drop_file || 'Drop a file in this box'}}</h2>
                         <div>{{translations.or || 'or'}}</div>
-                        <button id="btn-file-select" class="btn btn-lg btn-secondary mt-3">{{translations.select_file || 'Select a file'}}</button>
                     </div>
                 </div>
             </div>
             <div class="row mt-4">
-                <div v-for="(file, index) in files" class="col-md-2" v-on:click="viewFile($event)" :data-index="index">
+                <div v-for="(file, index) in files" class="col-md-2">
                     <div class="card mb-4 file-item pointer" :data-id="file.id">
-                        <div :style="'background-image: url(/' + file.filePath + file.fileName + ')'" class="file-img"></div>
+                        <div :style="'background-image: url(/' + file.filePath + file.fileName + ')'" class="file-img" v-on:click="viewFile($event)" :data-index="index"></div>
                         <div class="card-body pt-2 pb-2">
                             <h5 class="card-title text-center font-xs mb-0">{{file.name}}</h5>
+                            <button v-if="select === true" class="btn btn-sm btn-secondary" v-on:click.prevent="selectFile" :data-file="'/' + file.filePath + file.fileName">Select</button>
                         </div>
                     </div>
                 </div>
@@ -69,6 +69,9 @@
 
     export default {
         name: "filemanager",
+        props: {
+            select: Boolean,
+        },
         data() {
             return {
                 headers: {
@@ -116,6 +119,9 @@
             viewFile: function(event) {
                 this.file = this.files[event.currentTarget.dataset.index];
                 this.$modal.show('view-file');
+            },
+            selectFile: function(event) {
+                this.$emit('choosen', event.target.dataset.file)
             },
             uploadFile: function(event) {
                 this.upload = true;
