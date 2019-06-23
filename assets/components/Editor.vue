@@ -31,9 +31,9 @@
                                 {{selected_editor_name}}
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownEditorButton">
-                                <button class="dropdown-item" data-editor="html" v-on:click.prevent="setEditor">{{translations.html}}</button>
-                                <button class="dropdown-item" data-editor="editor" v-on:click.prevent="setEditor">{{translations.editor}}</button>
-                                <button class="dropdown-item" data-editor="builder" v-on:click.prevent="setEditor">{{translations.builder}}</button>
+                                <button class="dropdown-item" data-editor="html" v-on:click.prevent="setEditor">{{translations.html || 'HTML'}}</button>
+                                <button class="dropdown-item" data-editor="editor" v-on:click.prevent="setEditor">{{translations.editor || 'Editor'}}</button>
+                                <button class="dropdown-item" data-editor="builder" v-on:click.prevent="setEditor">{{translations.builder || 'Builder'}}</button>
                             </div>
                         </div>
                     </div>
@@ -382,8 +382,8 @@
                 enableEdit: true,
                 active_component: false,
                 example: {},
-                selected_editor_name: 'HTML',
-                selected_editor: 'html',
+                selected_editor_name: 'Builder',
+                selected_editor: 'builder',
                 cmCssOptions: {
                     tabSize: 4,
                     theme: 'base16-light',
@@ -429,7 +429,7 @@
             var checkSelectedEditor = this.readCookie('selected_editor');
             if (checkSelectedEditor) {
                 this.selected_editor = checkSelectedEditor;
-                this.selected_editor_name = checkSelectedEditor;
+                this.selected_editor_name = this.translations[checkSelectedEditor] || checkSelectedEditor;
             }
         },
         methods: {
