@@ -23,18 +23,10 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use App\Entity\Locale;
 use App\Entity\Page;
 use App\Entity\PageContent;
-use App\Entity\Permission;
-use App\Entity\PermissionGroup;
-use App\Entity\Setting;
-use App\Entity\Role;
-use App\Entity\RolePermission;
-use App\Service\LogService;
-use App\Service\SettingService;
-use App\Service\RedirectService;
 
 class PageController extends Controller
 {
-    public function loadPage(Request $request, RedirectService $redirect)
+    public function loadPage(Request $request)
     {
         $route = $request->attributes->get('_route');
         //var_dump($route);exit;
