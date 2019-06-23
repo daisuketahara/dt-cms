@@ -48,10 +48,6 @@
         },
         data() {
             return {
-                headers: {
-                    'Content-Type': 'application/json;charset=UTF-8',
-                    "Authorization" : "Bearer " + this.$store.state.apikey
-                },
                 init: this.$store.state.init,
                 site: {},
                 block: {}
@@ -83,17 +79,18 @@
         },
         methods: {
             logout() {
-
-                let params = {};
-                params.email = this.$store.state.email;
-                params.token = this.$store.state.apikey;
-
-                axios.post('/api/v1/logout/', params, {headers: this.headers})
+                let headers= {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    "Authorization" : "Bearer " + this.$store.state.apikey
+                };
+                axios.get('/api/v1/logout/', {headers: headers})
                     .then(response => {
-                        this.$router.push('/' + this.locale + '/admin/login/')
                         this.$store.commit('authenticate', false);
                         this.$store.commit('setApiKey', false);
                         this.$store.commit('setEmail', false);
+                        localStorage.removeItem('user-email');
+                        localStorage.removeItem('user-token');
+                        this.$router.push('/' + this.locale + '/admin/login/');
                     })
                     .catch(e => {
                         this.setAlert(e, 'error');
@@ -150,6 +147,11 @@
                     }
                 }
                 this.getTranslations(selected);
+            },
+            setAlert: function(text, type) {
+                var self = this;
+                this.alert = {text: text, type: type};
+                setTimeout(function() { self.alert = {}; }, 5000);
             }
         }
     };

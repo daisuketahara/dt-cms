@@ -88,27 +88,25 @@ class SecurityController extends Controller
     */
     public function logout(Request $request)
     {
-        $params = json_decode(file_get_contents("php://input"),true);
-        $error = array();
+        $authHeader = $request->headers->get('Authorization');
+        $token = $request->query->get('token');
+        if (empty($token)) $token = $request->request->get('token');
 
-        if (!empty($params['email'])) $email = $params['email'];
-        if (!empty($params['token'])) $token = $params['token'];
+        if (!empty($authHeader) && strpos($authHeader, 'Bearer ') !== false) {
+            $apiKey = substr($authHeader, 7);
+        } elseif (!empty($token)) {
+            $apiKey = $token;
+        }
 
-        $user = $this->getDoctrine()
-            ->getRepository(User::class)
-            ->findOneBy(array('email' => $email));
+        $key = $this->getDoctrine()
+            ->getRepository(UserApiKey::class)
+            ->findOneBy(array('token' => $apiKey));
 
-        if ($user) {
-            $key = $this->getDoctrine()
-                ->getRepository(UserApiKey::class)
-                ->findOneBy(array('user' => $user, 'token' => $token));
-
-            if ($key) {
-                $em = $this->getDoctrine()->getManager();
-                $em->remove($key);
-                $em->flush();
-                $response = ['success' => true];
-            }
+        if ($key) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($key);
+            $em->flush();
+            $response = ['success' => true];
         }
 
         if (empty($response)) {
