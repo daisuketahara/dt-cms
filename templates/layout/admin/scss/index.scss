@@ -1,32 +1,4 @@
-html, body {
-    width: 100%;
-    background-color: rgb(252,252,252);
-}
-
-body {
-    min-height: 100vh;
-    padding-top: 2vh;
-    background: #cedce7;
-}
 
 .zend-developer-toolbar {
     color: #fff !important;
-}
-
-footer {
-    clear: both;
-    text-align: center;
-    font-size: 0.7rem;
-    margin-top: 0.3rem;
-    color: #333;
-    text-shadow: white 1px 1px;
-}
-
-.form-control {
-    background-color: rgba(255, 255, 255, 0.7);
-    border: none !important;
-    border-bottom-color: currentcolor;
-    border-bottom-style: none;
-    border-bottom-width: medium;
-    border-bottom: 1px solid #ccc !important;
 }
