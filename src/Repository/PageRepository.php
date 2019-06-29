@@ -21,7 +21,7 @@ class PageRepository extends ServiceEntityRepository
                 LEFT JOIN locale AS l ON pc.locale_id = l.id
                 WHERE p.publish_date < NOW()
                 AND p.status = 1
-                AND (p.expire_date > NOW() OR p.expire_date IS NULL)";
+                AND (p.expire_date > NOW() OR p.expire_date = '0000-00-00' OR p.expire_date IS NULL)";
 
         $conn = $this->getEntityManager()->getConnection();
         $stmt = $conn->prepare($sql);
