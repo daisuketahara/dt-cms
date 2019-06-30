@@ -49,6 +49,8 @@
             {% include 'layout/app/components/header.html.twig' %}
         {% elseif template.settings.header == 'top' %}
             {% include 'layout/app/components/header-top.html.twig' %}
+        {% elseif template.settings.header == 'centered' %}
+            {% include 'layout/app/components/header-centered.html.twig' %}
         {% elseif template.settings.header == 'overlay' %}
             {% include 'layout/app/components/header-overlay.html.twig' %}
         {% endif %}
@@ -83,6 +85,8 @@
             {% include 'layout/app/components/footer.html.twig' %}
         {% elseif template.settings.footer == 'top' %}
             {% include 'layout/app/components/footer-bottom.html.twig' %}
+        {% elseif template.settings.footer == 'centered' %}
+            {% include 'layout/app/components/footer-centered.html.twig' %}
         {% endif %}
 {% block javascripts %}
         {{ encore_entry_script_tags('app') }}

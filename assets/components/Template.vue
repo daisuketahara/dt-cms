@@ -13,7 +13,7 @@
                 <div v-if="template.id == 1" class="form-group">
                     <label>{{translations.header || 'Header'}}</label>
                     <div class="row">
-                        <div class="col-sm-6 col-md-3">
+                        <div class="col-xs-6 col-sm-4 col-md-2">
                             <div class="template-header-img"></div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="template-header" id="template-header-1" value="standard" v-model="template.settings.header">
@@ -22,7 +22,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-md-3">
+                        <div class="col-xs-6 col-sm-4 col-md-2">
                             <div class="template-header-img"></div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="template-header" id="template-header-2" value="top" v-model="template.settings.header">
@@ -31,20 +31,29 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-md-3">
+                        <div class="col-xs-6 col-sm-4 col-md-2">
                             <div class="template-header-img"></div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="template-header" id="template-header-3" value="overlay" v-model="template.settings.header">
+                                <input class="form-check-input" type="radio" name="template-header" id="template-header-3" value="centered" v-model="template.settings.header">
                                 <label class="form-check-label" for="template-header-3">
+                                    {{translations.centered || 'Centered'}}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-sm-4 col-md-2">
+                            <div class="template-header-img"></div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="template-header" id="template-header-4" value="overlay" v-model="template.settings.header">
+                                <label class="form-check-label" for="template-header-4">
                                     {{translations.overlay || 'Overlay'}}
                                 </label>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-md-3">
+                        <div class="col-xs-6 col-sm-4 col-md-2">
                             <div class="template-header-img"></div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="template-header" id="template-header-4" value="none" v-model="template.settings.header">
-                                <label class="form-check-label" for="template-header-4">
+                                <input class="form-check-input" type="radio" name="template-header" id="template-header-5" value="none" v-model="template.settings.header">
+                                <label class="form-check-label" for="template-header-5">
                                     {{translations.none || 'None'}}
                                 </label>
                             </div>
@@ -54,7 +63,7 @@
                 <div v-if="template.id == 1" class="form-group">
                     <label>{{translations.footer || 'Footer'}}</label>
                     <div class="row">
-                        <div class="col-sm-6 col-md-3">
+                        <div class="col-xs-6 col-sm-4 col-md-2">
                             <div class="template-header-img"></div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="template-footer" id="template-footer-1" value="standard" v-model="template.settings.footer">
@@ -63,7 +72,7 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-md-3">
+                        <div class="col-xs-6 col-sm-4 col-md-2">
                             <div class="template-header-img"></div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="template-footer" id="template-footer-2" value="bottom" v-model="template.settings.footer">
@@ -72,11 +81,20 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-md-3">
+                        <div class="col-xs-6 col-sm-4 col-md-2">
                             <div class="template-header-img"></div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" name="template-footer" id="template-footer-3" value="none" v-model="template.settings.footer">
+                                <input class="form-check-input" type="radio" name="template-footer" id="template-footer-3" value="centered" v-model="template.settings.footer">
                                 <label class="form-check-label" for="template-footer-3">
+                                    {{translations.centered || 'Centered'}}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-sm-4 col-md-2">
+                            <div class="template-header-img"></div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="template-footer" id="template-footer-4" value="none" v-model="template.settings.footer">
+                                <label class="form-check-label" for="template-footer-4">
                                     {{translations.none || 'None'}}
                                 </label>
                             </div>

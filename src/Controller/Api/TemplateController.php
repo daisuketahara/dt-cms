@@ -154,10 +154,12 @@ class TemplateController extends Controller
                 if ($template->getId() == 1) {
                     if ($params['settings']['header'] == 'standard') $css .= $scss->compile('@import "templates/layout/' . $template->getTag() . '/scss/header.scss";');
                     elseif ($params['settings']['header'] == 'top') $css .= $scss->compile('@import "templates/layout/' . $template->getTag() . '/scss/header-top.scss";');
+                    elseif ($params['settings']['header'] == 'centered') $css .= $scss->compile('@import "templates/layout/' . $template->getTag() . '/scss/header-centered.scss";');
                     elseif ($params['settings']['header'] == 'overlay') $css .= $scss->compile('@import "templates/layout/' . $template->getTag() . '/scss/header-overlay.scss";');
 
                     if ($params['settings']['footer'] == 'standard') $css .= $scss->compile('@import "templates/layout/' . $template->getTag() . '/scss/footer.scss";');
                     elseif ($params['settings']['footer'] == 'bottom') $css .= $scss->compile('@import "templates/layout/' . $template->getTag() . '/scss/footer-bottom.scss";');
+                    elseif ($params['settings']['footer'] == 'centered') $css .= $scss->compile('@import "templates/layout/' . $template->getTag() . '/scss/footer-centered.scss";');
                 }
 
                 $css .= $scss->compile('@import "templates/layout/' . $template->getTag() . '/scss/index.scss";');
