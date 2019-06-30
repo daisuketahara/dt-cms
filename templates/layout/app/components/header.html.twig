@@ -32,7 +32,7 @@
                 </li>
             {% endfor %}
             {% set activeLocales = localeservice.getActiveLocales() %}
-            {% if activeLocales is not empty %}
+            {% if activeLocales is not empty and activeLocales|length > 1 %}
                 {% for activeLocale in activeLocales %}
                 <li>
                     <a href="{% if activeLocale.default is not empty %}/{% else %}/{{activeLocale.locale}}/{% endif %}" class="nav-link">[{{activeLocale.isoCode}}]</a>
