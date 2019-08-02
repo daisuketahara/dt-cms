@@ -28,17 +28,11 @@ class MailService
         $mail = new MailQueue();
         $request = Request::createFromGlobals();
 
-        $locale = $this->em->getRepository(Locale::class)
-        ->find($localeId);
-
         $template = $this->em->getRepository(MailTemplate::class)
-        ->findOneBy(array('tag' => $tag, 'locale' => $locale));
+        ->findTemplate($tag, $localeId);
 
-        $templateContent = $this->em->getRepository(MailTemplateContent::class)
-        ->findOneBy(['mailTemplate' => $template, 'locale' => $locale]);
-
-        $body = $templateContent->getBody();
-        $subject = $templateContent->getSubject();
+        $body = $template['body'];
+        $subject = $template['subject'];
         if ($variables) {
             foreach($variables as $search => $replace) {
                 $body = str_replace('{'.$search.'}', $replace, $body);

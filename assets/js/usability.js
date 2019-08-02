@@ -44,8 +44,10 @@
 			document.getElementById('site-scroll-to-top').addEventListener('click', scrollToTop);
         } else {
 			var element = document.getElementById('site-scroll-to-top');
-			element.removeEventListener('click', scrollToTop);
-    		element.parentNode.removeChild(element);
+			if (element) {
+				element.removeEventListener('click', scrollToTop);
+	    		element.parentNode.removeChild(element);
+			}
         }
     }
 
@@ -62,8 +64,10 @@
 			document.getElementById('site-scroll-down').addEventListener('click', scrollDown);
         } else {
 			var element = document.getElementById('site-scroll-down');
-			element.removeEventListener('click', scrollDown);
-    		element.parentNode.removeChild(element);
+			if (element) {
+				element.removeEventListener('click', scrollDown);
+	    		element.parentNode.removeChild(element);
+			}
         }
     }
 

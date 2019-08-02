@@ -75,9 +75,9 @@ class ContactController extends Controller
                 'contact-form',
                 $locale->getId(),
                 array(
-                    'phone' => $phone,
-                    'email' => $email,
-                    'message' => $message,
+                    'phone' => $contact->getPhone(),
+                    'email' => $contact->getFromEmail(),
+                    'message' => $contact->getMessage(),
                 )
             );
 

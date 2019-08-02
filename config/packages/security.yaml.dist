@@ -32,6 +32,10 @@ security:
             methods: [GET]
             pattern: ^/api/v1/app-routes/
             security: false
+        api_public_contact:
+            methods: [GET]
+            pattern: ^/api/v1/contact/post/
+            security: false
         api_public_page:
             methods: [GET]
             pattern: ^/api/v1/page/
