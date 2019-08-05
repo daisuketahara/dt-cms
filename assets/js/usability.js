@@ -1,61 +1,59 @@
 
 (function() {
 
-	var body = document.body;
-    var html = document.documentElement;
+	// The debounce function receives our function as a parameter
+	const debounce = (fn) => {
 
-	var window_height = window.innerHeight;
-	var body_height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
-    var scroll = document.documentElement.scrollTop;
+		// This holds the requestAnimationFrame reference, so we can cancel it if we wish
+		let frame;
 
-    if (scroll == 0) document.body.classList.add('position-top');
-    else document.body.classList.remove('position-top');
+		// The debounce function returns a new function that can receive a variable number of arguments
+		return (...params) => {
 
-	window.onscroll = function() {
-        scroll = document.documentElement.scrollTop;
-        if (scroll == 0) document.body.classList.add('position-top');
-        else document.body.classList.remove('position-top');
-    };
-
-    addScrollToTop();
-    addScrollDown();
-
-    window.onresize = function(event) {
-        addScrollToTop();
-        addScrollDown();
-    };
-
-    function addScrollToTop() {
-        if (body_height > window_height+400) {
-	        var button = document.createElement('a');
-			button.id = 'site-scroll-to-top';
-			button.className = 'pointer';
-
-			var icon = document.createElement('i');
-			icon.className = 'fas fa-angle-up';
-			button.appendChild(icon);
-
-			var span = document.createElement('span');
-			var text = document.createTextNode('Back to top');
-			span.appendChild(text);
-			button.appendChild(span);
-
-			document.body.appendChild(button);
-			document.getElementById('site-scroll-to-top').addEventListener('click', scrollToTop);
-        } else {
-			var element = document.getElementById('site-scroll-to-top');
-			if (element) {
-				element.removeEventListener('click', scrollToTop);
-	    		element.parentNode.removeChild(element);
+			// If the frame variable has been defined, clear it now, and queue for next frame
+			if (frame) {
+			cancelAnimationFrame(frame);
 			}
-        }
-    }
 
-	function scrollToTop() {
-		scrollTo(document.documentElement, 0, 1250);
+			// Queue our function call for the next frame
+			frame = requestAnimationFrame(() => {
+
+				// Call our function and pass any params we received
+				fn(...params);
+			});
+
+		}
+	};
+
+	// Reads out the scroll position and stores it in the data attribute
+	// so we can use it in our stylesheets
+	const storeScroll = () => {
+		document.documentElement.dataset.scroll = window.scrollY;
 	}
 
+	// Listen for new scroll events, here we debounce our `storeScroll` function
+	document.addEventListener('scroll', debounce(storeScroll), { passive: true });
+
+	// Update scroll position for first time
+	storeScroll();
+
+
+	document.getElementById('site-scroll-to-top').addEventListener('click', scrollToTop);
+	function scrollToTop() { fnc_scrollto(0); }
+
+
+    addScrollDown();
+    window.onresize = function(event) { addScrollDown(); };
+	function scrollDown() { fnc_scrollto(window.innerHeight); }
     function addScrollDown() {
+
+		var body = document.body;
+	    var html = document.documentElement;
+
+		var window_height = window.innerHeight;
+		var body_height = Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight );
+	    var scroll = document.documentElement.scrollTop;
+
         if (body_height > window_height+400) {
 	        var button = document.createElement('a');
 			button.id = 'site-scroll-down';
@@ -70,27 +68,50 @@
 			}
         }
     }
-
-	function scrollDown() {
-		scrollTo(document.documentElement, window_height, 1250);
-	}
-
-	function scrollTo(element, to, duration) {
-	    var start = element.scrollTop,
-	        change = to - start,
-	        currentTime = 0,
-	        increment = 20;
-
-	    var animateScroll = function(){
-	        currentTime += increment;
-	        var val = Math.easeInOutQuad(currentTime, start, change, duration);
-	        element.scrollTop = val;
-	        if(currentTime < duration) {
-	            setTimeout(animateScroll, increment);
+	var fnc_scrollto = function(to,id){
+	    var smoothScrollFeature = 'scrollBehavior' in document.documentElement.style;
+	    var articles = document.querySelectorAll("ul#content > li"), i;
+	    if (to == 'elem') to = articles[id].offsetTop;
+	    var i = parseInt(window.pageYOffset);
+	    if ( i != to ) {
+	        if (!smoothScrollFeature) {
+	            to = parseInt(to);
+	            if (i < to) {
+	                var int = setInterval(function() {
+	                    if (i > (to-20)) i += 1;
+	                    else if (i > (to-40)) i += 3;
+	                    else if (i > (to-80)) i += 8;
+	                    else if (i > (to-160)) i += 18;
+	                    else if (i > (to-200)) i += 24;
+	                    else if (i > (to-300)) i += 40;
+	                    else i += 60;
+	                    window.scroll(0, i);
+	                    if (i >= to) clearInterval(int);
+	                }, 15);
+	            }
+	            else {
+	                var int = setInterval(function() {
+	                    if (i < (to+20)) i -= 1;
+	                    else if (i < (to+40)) i -= 3;
+	                    else if (i < (to+80)) i -= 8;
+	                    else if (i < (to+160)) i -= 18;
+	                    else if (i < (to+200)) i -= 24;
+	                    else if (i < (to+300)) i -= 40;
+	                    else i -= 60;
+	                    window.scroll(0, i);
+	                    if (i <= to) clearInterval(int);
+	                }, 15);
+	            }
 	        }
-	    };
-	    animateScroll();
-	}
+	        else {
+	            window.scroll({
+	                top: to,
+	                left: 0,
+	                behavior: 'smooth'
+	            });
+	        }
+	    }
+	};
 
 	//t = current time
 	//b = start value

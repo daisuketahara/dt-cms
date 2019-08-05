@@ -88,6 +88,10 @@
         {% elseif template.settings.footer == 'centered' %}
             {% include 'layout/app/components/footer-centered.html.twig' %}
         {% endif %}
+
+        <a id="site-scroll-to-top" class="pointer"><i class="fas fa-angle-up" aria-hidden="true"></i><span>Back to top</span></a>
+
+
 {% block javascripts %}
         {{ encore_entry_script_tags('app') }}
 {% endblock %}
