@@ -3,10 +3,13 @@
 namespace App\Controller\Api;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 use App\Service\CacheService;
@@ -34,10 +37,18 @@ class CacheController extends Controller
     /**
     * @Route("/api/v1/cache/clear/", name="api_clear_cache"), methods={"GET","HEAD"})
     */
-    final public function clearCache(Request $request, TranslatorInterface $translator)
+    final public function clearCache(Request $request, TranslatorInterface $translator, KernelInterface $kernel)
     {
         $cache = new CacheService();
         $cache->clear();
+
+        $application = new Application($kernel);
+        $application->setAutoExit(false);
+
+        $input = new ArrayInput(array(
+            'command' => 'debug:translation',
+            'locale' => 'en',
+        ));
 
         $response = [
             'success' => true,
