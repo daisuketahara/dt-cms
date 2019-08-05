@@ -158,13 +158,13 @@
                     </div>
                 </transition>
                 <div class="form-group mb-2">
-                    <input type="text" id="page-title" name="page-title" class="form-control" :value="page.pageTitle" :placeholder="translations['enter_title']">
+                    <input type="text" id="page-title" name="page-title" class="form-control" v-model="page.pageTitle" :placeholder="translations['enter_title']">
                 </div>
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon3">{{domain}}/{{locale}}</span>
                     </div>
-                    <input type="text" class="form-control" id="page-route" name="page-route" :value="page.pageRoute" aria-describedby="basic-addon3">
+                    <input type="text" class="form-control" id="page-route" name="page-route" v-model="page.pageRoute" aria-describedby="basic-addon3">
                 </div>
                 <textarea v-if="selected_editor == 'html'" id="page-content" class="form-control mb-2" v-model="page.content" rows="24"></textarea>
                 <ckeditor v-if="selected_editor == 'editor'" :editor="editor" v-model="page.content" :config="editorConfig"></ckeditor>
