@@ -46,7 +46,7 @@ class CacheController extends Controller
         $application->setAutoExit(false);
 
         $input = new ArrayInput(array(
-            'command' => 'debug:translation',
+            'command' => 'cache:clear',
             'locale' => 'en',
         ));
 

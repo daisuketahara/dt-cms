@@ -37,8 +37,8 @@
 	// Update scroll position for first time
 	storeScroll();
 
-
-	document.getElementById('site-scroll-to-top').addEventListener('click', scrollToTop);
+	var scrollToTopElement = document.getElementById('site-scroll-to-top');
+	if (scrollToTopElement) scrollToTopElement.addEventListener('click', scrollToTop);
 	function scrollToTop() { fnc_scrollto(0); }
 
 
