@@ -87,3 +87,53 @@
         background-color: white;
     }
 }
+
+#language-switcher-open {
+    font-size: 1.2rem !important;
+    line-height: 1rem;
+}
+
+@media screen and (max-width: 768px) {
+    #language-switcher-open {
+        display: none;
+    }
+}
+
+#language-switcher-bar {
+
+    position: fixed;
+    top: -180px;
+    width: 100%;
+    padding: 0.8rem;
+    z-index: 1040;
+    background: #444;
+    color: white;
+    line-height: 38px;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+
+    a {
+        padding: 0 0.5rem 0 0;
+        margin-left: 0.3rem;
+        margin-right: 0.3rem;
+
+        img {
+            margin-top: -2px;
+            margin-bottom: -2px;
+            margin-left: 4px;
+            width: 32px;
+        }
+    }
+
+    #language-switcher-close {
+        position: absolute;
+        top: 15px;
+        right: 26px;
+        font-size: 1.2rem;
+        color: white;
+        cursor: pointer;
+    }
+}

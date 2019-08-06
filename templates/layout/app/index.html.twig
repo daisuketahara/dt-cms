@@ -37,7 +37,7 @@
 {% endblock %}
 {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
-        <link rel="stylesheet" type="text/css" href="/css/app.css?v={{settingservice.getSetting('template.assets.version')}}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('/') }}css/app.css?v={{settingservice.getSetting('template.assets.version')}}">
         <link rel="shortcut icon" href="{{ asset('favicon.png') }}" type="image/png">
 {% endblock %}
         <script src="https://kit.fontawesome.com/f4e4c62af9.js"></script>
@@ -92,8 +92,11 @@
         <a id="site-scroll-to-top" class="pointer"><i class="fas fa-angle-up" aria-hidden="true"></i><span>Back to top</span></a>
 
 
-{% block javascripts %}
-        {{ encore_entry_script_tags('app') }}
-{% endblock %}
+        {% block javascripts %}
+                {{ encore_entry_script_tags('app') }}
+        {% endblock %}
+        {% block bottom %}
+                {{ encore_entry_script_tags('app') }}
+        {% endblock %}
     </body>
 </html>

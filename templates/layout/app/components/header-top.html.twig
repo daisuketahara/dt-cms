@@ -24,12 +24,19 @@
             {% endif %}
             </li>
         {% endfor %}
+            <li>
+                <a id="language-switcher-open" class="nav-link pointer">
+                    <i class="fal fa-globe"></i>
+                </a>
+            </li>
         </ul>
     </div>
 </nav>
 
 {% block javascripts %}
 <script>
+
+document.addEventListener('DOMContentLoaded', function(event) {
     document.getElementById('toggle-main-nav').addEventListener('click', function() {
 
         var status = this.dataset.status;
@@ -54,5 +61,31 @@
             this.dataset.status = 'open';
         }
     });
+    document.getElementById('language-switcher-close').addEventListener('click', function() {
+        document.getElementById('language-switcher-bar').style.top = "-80px";
+    });
+    document.getElementById('language-switcher-open').addEventListener('click', function() {
+        document.getElementById('language-switcher-bar').style.top = "0";
+    });
+});
 </script>
+{% endblock %}
+
+{% block bottom %}
+    <div id="language-switcher-bar">
+        <div class="container text-center">
+            {% trans %}The content of this website is available in other languages.{% endtrans %}
+
+            {% set activeLocales = localeservice.getActiveLocales() %}
+            {% if activeLocales is not empty and activeLocales|length > 1 %}
+                {% for activeLocale in activeLocales %}
+                    <a href="{% if activeLocale.default is not empty %}/{% else %}/{{activeLocale.locale}}/{% endif %}" class="btn btn-sm btn-secondary">
+                        <img src="{{ asset('/') }}img/flags/{{activeLocale.lcid}}.png" alt="{{activeLocale.name}}">
+                        {{activeLocale.name}}
+                    </a>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <a id="language-switcher-close"><i class="fal fa-times"></i></a>
+    </div>
 {% endblock %}
