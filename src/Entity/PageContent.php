@@ -41,37 +41,37 @@ class PageContent
     protected $pageRoute;
 
     /**
-    * @ORM\Column(type="text")
+    * @ORM\Column(type="text", nullable=true)
     */
     protected $content;
 
     /**
-    * @ORM\Column(type="text")
+    * @ORM\Column(type="text", nullable=true)
     */
     protected $construct;
 
     /**
-    * @ORM\Column(type="text")
+    * @ORM\Column(type="text", nullable=true)
     */
     protected $constructCss;
 
     /**
-    * @ORM\Column(type="string", length=255)
+    * @ORM\Column(type="string", length=255, nullable=true)
     */
     protected $metaTitle;
 
     /**
-    * @ORM\Column(type="string", length=255)
+    * @ORM\Column(type="string", length=255, nullable=true)
     */
     protected $metaKeywords;
 
     /**
-    * @ORM\Column(type="string", length=255)
+    * @ORM\Column(type="string", length=255, nullable=true)
     */
     protected $metaDescription;
 
     /**
-    * @ORM\Column(type="text")
+    * @ORM\Column(type="text", nullable=true)
     */
     protected $metaCustom;
 

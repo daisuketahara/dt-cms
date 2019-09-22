@@ -347,7 +347,8 @@
 <script>
     import axios from 'axios';
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-    import InlineEditor from '@ckeditor/ckeditor5-build-inline';
+    //import InlineEditor from '@ckeditor/ckeditor5-build-inline';
+
     import EditorSettings from '../components/EditorSettings';
 
     export default {
@@ -359,19 +360,21 @@
             return {
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
-                    "Authorization" : "Bearer " + this.$store.state.apikey
+                    "Authorization" : "Bearer " + this.$cookies.get('token')
                 },
                 panel: '',
                 translate_id: 0,
                 translate_name: '',
                 page_id: 0,
-                page: {},
+                page: {
+                    role: ''
+                },
                 roles: [],
                 alert: {},
                 editor: ClassicEditor, //ClassicEditor,
                 editorData: {}, //'<p>Rich-text editor content.</p>',
                 editorConfig: {},
-                inlineEditor: InlineEditor, //InlineEditor,
+                inlineEditor: ClassicEditor, //InlineEditor,
                 inlineEditorData: {}, //'<p>Rich-text editor content.</p>',
                 inlineEditorConfig: {
                     toolbar: [ 'heading',  'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', '|', 'link' ]

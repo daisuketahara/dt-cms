@@ -253,7 +253,7 @@
             return {
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
-                    "Authorization" : "Bearer " + this.$store.state.apikey
+                    "Authorization" : "Bearer " + this.$cookies.get('token')
                 },
                 user: {
                     'information': {},

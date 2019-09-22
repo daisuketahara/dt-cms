@@ -86,10 +86,8 @@
                             if (data.success == true) {
                                 this.$router.push('/' + this.locale + '/admin/');
                                 this.$store.commit('authenticate', true);
-                                this.$store.commit('setApiKey', data.token);
-                                localStorage.setItem('user-token', data.token);
-                                this.$store.commit('setEmail', this.email);
-                                localStorage.setItem('user-email', this.email);
+                                this.$cookies.set('token', data.token);
+                                this.$cookies.set('email', this.email);
                                 this.$parent.$parent.getRoutes();
                             } else {
                                 this.setAlert('login_failed', 'error');
@@ -121,8 +119,8 @@
                         if (data.success == true) {
                             this.$router.push('/' + this.locale + '/admin/');
                             this.$store.commit('authenticate', true);
-                            this.$store.commit('setApiKey', data.token);
-                            this.$store.commit('setEmail', this.email);
+                            this.$cookies.set('token', data.token);
+                            this.$cookies.set('email', this.email);
                             this.$parent.$parent.getRoutes();
                         } else {
                             this.setAlert('login_failed', 'error');

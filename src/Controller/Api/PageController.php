@@ -298,8 +298,6 @@ class PageController extends Controller
                 $message = 'Page has been inserted';
 
                 $parent = new Page();
-                if (!empty($params['tag'])) $parent->setTag($params['tag']);
-                else $errors[] = 'Tag cannot be empty';
                 $page->setPage($parent);
 
                 if (empty($locale)) {
@@ -330,7 +328,8 @@ class PageController extends Controller
             if (isset($params['pageWidth'])) $page->setPageWidth($params['pageWidth']);
             if (isset($params['pageTitle'])) $page->setPageTitle($params['pageTitle']);
 
-            // if (!empty($params['publishDate'])) $page->getPage()->setPublishDate(new \DateTime($params['publishDate']));
+            if (!empty($params['publishDate'])) $page->getPage()->setPublishDate(new \DateTime($params['publishDate']));
+            else $page->getPage()->setPublishDate(new \DateTime());
             // if (!empty($params['expireDate'])) $page->getPage()->setExpireDate(new \DateTime($params['expireDate']));
             if (isset($params['status'])) $page->getPage()->setStatus($params['status']);
 

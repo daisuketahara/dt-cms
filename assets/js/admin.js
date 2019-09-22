@@ -8,9 +8,11 @@ import router from '../router';
 import store from '../store/admin.js';
 import axios from 'axios';
 import CKEditor from '@ckeditor/ckeditor5-vue';
-import VModal from 'vue-js-modal'
-import VueCodemirror from 'vue-codemirror'
-import Paginate from 'vuejs-paginate'
+import VueCookies from 'vue-cookies';
+import VModal from 'vue-js-modal';
+import VueCodemirror from 'vue-codemirror';
+import Paginate from 'vuejs-paginate';
+import VTooltip from 'v-tooltip';
 
 import Admin from '../app/Admin';
 import Editor from '../components/Editor';
@@ -25,6 +27,8 @@ import Template from '../components/Template';
 Vue.use(CKEditor);
 Vue.use(VueCodemirror);
 Vue.use(VModal, { dialog: true });
+Vue.use(VueCookies);
+Vue.use(VTooltip);
 Vue.component('filemanager', FileManager);
 Vue.component('paginate', Paginate);
 
@@ -43,7 +47,7 @@ new Vue({
     },
     methods: {
         getRoutes() {
-            axios.get('/api/v1/admin-routes/', { headers: {"Authorization" : "Bearer " + this.$store.state.apikey} })
+            axios.get('/api/v1/admin-routes/', { headers: {"Authorization" : "Bearer " + this.$cookies.get('token')} })
                 .then(response => {
 
                     var menu = JSON.parse(response.data)['menu'];

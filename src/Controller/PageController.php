@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
@@ -33,6 +34,26 @@ class PageController extends Controller
         $route = explode('_', $route);
         $locale = $route[1];
         $routeName = $route[2];
+
+        // Check if visitor already visited site and locale session is set
+        $session = new Session();
+        $sessionLocale = $session->get('user_locale');
+        if (empty($sessionLocale)) {
+            $clientLocale = strtolower(str_split($_SERVER['HTTP_ACCEPT_LANGUAGE'], 2)[0]);
+            //$session->set('user_locale', $clientLocale);
+
+            if ($locale != $clientLocale) {
+
+
+
+
+
+
+
+                //return $this->redirect($this->generateUrl('en_route'));
+            }
+        }
+
 
         $request->setLocale($locale);
         $localeEntity = $this->getDoctrine()

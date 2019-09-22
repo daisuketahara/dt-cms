@@ -9,8 +9,6 @@ export default new Vuex.Store({
         init: false,
         authenticated: false,
         translations: translations,
-        email: localStorage.getItem('user-email') || '',
-        apikey: localStorage.getItem('user-token') || '',
         locales: [],
         locale: '',
         locale_id: 0,
@@ -26,12 +24,6 @@ export default new Vuex.Store({
         },
         authenticate (state, status) {
             state.authenticated = status;
-        },
-        setEmail (state, email) {
-            state.email = email;
-        },
-        setApiKey (state, key) {
-            state.apikey = key;
         },
         setMenu (state, menu) {
             state.menu = menu;

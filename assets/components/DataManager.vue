@@ -29,7 +29,15 @@
                     <tr class="table-filter">
                         <td></td>
                         <td v-for="column in columns" v-if="column.show_list == true">
-                            <input type="text" :id="'filter-'+column.id" :name="'filter-'+column.id" placeholder="filter" v-on:keyup="filterlist">
+                            <select v-if="column.type === 'select'" :id="'filter-'+column.id" :name="'filter-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-on:change="filterlist">
+                                <option value="">{{translations.search_for || 'search for..'}}</option>
+                                <option v-for="(optionvalue, optionkey) in column.options" :value="optionkey">{{optionvalue}}</option>
+                            </select>
+                            <select v-else-if="column.type === 'switch'" :id="'filter-'+column.id" :name="'filter-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-on:change="filterlist">
+                                <option value="">{{translations.search_for || 'search for..'}}</option>
+                                <option v-for="(optionvalue, optionkey) in column.options" :value="optionkey">{{optionvalue}}</option>
+                            </select>
+                            <input v-else type="text" :id="'filter-'+column.id" :name="'filter-'+column.id" placeholder="filter" v-on:keyup="filterlist">
                         </td>
                         <td class="text-right pr-2 pt-1">
                             <button class="btn btn-secondary btn-sm text-white pointer ml-1" v-on:click="resetFilter">{{translations.reset_filter || 'Reset filter'}}</button>
@@ -42,52 +50,58 @@
                         <td v-for="column in columns" v-if="column.show_list == true">
                             <span v-if="typeof column.object !== 'undefined' && typeof column.object2 !== 'undefined'">{{item[column.object][column.object2][column.id]}}</span>
                             <span v-if="typeof column.object !== 'undefined'">{{item[column.object][column.id]}}</span>
+                            <span v-else-if="column.type=='switch'">
+                                <i v-if="item[column.id] == 1" class="fas fa-check"></i>
+                                <i v-else class="fas fa-times"></i>
+                            </span>
+                            <span v-else-if="column.type=='select'">
+                                {{translations[column.options[item[column.id]]] || column.options[item[column.id]]}}
+                            </span>
+                            <span v-else-if="column.type=='date'">{{formatDate(item[column.id])}}</span>
                             <span v-else>{{item[column.id]}}</span>
                         </td>
                         <td>
                             <button v-if="api.get" class="btn btn-secondary btn-sm text-white pointer ml-1" v-on:click="view" :data-id="item.id"><i class="fa fa-search" aria-hidden="true" :data-id="item.id"></i></button>
                             <button v-if="api.update" class="btn btn-secondary btn-sm text-white pointer ml-1" v-on:click="edit" :data-id="item.id"><i class="fa fa-pencil-alt" aria-hidden="true" :data-id="item.id"></i></button>
                             <button v-if="settings.update" class="btn btn-secondary btn-sm text-white pointer ml-1" v-on:click="customButton" :data-url="settings.update+item.id+'/'" :data-id="item.id"><i class="fa fa-pencil-alt" aria-hidden="true" :data-url="settings.update+item.id+'/'"></i></button>
-                            <button v-if="api.delete" class="btn btn-secondary btn-sm text-white pointer ml-1" v-on:click="drop" :data-id="item.id"><i class="fa fa-trash" aria-hidden="true" :data-id="item.id"></i></button>
+                            <button v-if="api.delete" class="btn btn-danger btn-sm text-white pointer ml-1" v-on:click="drop" :data-id="item.id"><i class="fa fa-trash" aria-hidden="true" :data-id="item.id"></i></button>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-3">
-                        <button class="btn btn-danger btn-sm" v-on:click="dropMultiple">{{translations.delete_selected || 'Delete selected'}}</button>
-                    </div>
-                    <div class="col-9">
-                        <select class="select-limit form-control form-inline" v-on:change="change_amount">
-                            <option value="15">10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="100">100</option>
-                            <option value="250">250</option>
-                        </select>
-                        <paginate
-                            :page-count="pages"
-                            :click-handler="gotopage"
-                            :prev-text="translations.previous || 'Previous'"
-                            :next-text="translations.next || 'Next'"
-                            :container-class="'list-inline float-right'"
-                            :page-class="'list-inline-item'"
-                            :page-link-class="'btn btn-secondary'"
-                            :prev-class="'list-inline-item'"
-                            :prev-link-class="'btn btn-secondary'"
-                            :next-class="'list-inline-item'"
-                            :next-link-class="'btn btn-secondary'">
-                        </paginate>
-                    </div>
+            <div class="row">
+                <div class="col-3">
+                    <button class="btn btn-danger btn-sm" v-on:click="dropMultiple">{{translations.delete_selected || 'Delete selected'}}</button>
                 </div>
-                <div v-if="buttons.length > 0">
-                    <ul class="list-inline">
-                        <li v-for="button in buttons" class="list-inline-item">
-                            <button class="btn btn-sm btn-secondary" :data-id="button.id" :data-api="button.api" :data-url="button.url" v-on:click="customButton">{{button.label}}</button>
-                        </li>
-                    </ul>
+                <div class="col-9">
+                    <select class="select-limit form-control form-inline" v-on:change="change_amount">
+                        <option value="15">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="250">250</option>
+                    </select>
+                    <paginate
+                        :page-count="pages"
+                        :click-handler="gotopage"
+                        :prev-text="translations.previous || 'Previous'"
+                        :next-text="translations.next || 'Next'"
+                        :container-class="'list-inline float-right'"
+                        :page-class="'list-inline-item'"
+                        :page-link-class="'btn btn-sm btn-secondary'"
+                        :prev-class="'list-inline-item'"
+                        :prev-link-class="'btn btn-sm btn-secondary'"
+                        :next-class="'list-inline-item'"
+                        :next-link-class="'btn btn-sm btn-secondary'">
+                    </paginate>
                 </div>
+            </div>
+            <div v-if="buttons.length > 0">
+                <ul class="list-inline">
+                    <li v-for="button in buttons" class="list-inline-item">
+                        <button class="btn btn-sm btn-secondary" :data-id="button.id" :data-api="button.api" :data-url="button.url" v-on:click="customButton">{{button.label}}</button>
+                    </li>
+                </ul>
             </div>
         </div>
         <div v-else-if="mode === 'view'" id="data-manager-view">
@@ -95,13 +109,20 @@
                 <tbody>
                     <tr v-for="column in columns">
                         <th>{{translations[column.label] || column.label}}</th>
-                        <td>{{form_data[column.id]}}</td>
+                        <td v-if="column.type=='switch'">
+                            <i v-if="form_data[column.id] == 1" class="fas fa-check"></i>
+                            <i v-else class="fas fa-times"></i>
+                        </td>
+                        <td v-else-if="column.type=='select'">
+                            {{translations[column.options[form_data[column.id]]] || column.options[form_data[column.id]]}}
+                        </td>
+                        <td v-else>{{form_data[column.id]}}</td>
                     </tr>
                 </tbody>
             </table>
             <div class="row">
                 <div class="col">
-                    <button class="btn btn-primary" v-on:click.prevent="edit" :data-id="form_id">{{translations.edit || 'Edit'}}</button>
+                    <button v-if="api.update" class="btn btn-primary" v-on:click.prevent="edit" :data-id="form_id">{{translations.edit || 'Edit'}}</button>
                 </div>
                 <div class="col text-right">
                     <button class="btn btn-primary" v-on:click.prevent="gotoList">{{translations.back_to_list || 'Back to list'}}</button>
@@ -128,7 +149,7 @@
                         <div class="checkbox">
                             <label :for="'form-'+column.id">
                                 <input type="checkbox" :id="'form-'+column.id" :name="'form-'+column.id" v-model="form_data[column.id]">
-                                {{translations[column.label] || column.label}}
+                                <span v-html="translations[column.label] || column.label"></span>
                             </label>
                         </div>
                     </div>
@@ -150,22 +171,34 @@
                     </div>
                     <div v-else-if="column.editable || (form_id === 0 && column.show_form)" class="form-group">
                         <label :for="'form-'+column.id">{{translations[column.label] || column.label}}</label>
-                        <input v-if="column.type === 'text'" type="text" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" v-model="form_data[column.id]">
-                        <input v-else-if="column.type === 'email'" type="email" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" v-model="form_data[column.id]">
-                        <vue-tel-input v-else-if="column.type === 'email'" v-model="form_data[column.id]" class="form-control" :preferredCountries="['nl', 'be', 'gb']"></vue-tel-input>
-                        <input v-else-if="column.type === 'integer'" type="integer" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" v-model="form_data[column.id]">
-                        <input v-else-if="column.type === 'date'" type="date" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" v-model="form_data[column.id]">
-                        <textarea v-else-if="column.type === 'textarea'" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" v-on:keyup="filterlist">{{ form_data[column.id] }}</textarea>
+                        <input v-if="column.type === 'text'" type="text" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                        <input v-else-if="column.type === 'email'" type="email" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                        <vue-tel-input v-else-if="column.type === 'phone'" v-model="form_data[column.id]" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-bind="phoneProps" :preferredCountries="['nl', 'be', 'gb']"></vue-tel-input>
+                        <input v-else-if="column.type === 'integer'" type="integer" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                        <datepicker v-else-if="column.type === 'date'" format="yyyy-MM-dd" placeholder="Select Date":id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:input-class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}"></datepicker>
+                        <textarea v-else-if="column.type === 'textarea'" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">{{ form_data[column.id] }}</textarea>
+                        <select v-else-if="column.type === 'select'" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                            <option value=""></option>
+                            <option v-for="(optionvalue, optionkey) in column.options" :value="optionkey">{{translations[optionvalue] || optionvalue}}</option>
+                        </select>
                         <ckeditor v-else-if="column.type === 'texteditor'" :editor="editor" v-model="form_data[column.id]" :config="editorConfig"></ckeditor>
-                        <input v-else type="text" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control" v-model="form_data[column.id]">
+                        <select v-else-if="column.type === 'switch'" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                            <option value=""></option>
+                            <option v-for="(optionvalue, optionkey) in column.options" v-if="column.id != 'AgreeTerms' || optionkey == '0' || (optionkey == '1' && form_data[column.id] == '1')" :value="optionkey">{{translations[optionvalue] || optionvalue}}</option>
+                        </select>
+                         <model-select v-else-if="column.type === 'selectfilter'" :options="select_options[column.id]" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control form-selectfilter" v-model="form_data[column.id]" @select="validateSelectFilter" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}"></model-select>
+                        <input v-else-if="column.type === 'password'" type="password" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="password" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                        <input v-else type="text" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <button class="btn btn-primary">{{translations.submit || 'Submit'}}</button>
+                        <button class="btn btn-primary" v-on:click.prevent="gotoList">{{translations.back_to_list || 'back to list'}}</button>
                     </div>
                     <div class="col text-right">
-                        <button class="btn btn-primary" v-on:click.prevent="gotoList">{{translations.back_to_list || 'back to list'}}</button>
+                        <button v-if="form_id != 0 && typeof settings.updateSubmitLabel != typeof undefined" class="btn btn-primary">{{translations[settings.updateSubmitLabel] || settings.updateSubmitLabel}}</button>
+                        <button v-else-if="typeof settings.insertSubmitLabel != typeof undefined" class="btn btn-primary">{{translations[settings.insertSubmitLabel] || settings.insertSubmitLabel}}</button>
+                        <button v-else class="btn btn-primary">{{translations.submit || 'Submit'}}</button>
                     </div>
                 </div>
             </form>
@@ -177,17 +210,21 @@
     import axios from 'axios';
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
     import VueTelInput from 'vue-tel-input';
+    import Datepicker from 'vuejs-datepicker';
+    import { ModelSelect } from 'vue-search-select';
 
     export default {
         components: {
             VueTelInput,
+            Datepicker,
+            ModelSelect
         },
         name: "DataManager",
         data() {
             return {
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
-                    "Authorization" : "Bearer " + this.$store.state.apikey
+                    "Authorization" : "Bearer " + this.$cookies.get('token')
                 },
                 mode: 'table',
                 default_locale_id: 0,
@@ -212,7 +249,17 @@
                 editorData: {}, //'<p>Rich-text editor content.</p>',
                 editorConfig: {
                     'min-height': '500px'
-                }
+                },
+                tooltip: '',
+                phoneProps: {
+                    defaultCountry: "NL",
+                    preferredCountries: ['NL', 'BE', 'LU'],
+                    //mode: 'International'
+                    inputOptions: {
+                        showDialCode: true
+                    }
+                },
+                select_options: {},
             }
         },
         computed: {
@@ -237,6 +284,7 @@
         },
         created() {
             this.getEntityInfo();
+            this.loadSelectOptions();
         },
         methods: {
             getEntityInfo: function() {
@@ -322,7 +370,8 @@
                 this.filter = '';
                 for (var i = 0; i < this.columns.length; i++) {
                     let column = this.columns[i]['id'];
-                    document.getElementById('filter-' + column).value = '';
+                    let el = document.getElementById('filter-' + column);
+                    if (el != null) el.value = '';
                 }
                 this.list();
             },
@@ -406,6 +455,32 @@
             },
             update: function(event) {
 
+                var error = 0;
+
+                var fields = document.getElementsByClassName('form-required');
+                for(var i = 0; i < fields.length; i++) {
+
+                    var el = fields[i];
+
+                    if ('createEvent' in document) {
+             	        // modern browsers, IE9+
+             	        var e = document.createEvent('HTMLEvents');
+             	        e.initEvent('blur', false, true);
+             	        el.dispatchEvent(e);
+             	    } else {
+             	        // IE 8
+             	        var e = document.createEventObject();
+             	        e.eventType = 'blur';
+             	        el.fireEvent('on'+e.eventType, e);
+             	    }
+
+                    if (fields[i].classList.contains('is-invalid')) error = 1;
+                }
+                if (error > 0) {
+                    //this.setAlert(this.translations.form_errors || 'The form contains errors, please fill in all your data correctly', 'error');
+                    return false;
+                }
+
                 let params = {};
                 if (this.translate_id > 0) params['locale'] = this.translate_id;
                 for (var i = 0; i < this.columns.length; i++) {
@@ -415,6 +490,8 @@
                         } else if (this.columns[i]['type'] == 'checkbox') {
                             if (document.getElementById('form-' + this.columns[i]['id']).checked) params[this.columns[i]['id']] = true;
                             else params[this.columns[i]['id']] = false;
+                        } else if (this.columns[i]['type'] == 'selectfilter') {
+                            params[this.columns[i]['id']] = this.form_data[this.columns[i]['id']];
                         } else if (this.columns[i]['type'] == 'phone') {
                             params[this.columns[i]['id']] = this.form_data[this.columns[i]['id']];
                         } else if (this.columns[i]['type'] == 'checkboxes') {
@@ -574,6 +651,43 @@
                     }
                 }
             },
+            loadSelectOptions: function() {
+
+                for (var i = 0; i < this.columns.length; i++) {
+
+                    var column = this.columns[i];
+
+                    if (column.type == 'selectfilter') {
+
+                        this.getSelectOptions(column);
+
+                    }
+                }
+            },
+            getSelectOptions: function(column) {
+
+                var options = [];
+                this.select_options[column.id] = options;
+
+                axios.get('/api/v1' + column.options_source, { headers: this.headers })
+                    .then(response => {
+
+                        var data = JSON.parse(response.data.data);
+
+                        for (var n = 0; n < data.length; n++) {
+
+                            var value = {
+                                value: data[n][column.option_key],
+                                text: data[n][column.option_value],
+                            };
+                            options.push(value);
+                        }
+                        this.select_options[column.id] = options;
+                    })
+                    .catch(e => {
+                        this.setAlert(e, 'Error, cannot load options');
+                    });
+            },
             customButton: function(event){
                 if (event.target.dataset.api) {
                     axios.get('/api/v1' + event.target.dataset.api, {headers: this.headers})
@@ -603,6 +717,80 @@
                 var self = this;
                 this.alert = {text: text, type: type};
                 setTimeout(function() { self.alert = {}; }, 5000);
+            },
+            validateField: function(e) {
+
+                var value = e.target.value;
+
+                if (value != '') {
+                    e.target.classList.remove('is-invalid');
+                    e.target.classList.add('is-valid');
+                } else {
+                    e.target.classList.remove('is-valid');
+                    e.target.classList.add('is-invalid');
+                }
+                this.showTooltip();
+            },
+            validateEmail: function(e) {
+
+                var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                var value = e.target.value;
+
+                if (value != '' && re.test(String(value).toLowerCase())) {
+                    e.target.classList.remove('is-invalid');
+                    e.target.classList.add('is-valid');
+                } else {
+                    e.target.classList.remove('is-valid');
+                    e.target.classList.add('is-invalid');
+                }
+                this.showTooltip();
+            },
+            validatePhone: function() {
+
+                if (this.phone == '' || typeof this.phone == typeof undefined) {
+                    document.getElementById('phone').classList.remove('is-valid');
+                    document.getElementById('phone').classList.add('is-invalid');
+                } else {
+                    document.getElementById('phone').classList.remove('is-invalid');
+                    document.getElementById('phone').classList.add('is-valid');
+                }
+                this.showTooltip();
+            },
+            validateSelectFilter: function(e) {
+
+                if (this.form_data['SysModel'] != '') {
+                    document.getElementById('form-SysModel').parent.classList.remove('is-invalid');
+                    document.getElementById('form-SysModel').parent.classList.add('is-valid');
+                } else {
+                    document.getElementById('form-SysModel').parent.classList.remove('is-valid');
+                    document.getElementById('form-SysModel').parent.classList.add('is-invalid');
+                }
+                this.showTooltip();
+            },
+            validateCheckbox: function(e) {
+
+                if (e.target.checked) {
+                    e.target.classList.remove('is-invalid');
+                    e.target.classList.add('is-valid');
+                    e.target.parentNode.classList.remove('red');
+                } else {
+                    e.target.classList.remove('is-valid');
+                    e.target.classList.add('is-invalid');
+                    e.target.parentNode.classList.add('red');
+                }
+                this.showTooltip();
+            },
+            showTooltip: function() {
+
+                this.tooltip = '';
+                var fields = document.getElementsByClassName('form-required');
+                for(var i = 0; i < fields.length; i++) {
+
+                    if (fields[i].classList.contains('is-invalid')) {
+                        this.tooltip = fields[i].getAttribute('id');
+                        return;
+                    }
+                }
             }
         }
     }

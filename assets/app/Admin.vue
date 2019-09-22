@@ -81,15 +81,13 @@
             logout() {
                 let headers= {
                     'Content-Type': 'application/json;charset=UTF-8',
-                    "Authorization" : "Bearer " + this.$store.state.apikey
+                    "Authorization" : "Bearer " + this.$cookies.get('token')
                 };
                 axios.get('/api/v1/logout/', {headers: headers})
                     .then(response => {
                         this.$store.commit('authenticate', false);
-                        this.$store.commit('setApiKey', false);
-                        this.$store.commit('setEmail', false);
-                        localStorage.removeItem('user-email');
-                        localStorage.removeItem('user-token');
+                        this.$cookies.remove('token');
+                        this.$cookies.remove('email');
                         this.$router.push('/' + this.locale + '/admin/login/');
                     })
                     .catch(e => {
@@ -97,7 +95,7 @@
                     });
             },
             checkUser: function() {
-                if (this.$store.state.email != '' && this.$store.state.token != '') {
+                if (this.$cookies.isKey('token')) {
                     this.$store.commit('authenticate', true);
                     this.$parent.getRoutes();
                 } else {

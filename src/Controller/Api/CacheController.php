@@ -6,6 +6,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,8 +48,9 @@ class CacheController extends Controller
 
         $input = new ArrayInput(array(
             'command' => 'cache:clear',
-            'locale' => 'en',
         ));
+        $output = new BufferedOutput();
+        $application->run($input, $output);
 
         $response = [
             'success' => true,
