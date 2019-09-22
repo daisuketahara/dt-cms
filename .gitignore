@@ -7,6 +7,7 @@ config/routes.yaml
 config/bundles.php
 Migrations/*
 !Migrations/.gitignore
+node_modules/*
 var/cache/*
 vendor/*
 !vendor/.gitignore
