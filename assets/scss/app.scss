@@ -1,4 +1,5 @@
-@import '~bootstrap/scss/bootstrap';
+//@import '~bootstrap/scss/bootstrap';
+@import '~bootstrap/dist/css/bootstrap.min.css';
 @import '~animate.css';
 @import '~hamburgers/_sass/hamburgers/hamburgers';
 @import '../scss/reviews.scss';
@@ -6,3 +7,12 @@
 @import '../scss/usability.scss';
 @import '../scss/components.scss';
 @import '../scss/form.scss';
+
+.valign-helper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.h-10 { height: 10%; }
+.h-45 { height: 45%; }
