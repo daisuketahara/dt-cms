@@ -47,25 +47,25 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>{{translations['title_tag']}}</label>
-                                    <input type="input" id="page-meta-title" name="page-meta-title" class="form-control" :value="page.meta_title">
+                                    <input type="input" id="page-meta-title" name="page-meta-title" class="form-control" v-model="page.metaTitle">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>{{translations['meta_keywords']}}</label>
-                                    <input type="input" id="page-meta-keywords" name="page-meta-keywords" class="form-control" :value="page.meta_keywords">
+                                    <input type="input" id="page-meta-keywords" name="page-meta-keywords" class="form-control" v-model="page.metaKeywords">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>{{translations['meta_description']}}</label>
-                                    <input type="input" id="page-meta-description" name="page-meta-description" class="form-control" :value="page.meta_description">
+                                    <input type="input" id="page-meta-description" name="page-meta-description" class="form-control" v-model="page.metaDescription">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label>{{translations['custom_meta']}}</label>
-                            <textarea id="page-meta-custom" name="page-meta-custom" class="form-control" rows="4">{{page.meta_custom}}</textarea>
+                            <textarea id="page-meta-custom" name="page-meta-custom" class="form-control" rows="4" v-model="page.metaCustom"></textarea>
                         </div>
                     </div>
                     <div v-else-if="panel == 'settings'" class="mb-2">
