@@ -1,0 +1,82 @@
+actions:
+    list:
+        name: List translations
+        api: /translation/list/
+        permissions: ['admin_translation_list', 'api_translation_list']
+        roles: ['superadmin', 'admin']
+
+    get:
+        name: View translation
+        api: /translation/get/
+        permissions: ['admin_translation_list', 'api_translation_list', 'api_translation_info']
+        roles: ['superadmin', 'admin']
+
+    insert:
+        name: Create translation
+        api: /translation/insert/
+        permissions: ['admin_translation_insert', 'api_translation_insert']
+        roles: ['superadmin', 'admin']
+
+    update:
+        name: Update translation
+        api: /translation/update/
+        permissions: ['admin_translation_update', 'api_translation_update', 'api_translation_info']
+        roles: ['superadmin', 'admin']
+
+    delete:
+        name: Delete translation
+        api: /translation/delete/
+        permissions: ['api_translation_delete', 'api_translation_delete_multiple']
+        roles: ['superadmin', 'admin']
+
+fields:
+    id:
+        id: id
+        label: id
+        type: int
+        required: true
+        editable: false
+        list: true
+        form: false
+        translate: false
+    tag:
+        id: tag
+        label: tag
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
+    original:
+        id: original
+        label: original
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
+    complete:
+        id: complete
+        label: complete
+        type: text
+        required: false
+        editable: false
+        list: true
+        form: false
+        translate: false
+
+buttons:
+    generate:
+        id: generate
+        label: generate_translation_files
+        api: /translation/generate/
+    populate:
+        id: populate
+        label: get_missing_translations
+        api: /translation/populate/
+    export:
+        id: export
+        label: export
+        url: /export/translation/

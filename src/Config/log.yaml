@@ -1,0 +1,83 @@
+actions:
+    list:
+        name: List log items
+        api: /log/list/
+        permissions: ['admin_log_list', 'api_log_list']
+        roles: ['superadmin']
+
+    get:
+        name: View log item
+        api: /log/get/
+        permissions: ['admin_log_list', 'api_log_list', 'api_cron_info']
+        roles: ['superadmin']
+
+    delete:
+        name: Delete log item
+        api: /log/delete/
+        permissions: ['api_log_delete', 'api_log_delete_multiple']
+        roles: ['superadmin']
+
+fields:
+    id:
+        id: id
+        label: id
+        type: int
+        required: true
+        editable: false
+        list: true
+        form: false
+        translate: false
+    accountId:
+        id: accountId
+        label: account_id
+        type: int
+        required: true
+        editable: false
+        list: true
+        form: true
+        translate: false
+    entity:
+        id: entity
+        label: entity
+        type: text
+        required: true
+        editable: false
+        list: false
+        form: true
+        translate: false
+    log:
+        id: log
+        label: log
+        type: text
+        required: true
+        editable: false
+        list: false
+        form: true
+        translate: false
+    comment:
+        id: comment
+        label: comment
+        type: text
+        required: true
+        editable: false
+        list: true
+        form: true
+        translate: false
+    userIp:
+        id: userIp
+        label: user_ip
+        type: text
+        required: true
+        editable: false
+        list: false
+        form: true
+        translate: false
+    creationDate:
+        id: creationDate
+        label: date
+        type: datetime
+        required: true
+        editable: false
+        list: true
+        form: true
+        translate: false

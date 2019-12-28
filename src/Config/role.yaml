@@ -1,0 +1,68 @@
+actions:
+    list:
+        name: List user roles
+        api: /user/role/list/
+        permissions: ['admin_user_role_list', 'api_user_role_list']
+        roles: ['superadmin', 'admin']
+
+    get:
+        name: View user role
+        api: /user/role/get/
+        permissions: ['admin_user_role_list', 'api_user_role_list', 'api_user_role_info']
+        roles: ['superadmin', 'admin']
+
+    insert:
+        name: Create user role
+        api: /user/role/insert/
+        permissions: ['admin_user_role_insert', 'api_user_role_insert']
+        roles: ['superadmin', 'admin']
+
+    update:
+        name: Update user role
+        api: /user/role/update/
+        permissions: ['admin_user_role_update', 'api_user_role_update', 'api_user_role_info']
+        roles: ['superadmin', 'admin']
+
+    delete:
+        name: Delete user role
+        api: /user/role/delete/
+        permissions: ['api_user_role_delete', 'api_user_role_delete_multiple']
+        roles: ['superadmin', 'admin']
+
+fields:
+    id:
+        id: id
+        label: id
+        type: int
+        required: true
+        editable: false
+        list: true
+        form: false
+        translate: false
+    name:
+        id: name
+        label: name
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
+    description:
+        id: description
+        label: description
+        type: text
+        required: false
+        editable: true
+        list: true
+        form: true
+        translate: false
+    active:
+        id: active
+        label: active
+        type: checkbox
+        required: false
+        editable: true
+        list: true
+        form: true
+        translate: false

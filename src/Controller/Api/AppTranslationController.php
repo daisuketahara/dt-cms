@@ -18,6 +18,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Yaml\Yaml;
 
 use App\Entity\AppTranslation;
 use App\Entity\Locale;
@@ -38,52 +39,23 @@ class AppTranslationController extends Controller
     */
     final public function info(Request $request, TranslatorInterface $translator)
     {
-        $info = array(
-            'api' => array(
-                'list' => '/apptranslation/list/',
-                'get' => '/apptranslation/get/',
-                'insert' => '/apptranslation/insert/',
-                'update' => '/apptranslation/update/',
-                'delete' => '/apptranslation/delete/'
-            ),
-            'buttons' => array(
-                [
-                    'id' => 'export',
-                    'label' => 'export',
-                    'url' => '/apptranslation/export/'
-                ]
-            ),
-            'fields' => array(
-                [
-                    'id' => 'id',
-                    'label' => 'id',
-                    'type' => 'integer',
-                    'required' => true,
-                    'editable' => false,
-                    'show_list' => true,
-                    'show_form' => false,
-                ],
-                [
-                    'id' => 'tag',
-                    'label' => 'tag',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'complete',
-                    'label' => 'complete',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => false,
-                    'show_list' => true,
-                    'show_form' => false,
-                ]
-            ),
-        );
+        $properties = Yaml::parseFile('src/Config/apptranslation.yaml');
 
+        $api = [];
+        $settings = [];
+
+        if (!empty($properties['actions'])) {
+            foreach($properties['actions'] as $key => $action) {
+                if (!empty($action['api'])) $api[$key] = $action['api'];
+                elseif (!empty($action['url'])) $settings[$key] = $action['url'];
+            }
+        }
+
+        $info = array(
+            'api' => $api,
+            'settings' => $settings,
+            'fields' => $properties['fields'],
+        );
 
         $locales = $this->getDoctrine()
         ->getRepository(Locale::class)
@@ -92,18 +64,18 @@ class AppTranslationController extends Controller
         if ($locales)
         foreach($locales as $locale) {
 
-            $info['fields'][] = [
+            array_push($info['fields'], [
                 'id' => 'apptranslation_' . $locale->getLocale(),
-                'label' => $translator->trans('translation') . ' (' . strtoupper($locale->getLocale()) . ')',
+                'label' => $translator->trans('Translation') . ' (' . strtoupper($locale->getLocale()) . ')',
                 'type' => 'text',
                 'required' => false,
                 'editable' => true,
-                'show_list' => false,
-                'show_form' => true,
-            ];
+                'list' => false,
+                'form' => true,
+            ]);
         }
 
-        return $this->json(json_encode($info));
+        return $this->json($info);
     }
 
     /**

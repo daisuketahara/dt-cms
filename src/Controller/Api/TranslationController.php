@@ -18,6 +18,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Yaml\Yaml;
 
 use App\Entity\Translation;
 use App\Entity\TranslationText;
@@ -39,71 +40,23 @@ class TranslationController extends Controller
     */
     final public function info(Request $request, TranslatorInterface $translator)
     {
-        $info = array(
-            'api' => array(
-                'list' => '/translation/list/',
-                'get' => '/translation/get/',
-                'insert' => '/translation/insert/',
-                'update' => '/translation/update/',
-                'delete' => '/translation/delete/'
-            ),
-            'buttons' => array(
-                [
-                    'id' => 'generate',
-                    'label' => $translator->trans('Generate translation files'),
-                    'api' => '/translation/generate/'
-                ],
-                [
-                    'id' => 'populate',
-                    'label' => $translator->trans('Get missing translations'),
-                    'api' => '/translation/populate/'
-                ],
-                [
-                    'id' => 'export',
-                    'label' => $translator->trans('Export'),
-                    'url' => '/export/translation/'
-                ]
-            ),
-            'fields' => array(
-                [
-                    'id' => 'id',
-                    'label' => 'id',
-                    'type' => 'integer',
-                    'required' => true,
-                    'editable' => false,
-                    'show_list' => true,
-                    'show_form' => false,
-                ],
-                [
-                    'id' => 'tag',
-                    'label' => 'tag',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'original',
-                    'label' => 'original',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'complete',
-                    'label' => 'complete',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => false,
-                    'show_list' => true,
-                    'show_form' => false,
-                ]
-            ),
-        );
+        $properties = Yaml::parseFile('src/Config/translation.yaml');
 
+        $api = [];
+        $settings = [];
+
+        if (!empty($properties['actions'])) {
+            foreach($properties['actions'] as $key => $action) {
+                if (!empty($action['api'])) $api[$key] = $action['api'];
+                elseif (!empty($action['url'])) $settings[$key] = $action['url'];
+            }
+        }
+
+        $info = array(
+            'api' => $api,
+            'settings' => $settings,
+            'fields' => $properties['fields'],
+        );
 
         $locales = $this->getDoctrine()
         ->getRepository(Locale::class)
@@ -118,12 +71,12 @@ class TranslationController extends Controller
                 'type' => 'text',
                 'required' => false,
                 'editable' => true,
-                'show_list' => false,
-                'show_form' => true,
+                'list' => false,
+                'form' => true,
             ];
         }
 
-        return $this->json(json_encode($info));
+        return $this->json($info);
     }
 
     /**

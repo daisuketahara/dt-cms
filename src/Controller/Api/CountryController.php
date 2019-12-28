@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Yaml\Yaml;
 
 use App\Entity\Country;
 use App\Service\LogService;
@@ -30,36 +31,25 @@ class CountryController extends Controller
     */
     final public function info(Request $request, TranslatorInterface $translator)
     {
+        $properties = Yaml::parseFile('src/Config/country.yaml');
+
+        $api = [];
+        $settings = [];
+
+        if (!empty($properties['actions'])) {
+            foreach($properties['actions'] as $key => $action) {
+                if (!empty($action['api'])) $api[$key] = $action['api'];
+                elseif (!empty($action['url'])) $settings[$key] = $action['url'];
+            }
+        }
+
         $info = array(
-            'api' => array(
-                'list' => '/country/list/',
-                'get' => '/country/get/',
-                'insert' => '/country/insert/',
-                'update' => '/country/update/',
-                'delete' => '/country/delete/'
-            ),
-            'fields' => array(
-                [
-                    'id' => 'id',
-                    'label' => 'id',
-                    'type' => 'integer',
-                    'required' => true,
-                    'editable' => false,
-                    'show_list' => true,
-                    'show_form' => false,
-                ],
-                [
-                    'id' => 'country',
-                    'label' => 'country',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
-                ]
-            ),
+            'api' => $api,
+            'settings' => $settings,
+            'fields' => $properties['fields'],
         );
-        return $this->json(json_encode($info));
+
+        return $this->json($info);
     }
 
     /**

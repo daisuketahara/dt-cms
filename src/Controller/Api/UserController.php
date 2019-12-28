@@ -12,6 +12,7 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Yaml\Yaml;
 
 use App\Entity\User;
 use App\Entity\UserInformation;
@@ -40,6 +41,8 @@ class UserController extends Controller
     */
     final public function fields(Request $request, TranslatorInterface $translator)
     {
+        $properties = Yaml::parseFile('src/Config/User.yaml');
+
         $info = array(
             'api' => array(
                 'list' => '/user/list/',
@@ -50,52 +53,10 @@ class UserController extends Controller
                 'insert' => '/user/insert/',
                 'update' => '/user/update/',
             ),
-            'fields' => array(
-                [
-                    'id' => 'id',
-                    'label' => 'id',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => false,
-                    'show_list' => true,
-                    'show_form' => false,
-                ],[
-                    'id' => 'email',
-                    'label' => 'email',
-                    'type' => 'email',
-                    'required' => true,
-                    'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
-                ],[
-                    'id' => 'firstname',
-                    'label' => 'firstname',
-                    'type' => 'text',
-                    'required' => false,
-                    'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
-                ],[
-                    'id' => 'lastname',
-                    'label' => 'lastname',
-                    'type' => 'text',
-                    'required' => false,
-                    'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
-                ],[
-                    'id' => 'active',
-                    'label' => 'active',
-                    'type' => 'checkbox',
-                    'required' => false,
-                    'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
-                ]
-            ),
+            'fields' => $properties['fields'],
         );
 
-        return $this->json(json_encode($info));
+        return $this->json($info);
     }
 
     /**

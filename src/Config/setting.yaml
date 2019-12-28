@@ -1,0 +1,60 @@
+actions:
+    list:
+        name: Settings
+        api: /setting/list/
+        permissions: ['admin_setting_list', 'api_setting_list']
+        roles: ['superadmin']
+
+    get:
+        name: View setting
+        api: /setting/get/
+        permissions: ['admin_setting_list', 'api_setting_list', 'api_setting_info']
+        roles: ['superadmin']
+
+    insert:
+        name: Create setting
+        api: /setting/insert/
+        permissions: ['admin_setting_insert', 'api_setting_insert']
+        roles: ['superadmin']
+
+    update:
+        name: Update setting
+        api: /setting/update/
+        permissions: ['admin_setting_update', 'api_setting_update', 'api_setting_info']
+        roles: ['superadmin']
+
+    delete:
+        screen: setting/
+        api: /etting/delete/
+        name: Delete setting
+        permissions: ['api_setting_delete', 'api_setting_delete_multiple']
+        roles: ['superadmin']
+
+fields:
+    id:
+        id: id
+        label: id
+        type: int
+        required: true
+        editable: false
+        list: true
+        form: false
+        translate: false
+    settingKey:
+        id: settingKey
+        label: key
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
+    settingValue:
+        id: settingValue
+        label: value
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false

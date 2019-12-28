@@ -1,0 +1,80 @@
+actions:
+    list:
+        name: List pages
+        api: /page/list/
+        permissions: ['admin_user_list', 'api_user_list']
+        roles: ['superadmin', 'admin']
+
+    get:
+        name: View page
+        api: /page/get/
+        permissions: ['admin_user_list', 'api_user_list']
+        roles: ['superadmin', 'admin']
+
+    insert:
+        name: Create page
+        url: /page/insert/
+        permissions: ['admin_user_list', 'api_user_list']
+        roles: ['superadmin', 'admin']
+
+    update:
+        name: Update page
+        url: /page/update/
+        permissions: ['admin_user_list', 'api_user_list']
+        roles: ['superadmin', 'admin']
+
+    delete:
+        name: Delete page
+        api: /page/delete/
+        permissions: ['admin_user_list', 'api_user_list']
+        roles: ['superadmin', 'admin']
+
+fields:
+    id:
+        object: page
+        id: id
+        label: id
+        type: int
+        required: true
+        editable: false
+        list: true
+        form: false
+        translate: false
+    title:
+        id: pageTitle
+        label: title
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
+    route:
+        id: pageRoute
+        label: route
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: true
+    publishDate:
+        object: page
+        id: publishDate
+        label: publish_date
+        type: text
+        required: true
+        editable: true
+        list: false
+        form: true
+        translate: true
+    content:
+        object: page
+        id: status
+        label: published
+        type: text
+        required: false
+        editable: true
+        list: true
+        form: true
+        translate: true

@@ -32,7 +32,7 @@ class CacheController extends Controller
                 ]
             ),
         );
-        return $this->json(json_encode($info));
+        return $this->json($info);
     }
 
     /**
@@ -42,7 +42,7 @@ class CacheController extends Controller
     {
         $cache = new CacheService();
         $cache->clear();
-
+/*
         $application = new Application($kernel);
         $application->setAutoExit(false);
 
@@ -51,7 +51,7 @@ class CacheController extends Controller
         ));
         $output = new BufferedOutput();
         $application->run($input, $output);
-
+*/
         $response = [
             'success' => true,
             'message' => $translator->trans('Cache has been cleared'),

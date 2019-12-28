@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Yaml\Yaml;
 
 use App\Entity\Setting;
 use App\Service\LogService;
@@ -31,45 +32,25 @@ class SettingController extends Controller
     */
     final public function info(Request $request, TranslatorInterface $translator)
     {
+        $properties = Yaml::parseFile('src/Config/setting.yaml');
+
+        $api = [];
+        $settings = [];
+
+        if (!empty($properties['actions'])) {
+            foreach($properties['actions'] as $key => $action) {
+                if (!empty($action['api'])) $api[$key] = $action['api'];
+                elseif (!empty($action['url'])) $settings[$key] = $action['url'];
+            }
+        }
+
         $info = array(
-            'api' => array(
-                'list' => '/setting/list/',
-                'get' => '/setting/get/',
-                'insert' => '/setting/insert/',
-                'update' => '/setting/update/',
-                'delete' => '/setting/delete/'
-            ),
-            'fields' => array(
-                [
-                    'id' => 'id',
-                    'label' => 'id',
-                    'type' => 'integer',
-                    'required' => true,
-                    'editable' => false,
-                    'show_list' => true,
-                    'show_form' => false,
-                ],
-                [
-                    'id' => 'settingKey',
-                    'label' => 'key',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'settingValue',
-                    'label' => 'value',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
-                ]
-            ),
+            'api' => $api,
+            'settings' => $settings,
+            'fields' => $properties['fields'],
         );
-        return $this->json(json_encode($info));
+
+        return $this->json($info);
     }
 
     /**

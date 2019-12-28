@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Yaml\Yaml;
 
 use App\Entity\Block;
 use App\Entity\BlockContent;
@@ -32,68 +33,25 @@ class BlockController extends Controller
     */
     final public function info(Request $request, TranslatorInterface $translator)
     {
+        $properties = Yaml::parseFile('src/Config/block.yaml');
+
+        $api = [];
+        $settings = [];
+
+        if (!empty($properties['actions'])) {
+            foreach($properties['actions'] as $key => $action) {
+                if (!empty($action['api'])) $api[$key] = $action['api'];
+                elseif (!empty($action['url'])) $settings[$key] = $action['url'];
+            }
+        }
+
         $info = array(
-            'settings' => array(
-                'translate' => true,
-            ),
-            'api' => array(
-                'list' => '/block/list/',
-                'get' => '/block/get/',
-                'insert' => '/block/insert/',
-                'update' => '/block/update/',
-                'delete' => '/block/delete/'
-            ),
-            'fields' => array(
-                [
-                    'object' => 'block',
-                    'id' => 'id',
-                    'label' => 'id',
-                    'type' => 'integer',
-                    'required' => true,
-                    'editable' => false,
-                    'show_list' => true,
-                    'show_form' => false,
-                ],
-                [
-                    'object' => 'block',
-                    'id' => 'tag',
-                    'label' => 'tag',
-                    'type' => 'text',
-                    'required' => false,
-                    'editable' => false,
-                    'show_list' => true,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'name',
-                    'label' => 'name',
-                    'type' => 'text',
-                    'required' => false,
-                    'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'description',
-                    'label' => 'description',
-                    'type' => 'text',
-                    'required' => false,
-                    'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'content',
-                    'label' => 'content',
-                    'type' => 'texteditor',
-                    'required' => true,
-                    'editable' => true,
-                    'show_list' => false,
-                    'show_form' => true,
-                ]
-            ),
+            'api' => $api,
+            'settings' => $settings,
+            'fields' => $properties['fields'],
         );
-        return $this->json(json_encode($info));
+
+        return $this->json($info);
     }
 
     /**

@@ -1,0 +1,101 @@
+actions:
+    list:
+        name: List permissions
+        api: /permission/list/
+        permissions: ['admin_permission_list', 'api_permission_list']
+        roles: ['superadmin', 'admin']
+
+    get:
+        name: View permission
+        api: /permission/get/
+        permissions: ['admin_permission_list', 'api_permission_list']
+        roles: ['superadmin', 'admin']
+
+    insert:
+        name: Create permission
+        url: /permission/insert/
+        permissions: ['admin_permission_list', 'api_permission_list']
+        roles: ['superadmin', 'admin']
+
+    update:
+        name: Update permission
+        url: /permission/update/
+        permissions: ['admin_permission_list', 'api_permission_list']
+        roles: ['superadmin', 'admin']
+
+    delete:
+        name: Delete permission
+        api: /permission/delete/
+        permissions: ['admin_permission_list', 'api_permission_list']
+        roles: ['superadmin', 'admin']
+
+fields:
+    id:
+        id: id
+        label: id
+        type: int
+        required: true
+        editable: false
+        list: true
+        form: false
+        translate: false
+    permissionGroup:
+        id: permissionGroup
+        label: group
+        type: text
+        required: false
+        editable: false
+        list: false
+        form: false
+        translate: false
+    page:
+        id: page
+        label: page
+        type: text
+        required: false
+        editable: false
+        list: false
+        form: true
+        translate: false
+    routeName:
+        id: routeName
+        label: route_name
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
+    description:
+        id: description
+        label: description
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
+    component:
+        id: component
+        label: component
+        type: text
+        required: false
+        editable: true
+        list: false
+        form: true
+        translate: false
+    props:
+        id: props
+        label: props
+        type: text
+        required: false
+        editable: true
+        list: false
+        form: true
+        translate: false
+
+buttons:
+    populate:
+        id: populate
+        label: get_missing_permissions
+        api: /permission/populate/

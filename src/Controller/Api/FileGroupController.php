@@ -45,8 +45,8 @@ class FileGroupController extends Controller
                     'type' => 'integer',
                     'required' => true,
                     'editable' => false,
-                    'show_list' => true,
-                    'show_form' => false,
+                    'list' => true,
+                    'form' => false,
                 ],
                 [
                     'id' => 'name',
@@ -54,12 +54,12 @@ class FileGroupController extends Controller
                     'type' => 'text',
                     'required' => true,
                     'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
+                    'list' => true,
+                    'form' => true,
                 ]
             ),
         );
-        return $this->json(json_encode($info));
+        return $this->json($info);
     }
 
     /**

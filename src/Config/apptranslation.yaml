@@ -1,0 +1,65 @@
+actions:
+    list:
+        name: List app translations
+        api: /apptranslation/list/
+        permissions: ['admin_apptranslation_list', 'api_apptranslation_list']
+        roles: ['superadmin', 'admin']
+
+    get:
+        name: View app translation
+        api: /apptranslation/get/
+        permissions: ['admin_apptranslation_list', 'api_apptranslation_list', 'api_apptranslation_info']
+        roles: ['superadmin', 'admin']
+
+    insert:
+        name: Create app translation
+        api: /apptranslation/insert/
+        permissions: ['admin_apptranslation_insert', 'api_apptranslation_insert']
+        roles: ['superadmin', 'admin']
+
+    update:
+        name: Update app translation
+        api: /apptranslation/update/
+        permissions: ['admin_apptranslation_update', 'api_apptranslation_update', 'api_apptranslation_info']
+        roles: ['superadmin', 'admin']
+
+    delete:
+        name: Delete app translation
+        api: /apptranslation/delete/
+        permissions: ['api_apptranslation_delete', 'api_apptranslation_delete_multiple']
+        roles: ['superadmin', 'admin']
+
+buttons:
+    export:
+        id: export
+        label: export
+        url: /apptranslation/export/
+
+fields:
+    id:
+        id: id
+        label: id
+        type: int
+        required: true
+        editable: false
+        list: true
+        form: false
+        translate: false
+    tag:
+        id: tag
+        label: tag
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
+    complete:
+        id: complete
+        label: complete
+        type: text
+        required: true
+        editable: false
+        list: true
+        form: false
+        translate: false

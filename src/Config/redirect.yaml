@@ -1,0 +1,80 @@
+actions:
+    list:
+        name: List redirects
+        api: /redirect/list/
+        permissions: ['admin_redirect_list', 'api_redirect_list']
+        roles: ['superadmin', 'admin']
+
+    get:
+        name: View redirect
+        api: /redirect/get/
+        permissions: ['admin_redirect_list', 'api_redirect_list', 'api_redirect_info']
+        roles: ['superadmin', 'admin']
+
+    insert:
+        name: Create redirect
+        api: /redirect/insert/
+        permissions: ['admin_redirect_insert', 'api_redirect_insert']
+        roles: ['superadmin', 'admin']
+
+    update:
+        name: Update redirect
+        api: /redirect/update/
+        permissions: ['admin_redirect_update', 'api_redirect_update', 'api_redirect_info']
+        roles: ['superadmin', 'admin']
+
+    delete:
+        name: Delete redirect
+        api: /redirect/delete/
+        permissions: ['api_redirect_delete', 'api_redirect_delete_multiple']
+        roles: ['superadmin', 'admin']
+
+fields:
+    id:
+        id: id
+        label: id
+        type: int
+        required: true
+        editable: false
+        list: true
+        form: false
+        translate: false
+    oldPageRoute:
+        id: oldPageRoute
+        label: old_page_route
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
+    newPageRoute:
+        id: newPageRoute
+        label: new_page_route
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
+    redirectType:
+        id: redirectType
+        label: redirect_type
+        type: select
+        options:
+            301: 301 Moved Permanently
+            302: 302 Moved Temporarily
+        required: false
+        editable: true
+        list: true
+        form: true
+        translate: false
+    active:
+        id: active
+        label: active
+        type: checkbox
+        required: false
+        editable: true
+        list: true
+        form: true
+        translate: false

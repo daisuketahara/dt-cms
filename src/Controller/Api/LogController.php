@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Yaml\Yaml;
 
 use App\Entity\Log;
 use App\Service\LogService;
@@ -30,88 +31,25 @@ class LogController extends Controller
     */
     final public function info(Request $request, TranslatorInterface $translator)
     {
+        $properties = Yaml::parseFile('src/Config/log.yaml');
+
+        $api = [];
+        $settings = [];
+
+        if (!empty($properties['actions'])) {
+            foreach($properties['actions'] as $key => $action) {
+                if (!empty($action['api'])) $api[$key] = $action['api'];
+                elseif (!empty($action['url'])) $settings[$key] = $action['url'];
+            }
+        }
+
         $info = array(
-            'api' => array(
-                'list' => '/log/list/',
-                'get' => '/log/get/',
-                'delete' => '/log/delete/'
-            ),
-            'fields' => array(
-                [
-                    'id' => 'id',
-                    'label' => 'id',
-                    'type' => 'integer',
-                    'required' => true,
-                    'editable' => false,
-                    'show_list' => true,
-                    'show_form' => false,
-                ],
-                [
-                    'id' => 'accountId',
-                    'label' => 'account_id',
-                    'type' => 'integer',
-                    'required' => true,
-                    'editable' => false,
-                    'show_list' => true,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'entity',
-                    'label' => 'entity',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => false,
-                    'show_list' => true,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'entityId',
-                    'label' => 'entity_id',
-                    'type' => 'integer',
-                    'required' => true,
-                    'editable' => false,
-                    'show_list' => true,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'log',
-                    'label' => 'log',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => false,
-                    'show_list' => false,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'comment',
-                    'label' => 'comment',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => false,
-                    'show_list' => true,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'userIp',
-                    'label' => 'user_ip',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => false,
-                    'show_list' => false,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'creationDate',
-                    'label' => 'date',
-                    'type' => 'datetime',
-                    'required' => true,
-                    'editable' => false,
-                    'show_list' => true,
-                    'show_form' => true,
-                ]
-            ),
+            'api' => $api,
+            'settings' => $settings,
+            'fields' => $properties['fields'],
         );
-        return $this->json(json_encode($info));
+
+        return $this->json($info);
     }
 
     /**

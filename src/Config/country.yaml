@@ -1,0 +1,51 @@
+actions:
+    list:
+        name: List countries
+        api: /country/list/
+        permissions: ['admin_country_list', 'api_country_list']
+        roles: ['superadmin', 'admin']
+
+    get:
+        name: View country
+        api: /country/get/
+        permissions: ['admin_country_list', 'api_country_list', 'api_country_info']
+        roles: ['superadmin', 'admin']
+
+    insert:
+        name: Create country
+        api: /country/insert/
+        permissions: ['admin_country_insert', 'api_country_insert']
+        roles: ['superadmin', 'admin']
+
+    update:
+        name: Update country
+        api: /country/update/
+        permissions: ['admin_country_update', 'api_country_update', 'api_country_info']
+        roles: ['superadmin', 'admin']
+
+    delete:
+        screen: country/
+        api: /country/delete/
+        name: Delete country
+        permissions: ['api_country_delete', 'api_country_delete_multiple']
+        roles: ['superadmin', 'admin']
+
+fields:
+    id:
+        id: id
+        label: id
+        type: int
+        required: true
+        editable: false
+        list: true
+        form: false
+        translate: false
+    country:
+        id: country
+        label: country
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false

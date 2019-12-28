@@ -1,0 +1,95 @@
+actions:
+    list:
+        name: List users
+        permissions: ['admin_user_list', 'api_user_list']
+        roles: ['superadmin', 'admin']
+
+    view:
+        screen: user/
+        api: user/
+        name: View user
+        permissions: ['admin_user_list', 'api_user_list', 'api_user_info']
+        roles: ['superadmin', 'admin']
+
+    insert:
+        screen: user/insert/
+        api: user/insert/
+        name: Create user
+        permissions: ['admin_user_insert', 'api_user_insert']
+        roles: ['superadmin', 'admin']
+
+    update:
+        screen: user/update/
+        api: user/update/
+        name: Update user
+        permissions: ['admin_user_update', 'api_user_update', 'api_user_info']
+        roles: ['superadmin', 'admin']
+
+    delete:
+        screen: user/
+        api: user/delete/
+        name: Delete user
+        permissions: ['api_user_delete', 'api_user_delete_multiple']
+        roles: ['superadmin', 'admin']
+
+    export:
+        screen: user/
+        api: user/list/
+        name: Export users
+        permissions: ['admin_user_export', 'api_user_list']
+        roles: ['superadmin', 'admin']
+fields:
+    id:
+        id: id
+        label: id
+        type: int
+        required: true
+        editable: false
+        list: true
+        form: false
+        translate: false
+    email:
+        id: email
+        label: email
+        type: email
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
+    phone:
+        id: phone
+        label: phone
+        type: phone
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
+    firstname:
+        id: firstname
+        label: firstname
+        type: text
+        required: false
+        editable: true
+        list: true
+        form: true
+        translate: false
+    lastname:
+        id: lastname
+        label: lastname
+        type: text
+        required: false
+        editable: true
+        list: true
+        form: true
+        translate: false
+    active:
+        id: active
+        label: active
+        type: checkbox
+        required: false
+        editable: true
+        list: true
+        form: true
+        translate: false

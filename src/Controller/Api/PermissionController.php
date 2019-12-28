@@ -18,6 +18,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Yaml\Yaml;
 
 use App\Entity\Permission;
 use App\Entity\PermissionGroup;
@@ -38,88 +39,25 @@ class PermissionController extends Controller
     */
     final public function info(Request $request, TranslatorInterface $translator)
     {
+        $properties = Yaml::parseFile('src/Config/permission.yaml');
+
+        $api = [];
+        $settings = [];
+
+        if (!empty($properties['actions'])) {
+            foreach($properties['actions'] as $key => $action) {
+                if (!empty($action['api'])) $api[$key] = $action['api'];
+                elseif (!empty($action['url'])) $settings[$key] = $action['url'];
+            }
+        }
+
         $info = array(
-            'api' => array(
-                'list' => '/permission/list/',
-                'get' => '/permission/get/',
-                'insert' => '/permission/insert/',
-                'update' => '/permission/update/',
-                'delete' => '/permission/delete/'
-            ),
-            'buttons' => array(
-                [
-                    'id' => 'populate',
-                    'label' => 'get_missing_permissions',
-                    'api' => '/permission/populate/'
-                ]
-            ),
-            'fields' => array(
-                [
-                    'id' => 'id',
-                    'label' => 'id',
-                    'type' => 'integer',
-                    'required' => true,
-                    'editable' => false,
-                    'show_list' => true,
-                    'show_form' => false,
-                ],
-                [
-                    'id' => 'permissionGroup',
-                    'label' => 'group',
-                    'type' => 'text',
-                    'required' => false,
-                    'editable' => false,
-                    'show_list' => false,
-                    'show_form' => false,
-                ],
-                [
-                    'id' => 'page',
-                    'label' => 'page',
-                    'type' => 'text',
-                    'required' => false,
-                    'editable' => false,
-                    'show_list' => false,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'routeName',
-                    'label' => 'route_name',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'description',
-                    'label' => 'description',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'component',
-                    'label' => 'component',
-                    'type' => 'text',
-                    'required' => false,
-                    'editable' => true,
-                    'show_list' => false,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'props',
-                    'label' => 'props',
-                    'type' => 'text',
-                    'required' => false,
-                    'editable' => true,
-                    'show_list' => false,
-                    'show_form' => true,
-                ]
-            ),
+            'api' => $api,
+            'settings' => $settings,
+            'fields' => $properties['fields'],
         );
-        return $this->json(json_encode($info));
+
+        return $this->json($info);
     }
 
     /**
@@ -436,8 +374,8 @@ class PermissionController extends Controller
                     'options' => $options,
                     'required' => false,
                     'editable' => true,
-                    'show_list' => false,
-                    'show_form' => true,
+                    'list' => false,
+                    'form' => true,
                 ];
             }
         }
@@ -461,8 +399,8 @@ class PermissionController extends Controller
                 'options' => $options,
                 'required' => false,
                 'editable' => true,
-                'show_list' => false,
-                'show_form' => true,
+                'list' => false,
+                'form' => true,
             ];
         }
         $json = $this->serializer->serialize([

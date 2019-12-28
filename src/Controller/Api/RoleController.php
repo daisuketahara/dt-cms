@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Yaml\Yaml;
 
 use App\Entity\Role;
 use App\Entity\Permission;
@@ -34,53 +35,24 @@ class RoleController extends Controller
     */
     final public function info(Request $request, TranslatorInterface $translator)
     {
+        $properties = Yaml::parseFile('src/Config/role.yaml');
+
+        $api = [];
+        $settings = [];
+
+        if (!empty($properties['actions'])) {
+            foreach($properties['actions'] as $key => $action) {
+                if (!empty($action['api'])) $api[$key] = $action['api'];
+                elseif (!empty($action['url'])) $settings[$key] = $action['url'];
+            }
+        }
+
         $info = array(
-            'api' => array(
-                'list' => '/user/role/list/',
-                'get' => '/user/role/get/',
-                'insert' => '/user/role/insert/',
-                'update' => '/user/role/update/',
-                'delete' => '/user/role/delete/'
-            ),
-            'fields' => array(
-                [
-                    'id' => 'id',
-                    'label' => 'id',
-                    'type' => 'integer',
-                    'required' => true,
-                    'editable' => false,
-                    'show_list' => true,
-                    'show_form' => false,
-                ],
-                [
-                    'id' => 'name',
-                    'label' => 'name',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'description',
-                    'label' =>'description',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => true,
-                    'show_list' => false,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'active',
-                    'label' => 'active',
-                    'type' => 'checkbox',
-                    'required' => false,
-                    'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
-                ]
-            ),
+            'api' => $api,
+            'settings' => $settings,
+            'fields' => $properties['fields'],
         );
+
 
         $permissionGroups = $this->getDoctrine()
         ->getRepository(PermissionGroup::class)
@@ -108,8 +80,8 @@ class RoleController extends Controller
                     'options' => $options,
                     'required' => false,
                     'editable' => true,
-                    'show_list' => false,
-                    'show_form' => true,
+                    'list' => false,
+                    'form' => true,
                 ];
             }
         }
@@ -133,12 +105,12 @@ class RoleController extends Controller
                 'options' => $options,
                 'required' => false,
                 'editable' => true,
-                'show_list' => false,
-                'show_form' => true,
+                'list' => false,
+                'form' => true,
             ];
         }
 
-        return $this->json(json_encode($info));
+        return $this->json($info);
     }
 
     /**

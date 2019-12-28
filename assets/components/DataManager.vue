@@ -13,7 +13,7 @@
                 <thead class="thead-dark">
                     <tr>
                         <th width="30"><input type="checkbox" v-on:click="selectAllDelete"></th>
-                        <th v-for="column in columns" v-if="column.show_list == true" :data-column="column.id">
+                        <th v-for="column in columns" v-if="column.list == true" :data-column="column.id">
                             {{translations[column.label] || column.label}}
                             <a class="table-sort" v-on:click="sortlist" :data-id="column.id" :data-alias="column.alias" data-dir="asc">
                                 <i v-if="column.id === sort.id && sort.dir === 'desc'" class="fa fa-sort-down" aria-hidden="true"></i>
@@ -28,7 +28,7 @@
                     </tr>
                     <tr class="table-filter">
                         <td></td>
-                        <td v-for="column in columns" v-if="column.show_list == true">
+                        <td v-for="column in columns" v-if="column.list == true">
                             <select v-if="column.type === 'select'" :id="'filter-'+column.id" :name="'filter-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-on:change="filterlist">
                                 <option value="">{{translations.search_for || 'search for..'}}</option>
                                 <option v-for="(optionvalue, optionkey) in column.options" :value="optionkey">{{optionvalue}}</option>
@@ -47,7 +47,7 @@
                 <tbody>
                     <tr v-for="item in data" :key="item.id" :id="'row-'+item.id">
                         <td><input type="checkbox" name="select-delete[]" class="select-delete" :value="item.id" v-on:click="markToDelete"></td>
-                        <td v-for="column in columns" v-if="column.show_list == true">
+                        <td v-for="column in columns" v-if="column.list == true">
                             <span v-if="typeof column.object !== 'undefined' && typeof column.object2 !== 'undefined'">{{item[column.object][column.object2][column.id]}}</span>
                             <span v-if="typeof column.object !== 'undefined'">{{item[column.object][column.id]}}</span>
                             <span v-else-if="column.type=='switch'">
@@ -145,7 +145,7 @@
             </ul>
             <form method="post" v-on:submit.prevent="update">
                 <div v-for="column in columns">
-                    <div v-if="column.type === 'checkbox' && (column.editable || (form_id === 0 && column.show_form))" class="form-group">
+                    <div v-if="column.type === 'checkbox' && (column.editable || (form_id === 0 && column.form))" class="form-group">
                         <div class="checkbox">
                             <label :for="'form-'+column.id">
                                 <input type="checkbox" :id="'form-'+column.id" :name="'form-'+column.id" v-model="form_data[column.id]">
@@ -153,7 +153,7 @@
                             </label>
                         </div>
                     </div>
-                    <div v-else-if="column.type === 'checkboxes' && (column.editable || (form_id === 0 && column.show_form))" class="form-group">
+                    <div v-else-if="column.type === 'checkboxes' && (column.editable || (form_id === 0 && column.form))" class="form-group">
                         <h4>
                             {{translations[column.label] || column.label}}
                             <button class="btn btn-sm btn-link" v-on:click.prevent="toggleCheckboxes" data-status="0">{{translations.select_all || 'Select all'}}</button>
@@ -169,7 +169,7 @@
                             </div>
                         </div>
                     </div>
-                    <div v-else-if="column.editable || (form_id === 0 && column.show_form)" class="form-group">
+                    <div v-else-if="column.editable || (form_id === 0 && column.form)" class="form-group">
                         <label :for="'form-'+column.id">{{translations[column.label] || column.label}}</label>
                         <input v-if="column.type === 'text'" type="text" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
                         <input v-else-if="column.type === 'email'" type="email" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
@@ -291,14 +291,14 @@
 
                 axios.get('/api/v1'+this.$attrs.info, {headers: this.headers})
                     .then(response => {
-                        var result = JSON.parse(response.data);
-                        this.api = result.api;
-                        this.columns = result.fields;
 
-                        if (result['buttons'] != undefined) this.buttons = result['buttons'];
+                        this.api = response.data.api;
+                        this.columns = response.data.fields;
+
+                        if (response.data.buttons != undefined) this.buttons = response.data.buttons;
                         else this.buttons = {};
 
-                        if (result['settings'] != undefined) this.settings = result['settings'];
+                        if (response.data.settings != undefined) this.settings = response.data.settings;
                         else this.settings = {};
 
                         this.list();
@@ -351,7 +351,7 @@
                 this.filter = '';
                 for (var i = 0; i < this.columns.length; i++) {
 
-                    if (this.columns[i]['show_list']) {
+                    if (this.columns[i]['list']) {
                         let column = this.columns[i]['id'];
                         let value = document.getElementById('filter-' + column).value;
 
@@ -484,7 +484,7 @@
                 let params = {};
                 if (this.translate_id > 0) params['locale'] = this.translate_id;
                 for (var i = 0; i < this.columns.length; i++) {
-                    if (this.columns[i]['editable'] || (this.form_id === 0 && this.columns[i]['show_form'])) {
+                    if (this.columns[i]['editable'] || (this.form_id === 0 && this.columns[i]['form'])) {
                         if (this.columns[i]['type'] == 'texteditor') {
                             params[this.columns[i]['id']] = this.form_data[this.columns[i]['id']];
                         } else if (this.columns[i]['type'] == 'checkbox') {

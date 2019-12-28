@@ -48,8 +48,8 @@ class MailController extends Controller
                     'type' => 'integer',
                     'required' => true,
                     'editable' => false,
-                    'show_list' => true,
-                    'show_form' => false,
+                    'list' => true,
+                    'form' => false,
                 ],
                 [
                     'id' => 'toEmail',
@@ -57,8 +57,8 @@ class MailController extends Controller
                     'type' => 'text',
                     'required' => true,
                     'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
+                    'list' => true,
+                    'form' => true,
                 ],
                 [
                     'id' => 'subject',
@@ -66,8 +66,8 @@ class MailController extends Controller
                     'type' => 'text',
                     'required' => true,
                     'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
+                    'list' => true,
+                    'form' => true,
                 ],
                 [
                     'id' => 'creationDate',
@@ -75,8 +75,8 @@ class MailController extends Controller
                     'type' => 'datetime',
                     'required' => true,
                     'editable' => true,
-                    'show_list' => false,
-                    'show_form' => true,
+                    'list' => false,
+                    'form' => true,
                 ],
                 [
                     'id' => 'sendDate',
@@ -84,8 +84,8 @@ class MailController extends Controller
                     'type' => 'datetime',
                     'required' => true,
                     'editable' => true,
-                    'show_list' => false,
-                    'show_form' => true,
+                    'list' => false,
+                    'form' => true,
                 ],
                 [
                     'id' => 'body',
@@ -93,8 +93,8 @@ class MailController extends Controller
                     'type' => 'texteditor',
                     'required' => true,
                     'editable' => true,
-                    'show_list' => false,
-                    'show_form' => true,
+                    'list' => false,
+                    'form' => true,
                 ],
                 [
                     'id' => 'status',
@@ -102,12 +102,12 @@ class MailController extends Controller
                     'type' => 'text',
                     'required' => true,
                     'editable' => true,
-                    'show_list' => false,
-                    'show_form' => true,
+                    'list' => false,
+                    'form' => true,
                 ]
             ),
         );
-        return $this->json(json_encode($info));
+        return $this->json($info);
     }
 
     /**
@@ -251,8 +251,8 @@ class MailController extends Controller
                     'type' => 'integer',
                     'required' => true,
                     'editable' => false,
-                    'show_list' => true,
-                    'show_form' => false,
+                    'list' => true,
+                    'form' => false,
                 ],
                 [
                     'object' => 'mailTemplate',
@@ -261,8 +261,8 @@ class MailController extends Controller
                     'type' => 'text',
                     'required' => false,
                     'editable' => false,
-                    'show_list' => true,
-                    'show_form' => true,
+                    'list' => true,
+                    'form' => true,
                 ],
                 [
                     'id' => 'name',
@@ -270,8 +270,8 @@ class MailController extends Controller
                     'type' => 'text',
                     'required' => true,
                     'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
+                    'list' => true,
+                    'form' => true,
                 ],
                 [
                     'id' => 'subject',
@@ -279,8 +279,8 @@ class MailController extends Controller
                     'type' => 'text',
                     'required' => true,
                     'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
+                    'list' => true,
+                    'form' => true,
                 ],
                 [
                     'id' => 'body',
@@ -288,12 +288,12 @@ class MailController extends Controller
                     'type' => 'texteditor',
                     'required' => true,
                     'editable' => true,
-                    'show_list' => false,
-                    'show_form' => true,
+                    'list' => false,
+                    'form' => true,
                 ]
             ),
         );
-        return $this->json(json_encode($info));
+        return $this->json($info);
     }
 
     /**
@@ -470,7 +470,7 @@ class MailController extends Controller
             }
 
             $mailTemplate->setLocale($locale);
-            
+
             if (!empty($params['name'])) $mailTemplate->setName($params['name']);
             else $errors[] = 'Name cannot be empty';
 

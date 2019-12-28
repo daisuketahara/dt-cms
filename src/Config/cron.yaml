@@ -1,0 +1,131 @@
+actions:
+    list:
+        name: List crons
+        api: /cron/list/
+        permissions: ['admin_cron_list', 'api_cron_list']
+        roles: ['superadmin']
+
+    get:
+        name: View cron
+        api: /cron/get/
+        permissions: ['admin_cron_list', 'api_cron_list', 'api_cron_info']
+        roles: ['superadmin']
+
+    insert:
+        name: Create cron
+        api: /cron/insert/
+        permissions: ['admin_cron_insert', 'api_cron_insert']
+        roles: ['superadmin']
+
+    update:
+        name: Update cron
+        api: /cron/update/
+        permissions: ['admin_cron_update', 'api_cron_update', 'api_cron_info']
+        roles: ['superadmin']
+
+    delete:
+        name: Delete cron
+        api: /cron/delete/
+        permissions: ['api_cron_delete', 'api_cron_delete_multiple']
+        roles: ['superadmin']
+
+fields:
+    id:
+        id: id
+        label: id
+        type: int
+        required: true
+        editable: false
+        list: true
+        form: false
+        translate: false
+    name:
+        id: name
+        label: name
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
+    script:
+        id: script
+        label: script
+        type: text
+        required: true
+        editable: true
+        list: false
+        form: true
+        translate: false
+    minute:
+        id: minute
+        label: minute
+        type: text
+        required: true
+        editable: true
+        list: false
+        form: true
+        translate: false
+    hour:
+        id: hour
+        label: hour
+        type: text
+        required: true
+        editable: true
+        list: false
+        form: true
+        translate: false
+    day:
+        id: day
+        label: day
+        type: text
+        required: true
+        editable: true
+        list: false
+        form: true
+        translate: false
+    month:
+        id: month
+        label: month
+        type: text
+        required: true
+        editable: true
+        list: false
+        form: true
+        translate: false
+    day_of_week:
+        id: day_of_week
+        label: day_of_week
+        type: text
+        required: true
+        editable: true
+        list: false
+        form: true
+        translate: false
+    last_run:
+        id: last_run
+        label: last_run
+        type: datetime
+        required: true
+        editable: true
+        list: true
+        form: false
+        translate: false
+    run_count:
+        id: run_count
+        label: run_count
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: false
+        translate: false
+    active:
+        id: active
+        label: active
+        type: checkbox
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false

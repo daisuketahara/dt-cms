@@ -11,6 +11,7 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Yaml\Yaml;
 
 use App\Entity\Redirect;
 use App\Service\LogService;
@@ -30,63 +31,25 @@ class RedirectController extends Controller
     */
     final public function info(Request $request, TranslatorInterface $translator)
     {
+        $properties = Yaml::parseFile('src/Config/redirect.yaml');
+
+        $api = [];
+        $settings = [];
+
+        if (!empty($properties['actions'])) {
+            foreach($properties['actions'] as $key => $action) {
+                if (!empty($action['api'])) $api[$key] = $action['api'];
+                elseif (!empty($action['url'])) $settings[$key] = $action['url'];
+            }
+        }
+
         $info = array(
-            'api' => array(
-                'list' => '/redirect/list/',
-                'get' => '/redirect/get/',
-                'insert' => '/redirect/insert/',
-                'update' => '/redirect/update/',
-                'delete' => '/redirect/delete/'
-            ),
-            'fields' => array(
-                [
-                    'id' => 'id',
-                    'label' => 'id',
-                    'type' => 'integer',
-                    'required' => true,
-                    'editable' => false,
-                    'show_list' => true,
-                    'show_form' => false,
-                ],
-                [
-                    'id' => 'oldPageRoute',
-                    'label' => 'old_page_route',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'newPageRoute',
-                    'label' => 'new_page_route',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => true,
-                    'show_list' => false,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'redirectType',
-                    'label' => 'redirect_type',
-                    'type' => 'text',
-                    'required' => true,
-                    'editable' => true,
-                    'show_list' => false,
-                    'show_form' => true,
-                ],
-                [
-                    'id' => 'active',
-                    'label' => 'active',
-                    'type' => 'checkbox',
-                    'required' => false,
-                    'editable' => true,
-                    'show_list' => true,
-                    'show_form' => true,
-                ]
-            ),
+            'api' => $api,
+            'settings' => $settings,
+            'fields' => $properties['fields'],
         );
-        return $this->json(json_encode($info));
+
+        return $this->json($info);
     }
 
     /**

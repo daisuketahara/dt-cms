@@ -1,0 +1,95 @@
+actions:
+    list:
+        name: List locales
+        api: /locale/list/
+        permissions: ['admin_locale_list', 'api_locale_list']
+        roles: ['superadmin', 'admin']
+
+    get:
+        api: /locale/get/
+        name: View locale
+        permissions: ['admin_locale_list', 'api_locale_list', 'api_locale_info']
+        roles: ['superadmin', 'admin']
+
+    insert:
+        name: Create locale
+        api: /locale/insert/
+        permissions: ['admin_locale_insert', 'api_locale_insert']
+        roles: ['superadmin', 'admin']
+
+    update:
+        name: Update locale
+        api: /locale/update/
+        permissions: ['admin_locale_update', 'api_locale_update', 'api_locale_info']
+        roles: ['superadmin', 'admin']
+
+    delete:
+        name: Delete locale
+        api: locale/delete/
+        permissions: ['api_locale_delete', 'api_locale_delete_multiple']
+        roles: ['superadmin', 'admin']
+
+fields:
+    id:
+        id: id
+        label: id
+        type: int
+        required: true
+        editable: false
+        list: true
+        form: false
+        translate: false
+    name:
+        id: name
+        label: name
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
+    locale:
+        id: locale
+        label: locale
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
+    lcid:
+        id: lcid
+        label: lcid
+        type: text
+        required: false
+        editable: true
+        list: true
+        form: true
+        translate: false
+    isoCode:
+        id: isoCode
+        label: iso_code
+        type: text
+        required: false
+        editable: true
+        list: true
+        form: true
+        translate: false
+    default:
+        id: default
+        label: default
+        type: checkbox
+        required: false
+        editable: true
+        list: true
+        form: true
+        translate: false
+    active:
+        id: active
+        label: active
+        type: checkbox
+        required: false
+        editable: true
+        list: true
+        form: true
+        translate: false

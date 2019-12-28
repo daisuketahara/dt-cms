@@ -1,0 +1,83 @@
+actions:
+    list:
+        name: List blocks
+        api: /block/list/
+        permissions: ['admin_block_list', 'api_block_list']
+        roles: ['superadmin', 'admin']
+
+    get:
+        screen: block/
+        api: /block/get/
+        name: View block
+        permissions: ['admin_block_list', 'api_block_list', 'api_block_info']
+        roles: ['superadmin', 'admin']
+
+    insert:
+        screen: block/insert/
+        api: /block/insert/
+        name: Create block
+        permissions: ['admin_block_insert', 'api_block_insert']
+        roles: ['superadmin', 'admin']
+
+    update:
+        screen: block/update/
+        api: /block/update/
+        name: Update block
+        permissions: ['admin_block_update', 'api_block_update', 'api_block_info']
+        roles: ['superadmin', 'admin']
+
+    delete:
+        screen: block/
+        api: /block/delete/
+        name: Delete block
+        permissions: ['api_block_delete', 'api_block_delete_multiple']
+        roles: ['superadmin', 'admin']
+
+fields:
+    id:
+        object: block
+        id: id
+        label: id
+        type: int
+        required: true
+        editable: false
+        list: true
+        form: false
+        translate: false
+    email:
+        object: block
+        id: tag
+        label: tag
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
+    name:
+        id: name
+        label: name
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: true
+    description:
+        id: description
+        label: description
+        type: text
+        required: false
+        editable: true
+        list: true
+        form: true
+        translate: true
+    content:
+        id: content
+        label: content
+        type: texteditor
+        required: false
+        editable: true
+        list: false
+        form: true
+        translate: true

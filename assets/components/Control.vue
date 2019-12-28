@@ -86,10 +86,9 @@
             getElements: function() {
                 axios.get('/api/v1'+this.$attrs.info, {headers: this.headers})
                     .then(response => {
-                        var result = JSON.parse(response.data);
-                        this.elements = result.elements;
+                        this.elements = response.data.elements;
 
-                        if (result['settings'] != undefined) this.settings = result['settings'];
+                        if (response.data.settings != undefined) this.settings = response.data.settings;
                         else this.settings = {};
                     })
                     .catch(e => {
