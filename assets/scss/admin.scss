@@ -196,9 +196,16 @@ body {
                     -o-transition: all 0.25s ease-in-out;
                     transition: all 0.25s ease-in-out;
 
-                    a span {
-                        padding-left: 15px;
-                        font-size: 0.8rem !important;
+                    li {
+                        padding-left: 0;
+
+                        a {
+                            padding-left: 15px;
+                            span {
+                                padding-left: 15px;
+                                font-size: 0.8rem !important;
+                            }
+                        }
                     }
                 }
             }
@@ -422,4 +429,10 @@ footer {
 
 button > * {
   pointer-events: none;
+}
+
+body.darkmode .card,
+body.darkmode .list-group-item {
+    background-color: rgba(40,40,40,0.7);
+    color: white;
 }

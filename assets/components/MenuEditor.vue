@@ -1,5 +1,6 @@
 <template>
-    <div>
+    <div class="container-fluid">
+        <h1>Menu editor</h1>
         <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
             <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
                 {{alert.text}}
