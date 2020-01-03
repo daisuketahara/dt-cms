@@ -1,6 +1,8 @@
 <template>
     <transition name="fade" enter-active-class="animated flipInX" leave-active-class="animated flipOutX">
-        <div class="login-container">
+        <div v-if="view =='login'" class="login-container">
+            <h1>{{translations.signin || 'Sign in'}}</h1>
+            <p>{{translations.signin || 'Hello! Sign in and start managing your website.'}}</p>
             <div class="site-logo">{{site.logo}}</div>
             {{block.login_notification}}
             <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
@@ -11,33 +13,39 @@
                     {{translations[alert.text]}}
                 </div>
             </transition>
-            <form v-if="view =='login'" v-on:submit.prevent="login">
+            <form v-on:submit.prevent="login">
+                <div class="form-group">
+                    <input type="text" id="email" name="email" class="form-control" v-model="email" :placeholder="translations.email || 'Email'">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" name="password" class="form-control" v-model="password" :placeholder="translations.password || 'Password'">
+                </div>
+                <button type="submit" class="btn btn-lg btn-secondary">{{translations.login}}</button>
+            </form>
+
+            <button class="btn btn-link" v-on:click.prevent="gotoForgetPassword">{{translations.forget_password}}</button>
+        </div>
+        <div v-else-if="view =='forgetPassword'" class="login-container">
+            <h1>{{translations.request_new_password || 'Request a new password'}}</h1>
+            <p>{{translations.signin || 'Hello! Sign in and start managing your website.'}}</p>
+            <div class="site-logo">{{site.logo}}</div>
+            {{block.login_notification}}
+            <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
+                <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
+                    {{translations[alert.text]}}
+                </div>
+                <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
+                    {{translations[alert.text]}}
+                </div>
+            </transition>
+            <form v-on:submit.prevent="RequestPassword">
                 <div class="form-group">
                     <label for="email">{{translations.email}}</label>
                     <input type="text" id="email" name="email" class="form-control" v-model="email">
                 </div>
-                <div class="form-group">
-                    <label for="password">{{translations.password}}</label>
-                    <input type="password" id="password" name="password" class="form-control" v-model="password">
-                </div>
-                <button class="btn btn-link" v-on:click.prevent="gotoForgetPassword">{{translations.forget_password}}</button>
-                <button type="submit" class="btn btn-primary w-100">{{translations.login}}</button>
+                <button type="submit" class="btn btn-lg btn-secondary">{{translations.send}}</button>
             </form>
-            <form v-else-if="view =='forgetPassword'" v-on:submit.prevent="RequestPassword">
-                <div class="form-group">
-                    <label for="email">{{translations.email}}</label>
-                    <input type="text" id="email" name="email" class="form-control" v-model="email">
-                </div>
-                <button class="btn btn-link" v-on:click.prevent="gotoLogin">{{translations.login}}</button>
-                <button type="submit" class="btn btn-primary w-100">{{translations.send}}</button>
-            </form>
-            <ul class="language-switcher list-inline">
-                <li v-for="locale in locales" class="list-inline-item">
-                    <button class="btn btn-sm btn-link" v-on:click="setLocale" :data-locale="locale.locale">
-                        <img class="img-fluid" :src="'/img/flags/' + locale.lcid + '.png'" :alt="locale.name" :data-locale="locale.locale">
-                    </button>
-                </li>
-            </ul>
+            <button class="btn btn-link" v-on:click.prevent="gotoLogin">{{translations.login}}</button>
         </div>
     </transition>
 </template>
@@ -186,14 +194,35 @@
 <style scoped>
     .login-container {
         width: 100%;
-        max-width: 400px;
+        max-width: 700px;
         margin: 0 auto;
-        margin-top: 15%;
+        margin-top: 15vh;
         padding: 15px;
         background-color: rgba(255,255,255,0.7);
         border-radius: 0.1rem;
         position: relative;
-        text-align: left;
+        text-align: center;
+    }
+    .login-container * {
+        position: relative;
+        z-index: 2;
+    }
+    .login-container h1 {
+        font-weight: 300;
+        margin-top: 5vh;
+    }
+    .login-container p {
+        font-weight: 300;
+        margin-bottom: 5vh;
+    }
+    .login-container form {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+        margin-bottom: 5vh;
+    }
+    .login-container input {
+        background-color: rgba(0,0,0,0.05);
     }
     .login-container::before,
     .login-container::after {

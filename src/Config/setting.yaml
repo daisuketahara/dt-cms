@@ -52,7 +52,7 @@ fields:
     settingValue:
         id: settingValue
         label: value
-        type: text
+        type: textarea
         required: true
         editable: true
         list: true

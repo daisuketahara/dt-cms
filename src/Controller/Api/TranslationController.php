@@ -43,7 +43,7 @@ class TranslationController extends Controller
         $properties = Yaml::parseFile('src/Config/translation.yaml');
 
         $api = [];
-        $settings = [];
+        $settings = ['title' => $translator->trans('translations')];
 
         if (!empty($properties['actions'])) {
             foreach($properties['actions'] as $key => $action) {

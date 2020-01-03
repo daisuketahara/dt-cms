@@ -44,40 +44,49 @@ body {
 }
 
 .admin-container {
-    position: absolute;
+    position: relative;
     top: 0;
     width: 100%;
     min-height: 100vh;
     margin: 0 auto;
+
+    overflow: hidden;
+    -webkit-box-shadow: 0px 4px 17px -4px rgba(102,102,102,1);
+    -moz-box-shadow: 0px 4px 17px -4px rgba(102,102,102,1);
+    box-shadow: 0px 4px 17px -4px rgba(102,102,102,1);
+    -webkit-transition: background-color 0.25s ease-in-out;
+    -moz-transition: background-color 0.25s ease-in-out;
+    -o-transition: background-color 0.25s ease-in-out;
+    transition: background-color 0.25s ease-in-out;
 }
 
 @media screen and (min-width: 1280px) {
 
     .admin-container {
-        position: absolute;
-        top: 2vh;
-        left: 5%;
+        position: relative;
         width: 90%;
         min-height: 96vh;
         margin: 0 auto;
+        border-radius: 2rem;
     }
 
 }
 
 .admin-sidebar {
-    float: left;
     min-height: 109vh;
     width: 40px;
     padding-bottom: 30px;
     z-index: 11;
     position: relative;
-    border-radius: 0.15rem;
     -webkit-border-radius: 0.15rem;
     -moz-border-radius: 0.15rem;
-    -webkit-box-shadow: 0px 4px 17px -4px rgba(102,102,102,1);
-    -moz-box-shadow: 0px 4px 17px -4px rgba(102,102,102,1);
-    box-shadow: 0px 4px 17px -4px rgba(102,102,102,1);
     color: white;
+    background-color: rgba(37,64,92,0.8);
+    background-color: rgba(40,40,40,0.83);
+    -webkit-transition: background-color 0.25s ease-in-out;
+    -moz-transition: background-color 0.25s ease-in-out;
+    -o-transition: background-color 0.25s ease-in-out;
+    transition: background-color 0.25s ease-in-out;
 
     div {
         z-index: 99;
@@ -136,16 +145,15 @@ body {
                 width: 100%;
                 text-align: left;
                 position: relative;
-                border-top: 1px solid #555555;
                 a {
                     color: white;
                     display: block;
                     width: 100%;
                     padding: 14px 0 8px 0;
-                    -webkit-transition: all 0.25s ease-in-out;
-                    -moz-transition: all 0.25s ease-in-out;
-                    -o-transition: all 0.25s ease-in-out;
-                    transition: all 0.25s ease-in-out;
+                    -webkit-transition: background-color 0.25s ease-in-out;
+                    -moz-transition: background-color 0.25s ease-in-out;
+                    -o-transition: background-color 0.25s ease-in-out;
+                    transition: background-color 0.25s ease-in-out;
                     font-weight: 300;
                     font-size: 0.8rem;
                     letter-spacing: 0.15rem;
@@ -210,6 +218,10 @@ body {
     }
 }
 
+body.darkmode .admin-sidebar {
+    background-color: rgba(37,64,92,0.8);
+    background-color: rgba(10,10,10,0.83);
+}
 
 @media screen and (min-width: 992px) {
 
@@ -234,7 +246,7 @@ body {
                 li {
 
                     a {
-                        padding: 14px 5px 14px 20px;
+                        padding: 14px 5px 14px 40px;
 
                         span:first-child {
                             display: inline-block;
@@ -268,35 +280,11 @@ body {
     z-index: 14 !important;
 }
 
-.admin-sidebar::before,
-.admin-sidebar::after {
-    display: block;
-    content: '';
-    z-index: 1;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
-}
-.admin-sidebar::after {
-    background-color: rgba(40,40,40,0.83);
-}
-.admin-sidebar::before {
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center center;
-    background-attachment: fixed;
-    overflow: hidden;
-}
-
 .admin-content {
     min-height: 100vh;
     position: relative;
     z-index: 11;
     background: rgba(255,255,255,0.95);
-    padding: 15px;
-    padding-top: 20px;
-    margin-left: 40px;
     -webkit-border-radius: 0.1rem;
     -moz-border-radius: 0.1rem;
     border-radius: 0.2rem;
@@ -311,32 +299,39 @@ body {
         margin-bottom: 0;
     }
 }
+
+body.darkmode .admin-content {
+    background: rgba(20,20,20,0.7);
+}
+
 @media screen and (min-width: 992px) {
 
     .admin-content {
         min-height: 96vh;
-        padding-top: 20px;
-        margin-left: 275px;
     }
 }
 
+.admin-content .admin-functions {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
 
 .im-user-profile-picture {
-    width: 30px;
+    width: 100%;
     height: 30px;
     margin: 0 auto;
-    border-radius: 80px;
-    background-color: white;
-    border: 2px solid white;
-    background-image: url(/img/im-logo-2018.png);
+    background-color: rgba(10,10,10,0.45);
+    background-image: url(/img/dt-wallpaper.png);
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
 }
 @media screen and (min-width: 992px) {
     .im-user-profile-picture {
-        width: 140px;
-        height: 140px;
+        width: 100%;
+        height: 200px;
     }
 }
 .im-user-profile-name {
@@ -346,18 +341,14 @@ body {
 
 .admin-content {
     position: relative;
-    border-radius: 0.15rem;
-    -webkit-box-shadow: 0px 4px 17px -4px rgba(102,102,102,1);
-    -moz-box-shadow: 0px 4px 17px -4px rgba(102,102,102,1);
-    box-shadow: 0px 4px 17px -4px rgba(102,102,102,1);
 }
 .admin-content * {
     z-index: 4;
     position: relative;
 }
 
-.admin-content::before,
-.admin-content::after {
+.admin-container::before,
+.admin-container::after {
     display: block;
     content: '';
     z-index: 1;
@@ -365,6 +356,10 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
 }
 .admin-content::before,
 .admin-content::after {
@@ -423,4 +418,8 @@ footer {
 
 .v--modal-overlay {
     background: rgba(0,0,0,0.7) !important;
+}
+
+button > * {
+  pointer-events: none;
 }

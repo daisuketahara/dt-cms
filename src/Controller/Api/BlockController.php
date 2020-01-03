@@ -36,7 +36,7 @@ class BlockController extends Controller
         $properties = Yaml::parseFile('src/Config/block.yaml');
 
         $api = [];
-        $settings = [];
+        $settings = ['title' => $translator->trans('text_blocks')];
 
         if (!empty($properties['actions'])) {
             foreach($properties['actions'] as $key => $action) {

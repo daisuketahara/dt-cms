@@ -42,7 +42,7 @@ class PermissionController extends Controller
         $properties = Yaml::parseFile('src/Config/permission.yaml');
 
         $api = [];
-        $settings = [];
+        $settings = ['title' => $translator->trans('permissions')];
 
         if (!empty($properties['actions'])) {
             foreach($properties['actions'] as $key => $action) {

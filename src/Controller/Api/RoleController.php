@@ -38,7 +38,7 @@ class RoleController extends Controller
         $properties = Yaml::parseFile('src/Config/role.yaml');
 
         $api = [];
-        $settings = [];
+        $settings = ['title' => $translator->trans('user_roles')];
 
         if (!empty($properties['actions'])) {
             foreach($properties['actions'] as $key => $action) {

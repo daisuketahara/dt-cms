@@ -16,7 +16,8 @@ export default new Vuex.Store({
         default_locale: '',
         default_locale_id: 0,
         menu: [],
-        permissions: []
+        permissions: [],
+        darkmode: 0
     },
     mutations: {
         setInit (state, init) {
@@ -51,6 +52,9 @@ export default new Vuex.Store({
         },
         setTranslations (state, translations) {
             state.translations = translations;
+        },
+        setDarkmode (state, darkmode) {
+            state.darkmode = darkmode;
         },
     }
 });

@@ -1,6 +1,13 @@
 <template>
-    <transition name="fade" enter-active-class="animated fadeInRight" leave-active-class="animated fadeOutDown">
-        <div v-if="mode === 'table'" id="data-manager-table" class="table-responsive">
+    <div v-if="tablemode" class="p-3">
+        <div v-if="mode === 'list'" id="data-manager-table" class="table-responsive" style="padding-right:-15px;">
+            <button v-if="api.insert" class="btn btn-success btn-sm mb-3" v-on:click="add"><i class="fa fa-plus" aria-hidden="true"></i> {{translations.new || 'New'}}</button>
+            <button v-if="settings.insert" class="btn btn-success btn-sm mb-3" :data-url="settings.insert" v-on:click="customButton"><i class="fa fa-plus" aria-hidden="true" :data-url="settings.insert"></i> {{translations.new || 'New'}}</button>
+            <button class="btn btn-light btn-sm mb-3" v-on:click="setTableMode" data-tablemode="0">
+                <i class="fal fa-th-list"></i>
+                {{translations.table_view || 'Table view'}}
+            </button>
+
             <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
                 <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
                     {{alert.text}}
@@ -9,7 +16,7 @@
                     {{alert.text}}
                 </div>
             </transition>
-            <table class="data-manager-table table table-hover table-striped">
+            <table class="data-manager-table table table-striped">
                 <thead class="thead-dark">
                     <tr>
                         <th width="30"><input type="checkbox" v-on:click="selectAllDelete"></th>
@@ -22,11 +29,9 @@
                             </a>
                         </th>
                         <th width="160">
-                            <button v-if="api.insert" class="btn btn-success btn-sm" v-on:click="add"><i class="fa fa-plus" aria-hidden="true"></i> {{translations.new || 'New'}}</button>
-                            <button v-if="settings.insert" class="btn btn-success btn-sm" :data-url="settings.insert" v-on:click="customButton"><i class="fa fa-plus" aria-hidden="true" :data-url="settings.insert"></i> {{translations.new || 'New'}}</button>
                         </th>
                     </tr>
-                    <tr class="table-filter">
+                    <tr class="table-filter-row">
                         <td></td>
                         <td v-for="column in columns" v-if="column.list == true">
                             <select v-if="column.type === 'select'" :id="'filter-'+column.id" :name="'filter-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-on:change="filterlist">
@@ -73,7 +78,7 @@
                 <div class="col-3">
                     <button class="btn btn-danger btn-sm" v-on:click="dropMultiple">{{translations.delete_selected || 'Delete selected'}}</button>
                 </div>
-                <div class="col-9">
+                <div class="col-3 form-inline">
                     <select class="select-limit form-control form-inline" v-on:change="change_amount">
                         <option value="15">10</option>
                         <option value="25">25</option>
@@ -81,6 +86,8 @@
                         <option value="100">100</option>
                         <option value="250">250</option>
                     </select>
+                </div>
+                <div class="col-6">
                     <paginate
                         :page-count="pages"
                         :click-handler="gotopage"
@@ -203,7 +210,242 @@
                 </div>
             </form>
         </div>
-    </transition>
+    </div>
+    <div v-else class="row ml-0 mr-3">
+        <div class="data-list-container col-6 col-lg-5 px-0">
+            <paginate v-if="total > 7"
+                :page-count="pages"
+                :click-handler="gotopage"
+                :prev-text="(translations.previous || 'Previous')"
+                :next-text="(translations.next || 'Next')"
+                :container-class="'d-flex data-card-pagination'"
+                :page-class="''"
+                :page-link-class="'btn btn-dark'"
+                :prev-class="'flex-fill'"
+                :prev-link-class="'btn btn-dark'"
+                :next-class="'flex-fill'"
+                :next-link-class="'btn btn-dark'">
+            </paginate>
+            <div v-for="item in data" :key="item.id" :id="'data-card-'+item.id" class="data-card d-flex">
+                <ul class="data-card-functions">
+                    <li v-if="api.get">
+                        <button class="btn btn-secondary" v-on:click="view" :data-id="item.id"><i class="fad fa-eye" :data-id="item.id"></i></button>
+                    </li>
+                    <li v-if="api.update">
+                        <button class="btn btn-dark" v-on:click="edit" :data-id="item.id"><i class="fad fa-pencil-alt" :data-id="item.id"></i></button>
+                    </li>
+                    <li v-if="settings.update">
+                        <button class="btn btn-dark" v-on:click="customButton" :data-url="settings.update+item.id+'/'" :data-id="item.id"><i class="fad fa-pencil-alt" aria-hidden="true" :data-url="settings.update+item.id+'/'"></i></button>
+                    </li>
+                    <li v-if="api.delete">
+                        <button class="btn btn-danger" v-on:click="drop" :data-id="item.id"><i class="fad fa-trash-alt" :data-id="item.id"></i></button>
+                    </li>
+                </ul>
+                <div class="data-card-content flex-grow-1">
+                    <div v-for="(column, key, index) in columns" v-if="column.list == true">
+                        <div v-if="index == 1">
+                            <h3 v-if="typeof column.object !== 'undefined' && typeof column.object2 !== 'undefined'">{{item[column.object][column.object2][column.id]}}</h3>
+                            <h3 v-else-if="typeof column.object !== 'undefined'">{{item[column.object][column.id]}}</h3>
+                            <h3 v-else-if="column.type=='switch'">
+                                <i v-if="item[column.id] == 1" class="fas fa-check"></i>
+                                <i v-else class="fas fa-times"></i>
+                            </h3>
+                            <h3 v-else-if="column.type=='select'">
+                                {{translations[column.options[item[column.id]]] || column.options[item[column.id]]}}
+                            </h3>
+                            <h3 v-else-if="column.type=='date'">{{formatDate(item[column.id])}}</h3>
+                            <h3 v-else>{{item[column.id]}}</h3>
+                        </div>
+                        <div v-else-if="index > 1">
+                            <span class="data-card-label">{{translations[column.label] || column.label}}: </span>
+                            <span class="data-card-value" v-if="typeof column.object !== 'undefined' && typeof column.object2 !== 'undefined'">{{item[column.object][column.object2][column.id]}}</span>
+                            <span class="data-card-value" v-else-if="typeof column.object !== 'undefined'">{{item[column.object][column.id]}}</span>
+                            <span class="data-card-value" v-else-if="column.type=='switch'">
+                                <i v-if="item[column.id] == 1" class="fas fa-check"></i>
+                                <i v-else class="fas fa-times"></i>
+                            </span>
+                            <span class="data-card-value" v-else-if="column.type=='select'">
+                                {{translations[column.options[item[column.id]]] || column.options[item[column.id]]}}
+                            </span>
+                            <span class="data-card-value" v-else-if="column.type=='date'">{{formatDate(item[column.id])}}</span>
+                            <span class="data-card-value" v-else>{{item[column.id]}}</span>
+                        </div>
+                    </div>
+                    <input type="checkbox" name="select-delete[]" class="select-delete" :value="item.id" v-on:click="markToDelete">
+                    <div class="card-id">ID: {{item.id}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="data-form-container col-6 col-lg-7">
+            <transition name="fade" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+                <div v-if="mode === 'list'" id="data-manager-view">
+                    <div class="data-functions-container text-center">
+                        <h1 v-if="typeof settings.title !== 'undefined'">{{settings.title}}</h1>
+                        <div v-else class="title-replace-spacer"></div>
+                        <button v-if="api.insert" class="btn btn-success btn-lg w-100 mt-5" v-on:click="add">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                            {{translations.add_new_item || 'Add a new item'}}
+                        </button>
+                        <button v-if="settings.insert" class="btn btn-success btn-lg w-100 mt-5" :data-url="settings.insert" v-on:click="customButton">
+                            <i class="fa fa-plus" aria-hidden="true" :data-url="settings.insert"></i>
+                            {{translations.add_new_item || 'Add a new item'}}
+                        </button>
+                        <button class="btn btn-primary btn-lg w-100 mt-5" v-on:click="search">
+                            <i class="fad fa-trash-alt"></i>
+                            {{translations.search || 'Search'}}
+                        </button>
+                        <button class="btn btn-danger btn-lg w-100 mt-5" v-on:click="dropMultiple">
+                            <i class="fad fa-trash-alt"></i>
+                            {{translations.delete_selected || 'Delete selected'}}
+                        </button>
+                        <button class="btn btn-dark btn-lg w-100 mt-5" v-on:click="setTableMode" data-tablemode="1">
+                            <i class="fal fa-table"></i>
+                            {{translations.table_view || 'Table view'}}
+                        </button>
+                    </div>
+                </div>
+                <div v-if="mode === 'search'" id="data-manager-view">
+                    <button class="btn btn-light mb-3" v-on:click.prevent="gotoList"><i class="fal fa-arrow-left"></i></button>
+                    <h1>{{translations.search || 'Search'}}</h1>
+                    <table class="table-filter table table-striped">
+                        <tbody>
+                            <tr v-for="column in columns" v-if="column.list == true">
+                                <td>
+                                    <a class="table-sort" v-on:click="sortlist" :data-id="column.id" :data-alias="column.alias" data-dir="asc">
+                                        <i v-if="column.id === sort.id && sort.dir === 'desc'" class="fa fa-sort-down" aria-hidden="true"></i>
+                                        <i v-else-if="column.id === sort.id && sort.dir === 'asc'" class="fa fa-sort-up" aria-hidden="true"></i>
+                                        <i v-else class="fa fa-sort" aria-hidden="true"></i>
+                                        {{translations[column.label] || column.label}}
+                                    </a>
+                                </td>
+                                <td>
+                                    <select v-if="column.type === 'select'" :id="'filter-'+column.id" :name="'filter-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-on:change="filterlist">
+                                        <option value="">{{translations.search_for || 'search for..'}}</option>
+                                        <option v-for="(optionvalue, optionkey) in column.options" :value="optionkey">{{optionvalue}}</option>
+                                    </select>
+                                    <select v-else-if="column.type === 'switch'" :id="'filter-'+column.id" :name="'filter-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-on:change="filterlist">
+                                        <option value="">{{translations.search_for || 'search for..'}}</option>
+                                        <option v-for="(optionvalue, optionkey) in column.options" :value="optionkey">{{optionvalue}}</option>
+                                    </select>
+                                    <input v-else type="text" :id="'filter-'+column.id" class="form-control" :name="'filter-'+column.id" v-on:keyup="filterlist">
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2">
+                                    <button class="btn btn-danger btn-sm" v-on:click="dropMultiple">
+                                        <i class="fad fa-trash-alt"></i>
+                                        {{translations.delete_selected || 'Delete selected'}}
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm text-white pointer ml-1" v-on:click="resetFilter">{{translations.reset_filter || 'Reset filter'}}</button>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div v-else-if="mode === 'view'" id="data-manager-view">
+                    <button class="btn btn-light mb-3" v-on:click.prevent="gotoList"><i class="fal fa-arrow-left"></i></button>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr v-for="column in columns">
+                                <th>{{translations[column.label] || column.label}}</th>
+                                <td v-if="column.type=='switch'">
+                                    <i v-if="form_data[column.id] == 1" class="fas fa-check"></i>
+                                    <i v-else class="fas fa-times"></i>
+                                </td>
+                                <td v-else-if="column.type=='select'">
+                                    {{translations[column.options[form_data[column.id]]] || column.options[form_data[column.id]]}}
+                                </td>
+                                <td v-else>{{form_data[column.id]}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col">
+                        </div>
+                        <div class="col text-right">
+                            <button v-if="api.update" class="btn btn-primary" v-on:click.prevent="edit" :data-id="form_id">{{translations.edit || 'Edit'}}</button>
+                        </div>
+                    </div>
+                </div>
+                <div v-else-if="mode === 'form'" id="data-manager-form">
+                    <button class="btn btn-light mb-3" v-on:click.prevent="gotoList"><i class="fal fa-arrow-left"></i></button>
+                    <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
+                        <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
+                            {{alert.text}}
+                        </div>
+                        <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
+                            {{alert.text}}
+                        </div>
+                    </transition>
+                    <ul v-if="settings.translate == true" class="nav nav-tabs">
+                        <li v-for="item in locales" class="nav-item">
+                            <a :class="{ 'nav-link': true, 'active' : (locale_id == item.id && translate_id === 0) || translate_id == item.id}" href="#" v-on:click.prevent="setTranslate" :data-locale="item.locale" :data-lid="item.id">{{item.name}}</a>
+                        </li>
+                    </ul>
+                    <form method="post" v-on:submit.prevent="update">
+                        <div v-for="column in columns">
+                            <div v-if="column.type === 'checkbox' && (column.editable || (form_id === 0 && column.form))" class="form-group">
+                                <div class="checkbox">
+                                    <label :for="'form-'+column.id">
+                                        <input type="checkbox" :id="'form-'+column.id" :name="'form-'+column.id" v-model="form_data[column.id]">
+                                        <span v-html="translations[column.label] || column.label"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div v-else-if="column.type === 'checkboxes' && (column.editable || (form_id === 0 && column.form))" class="form-group">
+                                <h4>
+                                    {{translations[column.label] || column.label}}
+                                    <button class="btn btn-sm btn-link" v-on:click.prevent="toggleCheckboxes" data-status="0">{{translations.select_all || 'Select all'}}</button>
+                                </h4>
+                                <div class="row">
+                                    <div v-for="(description, index) in column.options" class="col-sm-6 col-md-4 col-lg-3">
+                                        <div class="checkbox">
+                                            <label :for="column.id+'-'+index">
+                                                <input type="checkbox" :id="column.id+'-'+index" :name="column.id+'-'+index" :value="index" v-model="form_data[column.id+'-'+index]">
+                                                {{description}}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else-if="column.editable || (form_id === 0 && column.form)" class="form-group">
+                                <label :for="'form-'+column.id">{{translations[column.label] || column.label}}</label>
+                                <input v-if="column.type === 'text'" type="text" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                                <input v-else-if="column.type === 'email'" type="email" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                                <vue-tel-input v-else-if="column.type === 'phone'" v-model="form_data[column.id]" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-bind="phoneProps" :preferredCountries="['nl', 'be', 'gb']"></vue-tel-input>
+                                <input v-else-if="column.type === 'integer'" type="integer" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                                <datepicker v-else-if="column.type === 'date'" format="yyyy-MM-dd" placeholder="Select Date":id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:input-class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}"></datepicker>
+                                <textarea v-else-if="column.type === 'textarea'" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">{{ form_data[column.id] }}</textarea>
+                                <select v-else-if="column.type === 'select'" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                                    <option value=""></option>
+                                    <option v-for="(optionvalue, optionkey) in column.options" :value="optionkey">{{translations[optionvalue] || optionvalue}}</option>
+                                </select>
+                                <ckeditor v-else-if="column.type === 'texteditor'" :editor="editor" v-model="form_data[column.id]" :config="editorConfig"></ckeditor>
+                                <select v-else-if="column.type === 'switch'" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                                    <option value=""></option>
+                                    <option v-for="(optionvalue, optionkey) in column.options" v-if="column.id != 'AgreeTerms' || optionkey == '0' || (optionkey == '1' && form_data[column.id] == '1')" :value="optionkey">{{translations[optionvalue] || optionvalue}}</option>
+                                </select>
+                                 <model-select v-else-if="column.type === 'selectfilter'" :options="select_options[column.id]" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control form-selectfilter" v-model="form_data[column.id]" @select="validateSelectFilter" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}"></model-select>
+                                <input v-else-if="column.type === 'password'" type="password" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="password" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                                <input v-else type="text" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                            </div>
+                            <div class="col text-right">
+                                <button v-if="form_id != 0 && typeof settings.updateSubmitLabel != typeof undefined" class="btn btn-primary">{{translations[settings.updateSubmitLabel] || settings.updateSubmitLabel}}</button>
+                                <button v-else-if="typeof settings.insertSubmitLabel != typeof undefined" class="btn btn-primary">{{translations[settings.insertSubmitLabel] || settings.insertSubmitLabel}}</button>
+                                <button v-else class="btn btn-primary">{{translations.submit || 'Submit'}}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </transition>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -226,7 +468,8 @@
                     'Content-Type': 'application/json;charset=UTF-8',
                     "Authorization" : "Bearer " + this.$cookies.get('token')
                 },
-                mode: 'table',
+                tablemode: false,
+                mode: 'list',
                 default_locale_id: 0,
                 translate_id: 0,
                 data: {},
@@ -240,7 +483,7 @@
                 sort: {},
                 filter: '',
                 offset: 0,
-                limit: 10,
+                limit: 7,
                 total: 0,
                 pages: 0,
                 buttons: [],
@@ -285,6 +528,12 @@
         created() {
             this.getEntityInfo();
             this.loadSelectOptions();
+
+            if (this.$cookies.isKey('tablemode')) {
+                this.tablemode = true;
+                this.limit = 10;
+            }
+
         },
         methods: {
             getEntityInfo: function() {
@@ -349,11 +598,11 @@
             filterlist: function(event) {
 
                 this.filter = '';
-                for (var i = 0; i < this.columns.length; i++) {
+                for (var i in this.columns) {
 
                     if (this.columns[i]['list']) {
                         let column = this.columns[i]['id'];
-                        let value = document.getElementById('filter-' + column).value;
+                        let value = window.document.getElementById('filter-' + column).value;
 
                         let alias = '';
                         if (this.columns[i].alias != undefined) alias = this.columns[i].alias + '.';
@@ -384,6 +633,9 @@
                 this.limit = event.target.value;
                 this.list();
             },
+            search: function() {
+                this.mode = 'search';
+            },
             view: function(event) {
 
                 this.form_id = parseInt(event.target.dataset.id);
@@ -402,6 +654,8 @@
             },
             edit: function(event) {
 
+                this.mode = 'list';
+
                 if (this.api.custom_form) {
 
                     axios.get('/api/v1'+this.api.custom_form, {headers: this.headers})
@@ -418,7 +672,7 @@
                         });
                 }
 
-                if (this.form_id === 0) this.form_id = parseInt(event.target.dataset.id);
+                this.form_id = parseInt(event.target.dataset.id);
                 let url = '/api/v1'+this.api.get + this.form_id + '/';
 
                 let params = {};
@@ -527,7 +781,7 @@
             },
             drop: function(event) {
 
-                var element = document.getElementById('row-'+event.target.dataset.id);
+                var element = document.getElementById('data-card-'+event.target.dataset.id);
                 element.classList.add("to-delete");
 
                 var self = this;
@@ -623,13 +877,13 @@
             },
             markToDelete: function(event){
 
-                var element = document.getElementById('row-'+event.target.value);
+                var element = document.getElementById('data-card-'+event.target.value);
 
                 if (event.target.checked) element.classList.add("to-delete");
                 else element.classList.remove("to-delete");
             },
             gotoList: function(event) {
-                this.mode = 'table';
+                this.mode = 'list';
                 this.list();
                 this.form_data = [];
                 this.form_id = 0;
@@ -711,6 +965,22 @@
 
 
                     this.$router.push({ path: '/' + this.$store.state.locale + '/admin' + event.target.dataset.url })
+                }
+            },
+            setTableMode: function(event) {
+
+                var tablemode = event.target.dataset.tablemode;
+
+                if (tablemode == 1){
+                    this.tablemode = true;
+                    this.$cookies.set('tablemode', 1);
+                    this.limit = 10;
+                    this.list();
+                } else {
+                    this.tablemode = false;
+                    this.$cookies.remove('tablemode');
+                    this.limit = 7;
+                    this.list();
                 }
             },
             setAlert: function(text, type) {
@@ -796,79 +1066,262 @@
     }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
-
-#data-manager-table {
-    position: absolute !important;
-    top: 0;
-    left: 0;
-    padding: 15px;
-    text-align: left;
+h1 {
+    text-transform: uppercase;
+    font-weight: 300;
+    font-size: 2.8rem;
+    margin-top: 14vh;
+    margin-bottom: 5vh;
+    text-align: center;
 }
-.data-manager-table {
 
-    font-size: 0.9rem;
+.title-replace-spacer {
+    margin-top: 14vh;
+    margin-bottom: 5vh;
+}
 
-    thead {
+body.darkmode h1 {
+    color: white;
+}
 
-        tr {
+#admin-content > .row {
+    height: 100%;
+}
 
-            th:last-child {
-                text-align: right;
+.data-list-container {
+    height: 100%;
+    background-color: rgba(40,40,40,0.05);
+}
+
+.data-card-pagination {
+    margin-bottom: 0;
+    list-style: none;
+    padding-left: 0;
+
+    .btn {
+        display: inline-block;
+        width: 100%;
+        padding: 8px 10px;
+        margin-right: 1px;
+        border-radius: 0;
+        font-weight: 300;
+   }
+}
+
+body.darkmode .data-card-pagination {
+
+    .btn {
+        background-color: rgba(40,40,40,0.9);
+    }
+    .active .btn,
+    .btn:hover {
+        background-color: rgba(100,100,100,0.5);
+    }
+}
+
+.data-form-container {
+    height: 100%;
+    padding-top: 10px;
+}
+
+.data-functions-container {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+
+    i {
+        margin-right: 10px;
+    }
+}
+
+body.darkmode .data-list-container {
+    background-color: rgba(40,40,40,0.2);
+}
+
+.table-filter {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+
+    a {
+        cursor: pointer;
+    }
+}
+
+body.darkmode .table-filter a:hover {
+    color: white !important;
+}
+
+
+.data-card {
+
+    -webkit-transition: background-color 0.1s ease-in-out;
+    -moz-transition: background-color 0.1s ease-in-out;
+    -o-transition: background-color 0.1s ease-in-out;
+    transition: background-color 0.1s ease-in-out;
+
+    ul {
+        width: 0;
+        list-style: none;
+        margin-bottom: 0;
+        padding-left: 0;
+        overflow: hidden;
+        -webkit-transition: width 0.25s ease-in-out;
+        -moz-transition: width 0.25s ease-in-out;
+        -o-transition: width 0.25s ease-in-out;
+        transition: width 0.25s ease-in-out;
+
+        li {
+            button {
+                width: 40px;
+                min-height: 40px;
+                border: none;
+                border-radius: 0;
+                font-size: 18px;
+                text-align: center;
             }
-
-            .table-sort {
-                cursor: pointer;
-            }
-
         }
-        .table-filter td {
-            padding: 0;
-            background: white;
-        }
-        .table-filter td input {
-            padding: 8px;
-            width: 100%;
-            border: 0;
-        }
-
-
     }
 
-    tbody {
+    .data-card-content {
+        padding: .8rem;
+        color: #333333;
 
-        tr {
-
-            td:last-child {
-                text-align: right;
-            }
-
+        h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.1rem;
         }
 
-        tr.to-delete {
-            background-color: red !important;
-            background-color: rgba(255,0,0,0.2) !important;
-            color: white;
+        .data-card-label {
+            font-size: 0.8rem;
         }
 
+        .data-card-value {
+            font-size: 0.8rem;
+            overflow-wrap: break-word;
+        }
+
+        .card-id {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 0.7rem;
+        }
     }
 
+    .select-delete {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
 }
 
-.select-limit {
-    display: inline-block;
-    width: 70px;
+body.darkmode .data-card .data-card-content {
+    color: #ffffff;
 }
 
-.im-table-filter td {
+
+.data-card:nth-child(odd) {
+    background-color: rgba(0,0,0,0.15);
+}
+.data-card:nth-child(even) {
+    background-color: rgba(0,0,0,0.05);
+}
+body.darkmode .data-card:nth-child(even) {
+    background-color: rgba(10,10,10,0.4);
+}
+
+
+.data-card:hover {
+
+    background-color: rgba(92,201,245,0.2);
+
+    ul {
+        width: 50px;
+    }
+}
+
+body.darkmode .data-card:hover {
+    background-color: rgba(40,40,40,0.95);
+}
+
+body .data-card.to-delete:nth-child(odd) {
+    background-color: rgba(255,0,0,0.5);
+}
+body .data-card.to-delete:nth-child(even) {
+    background-color: rgba(255,0,0,0.6);
+}
+body .data-card.to-delete:hover {
+    background-color: rgba(255,0,0,0.8);
+}
+body.darkmode .data-card.to-delete:nth-child(odd) {
+    background-color: rgba(255,0,0,0.6);
+}
+body.darkmode .data-card.to-delete:nth-child(even) {
+    background-color: rgba(200,0,0,0.6);
+}
+body.darkmode .data-card.to-delete:hover {
+    background-color: rgba(255,0,0,0.8);
+}
+
+body.darkmode .table {
+
+    background-color: rgba(40,40,40,0.05);
+    color: white;
+
+    tr:nth-child(odd) {
+        background-color: rgba(0,0,0,0.15);
+    }
+    tr:nth-child(even) {
+        background-color: rgba(0,0,0,0.05);
+    }
+
+    th, td {
+        border-top: none;
+    }
+}
+
+.table-filter-row td {
     padding: 0;
     background: white;
 }
-.im-table-filter td input {
+.table-filter-row td input,
+.table-filter-row td select {
     padding: 8px;
     width: 100%;
     border: 0;
 }
 
+body.darkmode .table .thead-dark th {
+    background-color: rgba(10,10,10,0.7);
+}
+
+body.darkmode .table-filter-row td {
+    background-color: rgba(40,40,40,0.7);
+}
+body.darkmode .table-filter-row td input,
+body.darkmode .table-filter-row td select {
+    background-color: transparent;
+}
+
+body.darkmode .table-filter-row td input::placeholder,
+body.darkmode .table-filter-row td select::placeholder {
+    color: #ccc;
+}
+
+body.darkmode .table-filter-row td input:-ms-input-placeholder,
+body.darkmode .table-filter-row td select:-ms-input-placeholder {
+    color: #ccc;
+}
+
+body.darkmode .table-filter-row td input::-ms-input-placeholder,
+body.darkmode .table-filter-row td select::-ms-input-placeholder {
+    color: #ccc;
+}
+
+.data-manager-table tbody tr td:last-child {
+    text-align: right;
+}
 </style>
