@@ -110,6 +110,8 @@ class RoleController extends Controller
             ];
         }
 
+        if (!empty($properties['buttons'])) $info['buttons'] = $properties['buttons'];
+
         return $this->json($info);
     }
 
@@ -168,6 +170,7 @@ class RoleController extends Controller
             $role = $this->getDoctrine()
             ->getRepository(Role::class)
             ->find($id);
+
             if ($role) {
                 $response = [
                     'success' => true,

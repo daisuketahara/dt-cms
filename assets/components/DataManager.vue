@@ -282,6 +282,14 @@
                     <div class="data-functions-container text-center">
                         <h1 v-if="typeof settings.title !== 'undefined'">{{settings.title}}</h1>
                         <div v-else class="title-replace-spacer"></div>
+                        <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
+                            <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
+                                {{alert.text}}
+                            </div>
+                            <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
+                                {{alert.text}}
+                            </div>
+                        </transition>
                         <button v-if="api.insert" class="btn btn-success btn-lg w-100 mt-5" v-on:click="add">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                             {{translations.add_new_item || 'Add a new item'}}
@@ -301,6 +309,11 @@
                         <button class="btn btn-dark btn-lg w-100 mt-5" v-on:click="setTableMode" data-tablemode="1">
                             <i class="fal fa-table"></i>
                             {{translations.table_view || 'Table view'}}
+                        </button>
+
+                        <button v-for="button in buttons" class="btn btn-dark btn-lg w-100 mt-5" :data-id="button.id" :data-api="button.api" :data-url="button.url" v-on:click="customButton">
+                            <i class="fal fa-cogs"></i>
+                            {{translations[button.label] || button.label}}
                         </button>
                     </div>
                 </div>
@@ -617,7 +630,7 @@
             resetFilter: function(event) {
 
                 this.filter = '';
-                for (var i = 0; i < this.columns.length; i++) {
+                for (var i in this.columns) {
                     let column = this.columns[i]['id'];
                     let el = document.getElementById('filter-' + column);
                     if (el != null) el.value = '';
@@ -685,7 +698,7 @@
                             if (result['data'].constructor === {}.constructor) this.form_data = result['data'];
                             else this.form_data = {};
 
-                            for (var i = 0; i < this.columns.length; i++) {
+                            for (var i in this.columns) {
                                 if (this.columns[i]['type'] == 'checkboxes') {
 
                                     var values = result['data'][this.columns[i]['id']];
@@ -737,7 +750,7 @@
 
                 let params = {};
                 if (this.translate_id > 0) params['locale'] = this.translate_id;
-                for (var i = 0; i < this.columns.length; i++) {
+                for (var i in this.columns) {
                     if (this.columns[i]['editable'] || (this.form_id === 0 && this.columns[i]['form'])) {
                         if (this.columns[i]['type'] == 'texteditor') {
                             params[this.columns[i]['id']] = this.form_data[this.columns[i]['id']];
@@ -907,7 +920,7 @@
             },
             loadSelectOptions: function() {
 
-                for (var i = 0; i < this.columns.length; i++) {
+                for (var i in this.columns) {
 
                     var column = this.columns[i];
 
@@ -1082,7 +1095,10 @@ h1 {
     margin-bottom: 5vh;
 }
 
-body.darkmode h1 {
+body.darkmode h1,
+body.darkmode h2,
+body.darkmode h3,
+body.darkmode h4 {
     color: white;
 }
 

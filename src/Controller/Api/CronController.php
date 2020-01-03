@@ -49,6 +49,8 @@ class CronController extends Controller
             'fields' => $properties['fields'],
         );
 
+        if (!empty($properties['buttons'])) $info['buttons'] = $properties['buttons'];
+
         return $this->json($info);
     }
 
