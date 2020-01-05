@@ -9,19 +9,19 @@
                     {{alert.text}}
                 </div>
             </transition>
-            <nav class="navbar navbar-dark bg-dark">
+            <nav class="navbar mt-2">
                 <div class="form-inline">
-                    <select id="file-group2" name="file-group" class="form-control mr-2">
+                    <select id="file-group2" name="file-group" class="form-control form-control-sm mr-2">
                         <option value="">- {{translations.filter_by_group || 'Filter by group'}} -</option>
                         <option v-for="filegroup in filegroups" :value="filegroup.id">{{filegroup.name}}</option>
                     </select>
-                    <button class="btn btn-secondary" type="submit">{{translations.filter || 'Filter'}}</button>
+                    <button class="btn btn-sm btn-secondary mr-2" type="submit">{{translations.filter || 'Filter'}}</button>
+                    <button v-if="!upload" class="btn btn-sm btn-success" v-on:click="uploadFile">
+                        <i class="fas fa-upload"></i>
+                        {{translations.upload_file || 'Upload a file'}}
+                    </button>
+                    <button v-if="upload" class="btn btn-sm btn-danger" v-on:click="cancelUpload">{{translations.cancel_upload || 'Cancel upload'}}</button>
                 </div>
-                <button v-if="!upload" class="btn btn-success float-right" v-on:click="uploadFile">
-                    <i class="fas fa-upload"></i>
-                    {{translations.upload_file || 'Upload a file'}}
-                </button>
-                <button v-if="upload" class="btn btn-danger float-right" v-on:click="cancelUpload">{{translations.cancel_upload || 'Cancel upload'}}</button>
             </nav>
             <div v-if="upload" class="container-fluid">
                 <div class="row mt-4">
@@ -37,7 +37,8 @@
                     </div>
                 </div>
             </div>
-            <div class="row mt-4">
+            <h1>{{translations.files || 'Files'}}</h1>
+            <div class="row mt-4 p-3">
                 <div v-for="(file, index) in files" class="col-md-2">
                     <div class="card mb-4 file-item pointer" :data-id="file.id">
                         <div :style="'background-image: url(/' + file.filePath + file.fileName + ')'" class="file-img" v-on:click="viewFile($event)" :data-index="index"></div>

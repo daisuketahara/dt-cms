@@ -50,7 +50,7 @@ class PageController extends Controller
         $properties = Yaml::parseFile('src/Config/page.yaml');
 
         $api = [];
-        $settings = ['title' => $translator->trans('pages')];
+        $settings = ['title' => 'pages'];
 
         if (!empty($properties['actions'])) {
             foreach($properties['actions'] as $key => $action) {

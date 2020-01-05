@@ -5,7 +5,7 @@
             <button v-if="settings.insert" class="btn btn-success btn-sm mb-3" :data-url="settings.insert" v-on:click="customButton"><i class="fa fa-plus" aria-hidden="true" :data-url="settings.insert"></i> {{translations.new || 'New'}}</button>
             <button class="btn btn-light btn-sm mb-3" v-on:click="setTableMode" data-tablemode="0">
                 <i class="fal fa-th-list"></i>
-                {{translations.table_view || 'Table view'}}
+                {{translations.list_view || 'List view'}}
             </button>
 
             <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
@@ -280,7 +280,7 @@
             <transition name="fade" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
                 <div v-if="mode === 'list'" id="data-manager-view">
                     <div class="data-functions-container text-center">
-                        <h1 v-if="typeof settings.title !== 'undefined'">{{settings.title}}</h1>
+                        <h1 v-if="typeof settings.title !== 'undefined'">{{translations[settings.title] || settings.title}}</h1>
                         <div v-else class="title-replace-spacer"></div>
                         <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
                             <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">

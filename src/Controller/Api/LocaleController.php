@@ -34,7 +34,7 @@ class LocaleController extends Controller
         $properties = Yaml::parseFile('src/Config/locale.yaml');
 
         $api = [];
-        $settings = ['title' => $translator->trans('languages')];
+        $settings = ['title' => 'languages'];
 
         if (!empty($properties['actions'])) {
             foreach($properties['actions'] as $key => $action) {

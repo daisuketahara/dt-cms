@@ -35,7 +35,7 @@ class SettingController extends Controller
         $properties = Yaml::parseFile('src/Config/setting.yaml');
 
         $api = [];
-        $settings = ['title' => $translator->trans('settings')];
+        $settings = ['title' => 'settings'];
 
         if (!empty($properties['actions'])) {
             foreach($properties['actions'] as $key => $action) {

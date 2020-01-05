@@ -34,7 +34,7 @@ class RedirectController extends Controller
         $properties = Yaml::parseFile('src/Config/redirect.yaml');
 
         $api = [];
-        $settings = ['title' => $translator->trans('redirects')];
+        $settings = ['title' => 'redirects'];
 
         if (!empty($properties['actions'])) {
             foreach($properties['actions'] as $key => $action) {

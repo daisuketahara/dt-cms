@@ -34,7 +34,7 @@ class CountryController extends Controller
         $properties = Yaml::parseFile('src/Config/country.yaml');
 
         $api = [];
-        $settings = ['title' => $translator->trans('countries')];
+        $settings = ['title' => 'countries'];
 
         if (!empty($properties['actions'])) {
             foreach($properties['actions'] as $key => $action) {

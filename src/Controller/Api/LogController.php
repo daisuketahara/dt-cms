@@ -34,7 +34,7 @@ class LogController extends Controller
         $properties = Yaml::parseFile('src/Config/log.yaml');
 
         $api = [];
-        $settings = ['title' => $translator->trans('Logs')];
+        $settings = ['title' => 'logs'];
 
         if (!empty($properties['actions'])) {
             foreach($properties['actions'] as $key => $action) {

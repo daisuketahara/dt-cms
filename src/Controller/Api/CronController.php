@@ -34,7 +34,7 @@ class CronController extends Controller
         $properties = Yaml::parseFile('src/Config/cron.yaml');
 
         $api = [];
-        $settings = ['title' => $translator->trans('crons')];
+        $settings = ['title' => 'crons'];
 
         if (!empty($properties['actions'])) {
             foreach($properties['actions'] as $key => $action) {
