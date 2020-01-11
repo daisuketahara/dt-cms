@@ -2,18 +2,18 @@
 
 namespace App\Controller\Api;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 use App\Entity\Contact;
 use App\Entity\Locale;
 use App\Service\MailService;
 use App\Service\SettingService;
 
-class ContactController extends Controller
+class ContactController extends AbstractController
 {
     private $mail;
     private $setting;

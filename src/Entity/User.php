@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 use App\Entity\Locale;
@@ -13,7 +13,7 @@ use App\Entity\Locale;
 * @ORM\Table(name="users")
 * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
 */
-class User implements AdvancedUserInterface, \Serializable
+class User implements UserInterface
 {
 
     /**
@@ -40,7 +40,7 @@ class User implements AdvancedUserInterface, \Serializable
     private $gender;
 
     /**
-    * @ORM\Column(type="string", length=60, unique=true)
+    * @ORM\Column(type="string", length=100, unique=true)
     */
     private $email;
 
@@ -83,7 +83,7 @@ class User implements AdvancedUserInterface, \Serializable
     /**
     * @ORM\ManyToMany(targetEntity="App\Entity\Role")
     */
-    protected $roles;
+    protected $roles = [];
 
     /**
     * @ORM\Column(type="boolean")

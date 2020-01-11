@@ -5,12 +5,12 @@ namespace App\Service;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
 
 use Doctrine\ORM\EntityManager;
 use App\Entity\File;
 
-class FileService extends Controller
+class FileService
 {
     protected $em;
     protected $container;

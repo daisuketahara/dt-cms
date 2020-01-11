@@ -28,7 +28,7 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
-    App\EventListener\LocaleSubscriber:
+    App\EventSubscriber\LocaleSubscriber:
         arguments: ['%kernel.default_locale%']
 
     # controllers are imported separately to make sure services can be injected

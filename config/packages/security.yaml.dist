@@ -10,8 +10,6 @@ security:
                 class: App\Entity\User
                 # if you're using multiple entity managers
                 # manager_name: customer
-        api_key_user_provider:
-            id: App\Security\ApiKeyUserProvider
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/

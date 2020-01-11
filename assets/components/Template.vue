@@ -155,7 +155,7 @@
             return {
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
-                    "Authorization" : "Bearer " + this.$cookies.get('token')
+                    "X-AUTH-TOKEN" : this.$cookies.get('token')
                 },
                 view: 'list',
                 template: {

@@ -360,7 +360,7 @@
             return {
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
-                    "Authorization" : "Bearer " + this.$cookies.get('token')
+                    "X-AUTH-TOKEN" : this.$cookies.get('token')
                 },
                 panel: '',
                 translate_id: 0,

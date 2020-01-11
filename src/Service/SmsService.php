@@ -6,7 +6,7 @@ use SpryngApiHttpPhp\Client;
 use SpryngApiHttpPhp\Exception\InvalidRequestException;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 use App\Service\SettingService;
 use App\Service\LogService;

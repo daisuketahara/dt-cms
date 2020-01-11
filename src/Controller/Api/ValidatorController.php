@@ -3,14 +3,14 @@
 namespace App\Controller\Api;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
 use App\Service\SmsService;
 use App\Service\ValidatorService;
 
-class ValidatorController extends Controller
+class ValidatorController extends AbstractController
 {
     /**
     * @Route("/api/v1/validate/smscode/{smscode}/", name="api_validate_smscode", methods={"GET","HEAD"})

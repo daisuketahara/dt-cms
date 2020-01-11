@@ -83,7 +83,7 @@ r<template>
             logout() {
                 let headers= {
                     'Content-Type': 'application/json;charset=UTF-8',
-                    "Authorization" : "Bearer " + this.$cookies.get('token')
+                    "X-AUTH-TOKEN" : this.$cookies.get('token')
                 };
                 axios.get('/api/v1/logout/', {headers: headers})
                     .then(response => {

@@ -226,55 +226,57 @@
                 :next-class="'flex-fill'"
                 :next-link-class="'btn btn-dark'">
             </paginate>
-            <div v-for="item in data" :key="item.id" :id="'data-card-'+item.id" class="data-card d-flex">
-                <ul class="data-card-functions">
-                    <li v-if="api.get">
-                        <button class="btn btn-secondary" v-on:click="view" :data-id="item.id"><i class="fad fa-eye" :data-id="item.id"></i></button>
-                    </li>
-                    <li v-if="api.update">
-                        <button class="btn btn-dark" v-on:click="edit" :data-id="item.id"><i class="fad fa-pencil-alt" :data-id="item.id"></i></button>
-                    </li>
-                    <li v-if="settings.update">
-                        <button class="btn btn-dark" v-on:click="customButton" :data-url="settings.update+item.id+'/'" :data-id="item.id"><i class="fad fa-pencil-alt" aria-hidden="true" :data-url="settings.update+item.id+'/'"></i></button>
-                    </li>
-                    <li v-if="api.delete">
-                        <button class="btn btn-danger" v-on:click="drop" :data-id="item.id"><i class="fad fa-trash-alt" :data-id="item.id"></i></button>
-                    </li>
-                </ul>
-                <div class="data-card-content flex-grow-1">
-                    <div v-for="(column, key, index) in columns" v-if="column.list == true">
-                        <div v-if="index == 1">
-                            <h3 v-if="typeof column.object !== 'undefined' && typeof column.object2 !== 'undefined'">{{item[column.object][column.object2][column.id]}}</h3>
-                            <h3 v-else-if="typeof column.object !== 'undefined'">{{item[column.object][column.id]}}</h3>
-                            <h3 v-else-if="column.type=='switch'">
-                                <i v-if="item[column.id] == 1" class="fas fa-check"></i>
-                                <i v-else class="fas fa-times"></i>
-                            </h3>
-                            <h3 v-else-if="column.type=='select'">
-                                {{translations[column.options[item[column.id]]] || column.options[item[column.id]]}}
-                            </h3>
-                            <h3 v-else-if="column.type=='date'">{{formatDate(item[column.id])}}</h3>
-                            <h3 v-else>{{item[column.id]}}</h3>
+            <transition-group name="fade" enter-active-class="animated flipInX">
+                <div v-for="item in data" :key="item.id" :id="'data-card-'+item.id" class="data-card d-flex">
+                    <ul class="data-card-functions">
+                        <li v-if="api.get">
+                            <button class="btn btn-secondary" v-on:click="view" :data-id="item.id"><i class="fad fa-eye" :data-id="item.id"></i></button>
+                        </li>
+                        <li v-if="api.update">
+                            <button class="btn btn-dark" v-on:click="edit" :data-id="item.id"><i class="fad fa-pencil-alt" :data-id="item.id"></i></button>
+                        </li>
+                        <li v-if="settings.update">
+                            <button class="btn btn-dark" v-on:click="customButton" :data-url="settings.update+item.id+'/'" :data-id="item.id"><i class="fad fa-pencil-alt" aria-hidden="true" :data-url="settings.update+item.id+'/'"></i></button>
+                        </li>
+                        <li v-if="api.delete">
+                            <button class="btn btn-danger" v-on:click="drop" :data-id="item.id"><i class="fad fa-trash-alt" :data-id="item.id"></i></button>
+                        </li>
+                    </ul>
+                    <div class="data-card-content flex-grow-1">
+                        <div v-for="(column, key, index) in columns" v-if="column.list == true">
+                            <div v-if="index == 1">
+                                <h3 v-if="typeof column.object !== 'undefined' && typeof column.object2 !== 'undefined'">{{item[column.object][column.object2][column.id]}}</h3>
+                                <h3 v-else-if="typeof column.object !== 'undefined'">{{item[column.object][column.id]}}</h3>
+                                <h3 v-else-if="column.type=='switch'">
+                                    <i v-if="item[column.id] == 1" class="fas fa-check"></i>
+                                    <i v-else class="fas fa-times"></i>
+                                </h3>
+                                <h3 v-else-if="column.type=='select'">
+                                    {{translations[column.options[item[column.id]]] || column.options[item[column.id]]}}
+                                </h3>
+                                <h3 v-else-if="column.type=='date'">{{formatDate(item[column.id])}}</h3>
+                                <h3 v-else>{{item[column.id]}}</h3>
+                            </div>
+                            <div v-else-if="index > 1">
+                                <span class="data-card-label">{{translations[column.label] || column.label}}: </span>
+                                <span class="data-card-value" v-if="typeof column.object !== 'undefined' && typeof column.object2 !== 'undefined'">{{item[column.object][column.object2][column.id]}}</span>
+                                <span class="data-card-value" v-else-if="typeof column.object !== 'undefined'">{{item[column.object][column.id]}}</span>
+                                <span class="data-card-value" v-else-if="column.type=='switch'">
+                                    <i v-if="item[column.id] == 1" class="fas fa-check"></i>
+                                    <i v-else class="fas fa-times"></i>
+                                </span>
+                                <span class="data-card-value" v-else-if="column.type=='select'">
+                                    {{translations[column.options[item[column.id]]] || column.options[item[column.id]]}}
+                                </span>
+                                <span class="data-card-value" v-else-if="column.type=='date'">{{formatDate(item[column.id])}}</span>
+                                <span class="data-card-value" v-else>{{item[column.id]}}</span>
+                            </div>
                         </div>
-                        <div v-else-if="index > 1">
-                            <span class="data-card-label">{{translations[column.label] || column.label}}: </span>
-                            <span class="data-card-value" v-if="typeof column.object !== 'undefined' && typeof column.object2 !== 'undefined'">{{item[column.object][column.object2][column.id]}}</span>
-                            <span class="data-card-value" v-else-if="typeof column.object !== 'undefined'">{{item[column.object][column.id]}}</span>
-                            <span class="data-card-value" v-else-if="column.type=='switch'">
-                                <i v-if="item[column.id] == 1" class="fas fa-check"></i>
-                                <i v-else class="fas fa-times"></i>
-                            </span>
-                            <span class="data-card-value" v-else-if="column.type=='select'">
-                                {{translations[column.options[item[column.id]]] || column.options[item[column.id]]}}
-                            </span>
-                            <span class="data-card-value" v-else-if="column.type=='date'">{{formatDate(item[column.id])}}</span>
-                            <span class="data-card-value" v-else>{{item[column.id]}}</span>
-                        </div>
+                        <input type="checkbox" name="select-delete[]" class="select-delete" :value="item.id" v-on:click="markToDelete">
+                        <div class="card-id">ID: {{item.id}}</div>
                     </div>
-                    <input type="checkbox" name="select-delete[]" class="select-delete" :value="item.id" v-on:click="markToDelete">
-                    <div class="card-id">ID: {{item.id}}</div>
                 </div>
-            </div>
+            </transition-group>
         </div>
         <div class="data-form-container col-6 col-lg-7">
             <transition name="fade" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
@@ -479,7 +481,7 @@
             return {
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
-                    "Authorization" : "Bearer " + this.$cookies.get('token')
+                    "X-AUTH-TOKEN" : this.$cookies.get('token')
                 },
                 tablemode: false,
                 mode: 'list',

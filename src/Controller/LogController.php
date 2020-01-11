@@ -3,15 +3,15 @@
 namespace App\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 use App\Entity\Log;
 use App\Service\SettingService;
 
-class LogController extends Controller
+class LogController extends AbstractController
 {
     /**
     * @Route("/cron/log/clear/", name="cron_log_clear")

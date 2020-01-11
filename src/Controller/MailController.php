@@ -3,17 +3,17 @@
 namespace App\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 use App\Entity\MailQueue;
 use App\Service\LogService;
 use App\Service\SettingService;
 
 
-class MailController extends Controller
+class MailController extends AbstractController
 {
     /**
     * @Route("/cron/mail/queue/send/", name="cron_mail_queue_send")

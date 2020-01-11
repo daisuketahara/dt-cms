@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -13,7 +13,7 @@ use App\Entity\Locale;
 use App\Entity\Translation;
 use App\Entity\TranslationText;
 
-class AdminController extends Controller
+class AdminController extends AbstractController
 {
     /**
     * @Route("/{_locale}/admin/", name="admin_dashboard")

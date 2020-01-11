@@ -3,7 +3,7 @@
 namespace App\Controller\Api;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 
 use App\Entity\UserApiKey;
@@ -11,7 +11,7 @@ use App\Entity\User;
 use App\Service\MailService;
 use App\Service\SettingService;
 
-class SecurityController extends Controller
+class SecurityController extends AbstractController
 {
 
     /**
@@ -88,19 +88,18 @@ class SecurityController extends Controller
     */
     public function logout(Request $request)
     {
-        $authHeader = $request->headers->get('Authorization');
-        $token = $request->query->get('token');
-        if (empty($token)) $token = $request->request->get('token');
+        if ($request->headers->has('X-AUTH-TOKEN')) $token = $request->headers->get('X-AUTH-TOKEN');
+        elseif ($request->headers->has('X-Auth-Token')) $token = $request->headers->get('X-Auth-Token');
 
-        if (!empty($authHeader) && strpos($authHeader, 'Bearer ') !== false) {
-            $apiKey = substr($authHeader, 7);
-        } elseif (!empty($token)) {
-            $apiKey = $token;
+        if (empty($token)) {
+            $response = [
+                'success' => false,
+            ];
         }
 
         $key = $this->getDoctrine()
             ->getRepository(UserApiKey::class)
-            ->findOneBy(array('token' => $apiKey));
+            ->findOneBy(array('token' => $token));
 
         if ($key) {
             $em = $this->getDoctrine()->getManager();

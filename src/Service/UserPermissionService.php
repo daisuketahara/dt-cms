@@ -3,11 +3,11 @@
 namespace App\Service;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
 use Doctrine\ORM\EntityManager;
 use App\Entity\User;
 
-class UserPermissionService extends Controller
+class UserPermissionService
 {
     protected $em;
     protected $container;

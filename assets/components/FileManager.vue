@@ -77,7 +77,7 @@
             return {
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
-                    "Authorization" : "Bearer " + this.$cookies.get('token')
+                    "X-AUTH-TOKEN" : this.$cookies.get('token')
                 },
                 filegroups: [],
                 files: [],
@@ -143,7 +143,7 @@
                 axios.post( '/api/v1/file/upload/', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                        "Authorization" : "Bearer " + this.$cookies.get('token')
+                        "X-AUTH-TOKEN" : this.$cookies.get('token')
                     }
                 }).then(response => {
                     this.upload = false;

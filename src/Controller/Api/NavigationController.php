@@ -3,10 +3,10 @@
 namespace App\Controller\Api;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -23,7 +23,7 @@ use App\Service\MenuService;
 use App\Service\LogService;
 
 
-class NavigationController extends Controller
+class NavigationController extends AbstractController
 {
     private $serializer;
 
@@ -290,7 +290,7 @@ class NavigationController extends Controller
     */
     final public function getAdminRoutes(MenuService $menuService)
     {
-        $this->denyAccessUnlessGranted('ROLE_API');
+        //$this->denyAccessUnlessGranted('ROLE_API');
 
         $menu = $menuService->getMenu(2, false);
         $email = $this->getUser()->getUsername();
