@@ -213,19 +213,21 @@
     </div>
     <div v-else class="row ml-0 mr-3">
         <div class="data-list-container col-6 col-lg-5 px-0">
-            <paginate v-if="total > 7"
-                :page-count="pages"
-                :click-handler="gotopage"
-                :prev-text="(translations.previous || 'Previous')"
-                :next-text="(translations.next || 'Next')"
-                :container-class="'d-flex data-card-pagination'"
-                :page-class="''"
-                :page-link-class="'btn btn-dark'"
-                :prev-class="'flex-fill'"
-                :prev-link-class="'btn btn-dark'"
-                :next-class="'flex-fill'"
-                :next-link-class="'btn btn-dark'">
-            </paginate>
+            <transition name="fade" enter-active-class="animated fadeIn">
+                <paginate v-if="total > 7"
+                    :page-count="pages"
+                    :click-handler="gotopage"
+                    :prev-text="(translations.previous || 'Previous')"
+                    :next-text="(translations.next || 'Next')"
+                    :container-class="'d-flex data-card-pagination'"
+                    :page-class="''"
+                    :page-link-class="'btn btn-dark'"
+                    :prev-class="'flex-fill'"
+                    :prev-link-class="'btn btn-dark'"
+                    :next-class="'flex-fill'"
+                    :next-link-class="'btn btn-dark'">
+                </paginate>
+            </transition>
             <transition-group name="fade" enter-active-class="animated flipInX">
                 <div v-for="item in data" :key="item.id" :id="'data-card-'+item.id" class="data-card d-flex">
                     <ul class="data-card-functions">
@@ -279,7 +281,7 @@
             </transition-group>
         </div>
         <div class="data-form-container col-6 col-lg-7">
-            <transition name="fade" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+            <transition name="fade-right" enter-active-class="animated fadeIn">
                 <div v-if="mode === 'list'" id="data-manager-view">
                     <div class="data-functions-container text-center">
                         <h1 v-if="typeof settings.title !== 'undefined'">{{translations[settings.title] || settings.title}}</h1>
@@ -319,6 +321,8 @@
                         </button>
                     </div>
                 </div>
+            </transition>
+            <transition name="fade-right" enter-active-class="animated fadeIn">
                 <div v-if="mode === 'search'" id="data-manager-view">
                     <button class="btn btn-light mb-3" v-on:click.prevent="gotoList"><i class="fal fa-arrow-left"></i></button>
                     <h1>{{translations.search || 'Search'}}</h1>
@@ -359,7 +363,9 @@
                         </tfoot>
                     </table>
                 </div>
-                <div v-else-if="mode === 'view'" id="data-manager-view">
+            </transition>
+            <transition name="fade-right" enter-active-class="animated fadeIn">
+                <div v-if="mode === 'view'" id="data-manager-view">
                     <button class="btn btn-light mb-3" v-on:click.prevent="gotoList"><i class="fal fa-arrow-left"></i></button>
                     <table class="table table-striped">
                         <tbody>
@@ -384,7 +390,9 @@
                         </div>
                     </div>
                 </div>
-                <div v-else-if="mode === 'form'" id="data-manager-form">
+            </transition>
+            <transition name="fade-right" enter-active-class="animated fadeIn">
+                <div v-if="mode === 'form'" id="data-manager-form">
                     <button class="btn btn-light mb-3" v-on:click.prevent="gotoList"><i class="fal fa-arrow-left"></i></button>
                     <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
                         <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
@@ -484,7 +492,7 @@
                     "X-AUTH-TOKEN" : this.$cookies.get('token')
                 },
                 tablemode: false,
-                mode: 'list',
+                mode: '',
                 default_locale_id: 0,
                 translate_id: 0,
                 data: {},
@@ -592,6 +600,7 @@
                         this.data = JSON.parse(response.data)['data'];
                         this.total = parseInt(JSON.parse(response.data)['total']);
                         this.pages = Math.ceil(this.total/this.limit);
+                        this.mode = 'list';
                     })
                     .catch(e => {
                         this.setAlert(e, 'error');

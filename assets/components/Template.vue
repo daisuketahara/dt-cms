@@ -1,141 +1,141 @@
 <template>
-    <transition name="fade" enter-active-class="animated fadeInRight" leave-active-class="animated fadeOutDown">
-        <div v-if="view == 'template'">
-            <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
-                <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
-                    {{alert.text}}
-                </div>
-                <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
-                    {{alert.text}}
-                </div>
-            </transition>
-            <form v-on:submit.prevent="save">
-                <div v-if="template.id == 1" class="form-group">
-                    <label>{{translations.header || 'Header'}}</label>
-                    <div class="row">
-                        <div class="col-xs-6 col-sm-4 col-md-2">
-                            <div class="template-header-img"></div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="template-header" id="template-header-1" value="standard" v-model="template.settings.header">
-                                <label class="form-check-label" for="template-header-1">
-                                    {{translations.standard || 'Standard'}}
-                                </label>
+    <div class="h-100">
+        <transition name="fade" enter-active-class="animated fadeIn">
+            <div v-if="view == 'template'" class="p-3">
+                <button class="btn btn-light mb-3" v-on:click.prevent="gotoList"><i class="fal fa-arrow-left"></i></button>
+                <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
+                    <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
+                        {{alert.text}}
+                    </div>
+                    <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
+                        {{alert.text}}
+                    </div>
+                </transition>
+                <form v-on:submit.prevent="save">
+                    <div v-if="template.id == 1" class="form-group">
+                        <label>{{translations.header || 'Header'}}</label>
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+                                <div class="template-header-img"></div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="template-header" id="template-header-1" value="standard" v-model="template.settings.header">
+                                    <label class="form-check-label" for="template-header-1">
+                                        {{translations.standard || 'Standard'}}
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-xs-6 col-sm-4 col-md-2">
-                            <div class="template-header-img"></div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="template-header" id="template-header-2" value="top" v-model="template.settings.header">
-                                <label class="form-check-label" for="template-header-2">
-                                    {{translations.top_fixed || 'Top Fixed'}}
-                                </label>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+                                <div class="template-header-img"></div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="template-header" id="template-header-2" value="top" v-model="template.settings.header">
+                                    <label class="form-check-label" for="template-header-2">
+                                        {{translations.top_fixed || 'Top Fixed'}}
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-xs-6 col-sm-4 col-md-2">
-                            <div class="template-header-img"></div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="template-header" id="template-header-3" value="centered" v-model="template.settings.header">
-                                <label class="form-check-label" for="template-header-3">
-                                    {{translations.centered || 'Centered'}}
-                                </label>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+                                <div class="template-header-img"></div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="template-header" id="template-header-3" value="centered" v-model="template.settings.header">
+                                    <label class="form-check-label" for="template-header-3">
+                                        {{translations.centered || 'Centered'}}
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-xs-6 col-sm-4 col-md-2">
-                            <div class="template-header-img"></div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="template-header" id="template-header-4" value="overlay" v-model="template.settings.header">
-                                <label class="form-check-label" for="template-header-4">
-                                    {{translations.overlay || 'Overlay'}}
-                                </label>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+                                <div class="template-header-img"></div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="template-header" id="template-header-4" value="overlay" v-model="template.settings.header">
+                                    <label class="form-check-label" for="template-header-4">
+                                        {{translations.overlay || 'Overlay'}}
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-xs-6 col-sm-4 col-md-2">
-                            <div class="template-header-img"></div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="template-header" id="template-header-5" value="none" v-model="template.settings.header">
-                                <label class="form-check-label" for="template-header-5">
-                                    {{translations.none || 'None'}}
-                                </label>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+                                <div class="template-header-img"></div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="template-header" id="template-header-5" value="none" v-model="template.settings.header">
+                                    <label class="form-check-label" for="template-header-5">
+                                        {{translations.none || 'None'}}
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div v-if="template.id == 1" class="form-group">
-                    <label>{{translations.footer || 'Footer'}}</label>
-                    <div class="row">
-                        <div class="col-xs-6 col-sm-4 col-md-2">
-                            <div class="template-header-img"></div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="template-footer" id="template-footer-1" value="standard" v-model="template.settings.footer">
-                                <label class="form-check-label" for="template-footer-1">
-                                    {{translations.standard || 'Standard'}}
-                                </label>
+                    <div v-if="template.id == 1" class="form-group">
+                        <label>{{translations.footer || 'Footer'}}</label>
+                        <div class="row">
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+                                <div class="template-header-img"></div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="template-footer" id="template-footer-1" value="standard" v-model="template.settings.footer">
+                                    <label class="form-check-label" for="template-footer-1">
+                                        {{translations.standard || 'Standard'}}
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-xs-6 col-sm-4 col-md-2">
-                            <div class="template-header-img"></div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="template-footer" id="template-footer-2" value="bottom" v-model="template.settings.footer">
-                                <label class="form-check-label" for="template-footer-2">
-                                    {{translations.bottom_fixed || 'Bottom Fixed'}}
-                                </label>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+                                <div class="template-header-img"></div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="template-footer" id="template-footer-2" value="bottom" v-model="template.settings.footer">
+                                    <label class="form-check-label" for="template-footer-2">
+                                        {{translations.bottom_fixed || 'Bottom Fixed'}}
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-xs-6 col-sm-4 col-md-2">
-                            <div class="template-header-img"></div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="template-footer" id="template-footer-3" value="centered" v-model="template.settings.footer">
-                                <label class="form-check-label" for="template-footer-3">
-                                    {{translations.centered || 'Centered'}}
-                                </label>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+                                <div class="template-header-img"></div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="template-footer" id="template-footer-3" value="centered" v-model="template.settings.footer">
+                                    <label class="form-check-label" for="template-footer-3">
+                                        {{translations.centered || 'Centered'}}
+                                    </label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-xs-6 col-sm-4 col-md-2">
-                            <div class="template-header-img"></div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="template-footer" id="template-footer-4" value="none" v-model="template.settings.footer">
-                                <label class="form-check-label" for="template-footer-4">
-                                    {{translations.none || 'None'}}
-                                </label>
+                            <div class="col-xs-6 col-sm-4 col-md-2">
+                                <div class="template-header-img"></div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="template-footer" id="template-footer-4" value="none" v-model="template.settings.footer">
+                                    <label class="form-check-label" for="template-footer-4">
+                                        {{translations.none || 'None'}}
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label>{{translations.custom_css || 'Custom CSS'}}</label>
-                    <codemirror v-model="template.customCss" :options="cmCssOptions"></codemirror>
-                </div>
-                <div class="form-group">
-                    <label>{{translations.custom_javascript || 'Custom Javascript'}}</label>
-                    <codemirror v-model="template.customJs" :options="cmJsOptions"></codemirror>
-                </div>
-                <button class="btn btn-secondary">{{translations.submit}}</button>
-                <button class="btn btn-secondary float-right" v-on:click.prevent="gotoList">{{translations.back_to_list}}</button>
-            </form>
-        </div>
-        <div v-else>
-            <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
-                <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
-                    {{alert.text}}
-                </div>
-                <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
-                    {{alert.text}}
-                </div>
-            </transition>
-            <div class="row">
-                <div v-for="item in templates" class="col-3 mb-3">
-                    <div class="card">
-                        <div :style="'background-image: url(/' + item.image.filePath + item.image.fileName + ')'" class="template-img"></div>
-                        <div class="card-body">
-                            <h5 class="card-title">{{item.name}}</h5>
-                            <p class="card-text">{{item.description}}</p>
-                            <button class="btn btn-secondary" v-on:click="getTemplate" :data-id="item.id">{{translations['edit_template'] || edit_template}}</button>
+                    <div class="form-group">
+                        <label>{{translations.custom_css || 'Custom CSS'}}</label>
+                        <codemirror v-model="template.customCss" :options="cmCssOptions"></codemirror>
+                    </div>
+                    <div class="form-group">
+                        <label>{{translations.custom_javascript || 'Custom Javascript'}}</label>
+                        <codemirror v-model="template.customJs" :options="cmJsOptions"></codemirror>
+                    </div>
+                    <button class="btn btn-secondary">{{translations.submit}}</button>
+                    <button class="btn btn-secondary float-right" v-on:click.prevent="gotoList">{{translations.back_to_list}}</button>
+                </form>
+            </div>
+        </transition>
+        <transition name="fade" enter-active-class="animated fadeIn">
+            <div v-if="view == 'list'" class="template-container">
+                <span class="valign-helper"></span>
+                <div>
+                    <div class="row align-middle">
+                        <div v-for="item in templates" class="col-md-4 mb-3">
+                            <div class="card">
+                                <div :style="'background-image: url(/' + item.image.filePath + item.image.fileName + ')'" class="template-img"></div>
+                                <div class="card-body">
+                                    <h5 class="card-title">{{item.name}}</h5>
+                                    <p class="card-text">{{item.description}}</p>
+                                    <button class="btn btn-secondary" v-on:click="getTemplate" :data-id="item.id">{{translations['edit_template'] || edit_template}}</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </transition>
+        </transition>
+    </div>
 </template>
 
 <script>
@@ -157,7 +157,7 @@
                     'Content-Type': 'application/json;charset=UTF-8',
                     "X-AUTH-TOKEN" : this.$cookies.get('token')
                 },
-                view: 'list',
+                view: '',
                 template: {
                     settings: {}
                 },
@@ -197,6 +197,7 @@
                 axios.get('/api/v1/template/list/', {headers: this.headers})
                     .then(response => {
                         this.templates = JSON.parse(response.data)['data'];
+                        this.view = 'list';
                     })
                     .catch(e => {
                         this.setAlert(e, 'error');
@@ -240,6 +241,30 @@
 </script>
 
 <style lang="scss" scoped>
+
+    .template-container {
+
+        height: 100%;
+        text-align: center;
+
+        > div {
+            display: inline-block;
+            height: 100%;
+            margin: 0 auto;
+            padding: 15px;
+
+            .row {
+                margin: 0 auto;
+                width: 100%;
+                max-width: 1000px;
+            }
+        }
+
+        .card {
+            text-align: left;
+        }
+    }
+
     .template-header-img {
         height: 200px;
         background-repeat: no-repeat;
@@ -254,5 +279,12 @@
         background-repeat: no-repeat;
         background-position: center;
         background-size: cover;
+    }
+
+    .valign-helper {
+        display: inline-block;
+        width: 0;
+        height: 100%;
+        vertical-align: middle;
     }
 </style>

@@ -1,6 +1,6 @@
 <template>
-    <transition name="fade" enter-active-class="animated fadeInRight" leave-active-class="animated fadeOutDown">
-        <div>
+    <transition name="fade" enter-active-class="animated fadeIn">
+        <div v-if="loaded">
             <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
                 <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
                     {{alert.text}}
@@ -37,7 +37,6 @@
                     </div>
                 </div>
             </div>
-            <h1>{{translations.files || 'Files'}}</h1>
             <div class="row mt-4 p-3">
                 <div v-for="(file, index) in files" class="col-md-2">
                     <div class="card mb-4 file-item pointer" :data-id="file.id">
@@ -84,7 +83,8 @@
                 file: {},
                 upload: false,
                 upload_files:'',
-                alert: {}
+                alert: {},
+                loaded: false
             }
         },
         computed: {
@@ -112,6 +112,7 @@
                 axios.get('/api/v1/file/list/', {headers: this.headers})
                     .then(response => {
                         this.files = JSON.parse(response.data)['data'];
+                        this.loaded = true;
                     })
                     .catch(e => {
                         this.setAlert(e, 'error');

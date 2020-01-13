@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar navbar-nav">
-        <ul>
-            <li v-for="route in menu" v-if="checkPermission(locale + '_' + route.route_name)">
+        <transition-group name="menu" enter-active-class="animated flipInX" tag="ul">
+            <li v-for="route in menu" v-if="checkPermission(locale + '_' + route.route_name)" v-bind:key="route.route_name">
                 <router-link :to="{name: locale + '_' + route.route_name}">
                     <span v-if="route.icon" v-html="route.icon"></span>
                     <span v-if="route.label" v-html="translations[route.label] || route.label"></span>
@@ -16,7 +16,7 @@
                     </li>
                 </ul>
             </li>
-        </ul>
+        </transition-group>
     </nav>
 </template>
 <script>

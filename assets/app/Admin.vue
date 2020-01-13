@@ -1,36 +1,38 @@
-r<template>
+<template>
     <div id="admin-app">
         <div v-if="!initialised" class="init">
             <i class="fas fa-circle-notch fa-spin"></i>
             Loading...
         </div>
         <login v-else-if="!authenticated"></login>
-        <div v-else class="admin-container d-flex">
-            <div v-if="authenticated" class="admin-sidebar">
-                <div class="text-center mb-3">
-                    <div class="im-user-profile-picture mb-3"></div>
-                    <div class="im-user-profile-name mb-3"></div>
-                </div>
-                <navbar></navbar>
-                <ul class="language-switcher list-inline">
-                    <li v-for="locale in locales" class="list-inline-item">
-                        <button class="btn btn-sm btn-link" v-on:click="setLocale" :data-locale="locale.locale">
-                            <img class="img-fluid" :src="'/img/flags/' + locale.lcid + '.png'" :alt="locale.name" :data-locale="locale.locale">
-                        </button>
-                    </li>
-                </ul>
-            </div>
-            <transition name="fade" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-                <main v-if="authenticated" id="admin-content" class="admin-content flex-grow-1">
-                    <router-view :key="$route.fullPath"></router-view>
-                    <div class="admin-functions">
-                        <button class="btn btn-light btn-sm mt-1" v-on:click.prevent="setViewMode"><i class="fas fa-adjust"></i></button>
-                        <button class="btn btn-light btn-sm mt-1" href="#"><i class="fal fa-user"></i> <span>{{translations.my_account || 'My account'}}</span></button>
-                        <button class="btn btn-light btn-sm mt-1 mr-2" v-on:click="logout"><i class="fal fa-sign-out-alt"></i> <span>{{translations.logout || 'Logout'}}</span></button>
+        <transition name="fadeIn" enter-active-class="animated fadeIn">
+            <div v-if="initialised && authenticated" class="admin-container d-flex">
+                <div v-if="authenticated" class="admin-sidebar">
+                    <div class="text-center mb-3">
+                        <div class="im-user-profile-picture mb-3"></div>
+                        <div class="im-user-profile-name mb-3"></div>
                     </div>
-                </main>
-            </transition>
-        </div>
+                    <navbar></navbar>
+                    <ul class="language-switcher list-inline">
+                        <li v-for="locale in locales" class="list-inline-item">
+                            <button class="btn btn-sm btn-link" v-on:click="setLocale" :data-locale="locale.locale">
+                                <img class="img-fluid" :src="'/img/flags/' + locale.lcid + '.png'" :alt="locale.name" :data-locale="locale.locale">
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <transition name="fade" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+                    <main v-if="authenticated" id="admin-content" class="admin-content flex-grow-1">
+                        <router-view :key="$route.fullPath"></router-view>
+                        <div class="admin-functions">
+                            <button class="btn btn-light btn-sm mt-1" v-on:click.prevent="setViewMode"><i class="fas fa-adjust"></i></button>
+                            <button class="btn btn-light btn-sm mt-1" href="#"><i class="fal fa-user"></i> <span>{{translations.my_account || 'My account'}}</span></button>
+                            <button class="btn btn-light btn-sm mt-1 mr-2" v-on:click="logout"><i class="fal fa-sign-out-alt"></i> <span>{{translations.logout || 'Logout'}}</span></button>
+                        </div>
+                    </main>
+                </transition>
+            </div>
+        </transition>
         <v-dialog/>
     </div>
 </template>

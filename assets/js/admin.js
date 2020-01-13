@@ -63,7 +63,7 @@ new Vue({
                             pathToRegexpOptions: { strict: true }
                         }
 
-                        if (permissions[i]['component'] == 'Dasboard') newRoute.component = Dashboard;
+                        if (permissions[i]['component'] == 'Dashboard') newRoute.component = Dashboard;
                         if (permissions[i]['component'] == 'Editor') newRoute.component = Editor;
                         if (permissions[i]['component'] == 'Control') newRoute.component = Control;
                         if (permissions[i]['component'] == 'MenuEditor') newRoute.component = MenuEditor;
