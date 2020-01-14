@@ -240,6 +240,9 @@
                         <li v-if="settings.update">
                             <button class="btn btn-dark" v-on:click="customButton" :data-url="settings.update+item.id+'/'" :data-id="item.id"><i class="fad fa-pencil-alt" aria-hidden="true" :data-url="settings.update+item.id+'/'"></i></button>
                         </li>
+                        <li v-if="settings.component">
+                            <button class="btn btn-dark" v-on:click="setComponent" :data-component="settings.component" :data-id="item.id"><i class="fad fa-pencil-alt"></i></button>
+                        </li>
                         <li v-if="api.delete">
                             <button class="btn btn-danger" v-on:click="drop" :data-id="item.id"><i class="fad fa-trash-alt" :data-id="item.id"></i></button>
                         </li>
@@ -300,6 +303,10 @@
                         </button>
                         <button v-if="settings.insert" class="btn btn-success btn-lg w-100 mt-5" :data-url="settings.insert" v-on:click="customButton">
                             <i class="fa fa-plus" aria-hidden="true" :data-url="settings.insert"></i>
+                            {{translations.add_new_item || 'Add a new item'}}
+                        </button>
+                        <button v-if="settings.component" class="btn btn-success btn-lg w-100 mt-5" v-on:click="setComponent" :data-component="settings.component">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
                             {{translations.add_new_item || 'Add a new item'}}
                         </button>
                         <button class="btn btn-primary btn-lg w-100 mt-5" v-on:click="search">
@@ -467,6 +474,12 @@
                     </form>
                 </div>
             </transition>
+            <transition name="fade-right" enter-active-class="animated fadeIn">
+                <div v-if="mode === 'component'">
+                    <button class="btn btn-light mb-3" v-on:click.prevent="gotoList"><i class="fal fa-arrow-left"></i></button>
+                    <component v-bind:is="component" v-bind="{id: form_id}"></component>
+                </div>
+            </transition>
         </div>
     </div>
 </template>
@@ -526,6 +539,7 @@
                     }
                 },
                 select_options: {},
+                component: '',
             }
         },
         computed: {
@@ -990,6 +1004,12 @@
 
                     this.$router.push({ path: '/' + this.$store.state.locale + '/admin' + event.target.dataset.url })
                 }
+            },
+            setComponent: function(event) {
+
+                this.form_id = event.target.dataset.id;
+                this.component = event.target.dataset.component;
+                this.mode  = 'component';
             },
             setTableMode: function(event) {
 

@@ -50,8 +50,7 @@ class UserController extends AbstractController
                 'delete' => '/user/delete/',
             ),
             'settings' => array(
-                'insert' => '/user/insert/',
-                'update' => '/user/update/',
+                'component' => 'User',
             ),
             'fields' => $properties['fields'],
         );

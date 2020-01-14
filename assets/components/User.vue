@@ -5,7 +5,7 @@
                 <button type="button" class="btn btn-secondary px-3" v-on:click.prevent="changeTab" data-tab="account">{{translations.account || 'Account'}}</button>
                 <button type="button" class="btn btn-secondary px-3" v-on:click.prevent="changeTab" data-tab="information">{{translations.personal_information || 'Personal information'}}</button>
                 <button type="button" class="btn btn-secondary px-3" v-on:click.prevent="changeTab" data-tab="note">{{translations.notes || 'Notes'}}</button>
-                <button type="button" class="btn btn-secondary px-3" v-on:click.prevent="changeTab" data-tab="permission">{{translations.custom_permissions || 'Custom permissions'}}</button>
+                <button type="button" class="btn btn-secondary px-3" v-on:click.prevent="changeTab" data-tab="permission">{{translations.permissions || 'Permissions'}}</button>
             </div>
             <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
                 <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">

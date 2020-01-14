@@ -31,6 +31,7 @@ Vue.use(VueCookies);
 Vue.use(VTooltip);
 Vue.component('filemanager', FileManager);
 Vue.component('paginate', Paginate);
+Vue.component('User', User);
 
 Vue.config.productionTip = false;
 

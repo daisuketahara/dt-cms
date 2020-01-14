@@ -117,18 +117,15 @@
             </div>
         </transition>
         <transition name="fade" enter-active-class="animated fadeIn">
-            <div v-if="view == 'list'" class="template-container">
-                <span class="valign-helper"></span>
-                <div>
-                    <div class="row align-middle">
-                        <div v-for="item in templates" class="col-md-4 mb-3">
-                            <div class="card">
-                                <div :style="'background-image: url(/' + item.image.filePath + item.image.fileName + ')'" class="template-img"></div>
-                                <div class="card-body">
-                                    <h5 class="card-title">{{item.name}}</h5>
-                                    <p class="card-text">{{item.description}}</p>
-                                    <button class="btn btn-secondary" v-on:click="getTemplate" :data-id="item.id">{{translations['edit_template'] || edit_template}}</button>
-                                </div>
+            <div v-if="view == 'list'" class="container py-3 ml-0 mt-5">
+                <div class="row">
+                    <div v-for="item in templates" class="col-md-4 mb-3">
+                        <div class="card">
+                            <div :style="'background-image: url(/' + item.image.filePath + item.image.fileName + ')'" class="template-img"></div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{item.name}}</h5>
+                                <p class="card-text">{{item.description}}</p>
+                                <button class="btn btn-secondary" v-on:click="getTemplate" :data-id="item.id">{{translations['edit_template'] || edit_template}}</button>
                             </div>
                         </div>
                     </div>
@@ -242,22 +239,13 @@
 
 <style lang="scss" scoped>
 
-    .template-container {
+    .container {
 
         height: 100%;
-        text-align: center;
 
-        > div {
-            display: inline-block;
-            height: 100%;
-            margin: 0 auto;
-            padding: 15px;
-
-            .row {
-                margin: 0 auto;
-                width: 100%;
-                max-width: 1000px;
-            }
+        .row {
+            width: 100%;
+            max-width: 1000px;
         }
 
         .card {
@@ -281,10 +269,4 @@
         background-size: cover;
     }
 
-    .valign-helper {
-        display: inline-block;
-        width: 0;
-        height: 100%;
-        vertical-align: middle;
-    }
 </style>
