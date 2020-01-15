@@ -331,7 +331,8 @@
                 axios.get('/api/v1/permission/fields/', {headers: this.headers})
                 .then(response => {
                     this.permissions = JSON.parse(response.data)['data'];
-                    this.getUser();
+
+                    if (this.$attrs.id != undefined) this.getUser();
                 })
                 .catch(e => {
                     this.errors.push(e)
