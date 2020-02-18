@@ -23,6 +23,7 @@ import User from '../components/User';
 import FileManager from '../components/FileManager';
 import Dashboard from '../components/Dashboard';
 import Template from '../components/Template';
+import Module from '../components/Module';
 
 Vue.use(CKEditor);
 Vue.use(VueCodemirror);
@@ -72,6 +73,7 @@ new Vue({
                         if (permissions[i]['component'] == 'DataManager') newRoute.component = DataManager;
                         if (permissions[i]['component'] == 'User') newRoute.component = User;
                         if (permissions[i]['component'] == 'Template') newRoute.component = Template;
+                        if (permissions[i]['component'] == 'Module') newRoute.component = Module;
                         if (permissions[i]['props'] != '') newRoute.props = JSON.parse(permissions[i]['props']);
 
                         var checkExist = this.$router.resolve({path: newRoute.path});
