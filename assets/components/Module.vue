@@ -28,7 +28,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
 
     export default {
 
@@ -69,7 +68,7 @@
         },
         methods: {
             getModules: function() {
-                axios.get('/api/v1/module/', {headers: this.headers})
+                this.$axios.get('/api/v1/module/', {headers: this.headers})
                     .then(response => {
                         this.modules = JSON.parse(response.data).data;
                         this.loaded = true;
@@ -82,7 +81,7 @@
 
                 let id = event.target.dataset.id;
 
-                axios.post('/api/v1/module/activate/'+id+'/', {headers: this.headers})
+                this.$axios.post('/api/v1/module/activate/'+id+'/', {headers: this.headers})
                     .then(response => {
                         let result = JSON.parse(response.data).data;
                         this.getModules();

@@ -485,15 +485,12 @@
 </template>
 
 <script>
-    import axios from 'axios';
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-    import VueTelInput from 'vue-tel-input';
     import Datepicker from 'vuejs-datepicker';
     import { ModelSelect } from 'vue-search-select';
 
     export default {
         components: {
-            VueTelInput,
             Datepicker,
             ModelSelect
         },
@@ -575,7 +572,7 @@
         methods: {
             getEntityInfo: function() {
 
-                axios.get('/api/v1'+this.$attrs.info, {headers: this.headers})
+                this.$axios.get('/api/v1'+this.$attrs.info, {headers: this.headers})
                     .then(response => {
 
                         this.api = response.data.api;
@@ -609,7 +606,7 @@
                 params.filter = this.filter;
                 params.locale = this.$store.state.locale_id;
 
-                axios.post('/api/v1'+this.api.list, params, {headers: this.headers})
+                this.$axios.post('/api/v1'+this.api.list, params, {headers: this.headers})
                     .then(response => {
                         this.data = JSON.parse(response.data)['data'];
                         this.total = parseInt(JSON.parse(response.data)['total']);
@@ -677,7 +674,7 @@
             view: function(event) {
 
                 this.form_id = parseInt(event.target.dataset.id);
-                axios.get('/api/v1'+this.api.get + event.target.dataset.id + '/', {headers: this.headers})
+                this.$axios.get('/api/v1'+this.api.get + event.target.dataset.id + '/', {headers: this.headers})
                     .then(response => {
                         this.form_data = JSON.parse(response.data)['data'];
                         this.mode = 'view';
@@ -696,7 +693,7 @@
 
                 if (this.api.custom_form) {
 
-                    axios.get('/api/v1'+this.api.custom_form, {headers: this.headers})
+                    this.$axios.get('/api/v1'+this.api.custom_form, {headers: this.headers})
                         .then(response => {
                             var result = JSON.parse(response.data);
                             if (result.success) {
@@ -716,7 +713,7 @@
                 let params = {};
                 if (this.translate_id > 0) params['locale'] = this.translate_id;
 
-                axios.post(url, params, {headers: this.headers})
+                this.$axios.post(url, params, {headers: this.headers})
                     .then(response => {
                         var result = JSON.parse(response.data);
                         if (result.success) {
@@ -801,7 +798,7 @@
                 let url = '/api/v1'+this.api.insert;
                 if (this.form_id > 0) url = '/api/v1'+this.api.update + this.form_id + '/';
 
-                axios.put(url, params, {headers: this.headers})
+                this.$axios.put(url, params, {headers: this.headers})
                     .then(response => {
                         var result = JSON.parse(response.data);
 
@@ -839,7 +836,7 @@
                         handler: () => {
 
                             this.$modal.hide('dialog');
-                            axios.delete('/api/v1'+this.api.delete + event.target.dataset.id + '/', {headers: this.headers})
+                            this.$axios.delete('/api/v1'+this.api.delete + event.target.dataset.id + '/', {headers: this.headers})
                                 .then(response => {
                                     var result = JSON.parse(response.data);
                                     if (result.success) {
@@ -884,7 +881,7 @@
 
                             let params = {ids: ids};
 
-                            axios.put('/api/v1'+this.api.delete, params, {headers: this.headers})
+                            this.$axios.put('/api/v1'+this.api.delete, params, {headers: this.headers})
                                 .then(response => {
                                     var result = JSON.parse(response.data);
 
@@ -961,7 +958,7 @@
                 var options = [];
                 this.select_options[column.id] = options;
 
-                axios.get('/api/v1' + column.options_source, { headers: this.headers })
+                this.$axios.get('/api/v1' + column.options_source, { headers: this.headers })
                     .then(response => {
 
                         var data = JSON.parse(response.data.data);
@@ -982,7 +979,7 @@
             },
             customButton: function(event){
                 if (event.target.dataset.api) {
-                    axios.get('/api/v1' + event.target.dataset.api, {headers: this.headers})
+                    this.$axios.get('/api/v1' + event.target.dataset.api, {headers: this.headers})
                         .then(response => {
                             var result = JSON.parse(response.data);
                             if (result.success) {

@@ -35,10 +35,10 @@
                             <input id="user-email" name="user-email" required="required" class="form-control" v-model="user.email" type="email">
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6" style="position:relative; z-index:2;">
                         <div class="form-group">
                             <label class="form-control-label ten required" for="user-phone">{{translations.phone || 'Phone'}}</label>
-                            <input id="user-phone" name="user-phone" required="required" class="form-control" v-model="user.phone" type="phone">
+                            <vue-tel-input v-model="user.phone"></vue-tel-input>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -241,13 +241,8 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    import VueTelInput from 'vue-tel-input';
 
     export default {
-        components: {
-            VueTelInput,
-        },
         name: "User",
         data() {
             return {
@@ -280,7 +275,7 @@
         },
         methods: {
             getUser: function() {
-                axios.get('/api/v1/user/get/' + this.$attrs.id + '/', {headers: this.headers})
+                this.$axios.get('/api/v1/user/get/' + this.$attrs.id + '/', {headers: this.headers})
                 .then(response => {
                     this.user = JSON.parse(response.data)['data'];
 
@@ -304,7 +299,7 @@
                 let url = '/api/v1/user/insert/';
                 if (this.$attrs.id > 0) url = '/api/v1/user/update/' + this.$attrs.id + '/';
 
-                axios.put(url, this.user, {headers: this.headers})
+                this.$axios.put(url, this.user, {headers: this.headers})
                     .then(response => {
                         var result = JSON.parse(response.data);
                         if (result.success) {
@@ -318,7 +313,7 @@
                     });
             },
             getRoles: function() {
-                axios.get('/api/v1/user/role/list/', {headers: this.headers})
+                this.$axios.get('/api/v1/user/role/list/', {headers: this.headers})
                 .then(response => {
                     this.roles = JSON.parse(response.data)['data'];
                     this.getPermissions();
@@ -328,7 +323,7 @@
                 });
             },
             getPermissions: function () {
-                axios.get('/api/v1/permission/fields/', {headers: this.headers})
+                this.$axios.get('/api/v1/permission/fields/', {headers: this.headers})
                 .then(response => {
                     this.permissions = JSON.parse(response.data)['data'];
 

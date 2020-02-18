@@ -51,7 +51,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
 
     export default {
         name: 'Login',
@@ -88,7 +87,7 @@
                     params.email = this.email;
                     params.password = this.password;
 
-                    axios.post('/api/v1/gettoken/', params)
+                    this.$axios.post('/api/v1/gettoken/', params)
                         .then(response => {
                             var data = response.data;
                             if (data.success == true) {
@@ -121,7 +120,7 @@
                 params.email = this.email;
                 params.password = this.password;
 
-                axios.post('/api/v1/gettoken/', params)
+                this.$axios.post('/api/v1/gettoken/', params)
                     .then(response => {
                         var data = response.data;
                         if (data.success == true) {
@@ -144,7 +143,7 @@
             getLocales: function() {
                 this.$store.commit('setLocale', document.body.dataset.locale);
 
-                axios.get('/api/v1/locale/list/')
+                this.$axios.get('/api/v1/locale/list/')
                     .then(response => {
                         var locales = JSON.parse(response.data)['data'];
                         this.$store.commit('setLocales', locales);
@@ -160,7 +159,7 @@
                     });
             },
             getTranslations: function(locale) {
-                axios.get('/api/v1/translation/locale/'+locale+'/')
+                this.$axios.get('/api/v1/translation/locale/'+locale+'/')
                     .then(response => {
                         var translations = JSON.parse(response.data)['data'];
                         this.$store.commit('setTranslations', translations);

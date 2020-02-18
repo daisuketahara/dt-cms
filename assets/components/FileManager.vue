@@ -65,7 +65,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
 
     export default {
         name: "filemanager",
@@ -99,7 +98,7 @@
         methods: {
             getFileGroups: function() {
 
-                axios.get('/api/v1/filegroup/list/', {headers: this.headers})
+                this.$axios.get('/api/v1/filegroup/list/', {headers: this.headers})
                     .then(response => {
                         this.filegroups = JSON.parse(response.data)['data'];
                     })
@@ -109,7 +108,7 @@
             },
             getFiles: function() {
 
-                axios.get('/api/v1/file/list/', {headers: this.headers})
+                this.$axios.get('/api/v1/file/list/', {headers: this.headers})
                     .then(response => {
                         this.files = JSON.parse(response.data)['data'];
                         this.loaded = true;
@@ -141,7 +140,7 @@
                     let file = this.upload_files[i];
                     formData.append('files[' + i + ']', file);
                 }
-                axios.post( '/api/v1/file/upload/', formData, {
+                this.$axios.post( '/api/v1/file/upload/', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                         "X-AUTH-TOKEN" : this.$cookies.get('token')

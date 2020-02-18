@@ -163,7 +163,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
 
     export default {
 
@@ -205,7 +204,7 @@
         methods: {
             getMenus: function() {
 
-                axios.get('/api/v1/navigation/list/', {headers: this.headers})
+                this.$axios.get('/api/v1/navigation/list/', {headers: this.headers})
                     .then(response => {
                         this.menus = JSON.parse(response.data)['data'];
                         this.loaded = true;
@@ -217,7 +216,7 @@
             },
             getMenu: function() {
                 this.collapse = [];
-                axios.get('/api/v1/navigation/get-to-edit/'+this.menu_id+'/', {headers: this.headers})
+                this.$axios.get('/api/v1/navigation/get-to-edit/'+this.menu_id+'/', {headers: this.headers})
                     .then(response => {
                         this.menu = JSON.parse(response.data)['data'];
                         for (var i = 0; i < this.menu.length; i++) {
@@ -236,7 +235,7 @@
 
                 let url = '/api/v1/navigation/create/';
 
-                axios.put(url, params, {headers: this.headers})
+                this.$axios.put(url, params, {headers: this.headers})
                     .then(response => {
                         var result = JSON.parse(response.data);
 
@@ -270,7 +269,7 @@
                         handler: () => {
 
                             this.$modal.hide('dialog');
-                            axios.delete('/api/v1/navigation/delete/' + event.target.dataset.id + '/', {headers: this.headers})
+                            this.$axios.delete('/api/v1/navigation/delete/' + event.target.dataset.id + '/', {headers: this.headers})
                                 .then(response => {
                                     var result = JSON.parse(response.data);
                                     if (result.success) {
@@ -291,7 +290,7 @@
             },
             getRoutes: function() {
 
-                axios.get('/api/v1/navigation/routes/', {headers: this.headers})
+                this.$axios.get('/api/v1/navigation/routes/', {headers: this.headers})
                     .then(response => {
                         var result = JSON.parse(response.data);
                         this.available_pages = result.pages;
@@ -345,7 +344,7 @@
 
                 let url = '/api/v1/navigation/update/'+ this.menu_id + '/';
 
-                axios.put(url, this.menu, {headers: this.headers})
+                this.$axios.put(url, this.menu, {headers: this.headers})
                     .then(response => {
                         var result = JSON.parse(response.data);
 

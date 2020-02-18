@@ -52,7 +52,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
     export default {
@@ -84,7 +83,7 @@
         },
         methods: {
             getElements: function() {
-                axios.get('/api/v1'+this.$attrs.info, {headers: this.headers})
+                this.$axios.get('/api/v1'+this.$attrs.info, {headers: this.headers})
                     .then(response => {
                         this.elements = response.data.elements;
 
@@ -98,7 +97,7 @@
             customButton: function(event){
 
                 if (event.target.dataset.api) {
-                    axios.get('/api/v1'+event.target.dataset.api, {headers: this.headers})
+                    this.$axios.get('/api/v1'+event.target.dataset.api, {headers: this.headers})
                         .then(response => {
                             var result = JSON.parse(response.data);
                             if (result.success) {

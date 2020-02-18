@@ -136,7 +136,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
     import { codemirror } from 'vue-codemirror';
 
@@ -191,7 +190,7 @@
         },
         methods: {
             getTemplates() {
-                axios.get('/api/v1/template/list/', {headers: this.headers})
+                this.$axios.get('/api/v1/template/list/', {headers: this.headers})
                     .then(response => {
                         this.templates = JSON.parse(response.data)['data'];
                         this.view = 'list';
@@ -202,7 +201,7 @@
             },
             getTemplate(event) {
                 var id = event.target.dataset.id;
-                axios.get('/api/v1/template/get/'+id+'/', {headers: this.headers})
+                this.$axios.get('/api/v1/template/get/'+id+'/', {headers: this.headers})
                     .then(response => {
                         this.template = JSON.parse(response.data)['data'];
                         if (this.template.settings == '')  this.template.settings = {};
@@ -214,7 +213,7 @@
             },
             save() {
                 var id = event.target.dataset.id;
-                axios.put('/api/v1/template/update/'+this.template.id+'/', this.template, {headers: this.headers})
+                this.$axios.put('/api/v1/template/update/'+this.template.id+'/', this.template, {headers: this.headers})
                     .then(response => {
                         var result = JSON.parse(response.data);
                         if (result.success) this.setAlert(result.message, 'success');

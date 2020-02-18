@@ -356,7 +356,6 @@
 
 <script>
     import { Sketch } from 'vue-color';
-    import axios from 'axios';
 
     export default {
         name: "settings",
@@ -424,7 +423,7 @@
                 this.$modal.show('filemanager-modal');
             },
             showAvailableRoutes: function() {
-                axios.get('/api/v1/navigation/routes/', {headers: this.headers})
+                this.$axios.get('/api/v1/navigation/routes/', {headers: this.headers})
                     .then(response => {
                         var result = JSON.parse(response.data);
                         this.available_pages = result.pages;

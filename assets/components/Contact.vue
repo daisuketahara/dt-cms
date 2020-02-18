@@ -41,13 +41,8 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    import VueTelInput from 'vue-tel-input';
 
     export default {
-        components: {
-            VueTelInput,
-        },
         name: "Contact",
         data() {
             return {
@@ -79,7 +74,7 @@
                 params.message = this.message;
                 params.locale = document.body.dataset.locale;
 
-                axios.post('/api/v1/contact/post/', params, {headers: this.headers})
+                this.$axios.post('/api/v1/contact/post/', params, {headers: this.headers})
                     .then(response => {
                         var result = JSON.parse(response.data);
                         if (result.success) {

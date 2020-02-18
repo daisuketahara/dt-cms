@@ -345,7 +345,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
     //import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 
@@ -437,7 +436,7 @@
         },
         methods: {
             getRoles: function() {
-                axios.get('/api/v1/user/role/list/', {headers: this.headers})
+                this.$axios.get('/api/v1/user/role/list/', {headers: this.headers})
                 .then(response => {
                     this.roles = JSON.parse(response.data)['data'];
                 })
@@ -474,7 +473,7 @@
                 let params = {};
                 if (this.translate_id > 0) params['locale'] = this.translate_id;
 
-                axios.post(url, params, {headers: this.headers})
+                this.$axios.post(url, params, {headers: this.headers})
                 .then(response => {
                     var result = JSON.parse(response.data);
                     if (result.success) {
@@ -1105,7 +1104,7 @@
                     let url = '/api/v1/page/insert/';
                     if (self.page_id > 0) url = '/api/v1/page/update/'+ self.page_id + '/';
 
-                    axios.put(url, params, {headers: self.headers})
+                    this.$axios.put(url, params, {headers: self.headers})
                         .then(response => {
                             var result = JSON.parse(response.data);
 

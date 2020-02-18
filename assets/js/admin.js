@@ -13,6 +13,7 @@ import VModal from 'vue-js-modal';
 import VueCodemirror from 'vue-codemirror';
 import Paginate from 'vuejs-paginate';
 import VTooltip from 'v-tooltip';
+import VueTelInput from 'vue-tel-input';
 
 import Admin from '../app/Admin';
 import Editor from '../components/Editor';
@@ -33,6 +34,9 @@ Vue.use(VTooltip);
 Vue.component('filemanager', FileManager);
 Vue.component('paginate', Paginate);
 Vue.component('User', User);
+Vue.component('vue-tel-input', VueTelInput);
+
+Vue.prototype.$axios = axios;
 
 Vue.config.productionTip = false;
 
@@ -49,7 +53,7 @@ new Vue({
     },
     methods: {
         getRoutes() {
-            axios.get('/api/v1/admin-routes/', { headers: {"X-AUTH-TOKEN" : this.$cookies.get('token')} })
+            this.$axios.get('/api/v1/admin-routes/', { headers: {"X-AUTH-TOKEN" : this.$cookies.get('token')} })
                 .then(response => {
 
                     var menu = JSON.parse(response.data)['menu'];

@@ -38,8 +38,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
-
     import Login from '../components/Login';
     import Navbar from '../components/Navbar';
 
@@ -87,7 +85,7 @@
                     'Content-Type': 'application/json;charset=UTF-8',
                     "X-AUTH-TOKEN" : this.$cookies.get('token')
                 };
-                axios.get('/api/v1/logout/', {headers: headers})
+                this.$axios.get('/api/v1/logout/', {headers: headers})
                     .then(response => {
                         this.$store.commit('authenticate', false);
                         this.$cookies.remove('token');
@@ -113,7 +111,7 @@
             getLocales: function() {
                 this.$store.commit('setLocale', document.body.dataset.locale);
 
-                axios.get('/api/v1/locale/list/')
+                this.$axios.get('/api/v1/locale/list/')
                     .then(response => {
                         var locales = JSON.parse(response.data)['data'];
                         this.$store.commit('setLocales', locales);
@@ -132,7 +130,7 @@
                     });
             },
             getTranslations: function(locale) {
-                axios.get('/api/v1/translation/locale/'+locale+'/')
+                this.$axios.get('/api/v1/translation/locale/'+locale+'/')
                     .then(response => {
                         var translations = JSON.parse(response.data)['data'];
                         this.$store.commit('setTranslations', translations);
