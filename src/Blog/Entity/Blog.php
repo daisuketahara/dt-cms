@@ -25,11 +25,6 @@ class Blog
     private $block;
 
     /**
-    * @ORM\ManyToOne(targetEntity="Locale")
-    */
-    private $locale;
-
-    /**
     * @ORM\Column(type="string", length=255)
     */
     private $name;
@@ -88,30 +83,6 @@ class Blog
     public function setBlock($block)
     {
         $this->block = $block;
-
-        return $this;
-    }
-
-    /**
-    * Get the value of Locale
-    *
-    * @return mixed
-    */
-    public function getLocale()
-    {
-        return $this->locale;
-    }
-
-    /**
-    * Set the value of Locale
-    *
-    * @param mixed locale
-    *
-    * @return self
-    */
-    public function setLocale($locale)
-    {
-        $this->locale = $locale;
 
         return $this;
     }
