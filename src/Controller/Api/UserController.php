@@ -186,6 +186,13 @@ class UserController extends AbstractController
                 ->getDefaultLocale();
         }
 
+        $origLocation = array();
+        $origLocation[] = $userinfo->getMailAddress1();
+        $origLocation[] = $userinfo->getMailZipcode();
+        $origLocation[] = $userinfo->getMailCity();
+        $origLocation[] = $userinfo->getMailCountry();
+        $origLocation = implode(', ', $origLocation);
+
         $user->setLocale($locale);
 
         if (!empty($params['email'])) $user->setEmail($params['email']);
@@ -230,16 +237,16 @@ class UserController extends AbstractController
         if (isset($params['information']['billingCity'])) $userinfo->setBillingCity($params['information']['billingCity']);
         if (isset($params['information']['billingCountry'])) $userinfo->setBillingCountry($params['information']['billingCountry']);
 
-        $address = array();
-        $address[] = $userinfo->getMailAddress1();
-        $address[] = $userinfo->getMailZipcode();
-        $address[] = $userinfo->getMailCity();
-        $address[] = $userinfo->getMailCountry();
-        $address = implode(', ', $address);
+        $newLocation = array();
+        $newLocation[] = $userinfo->getMailAddress1();
+        $newLocation[] = $userinfo->getMailZipcode();
+        $newLocation[] = $userinfo->getMailCity();
+        $newLocation[] = $userinfo->getMailCountry();
+        $newLocation = implode(', ', $newLocation);
 
-        if (!empty($address)) {
+        if (!empty($newLocation) && $origLocation != $newLocation) {
 
-            $coordinates = $location->getCoordinates($address);
+            $coordinates = $location->getCoordinates($newLocation);
 
             if (!empty($coordinates)) {
                 $userinfo->setMailLongitude($coordinates[0]);
