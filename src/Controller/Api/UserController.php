@@ -23,6 +23,7 @@ use App\Entity\Permission;
 use App\Entity\UserRole;
 use App\Entity\UserPermission;
 use App\Entity\UserApiKey;
+use App\Service\LocationService;
 use App\Service\LogService;
 
 
@@ -140,7 +141,7 @@ class UserController extends AbstractController
     * @Route("/api/v1/user/insert/", name="api_user_insert", methods={"PUT"})
     * @Route("/api/v1/user/update/{id}/", name="api_user_update", methods={"PUT"})
     */
-    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log, UserPasswordEncoderInterface $encoder)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log, LocationService $location, UserPasswordEncoderInterface $encoder)
     {
         $logMessage = '';
         $logComment = 'Insert';
@@ -228,6 +229,24 @@ class UserController extends AbstractController
         if (isset($params['information']['billingZipcode'])) $userinfo->setBillingZipcode($params['information']['billingZipcode']);
         if (isset($params['information']['billingCity'])) $userinfo->setBillingCity($params['information']['billingCity']);
         if (isset($params['information']['billingCountry'])) $userinfo->setBillingCountry($params['information']['billingCountry']);
+
+        $address = array();
+        $address[] = $userinfo->getMailAddress1();
+        $address[] = $userinfo->getMailZipcode();
+        $address[] = $userinfo->getMailCity();
+        $address[] = $userinfo->getMailCountry();
+        $address = implode(', ', $address);
+
+        if (!empty($address)) {
+
+            $coordinates = $location->getCoordinates($address);
+
+            if (!empty($coordinates)) {
+                $userinfo->setMailLongitude($coordinates[0]);
+                $userinfo->setMailLatitude($coordinates[1]);
+            }
+
+        }
 
         $user->setInformation($userinfo);
         $logMessage .= $this->serializer->serialize($userinfo, 'json');

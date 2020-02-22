@@ -5,6 +5,7 @@
 @import '~vue-tel-input/dist/vue-tel-input.css';
 @import '../scss/form.scss';
 @import '~vue-search-select/dist/VueSearchSelect.css';
+@import '~@tomtom-international/web-sdk-maps/dist/maps.css';
 
 html, body {
     width: 100%;
@@ -350,10 +351,6 @@ body.darkmode .admin-content {
 }
 
 .admin-content {
-    position: relative;
-}
-.admin-content * {
-    z-index: 4;
     position: relative;
 }
 

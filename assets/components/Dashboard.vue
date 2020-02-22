@@ -3,7 +3,7 @@
         dsad
         <transition name="fadeIn" enter-active-class="animated fadeIn">
             <div class="container">
-
+                <TomTomMap address="Vrouwenzandstraat 115, 1443WJ, Purmerend, The Netherlands"></TomTomMap>
 
 
             </div>
@@ -15,10 +15,15 @@
 
 <script>
 
+    import TomTomMap from '../components/TomTomMap';
+
 
     export default {
 
         name: "Dashboard",
+        components: {
+            TomTomMap
+        },
         data() {
             return {}
         },

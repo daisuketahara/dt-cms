@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use App\Service\LocationService;
+
 /**
 * @ORM\Entity(repositoryClass="App\Repository\UserInformationRepository")
 */
@@ -67,6 +69,16 @@ class UserInformation
     protected $mailCountry;
 
     /**
+    * @ORM\Column(type="decimal", precision=10, scale=8, nullable=true)
+    */
+    protected $mailLatitude;
+
+    /**
+    * @ORM\Column(type="decimal", precision=11, scale=8, nullable=true)
+    */
+    protected $mailLongitude;
+
+    /**
     * @ORM\Column(type="string", length=255, nullable=true)
     */
     protected $billingAddress1;
@@ -90,6 +102,16 @@ class UserInformation
     * @ORM\Column(type="string", length=255, nullable=true)
     */
     protected $billingCountry;
+
+    /**
+    * @ORM\Column(type="decimal", precision=10, scale=8, nullable=true)
+    */
+    protected $billingLatitude;
+
+    /**
+    * @ORM\Column(type="decimal", precision=11, scale=8, nullable=true)
+    */
+    protected $billingLongitude;
 
     /**
      * Get the value of Id
@@ -356,6 +378,54 @@ class UserInformation
     }
 
     /**
+     * Get the value of Mail Latitude
+     *
+     * @return mixed
+     */
+    public function getMailLatitude()
+    {
+        return $this->mailLatitude;
+    }
+
+    /**
+     * Set the value of Mail Latitude
+     *
+     * @param mixed $mailLatitude
+     *
+     * @return self
+     */
+    public function setMailLatitude($mailLatitude)
+    {
+        $this->mailLatitude = $mailLatitude;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Mail Longitude
+     *
+     * @return mixed
+     */
+    public function getMailLongitude()
+    {
+        return $this->mailLongitude;
+    }
+
+    /**
+     * Set the value of Mail Longitude
+     *
+     * @param mixed $mailLongitude
+     *
+     * @return self
+     */
+    public function setMailLongitude($mailLongitude)
+    {
+        $this->mailLongitude = $mailLongitude;
+
+        return $this;
+    }
+
+    /**
      * Get the value of Billing Address
      *
      * @return mixed
@@ -471,6 +541,54 @@ class UserInformation
     public function setBillingCountry($billingCountry)
     {
         $this->billingCountry = $billingCountry;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Billing Latitude
+     *
+     * @return mixed
+     */
+    public function getBillingLatitude()
+    {
+        return $this->billingLatitude;
+    }
+
+    /**
+     * Set the value of Billing Latitude
+     *
+     * @param mixed $billingLatitude
+     *
+     * @return self
+     */
+    public function setBillingLatitude($billingLatitude)
+    {
+        $this->billingLatitude = $billingLatitude;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Billing Longitude
+     *
+     * @return mixed
+     */
+    public function getBillingLongitude()
+    {
+        return $this->billingLongitude;
+    }
+
+    /**
+     * Set the value of Billing Longitude
+     *
+     * @param mixed $billingLongitude
+     *
+     * @return self
+     */
+    public function setBillingLongitude($billingLongitude)
+    {
+        $this->billingLongitude = $billingLongitude;
 
         return $this;
     }
