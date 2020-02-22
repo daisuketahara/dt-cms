@@ -56,8 +56,10 @@ export default {
 
         if (
             typeof this.$attrs.longitude != 'undefined' &&
+            this.$attrs.longitude != null &&
             this.$attrs.longitude != '' &&
             typeof this.$attrs.latitude != 'undefined' &&
+            this.$attrs.latitude != null &&
             this.$attrs.latitude != ''
         ) {
 
@@ -66,7 +68,7 @@ export default {
                 this.$attrs.latitude
             ];
 
-        } else if (typeof this.$attrs.address != 'undefined' && this.$attrs.address != '') {
+        } else if (typeof this.$attrs.address != 'undefined' && this.$attrs.address != null && this.$attrs.address != '') {
 
             this.address = this.$attrs.address;
 
