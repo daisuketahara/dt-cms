@@ -165,13 +165,14 @@ export default {
 
     .map-popup {
 
+        color: black;
+
         button {
             float: right;
             background: transparent;
             border: 0;
             margin-right: -8px;
             margin-top: -8px;
-            color: black;
         }
     }
 
