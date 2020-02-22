@@ -18,7 +18,7 @@ class LogController extends AbstractController
     */
     final public function clear(SettingService $setting)
     {
-        $days = $setting->getSetting('log.history.days');
+        $days = $setting->get('log.history.days');
 
         $em = $this->getDoctrine()->getManager();
         $mail = $em->getRepository(Log::class)->deleteOldRecords($days);

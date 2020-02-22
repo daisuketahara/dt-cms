@@ -29,7 +29,7 @@ class MailController extends AbstractController
         foreach($mails as $mail) {
 
             $from = $mail->getFromEmail();
-            if (!$from) $from = $setting->getSetting('site.email.from');
+            if (!$from) $from = $setting->get('site.email.from');
 
             $message = (new \Swift_Message($mail->getSubject()))
             ->setFrom($from)
@@ -64,7 +64,7 @@ class MailController extends AbstractController
     */
     final public function clear(SettingService $setting, LogService $log)
     {
-        $days = $setting->getSetting('email.history.days');
+        $days = $setting->get('email.history.days');
 
         $em = $this->getDoctrine()->getManager();
         $mail = $em->getRepository(MailQueue::class)->deleteOldRecords($days);

@@ -9,14 +9,14 @@
         <meta name="msapplication-tap-highlight" content="no">
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 
-        <title>{{settingservice.getSetting('site.name')|striptags}} App</title>
+        <title>{{settingservice.get('site.name')|striptags}} App</title>
         <link rel="manifest" href="manifest.json">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="msapplication-starturl" content="/">
         {% endblock %}
             {{ encore_entry_link_tags('pwa') }}
-            <link rel="stylesheet" type="text/css" href="/css/pwa.css?v={{settingservice.getSetting('template.assets.version')}}">
+            <link rel="stylesheet" type="text/css" href="/css/pwa.css?v={{settingservice.get('template.assets.version')}}">
         {% block stylesheets %}{% endblock %}
 
         {% block javascripts %}

@@ -71,7 +71,7 @@ class ContactController extends AbstractController
         if (!empty($id)) {
 
             $this->mail->addToQueue(
-                $this->setting->getSetting('site.email'),
+                $this->setting->get('site.email'),
                 'contact-form',
                 $locale->getId(),
                 array(

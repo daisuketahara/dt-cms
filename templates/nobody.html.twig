@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <link rel="profile" href="http://gmpg.org/xfn/11">
-        <title>{{settingservice.getSetting('site.name')|striptags}} Admin</title>
+        <title>{{settingservice.get('site.name')|striptags}} Admin</title>
 
         {% block stylesheets %}
             {{ encore_entry_link_tags('admin') }}

@@ -26,20 +26,20 @@ class SmsService
     // http://www.spryng.nl/developers/http-api/
     public function send(string $recipient, string $message, string $reference='') {
 
-        $enabled = $this->setting->getSetting('sms.enable');
-        $username = $this->setting->getSetting('spryng.username');
-        $password = $this->setting->getSetting('spryng.password');
-        $route = $this->setting->getSetting('spryng.route');
-        $long = $this->setting->getSetting('spryng.long');
-        $company = $this->setting->getSetting('company.name');
+        $enabled = $this->setting->get('sms.enable');
+        $username = $this->setting->get('spryng.username');
+        $password = $this->setting->get('spryng.password');
+        $route = $this->setting->get('spryng.route');
+        $long = $this->setting->get('spryng.long');
+        $company = $this->setting->get('company.name');
 
-        if (empty($reference)) $reference = $this->setting->getSetting('spryng.reference');
+        if (empty($reference)) $reference = $this->setting->get('spryng.reference');
         if (empty($reference)) $reference = $company;
         if (empty($route)) $route = 'business';
 
         if (!empty($enabled)) {
 
-            $company = $this->setting->getSetting('site.name');
+            $company = $this->setting->get('site.name');
             $message = $company . ' - ' . $message;
 
             $spryng = new Client($username, $password, $company);

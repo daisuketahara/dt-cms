@@ -40,9 +40,9 @@ class MailService
             }
         }
 
-        if (empty($fromName)) $fromName = $this->setting->getSetting('email.from.name');
-        if (empty($fromName)) $fromName = $this->setting->getSetting('site.name');
-        if (empty($fromEmail)) $fromEmail = $this->setting->getSetting('email.from');
+        if (empty($fromName)) $fromName = $this->setting->get('email.from.name');
+        if (empty($fromName)) $fromName = $this->setting->get('site.name');
+        if (empty($fromEmail)) $fromEmail = $this->setting->get('email.from');
         if (empty($toName)) $toName = $toEmail;
 
         $mail->setFromName($fromName);

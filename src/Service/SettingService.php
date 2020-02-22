@@ -19,26 +19,6 @@ class SettingService
         $this->container = $container;
     }
 
-    public function getSetting(string $key)
-    {
-        $cache = new CacheService();
-
-        if ($cache->has('setting.'.$key)) {
-            $value = $cache->get('setting.'.$key);
-            return $value;
-        }
-
-        $setting = $this->em->getRepository(Setting::class)
-        ->findBy(array('settingKey' => $key), array());
-
-        if (!empty($setting)) {
-            $value = html_entity_decode($setting[0]->getSettingValue());
-            $cache->set('setting.'.$key, $value);
-            return $value;
-        }
-        return false;
-    }
-
     public function get(string $key)
     {
         $cache = new CacheService();
