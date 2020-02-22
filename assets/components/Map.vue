@@ -129,7 +129,7 @@ export default {
 
             this.loaded = true;
 
-            if (typeof this.$attrs.title != 'undefined') {
+            if (typeof this.$attrs.title != 'undefined' && this.$attrs.title != null && this.$attrs.title != '') {
 
                 var markerHeight = 50, markerRadius = 10, linearOffset = 50;
                 var popupOffsets = {
@@ -171,6 +171,7 @@ export default {
             border: 0;
             margin-right: -8px;
             margin-top: -8px;
+            color: black;
         }
     }
 
