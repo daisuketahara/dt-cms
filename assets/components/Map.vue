@@ -13,7 +13,7 @@ import tt_services from '@tomtom-international/web-sdk-services';
 
 export default {
 
-    name: "TomTomMap",
+    name: "Map",
     data() {
         return {
             loaded: false,
