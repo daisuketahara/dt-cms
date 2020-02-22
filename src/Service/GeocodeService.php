@@ -6,7 +6,7 @@ use Symfony\Component\HttpClient\HttpClient;
 
 use App\Service\SettingService;
 
-class LocationService
+class GeocodeService
 {
     protected $setting;
 

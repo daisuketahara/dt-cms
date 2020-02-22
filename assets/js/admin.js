@@ -25,6 +25,7 @@ import FileManager from '../components/FileManager';
 import Dashboard from '../components/Dashboard';
 import Template from '../components/Template';
 import Module from '../components/Module';
+import TomTomMap from '../components/TomTomMap';
 
 Vue.use(CKEditor);
 Vue.use(VueCodemirror);
@@ -35,6 +36,7 @@ Vue.component('filemanager', FileManager);
 Vue.component('paginate', Paginate);
 Vue.component('User', User);
 Vue.component('vue-tel-input', VueTelInput);
+Vue.component('TomTomMap', TomTomMap);
 
 Vue.prototype.$axios = axios;
 

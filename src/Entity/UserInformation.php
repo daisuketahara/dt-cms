@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-use App\Service\LocationService;
+use App\Service\GeocodeService;
 
 /**
 * @ORM\Entity(repositoryClass="App\Repository\UserInformationRepository")
