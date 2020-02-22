@@ -54,14 +54,19 @@ export default {
         console.log(this.$attrs.longitude);
 
 
-        if (typeof this.$attrs.longitude != 'undefined' && typeof this.$attrs.latitude != 'undefined') {
+        if (
+            typeof this.$attrs.longitude != 'undefined' &&
+            this.$attrs.longitude != '' &&
+            typeof this.$attrs.latitude != 'undefined' &&
+            this.$attrs.latitude != ''
+        ) {
 
             this.center = [
                 this.$attrs.longitude,
                 this.$attrs.latitude
             ];
 
-        } else if (typeof this.$attrs.address != 'undefined') {
+        } else if (typeof this.$attrs.address != 'undefined' && this.$attrs.address != '') {
 
             this.address = this.$attrs.address;
 
