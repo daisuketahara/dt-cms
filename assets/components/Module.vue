@@ -17,8 +17,8 @@
                             <span v-html="module.icon"></span>
                             <h3>{{module.name}}</h3>
                             <p>{{module.description}}</p>
-                            <button v-if="module.active" class="btn btn-sm btn-danger" v-on:click="activate" :data-id="module.id">{{translations.deactivate || 'Deactivate'}}</button>
-                            <button v-else class="btn btn-sm btn-success" v-on:click="activate" :data-id="module.id">{{translations.activate || 'Activate'}}</button>
+                            <button v-if="module.active" class="btn btn-sm btn-danger" @click="activate" :data-id="module.id">{{translations.deactivate || 'Deactivate'}}</button>
+                            <button v-else class="btn btn-sm btn-success" @click="activate" :data-id="module.id">{{translations.activate || 'Activate'}}</button>
                         </div>
                     </div>
                 </div>

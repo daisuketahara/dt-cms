@@ -13,7 +13,7 @@
                 <nav class="editor-nav">
                     <div class="btn-group mb-3" role="group" aria-label="Editor functions">
                         <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownLocaleButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-on:click="toggleDropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownLocaleButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" @click="toggleDropdown">
                                 {{translate_name}}
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownLocaleButton">
@@ -27,7 +27,7 @@
                     </div>
                     <div class="btn-group mb-3" role="group" aria-label="Editor select">
                         <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownEditorButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-on:click="toggleDropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownEditorButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" @click="toggleDropdown">
                                 {{selected_editor_name}}
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownEditorButton">
@@ -250,7 +250,7 @@
             </div>
             <div class="col-md-4 col-lg-3 component-settings">
                 <div v-if="typeof active_component !== 'undefined' && active_component !== false" class="card">
-                    <div class="card-header" id="component-settings" v-on:click="setActiveElement(construct[active_component], active_component);">
+                    <div class="card-header" id="component-settings" @click="setActiveElement(construct[active_component], active_component);">
                         {{translations.component || 'Component'}}
                         <i v-if="construct[active_component].selected == true" class="fas fa-chevron-down float-right"></i>
                         <i v-else class="fas fa-chevron-left float-right"></i>
@@ -258,7 +258,7 @@
                     <div v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].selected == true}">
                         <settings :settings="construct[active_component].settings"></settings>
                     </div>
-                    <div v-if="construct[active_component].parts.title != undefined" class="card-header" id="component-title-settings" v-on:click="setActiveElement(construct[active_component].parts.title, active_component);">
+                    <div v-if="construct[active_component].parts.title != undefined" class="card-header" id="component-title-settings" @click="setActiveElement(construct[active_component].parts.title, active_component);">
                         {{translations.title || 'Title'}}
                         <i v-if="construct[active_component].parts.title.selected == true" class="fas fa-chevron-down float-right"></i>
                         <i v-else class="fas fa-chevron-left float-right"></i>
@@ -266,7 +266,7 @@
                     <div v-if="construct[active_component].parts.title != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.title.selected == true}">
                         <settings :settings="construct[active_component].parts.title.settings"></settings>
                     </div>
-                    <div v-if="construct[active_component].parts.text != undefined" class="card-header" id="component-text-settings" v-on:click="setActiveElement(construct[active_component].parts.text, active_component);">
+                    <div v-if="construct[active_component].parts.text != undefined" class="card-header" id="component-text-settings" @click="setActiveElement(construct[active_component].parts.text, active_component);">
                         {{translations.content || 'Content'}}
                         <i v-if="construct[active_component].parts.text.selected == true" class="fas fa-chevron-down float-right"></i>
                         <i v-else class="fas fa-chevron-left float-right"></i>
@@ -274,7 +274,7 @@
                     <div v-if="construct[active_component].parts.text != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.text.selected == true}">
                         <settings :settings="construct[active_component].parts.text.settings"></settings>
                     </div>
-                    <div v-if="construct[active_component].parts.button != undefined" class="card-header" id="component-button-settings" v-on:click="setActiveElement(construct[active_component].parts.button, active_component);">
+                    <div v-if="construct[active_component].parts.button != undefined" class="card-header" id="component-button-settings" @click="setActiveElement(construct[active_component].parts.button, active_component);">
                         {{translations.button || 'Button'}}
                         <i v-if="construct[active_component].parts.button.selected == true" class="fas fa-chevron-down float-right"></i>
                         <i v-else class="fas fa-chevron-left float-right"></i>
@@ -282,7 +282,7 @@
                     <div v-if="construct[active_component].parts.button != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.button.selected == true}">
                         <settings :settings="construct[active_component].parts.button.settings"></settings>
                     </div>
-                    <div v-if="construct[active_component].parts.title2 != undefined" class="card-header" id="component-title-settings" v-on:click="setActiveElement(construct[active_component].parts.title2, active_component);">
+                    <div v-if="construct[active_component].parts.title2 != undefined" class="card-header" id="component-title-settings" @click="setActiveElement(construct[active_component].parts.title2, active_component);">
                         {{translations.title || 'Title'}} 2
                         <i v-if="construct[active_component].parts.title2.selected == true" class="fas fa-chevron-down float-right"></i>
                         <i v-else class="fas fa-chevron-left float-right"></i>
@@ -290,7 +290,7 @@
                     <div v-if="construct[active_component].parts.title2 != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.title2.selected == true}">
                         <settings :settings="construct[active_component].parts.title2.settings"></settings>
                     </div>
-                    <div v-if="construct[active_component].parts.text2 != undefined" class="card-header" id="component-text-settings" v-on:click="setActiveElement(construct[active_component].parts.text2, active_component);">
+                    <div v-if="construct[active_component].parts.text2 != undefined" class="card-header" id="component-text-settings" @click="setActiveElement(construct[active_component].parts.text2, active_component);">
                         {{translations.content || 'Content'}} 2
                         <i v-if="construct[active_component].parts.text2.selected == true" class="fas fa-chevron-down float-right"></i>
                         <i v-else class="fas fa-chevron-left float-right"></i>
@@ -298,7 +298,7 @@
                     <div v-if="construct[active_component].parts.text2 != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.text2.selected == true}">
                         <settings :settings="construct[active_component].parts.text2.settings"></settings>
                     </div>
-                    <div v-if="construct[active_component].parts.button2 != undefined" class="card-header" id="component-button-settings" v-on:click="setActiveElement(construct[active_component].parts.button2, active_component);">
+                    <div v-if="construct[active_component].parts.button2 != undefined" class="card-header" id="component-button-settings" @click="setActiveElement(construct[active_component].parts.button2, active_component);">
                         {{translations.button || 'Button'}} 2
                         <i v-if="construct[active_component].parts.button2.selected == true" class="fas fa-chevron-down float-right"></i>
                         <i v-else class="fas fa-chevron-left float-right"></i>
@@ -306,7 +306,7 @@
                     <div v-if="construct[active_component].parts.button2 != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.button2.selected == true}">
                         <settings :settings="construct[active_component].parts.button2.settings"></settings>
                     </div>
-                    <div v-if="construct[active_component].parts.image != undefined" class="card-header" id="component-image-settings" v-on:click="setActiveElement(construct[active_component].parts.image, active_component);">
+                    <div v-if="construct[active_component].parts.image != undefined" class="card-header" id="component-image-settings" @click="setActiveElement(construct[active_component].parts.image, active_component);">
                         {{translations.image || 'Image'}}
                         <i v-if="construct[active_component].parts.image.selected == true" class="fas fa-chevron-down float-right"></i>
                         <i v-else class="fas fa-chevron-left float-right"></i>
@@ -314,7 +314,7 @@
                     <div v-if="construct[active_component].parts.image != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.image.selected == true}">
                         <settings :settings="construct[active_component].parts.image.settings"></settings>
                     </div>
-                    <div v-if="construct[active_component].parts.image2 != undefined" class="card-header" id="component-image-settings" v-on:click="setActiveElement(construct[active_component].parts.image2, active_component);">
+                    <div v-if="construct[active_component].parts.image2 != undefined" class="card-header" id="component-image-settings" @click="setActiveElement(construct[active_component].parts.image2, active_component);">
                         {{translations.image || 'Image'}} 2
                         <i v-if="construct[active_component].parts.image2.selected == true" class="fas fa-chevron-down float-right"></i>
                         <i v-else class="fas fa-chevron-left float-right"></i>

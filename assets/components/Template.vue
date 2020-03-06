@@ -125,7 +125,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">{{item.name}}</h5>
                                 <p class="card-text">{{item.description}}</p>
-                                <button class="btn btn-secondary" v-on:click="getTemplate" :data-id="item.id">{{translations['edit_template'] || edit_template}}</button>
+                                <button class="btn btn-secondary" @click="getTemplate" :data-id="item.id">{{translations['edit_template'] || edit_template}}</button>
                             </div>
                         </div>
                     </div>

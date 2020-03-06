@@ -16,11 +16,11 @@
                         <option v-for="filegroup in filegroups" :value="filegroup.id">{{filegroup.name}}</option>
                     </select>
                     <button class="btn btn-sm btn-secondary mr-2" type="submit">{{translations.filter || 'Filter'}}</button>
-                    <button v-if="!upload" class="btn btn-sm btn-success" v-on:click="uploadFile">
+                    <button v-if="!upload" class="btn btn-sm btn-success" @click="uploadFile">
                         <i class="fas fa-upload"></i>
                         {{translations.upload_file || 'Upload a file'}}
                     </button>
-                    <button v-if="upload" class="btn btn-sm btn-danger" v-on:click="cancelUpload">{{translations.cancel_upload || 'Cancel upload'}}</button>
+                    <button v-if="upload" class="btn btn-sm btn-danger" @click="cancelUpload">{{translations.cancel_upload || 'Cancel upload'}}</button>
                 </div>
             </nav>
             <div v-if="upload" class="container-fluid">
@@ -40,7 +40,7 @@
             <div class="row mt-4 p-3">
                 <div v-for="(file, index) in files" class="col-md-2">
                     <div class="card mb-4 file-item pointer" :data-id="file.id">
-                        <div :style="'background-image: url(/' + file.filePath + file.fileName + ')'" class="file-img" v-on:click="viewFile($event)" :data-index="index"></div>
+                        <div :style="'background-image: url(/' + file.filePath + file.fileName + ')'" class="file-img" @click="viewFile($event)" :data-index="index"></div>
                         <div class="card-body pt-2 pb-2">
                             <h5 class="card-title text-center font-xs mb-0">{{file.name}}</h5>
                             <button v-if="select === true" class="btn btn-sm btn-secondary" v-on:click.prevent="selectFile" :data-file="'/' + file.filePath + file.fileName">Select</button>

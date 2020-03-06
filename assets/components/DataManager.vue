@@ -1,9 +1,9 @@
 <template>
     <div v-if="tablemode" class="p-3">
         <div v-if="mode === 'list'" id="data-manager-table" class="table-responsive" style="padding-right:-15px;">
-            <button v-if="api.insert" class="btn btn-success btn-sm mb-3" v-on:click="add"><i class="fa fa-plus" aria-hidden="true"></i> {{translations.new || 'New'}}</button>
-            <button v-if="settings.insert" class="btn btn-success btn-sm mb-3" :data-url="settings.insert" v-on:click="customButton"><i class="fa fa-plus" aria-hidden="true" :data-url="settings.insert"></i> {{translations.new || 'New'}}</button>
-            <button class="btn btn-light btn-sm mb-3" v-on:click="setTableMode" data-tablemode="0">
+            <button v-if="api.insert" class="btn btn-success btn-sm mb-3" @click="add"><i class="fa fa-plus" aria-hidden="true"></i> {{translations.new || 'New'}}</button>
+            <button v-if="settings.insert" class="btn btn-success btn-sm mb-3" :data-url="settings.insert" @click="customButton"><i class="fa fa-plus" aria-hidden="true" :data-url="settings.insert"></i> {{translations.new || 'New'}}</button>
+            <button class="btn btn-light btn-sm mb-3" @click="setTableMode" data-tablemode="0">
                 <i class="fal fa-th-list"></i>
                 {{translations.list_view || 'List view'}}
             </button>
@@ -19,10 +19,10 @@
             <table class="data-manager-table table table-striped">
                 <thead class="thead-dark">
                     <tr>
-                        <th width="30"><input type="checkbox" v-on:click="selectAllDelete"></th>
+                        <th width="30"><input type="checkbox" @click="selectAllDelete"></th>
                         <th v-for="column in columns" v-if="column.list == true" :data-column="column.id">
                             {{translations[column.label] || column.label}}
-                            <a class="table-sort" v-on:click="sortlist" :data-id="column.id" :data-alias="column.alias" data-dir="asc">
+                            <a class="table-sort" @click="sortlist" :data-id="column.id" :data-alias="column.alias" data-dir="asc">
                                 <i v-if="column.id === sort.id && sort.dir === 'desc'" class="fa fa-sort-down" aria-hidden="true"></i>
                                 <i v-else-if="column.id === sort.id && sort.dir === 'asc'" class="fa fa-sort-up" aria-hidden="true"></i>
                                 <i v-else class="fa fa-sort" aria-hidden="true"></i>
@@ -45,13 +45,13 @@
                             <input v-else type="text" :id="'filter-'+column.id" :name="'filter-'+column.id" placeholder="filter" v-on:keyup="filterlist">
                         </td>
                         <td class="text-right pr-2 pt-1">
-                            <button class="btn btn-secondary btn-sm text-white pointer ml-1" v-on:click="resetFilter">{{translations.reset_filter || 'Reset filter'}}</button>
+                            <button class="btn btn-secondary btn-sm text-white pointer ml-1" @click="resetFilter">{{translations.reset_filter || 'Reset filter'}}</button>
                         </td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="item in data" :key="item.id" :id="'row-'+item.id">
-                        <td><input type="checkbox" name="select-delete[]" class="select-delete" :value="item.id" v-on:click="markToDelete"></td>
+                        <td><input type="checkbox" name="select-delete[]" class="select-delete" :value="item.id" @click="markToDelete"></td>
                         <td v-for="column in columns" v-if="column.list == true">
                             <span v-if="typeof column.object !== 'undefined' && typeof column.object2 !== 'undefined'">{{item[column.object][column.object2][column.id]}}</span>
                             <span v-if="typeof column.object !== 'undefined'">{{item[column.object][column.id]}}</span>
@@ -66,17 +66,17 @@
                             <span v-else>{{item[column.id]}}</span>
                         </td>
                         <td>
-                            <button v-if="api.get" class="btn btn-secondary btn-sm text-white pointer ml-1" v-on:click="view" :data-id="item.id"><i class="fa fa-search" aria-hidden="true" :data-id="item.id"></i></button>
-                            <button v-if="api.update" class="btn btn-secondary btn-sm text-white pointer ml-1" v-on:click="edit" :data-id="item.id"><i class="fa fa-pencil-alt" aria-hidden="true" :data-id="item.id"></i></button>
-                            <button v-if="settings.update" class="btn btn-secondary btn-sm text-white pointer ml-1" v-on:click="customButton" :data-url="settings.update+item.id+'/'" :data-id="item.id"><i class="fa fa-pencil-alt" aria-hidden="true" :data-url="settings.update+item.id+'/'"></i></button>
-                            <button v-if="api.delete" class="btn btn-danger btn-sm text-white pointer ml-1" v-on:click="drop" :data-id="item.id"><i class="fa fa-trash" aria-hidden="true" :data-id="item.id"></i></button>
+                            <button v-if="api.get" class="btn btn-secondary btn-sm text-white pointer ml-1" @click="view" :data-id="item.id"><i class="fa fa-search" aria-hidden="true" :data-id="item.id"></i></button>
+                            <button v-if="api.update" class="btn btn-secondary btn-sm text-white pointer ml-1" @click="edit" :data-id="item.id"><i class="fa fa-pencil-alt" aria-hidden="true" :data-id="item.id"></i></button>
+                            <button v-if="settings.update" class="btn btn-secondary btn-sm text-white pointer ml-1" @click="customButton" :data-url="settings.update+item.id+'/'" :data-id="item.id"><i class="fa fa-pencil-alt" aria-hidden="true" :data-url="settings.update+item.id+'/'"></i></button>
+                            <button v-if="api.delete" class="btn btn-danger btn-sm text-white pointer ml-1" @click="drop" :data-id="item.id"><i class="fa fa-trash" aria-hidden="true" :data-id="item.id"></i></button>
                         </td>
                     </tr>
                 </tbody>
             </table>
             <div class="row">
                 <div class="col-3">
-                    <button class="btn btn-danger btn-sm" v-on:click="dropMultiple">{{translations.delete_selected || 'Delete selected'}}</button>
+                    <button class="btn btn-danger btn-sm" @click="dropMultiple">{{translations.delete_selected || 'Delete selected'}}</button>
                 </div>
                 <div class="col-3 form-inline">
                     <select class="select-limit form-control form-inline" v-on:change="change_amount">
@@ -106,7 +106,7 @@
             <div v-if="buttons.length > 0">
                 <ul class="list-inline">
                     <li v-for="button in buttons" class="list-inline-item">
-                        <button class="btn btn-sm btn-secondary" :data-id="button.id" :data-api="button.api" :data-url="button.url" v-on:click="customButton">{{button.label}}</button>
+                        <button class="btn btn-sm btn-secondary" :data-id="button.id" :data-api="button.api" :data-url="button.url" @click="customButton">{{button.label}}</button>
                     </li>
                 </ul>
             </div>
@@ -232,19 +232,19 @@
                 <div v-for="item in data" :key="item.id" :id="'data-card-'+item.id" class="data-card d-flex">
                     <ul class="data-card-functions">
                         <li v-if="api.get">
-                            <button class="btn btn-secondary" v-on:click="view" :data-id="item.id"><i class="fad fa-eye" :data-id="item.id"></i></button>
+                            <button class="btn btn-secondary" @click="view" :data-id="item.id"><i class="fad fa-eye" :data-id="item.id"></i></button>
                         </li>
                         <li v-if="api.update">
-                            <button class="btn btn-dark" v-on:click="edit" :data-id="item.id"><i class="fad fa-pencil-alt" :data-id="item.id"></i></button>
+                            <button class="btn btn-dark" @click="edit" :data-id="item.id"><i class="fad fa-pencil-alt" :data-id="item.id"></i></button>
                         </li>
                         <li v-if="settings.update">
-                            <button class="btn btn-dark" v-on:click="customButton" :data-url="settings.update+item.id+'/'" :data-id="item.id"><i class="fad fa-pencil-alt" aria-hidden="true" :data-url="settings.update+item.id+'/'"></i></button>
+                            <button class="btn btn-dark" @click="customButton" :data-url="settings.update+item.id+'/'" :data-id="item.id"><i class="fad fa-pencil-alt" aria-hidden="true" :data-url="settings.update+item.id+'/'"></i></button>
                         </li>
                         <li v-if="settings.component">
-                            <button class="btn btn-dark" v-on:click="setComponent" :data-component="settings.component" :data-id="item.id"><i class="fad fa-pencil-alt"></i></button>
+                            <button class="btn btn-dark" @click="setComponent" :data-component="settings.component" :data-id="item.id"><i class="fad fa-pencil-alt"></i></button>
                         </li>
                         <li v-if="api.delete">
-                            <button class="btn btn-danger" v-on:click="drop" :data-id="item.id"><i class="fad fa-trash-alt" :data-id="item.id"></i></button>
+                            <button class="btn btn-danger" @click="drop" :data-id="item.id"><i class="fad fa-trash-alt" :data-id="item.id"></i></button>
                         </li>
                     </ul>
                     <div class="data-card-content flex-grow-1">
@@ -277,7 +277,7 @@
                                 <span class="data-card-value" v-else>{{item[column.id]}}</span>
                             </div>
                         </div>
-                        <input type="checkbox" name="select-delete[]" class="select-delete" :value="item.id" v-on:click="markToDelete">
+                        <input type="checkbox" name="select-delete[]" class="select-delete" :value="item.id" @click="markToDelete">
                         <div class="card-id">ID: {{item.id}}</div>
                     </div>
                 </div>
@@ -297,32 +297,32 @@
                                 {{alert.text}}
                             </div>
                         </transition>
-                        <button v-if="api.insert" class="btn btn-success btn-lg w-100 mt-5" v-on:click="add">
+                        <button v-if="api.insert" class="btn btn-success btn-lg w-100 mt-5" @click="add">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                             {{translations.add_new_item || 'Add a new item'}}
                         </button>
-                        <button v-if="settings.insert" class="btn btn-success btn-lg w-100 mt-5" :data-url="settings.insert" v-on:click="customButton">
+                        <button v-if="settings.insert" class="btn btn-success btn-lg w-100 mt-5" :data-url="settings.insert" @click="customButton">
                             <i class="fa fa-plus" aria-hidden="true" :data-url="settings.insert"></i>
                             {{translations.add_new_item || 'Add a new item'}}
                         </button>
-                        <button v-if="settings.component" class="btn btn-success btn-lg w-100 mt-5" v-on:click="setComponent" :data-component="settings.component">
+                        <button v-if="settings.component" class="btn btn-success btn-lg w-100 mt-5" @click="setComponent" :data-component="settings.component">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                             {{translations.add_new_item || 'Add a new item'}}
                         </button>
-                        <button class="btn btn-primary btn-lg w-100 mt-5" v-on:click="search">
+                        <button class="btn btn-primary btn-lg w-100 mt-5" @click="search">
                             <i class="fad fa-trash-alt"></i>
                             {{translations.search || 'Search'}}
                         </button>
-                        <button class="btn btn-danger btn-lg w-100 mt-5" v-on:click="dropMultiple">
+                        <button class="btn btn-danger btn-lg w-100 mt-5" @click="dropMultiple">
                             <i class="fad fa-trash-alt"></i>
                             {{translations.delete_selected || 'Delete selected'}}
                         </button>
-                        <button class="btn btn-dark btn-lg w-100 mt-5" v-on:click="setTableMode" data-tablemode="1">
+                        <button class="btn btn-dark btn-lg w-100 mt-5" @click="setTableMode" data-tablemode="1">
                             <i class="fal fa-table"></i>
                             {{translations.table_view || 'Table view'}}
                         </button>
 
-                        <button v-for="button in buttons" class="btn btn-dark btn-lg w-100 mt-5" :data-id="button.id" :data-api="button.api" :data-url="button.url" v-on:click="customButton">
+                        <button v-for="button in buttons" class="btn btn-dark btn-lg w-100 mt-5" :data-id="button.id" :data-api="button.api" :data-url="button.url" @click="customButton">
                             <i class="fal fa-cogs"></i>
                             {{translations[button.label] || button.label}}
                         </button>
@@ -337,7 +337,7 @@
                         <tbody>
                             <tr v-for="column in columns" v-if="column.list == true">
                                 <td>
-                                    <a class="table-sort" v-on:click="sortlist" :data-id="column.id" :data-alias="column.alias" data-dir="asc">
+                                    <a class="table-sort" @click="sortlist" :data-id="column.id" :data-alias="column.alias" data-dir="asc">
                                         <i v-if="column.id === sort.id && sort.dir === 'desc'" class="fa fa-sort-down" aria-hidden="true"></i>
                                         <i v-else-if="column.id === sort.id && sort.dir === 'asc'" class="fa fa-sort-up" aria-hidden="true"></i>
                                         <i v-else class="fa fa-sort" aria-hidden="true"></i>
@@ -360,11 +360,11 @@
                         <tfoot>
                             <tr>
                                 <td colspan="2">
-                                    <button class="btn btn-danger btn-sm" v-on:click="dropMultiple">
+                                    <button class="btn btn-danger btn-sm" @click="dropMultiple">
                                         <i class="fad fa-trash-alt"></i>
                                         {{translations.delete_selected || 'Delete selected'}}
                                     </button>
-                                    <button class="btn btn-secondary btn-sm text-white pointer ml-1" v-on:click="resetFilter">{{translations.reset_filter || 'Reset filter'}}</button>
+                                    <button class="btn btn-secondary btn-sm text-white pointer ml-1" @click="resetFilter">{{translations.reset_filter || 'Reset filter'}}</button>
                                 </td>
                             </tr>
                         </tfoot>

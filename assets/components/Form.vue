@@ -11,7 +11,7 @@
                 <button class="btn btn-primary">Submit</button>
             </div>
             <div class="col text-right">
-                <button class="btn btn-primary" v-on:click="gotoList">Go back</button>
+                <button class="btn btn-primary" @click="gotoList">Go back</button>
             </div>
         </div>
     </form>

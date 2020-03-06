@@ -15,7 +15,7 @@
                     <navbar></navbar>
                     <ul class="language-switcher list-inline">
                         <li v-for="locale in locales" class="list-inline-item">
-                            <button class="btn btn-sm btn-link" v-on:click="setLocale" :data-locale="locale.locale">
+                            <button class="btn btn-sm btn-link" @click="setLocale" :data-locale="locale.locale">
                                 <img class="img-fluid" :src="'/img/flags/' + locale.lcid + '.png'" :alt="locale.name" :data-locale="locale.locale">
                             </button>
                         </li>
@@ -27,7 +27,7 @@
                         <div class="admin-functions">
                             <button class="btn btn-light btn-sm mt-1" v-on:click.prevent="setViewMode"><i class="fas fa-adjust"></i></button>
                             <button class="btn btn-light btn-sm mt-1" href="#"><i class="fal fa-user"></i> <span>{{translations.my_account || 'My account'}}</span></button>
-                            <button class="btn btn-light btn-sm mt-1 mr-2" v-on:click="logout"><i class="fal fa-sign-out-alt"></i> <span>{{translations.logout || 'Logout'}}</span></button>
+                            <button class="btn btn-light btn-sm mt-1 mr-2" @click="logout"><i class="fal fa-sign-out-alt"></i> <span>{{translations.logout || 'Logout'}}</span></button>
                         </div>
                     </main>
                 </transition>

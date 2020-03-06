@@ -14,18 +14,18 @@
                 <div class="row">
                     <div class="col-md-6">
                         <ul class="menu-editor-list list-group mb-3">
-                            <li v-for="(item, index) in menu" class="list-group-item" v-on:click="setActive" :data-id="index">
+                            <li v-for="(item, index) in menu" class="list-group-item" @click="setActive" :data-id="index">
                                 <span v-html="item.icon"></span>
                                 {{translations[item.label] || item.label}}
                                 <span  v-if="item.submenu != undefined && item.submenu.length > 0">
-                                    <button v-if="collapse[index]" class="btn btn-sm btn-link" v-on:click="setCollapse" :data-id="index">{{translations.collapse || 'Collapse'}}</button>
-                                    <button v-else class="btn btn-sm btn-link" v-on:click="setCollapse" :data-id="index">{{translations.expand || 'Expand'}}</button>
+                                    <button v-if="collapse[index]" class="btn btn-sm btn-link" @click="setCollapse" :data-id="index">{{translations.collapse || 'Collapse'}}</button>
+                                    <button v-else class="btn btn-sm btn-link" @click="setCollapse" :data-id="index">{{translations.expand || 'Expand'}}</button>
                                 </span>
                                 <span>
-                                    <button :disabled="disable_buttons" class="btn btn-sm btn-danger float-right ml-2" v-on:click="removeItem" :data-id="index"><i class="far fa-trash-alt" :data-id="index"></i></button>
-                                    <button :disabled="disable_buttons" class="btn btn-sm btn-secondary float-right ml-2" v-on:click="editItem" :data-id="index"><i class="fas fa-pencil-alt" :data-id="index"></i></button>
-                                    <button :disabled="disable_buttons" v-if="index > 0" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="index" data-dir="up"><i class="fas fa-angle-up" :data-id="index" data-dir="up"></i></button>
-                                    <button :disabled="disable_buttons" v-if="index < menu.length - 1" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="index" data-dir="down"><i class="fas fa-angle-down" :data-id="index" data-dir="down"></i></button>
+                                    <button :disabled="disable_buttons" class="btn btn-sm btn-danger float-right ml-2" @click="removeItem" :data-id="index"><i class="far fa-trash-alt" :data-id="index"></i></button>
+                                    <button :disabled="disable_buttons" class="btn btn-sm btn-secondary float-right ml-2" @click="editItem" :data-id="index"><i class="fas fa-pencil-alt" :data-id="index"></i></button>
+                                    <button :disabled="disable_buttons" v-if="index > 0" class="btn btn-sm btn-secondary float-right ml-1" @click="moveItem" :data-id="index" data-dir="up"><i class="fas fa-angle-up" :data-id="index" data-dir="up"></i></button>
+                                    <button :disabled="disable_buttons" v-if="index < menu.length - 1" class="btn btn-sm btn-secondary float-right ml-1" @click="moveItem" :data-id="index" data-dir="down"><i class="fas fa-angle-down" :data-id="index" data-dir="down"></i></button>
                                 </span>
                                 <transition name="slide">
                                     <ul v-if="item.submenu != undefined && item.submenu.length > 0 && collapse[index] == true">
@@ -33,10 +33,10 @@
                                             <span v-if="subitem.icon" v-html="subitem.icon"></span>
                                             {{translations[subitem.label] || subitem.label}}
                                             <span>
-                                                <button :disabled="disable_buttons" class="btn btn-sm btn-danger float-right ml-2" v-on:click="removeItem" :data-parent="index" :data-id="subindex"><i class="far fa-trash-alt" :data-parent="index" :data-id="subindex"></i></button>
-                                                <button :disabled="disable_buttons" class="btn btn-sm btn-secondary float-right ml-2" v-on:click="editItem" :data-id="subindex" :data-sub="index"><i class="fas fa-pencil-alt" :data-id="subindex" :data-sub="index"></i></button>
-                                                <button :disabled="disable_buttons" v-if="subindex > 0" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="subindex" data-dir="up" :data-sub="index"><i class="fas fa-angle-up" :data-id="subindex" data-dir="up" :data-sub="index"></i></button>
-                                                <button :disabled="disable_buttons" v-if="subindex < item.submenu.length - 1" class="btn btn-sm btn-secondary float-right ml-1" v-on:click="moveItem" :data-id="subindex" data-dir="down" :data-sub="index"><i class="fas fa-angle-down" :data-id="subindex" data-dir="down" :data-sub="index"></i></button>
+                                                <button :disabled="disable_buttons" class="btn btn-sm btn-danger float-right ml-2" @click="removeItem" :data-parent="index" :data-id="subindex"><i class="far fa-trash-alt" :data-parent="index" :data-id="subindex"></i></button>
+                                                <button :disabled="disable_buttons" class="btn btn-sm btn-secondary float-right ml-2" @click="editItem" :data-id="subindex" :data-sub="index"><i class="fas fa-pencil-alt" :data-id="subindex" :data-sub="index"></i></button>
+                                                <button :disabled="disable_buttons" v-if="subindex > 0" class="btn btn-sm btn-secondary float-right ml-1" @click="moveItem" :data-id="subindex" data-dir="up" :data-sub="index"><i class="fas fa-angle-up" :data-id="subindex" data-dir="up" :data-sub="index"></i></button>
+                                                <button :disabled="disable_buttons" v-if="subindex < item.submenu.length - 1" class="btn btn-sm btn-secondary float-right ml-1" @click="moveItem" :data-id="subindex" data-dir="down" :data-sub="index"><i class="fas fa-angle-down" :data-id="subindex" data-dir="down" :data-sub="index"></i></button>
                                             </span>
                                         </li>
                                     </ul>
@@ -45,10 +45,10 @@
                         </ul>
                         <div class="row">
                             <div class="col">
-                                <button class="btn btn-sm btn-primary" v-on:click="saveMenu">{{translations.save || 'Save'}}</button>
+                                <button class="btn btn-sm btn-primary" @click="saveMenu">{{translations.save || 'Save'}}</button>
                             </div>
                             <div class="col text-right">
-                                <button class="btn btn-sm btn-secondary" v-on:click="addItem">{{translations.add_menu_item || 'Add menu item'}}</button>
+                                <button class="btn btn-sm btn-secondary" @click="addItem">{{translations.add_menu_item || 'Add menu item'}}</button>
                             </div>
                         </div>
 
@@ -107,10 +107,10 @@
                         <ul class="list-group">
                             <li v-for="menu in menus" class="list-group-item">
                                 {{menu.name}}
-                                <button class="btn btn-sm btn-danger float-right ml-2" v-on:click="removeMenu" :data-id="menu.id">
+                                <button class="btn btn-sm btn-danger float-right ml-2" @click="removeMenu" :data-id="menu.id">
                                     <i class="far fa-trash-alt" :data-id="menu.id"></i>
                                 </button>
-                                <button class="btn btn-sm btn-secondary float-right" v-on:click="editMenu" :data-id="menu.id">
+                                <button class="btn btn-sm btn-secondary float-right" @click="editMenu" :data-id="menu.id">
                                     {{translations.edit || 'Edit'}}
                                 </button>
                             </li>
@@ -133,7 +133,7 @@
                 <h3 v-if="available_pages.length > 0">{{translations.pages || 'Pages'}}</h3>
                 <div v-if="available_pages.length > 0" class="row">
                     <div v-for="item in available_pages" class="col-sm-6 col-md-4 col-lg-3 mb-2">
-                        <button class="btn btn-secondary w-100" v-on:click="setRoute" :data-id="item.id" :data-route="item.route">
+                        <button class="btn btn-secondary w-100" @click="setRoute" :data-id="item.id" :data-route="item.route">
                             {{translations[item.label] || item.label}}<br>
                             <span class="font-xs">{{item.route}}</span>
                         </button>
@@ -142,7 +142,7 @@
                 <h3 v-if="available_app.length > 0">{{translations.modules || 'Modules'}}</h3>
                 <div v-if="available_app.length > 0" class="row">
                     <div v-for="item in available_app" class="col-sm-6 col-md-4 col-lg-3 mb-2">
-                        <button class="btn btn-secondary w-100" v-on:click="setRoute" :data-id="item.id" :data-route="item.route">
+                        <button class="btn btn-secondary w-100" @click="setRoute" :data-id="item.id" :data-route="item.route">
                             {{translations[item.label] || item.label}}<br>
                             <span class="font-xs">{{item.route}}</span>
                         </button>
@@ -151,7 +151,7 @@
                 <h3 v-if="available_admin.length > 0">{{translations.admin || 'Admin'}}</h3>
                 <div v-if="available_admin.length > 0" class="row">
                     <div v-for="item in available_admin" class="col-sm-6 col-md-4 col-lg-3 mb-2">
-                        <button class="btn btn-secondary w-100" v-on:click="setRoute" :data-id="item.id" :data-route="item.route">
+                        <button class="btn btn-secondary w-100" @click="setRoute" :data-id="item.id" :data-route="item.route">
                             {{translations[item.label] || item.label}}<br>
                             <span class="font-xs">{{item.route}}</span>
                         </button>
