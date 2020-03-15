@@ -1100,14 +1100,14 @@
 
                             if (result.success) {
                                 self.page_id = parseInt(result['id']);
-                                this.$store.commit('setAlert', {type: 'success', message: translations.saved || 'Data saved', autohide: true});
+                                self.$store.commit('setAlert', {type: 'success', message: translations.saved || 'Data saved', autohide: true});
                             } else {
-                                this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
+                                self.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
                             }
                             self.enableEdit = true;
                         })
                         .catch(e => {
-                            self.errors.push(e);
+                            self.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                             self.enableEdit = true;
                         });
                 }, 2);
