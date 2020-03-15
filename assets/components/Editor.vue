@@ -1,13 +1,5 @@
 <template>
     <form method="post" v-on:submit.prevent="update">
-        <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
-            <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
-                {{alert.text}}
-            </div>
-            <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
-                {{alert.text}}
-            </div>
-        </transition>
         <div class="row">
             <div class="col-md-8 col-lg-9">
                 <nav class="editor-nav">
@@ -1102,7 +1094,7 @@
                     let url = '/api/v1/page/insert/';
                     if (self.page_id > 0) url = '/api/v1/page/update/'+ self.page_id + '/';
 
-                    this.$axios.put(url, params, {headers: self.headers})
+                    self.$axios.put(url, params, {headers: self.headers})
                         .then(response => {
                             var result = JSON.parse(response.data);
 

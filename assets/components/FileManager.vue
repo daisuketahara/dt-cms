@@ -1,14 +1,6 @@
 <template>
     <transition name="fade" enter-active-class="animated fadeIn">
         <div v-if="loaded">
-            <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
-                <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
-                    {{alert.text}}
-                </div>
-                <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
-                    {{alert.text}}
-                </div>
-            </transition>
             <nav class="navbar mt-2">
                 <div class="form-inline">
                     <select id="file-group2" name="file-group" class="form-control form-control-sm mr-2">

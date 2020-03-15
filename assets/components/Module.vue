@@ -2,14 +2,6 @@
     <transition name="fadeIn" enter-active-class="animated fadeIn">
         <div v-if="loaded" class="container-fluid">
             <h1>{{translations.modules || 'Modules'}}</h1>
-            <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
-                <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
-                    {{alert.text}}
-                </div>
-                <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
-                    {{alert.text}}
-                </div>
-            </transition>
             <div class="row">
                 <div v-for="module in modules" class="col-lg-3">
                     <div class="module-card card mb-3">

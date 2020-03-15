@@ -2,14 +2,6 @@
     <div class="container-fluid py-3">
         <transition-group name="fade" enter-active-class="animated fadeIn">
             <div v-if="loaded && menu_id > 0" v-bind:key="menu_id">
-                <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
-                    <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
-                        {{alert.text}}
-                    </div>
-                    <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
-                        {{alert.text}}
-                    </div>
-                </transition>
                 <button class="btn btn-light mb-3" v-on:click.prevent="gotoList"><i class="fal fa-arrow-left"></i></button>
                 <div class="row">
                     <div class="col-md-6">
@@ -94,14 +86,6 @@
                 </div>
             </div>
             <div v-else-if="loaded" v-bind:key="menu_id">
-                <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
-                    <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
-                        {{alert.text}}
-                    </div>
-                    <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
-                        {{alert.text}}
-                    </div>
-                </transition>
                 <div class="row">
                     <div class="col-md-6">
                         <ul class="list-group">

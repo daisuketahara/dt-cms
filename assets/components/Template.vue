@@ -3,14 +3,6 @@
         <transition name="fade" enter-active-class="animated fadeIn">
             <div v-if="view == 'template'" class="p-3">
                 <button class="btn btn-light mb-3" v-on:click.prevent="gotoList"><i class="fal fa-arrow-left"></i></button>
-                <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
-                    <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
-                        {{alert.text}}
-                    </div>
-                    <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
-                        {{alert.text}}
-                    </div>
-                </transition>
                 <form v-on:submit.prevent="save">
                     <div v-if="template.id == 1" class="form-group">
                         <label>{{translations.header || 'Header'}}</label>

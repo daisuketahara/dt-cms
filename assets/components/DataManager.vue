@@ -128,14 +128,6 @@
             </div>
         </div>
         <div v-else-if="mode === 'form'" id="data-manager-form">
-            <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
-                <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
-                    {{alert.text}}
-                </div>
-                <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
-                    {{alert.text}}
-                </div>
-            </transition>
             <ul v-if="settings.translate == true" class="nav nav-tabs">
                 <li v-for="item in locales" class="nav-item">
                     <a :class="{ 'nav-link': true, 'active' : (locale_id == item.id && translate_id === 0) || translate_id == item.id}" href="#" v-on:click.prevent="setTranslate" :data-locale="item.locale" :data-lid="item.id">{{item.name}}</a>
@@ -280,14 +272,6 @@
                     <div class="data-functions-container text-center">
                         <h1 v-if="typeof settings.title !== 'undefined'">{{translations[settings.title] || settings.title}}</h1>
                         <div v-else class="title-replace-spacer"></div>
-                        <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
-                            <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
-                                {{alert.text}}
-                            </div>
-                            <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
-                                {{alert.text}}
-                            </div>
-                        </transition>
                         <button v-if="api.insert" class="btn btn-success btn-lg w-100 mt-5" @click="add">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                             {{translations.add_new_item || 'Add a new item'}}
@@ -392,14 +376,6 @@
             <transition name="fade-right" enter-active-class="animated fadeIn">
                 <div v-if="mode === 'form'" id="data-manager-form">
                     <button class="btn btn-light mb-3" v-on:click.prevent="gotoList"><i class="fal fa-arrow-left"></i></button>
-                    <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
-                        <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
-                            {{alert.text}}
-                        </div>
-                        <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
-                            {{alert.text}}
-                        </div>
-                    </transition>
                     <ul v-if="settings.translate == true" class="nav nav-tabs">
                         <li v-for="item in locales" class="nav-item">
                             <a :class="{ 'nav-link': true, 'active' : (locale_id == item.id && translate_id === 0) || translate_id == item.id}" href="#" v-on:click.prevent="setTranslate" :data-locale="item.locale" :data-lid="item.id">{{item.name}}</a>

@@ -22,14 +22,6 @@
             <p>{{translations.signin || 'Hello! Sign in and start managing your website.'}}</p>
             <div class="site-logo">{{site.logo}}</div>
             {{block.login_notification}}
-            <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
-                <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
-                    {{translations[alert.text]}}
-                </div>
-                <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
-                    {{translations[alert.text]}}
-                </div>
-            </transition>
             <form v-on:submit.prevent="RequestPassword">
                 <div class="form-group">
                     <label for="email">{{translations.email}}</label>

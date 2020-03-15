@@ -7,14 +7,6 @@
                 <button type="button" class="btn btn-secondary px-3" v-on:click.prevent="changeTab" data-tab="note">{{translations.notes || 'Notes'}}</button>
                 <button type="button" class="btn btn-secondary px-3" v-on:click.prevent="changeTab" data-tab="permission">{{translations.permissions || 'Permissions'}}</button>
             </div>
-            <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
-                <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
-                    {{alert.text}}
-                </div>
-                <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
-                    {{alert.text}}
-                </div>
-            </transition>
             <div v-if="tab=='account'">
                 <div class="row mb-4">
                     <div class="col-md-6">
