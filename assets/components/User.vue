@@ -291,7 +291,7 @@
                     this.user.permissions = permissions;
                 })
                 .catch(e => {
-                    this.errors.push(e)
+                    this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                 });
             },
             updateUser: function() {
@@ -304,7 +304,7 @@
                         if (result.success) {
                             this.$store.commit('setAlert', {type: 'success', message: translations.saved || "Saved", autohide: true});
                         } else {
-                            this.$store.commit('setAlert', {type: 'error', message: result.message, autohide: true});
+                            this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
                         }
                     })
                     .catch(e => {
@@ -318,7 +318,7 @@
                     this.getPermissions();
                 })
                 .catch(e => {
-                    this.errors.push(e)
+                    this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                 });
             },
             getPermissions: function () {
@@ -329,7 +329,7 @@
                     if (this.$attrs.id != undefined) this.getUser();
                 })
                 .catch(e => {
-                    this.errors.push(e)
+                    this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                 });
             },
             changeTab: function(event) {

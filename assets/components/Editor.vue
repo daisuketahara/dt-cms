@@ -440,7 +440,7 @@
                     this.roles = JSON.parse(response.data)['data'];
                 })
                 .catch(e => {
-                    this.errors.push(e)
+                    this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                 });
             },
             setTranslate: function(event) {
@@ -487,12 +487,11 @@
                             this.construct = [];
                         }
                     } else {
-                        this.$store.commit('setAlert', {type: 'error', message: result.message, autohide: true});
+                        this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
                     }
                 })
                 .catch(e => {
                     this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
-                    this.errors.push(e)
                 });
             },
             getElements: function() {

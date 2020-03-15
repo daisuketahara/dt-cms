@@ -689,7 +689,7 @@
                             if (result.success) {
                                 this.columns = result.fields;
                             } else {
-                                this.$store.commit('setAlert', {type: 'error', message: result.message, autohide: true});
+                                this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
                             }
                         })
                         .catch(e => {
@@ -722,7 +722,7 @@
 
                             this.mode = 'form';
                         } else {
-                            this.$store.commit('setAlert', {type: 'error', message: result.message, autohide: true});
+                            this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
                         }
                     })
                     .catch(e => {
@@ -797,7 +797,7 @@
                             this.mode = 'form';
                             this.$store.commit('setAlert', {type: 'success', message: translations.saved || "Saved", autohide: true});
                         } else {
-                            this.$store.commit('setAlert', {type: 'error', message: result.message, autohide: true});
+                            this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
                         }
                     })
                     .catch(e => {

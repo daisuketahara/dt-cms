@@ -243,11 +243,11 @@
                             this.new_menu_name = '';
                             this.getMenus();
                         } else {
-                            this.$store.commit('setAlert', {type: 'error', message: result.message, autohide: true});
+                            this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
                         }
                     })
                     .catch(e => {
-                        this.errors.push(e)
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             removeMenu: function(event) {
@@ -349,20 +349,13 @@
 
                         if (result.success) {
                             this.$store.commit('setAlert', {type: 'success', message: translations.saved || "Saved", autohide: true});
-
                             this.$parent.$parent.getRoutes();
-
-
-
-
-
-
                         } else {
-                            this.$store.commit('setAlert', {type: 'error', message: result.message, autohide: true});
+                            this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
                         }
                     })
                     .catch(e => {
-                        this.errors.push(e)
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             moveItem: function(event) {

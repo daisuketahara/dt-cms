@@ -145,8 +145,7 @@
                         this.$store.commit('setInit', true);
                     })
                     .catch(e => {
-                        console.log(e);
-                        this.errors.push(e)
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             getTranslations: function(locale) {
@@ -157,8 +156,7 @@
                         this.$parent.getRoutes();
                     })
                     .catch(e => {
-                        console.log(e);
-                        this.errors.push(e)
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             setLocale: function(event) {

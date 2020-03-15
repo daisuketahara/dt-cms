@@ -215,8 +215,8 @@
                 this.$axios.put('/api/v1/template/update/'+this.template.id+'/', this.template, {headers: this.headers})
                     .then(response => {
                         var result = JSON.parse(response.data);
-                        if (result.success) this.$store.commit('setAlert', {type: 'success', message: result.message, autohide: true});
-                        else this.$store.commit('setAlert', {type: 'error', message: result.message, autohide: true});
+                        if (result.success) this.$store.commit('setAlert', {type: 'success', message: translations[result.message] || result.message, autohide: true});
+                        else this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
                     })
                     .catch(e => {
                         this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
