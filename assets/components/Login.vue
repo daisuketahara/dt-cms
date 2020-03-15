@@ -5,14 +5,6 @@
             <p>{{translations.signin || 'Hello! Sign in and start managing your website.'}}</p>
             <div class="site-logo">{{site.logo}}</div>
             {{block.login_notification}}
-            <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
-                <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
-                    {{translations[alert.text]}}
-                </div>
-                <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
-                    {{translations[alert.text]}}
-                </div>
-            </transition>
             <form v-on:submit.prevent="login">
                 <div class="form-group">
                     <input type="text" id="email" name="email" class="form-control" v-model="email" :placeholder="translations.email || 'Email'">
@@ -60,8 +52,7 @@
                 email: '',
                 password: '',
                 site: {},
-                block: {},
-                alert: {}
+                block: {}
             }
         },
         computed: {
@@ -97,14 +88,14 @@
                                 this.$cookies.set('email', this.email);
                                 this.$parent.$parent.getRoutes();
                             } else {
-                                this.setAlert('login_failed', 'error');
+                                this.$store.commit('setAlert', {type: 'error', message: translations.login_failed || "Login failed", autohide: true});
                             }
                         })
                         .catch(e => {
-                            this.setAlert(e, 'error');
+                            this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                         });
                 } else {
-                    this.setAlert('email_password_required', 'error');
+                    this.$store.commit('setAlert', {type: 'error', message: translations.email_password_required || "Email and password required", autohide: true});
                 }
 
             },
@@ -130,11 +121,11 @@
                             this.$cookies.set('email', this.email);
                             this.$parent.$parent.getRoutes();
                         } else {
-                            this.setAlert('login_failed', 'error');
+                            this.$store.commit('setAlert', {type: 'error', message: translations.login_failed || "Login failed", autohide: true});
                         }
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
 
 
@@ -180,11 +171,6 @@
                     }
                 }
                 this.getTranslations(selected);
-            },
-            setAlert: function(text, type) {
-                var self = this;
-                this.alert = {text: text, type: type};
-                setTimeout(function() { self.alert = {}; }, 5000);
             }
         }
     }

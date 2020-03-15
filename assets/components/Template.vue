@@ -176,8 +176,7 @@
                     theme: 'base16-light',
                     mode: 'text/javascript',
                     lineNumbers: true,
-                },
-                alert: {}
+                }
             };
         },
         computed: {
@@ -196,7 +195,7 @@
                         this.view = 'list';
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             getTemplate(event) {
@@ -208,7 +207,7 @@
                         this.view = 'template';
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             save() {
@@ -216,21 +215,16 @@
                 this.$axios.put('/api/v1/template/update/'+this.template.id+'/', this.template, {headers: this.headers})
                     .then(response => {
                         var result = JSON.parse(response.data);
-                        if (result.success) this.setAlert(result.message, 'success');
-                        else this.setAlert(result.message, 'error');
+                        if (result.success) this.$store.commit('setAlert', {type: 'success', message: result.message, autohide: true});
+                        else this.$store.commit('setAlert', {type: 'error', message: result.message, autohide: true});
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             gotoList: function(event) {
                 this.view = 'list';
                 this.template = {};
-            },
-            setAlert: function(text, type) {
-                var self = this;
-                this.alert = {text: text, type: type};
-                setTimeout(function() { self.alert = {}; }, 5000);
             }
         }
     };

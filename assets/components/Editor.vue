@@ -369,7 +369,6 @@
                     role: ''
                 },
                 roles: [],
-                alert: {},
                 editor: ClassicEditor, //ClassicEditor,
                 editorData: {}, //'<p>Rich-text editor content.</p>',
                 editorConfig: {},
@@ -488,11 +487,11 @@
                             this.construct = [];
                         }
                     } else {
-                        this.setAlert(result.message, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: result.message, autohide: true});
                     }
                 })
                 .catch(e => {
-                    this.setAlert(e, 'error');
+                    this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     this.errors.push(e)
                 });
             },
@@ -1110,9 +1109,9 @@
 
                             if (result.success) {
                                 self.page_id = parseInt(result['id']);
-                                self.setAlert(translations.saved, 'success');
+                                this.$store.commit('setAlert', {type: 'success', message: translations.saved || 'Data saved', autohide: true});
                             } else {
-                                self.setAlert(result.message, 'error');
+                                this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
                             }
                             self.enableEdit = true;
                         })
@@ -1137,11 +1136,6 @@
             showPanel: function(event) {
                 if (this.panel != event.target.dataset.panel) this.panel = event.target.dataset.panel;
                 else this.panel = '';
-            },
-            setAlert: function(text, type) {
-                var self = this;
-                this.alert = {text: text, type: type};
-                setTimeout(function() { self.alert = {}; }, 5000);
             },
             createCookie: function(name, value, days) {
                 var expires;

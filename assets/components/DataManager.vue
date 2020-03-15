@@ -7,15 +7,6 @@
                 <i class="fal fa-th-list"></i>
                 {{translations.list_view || 'List view'}}
             </button>
-
-            <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
-                <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
-                    {{alert.text}}
-                </div>
-                <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
-                    {{alert.text}}
-                </div>
-            </transition>
             <table class="data-manager-table table table-striped">
                 <thead class="thead-dark">
                     <tr>
@@ -520,7 +511,6 @@
                 total: 0,
                 pages: 0,
                 buttons: [],
-                alert: {},
                 editor: ClassicEditor, //ClassicEditor,
                 editorData: {}, //'<p>Rich-text editor content.</p>',
                 editorConfig: {
@@ -587,7 +577,7 @@
                         this.list();
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             setTranslate: function(event) {
@@ -614,7 +604,7 @@
                         this.mode = 'list';
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             sortlist: function(event) {
@@ -680,7 +670,7 @@
                         this.mode = 'view';
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             add: function(event) {
@@ -699,11 +689,11 @@
                             if (result.success) {
                                 this.columns = result.fields;
                             } else {
-                                this.setAlert(result.message, 'error');
+                                this.$store.commit('setAlert', {type: 'error', message: result.message, autohide: true});
                             }
                         })
                         .catch(e => {
-                            this.setAlert(e, 'error');
+                            this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                         });
                 }
 
@@ -732,11 +722,11 @@
 
                             this.mode = 'form';
                         } else {
-                            this.setAlert(result.message, 'error');
+                            this.$store.commit('setAlert', {type: 'error', message: result.message, autohide: true});
                         }
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             updateFormData: function(event) {
@@ -805,13 +795,13 @@
                         if (result.success) {
                             this.form_id = parseInt(result['id']);
                             this.mode = 'form';
-                            this.setAlert(translations.saved, 'success');
+                            this.$store.commit('setAlert', {type: 'success', message: translations.saved || "Saved", autohide: true});
                         } else {
-                            this.setAlert(result.message, 'error');
+                            this.$store.commit('setAlert', {type: 'error', message: result.message, autohide: true});
                         }
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             drop: function(event) {
@@ -841,14 +831,14 @@
                                     var result = JSON.parse(response.data);
                                     if (result.success) {
                                         self.list();
-                                        self.setAlert(translations.delete_confirmation, 'success');
+                                        this.$store.commit('setAlert', {type: 'success', message: translations.delete_confirmation || 'Deleted', autohide: true});
                                     } else {
                                         element.classList.remove("to-delete");
-                                        self.setAlert(result.message, 'error');
+                                        this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
                                     }
                                 })
                                 .catch(e => {
-                                    this.setAlert(e, 'error');
+                                    this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                                     this.$modal.hide('dialog');
                                 });
                         }
@@ -887,14 +877,14 @@
 
                                     if (result.success) {
                                         self.list();
-                                        self.setAlert(translations.delete_confirmation, 'success');
+                                        this.$store.commit('setAlert', {type: 'success', message: translations.delete_confirmation || 'Deleted', autohide: true});
                                     } else {
-                                        self.setAlert(result.message, 'error');
+                                        this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
                                     }
                                     this.$modal.hide('dialog');
                                 })
                                 .catch(e => {
-                                    this.setAlert(e, 'error');
+                                    this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                                     this.$modal.hide('dialog');
                                 });
                         }
@@ -974,7 +964,7 @@
                         this.select_options[column.id] = options;
                     })
                     .catch(e => {
-                        this.setAlert(e, 'Error, cannot load options');
+                        this.$store.commit('setAlert', {type: 'error', message: 'Error, cannot load options', autohide: true});
                     });
             },
             customButton: function(event){
@@ -983,14 +973,14 @@
                         .then(response => {
                             var result = JSON.parse(response.data);
                             if (result.success) {
-                                this.setAlert(result.message, 'success');
+                                this.$store.commit('setAlert', {type: 'success', message: translations[result.message] || result.message, autohide: true});
                                 this.list();
                             } else {
-                                self.setAlert(result.message, 'error');
+                                this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
                             }
                         })
                         .catch(e => {
-                            this.setAlert(e, 'error');
+                            this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                         });
                 } else if (event.target.dataset.url) {
 
@@ -1023,11 +1013,6 @@
                     this.limit = 7;
                     this.list();
                 }
-            },
-            setAlert: function(text, type) {
-                var self = this;
-                this.alert = {text: text, type: type};
-                setTimeout(function() { self.alert = {}; }, 5000);
             },
             validateField: function(e) {
 

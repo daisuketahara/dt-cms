@@ -258,8 +258,7 @@
                 },
                 roles: [],
                 permissions: [],
-                tab: 'account',
-                alert: '',
+                tab: 'account'
             }
         },
         computed: {
@@ -303,13 +302,13 @@
                     .then(response => {
                         var result = JSON.parse(response.data);
                         if (result.success) {
-                            this.setAlert(translations.saved, 'success');
+                            this.$store.commit('setAlert', {type: 'success', message: translations.saved || "Saved", autohide: true});
                         } else {
-                            this.setAlert(result.message, 'error');
+                            this.$store.commit('setAlert', {type: 'error', message: result.message, autohide: true});
                         }
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             getRoles: function() {
@@ -352,11 +351,6 @@
                         checkboxes[i].checked = false;
                     }
                 }
-            },
-            setAlert: function(text, type) {
-                var self = this;
-                this.alert = {text: text, type: type};
-                setTimeout(function() { self.alert = {}; }, 5000);
             }
         }
     }

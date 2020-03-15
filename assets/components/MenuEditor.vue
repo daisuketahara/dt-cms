@@ -183,7 +183,6 @@
                 item_id: 0,
                 item_create: false,
                 modal: false,
-                alert: {},
                 collapse: [],
                 isShow: false,
                 disable_buttons: false,
@@ -210,7 +209,7 @@
                         this.loaded = true;
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                         this.loaded = true;
                     });
             },
@@ -225,7 +224,7 @@
                         this.disable_buttons = false;
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             createMenu: function() {
@@ -240,11 +239,11 @@
                         var result = JSON.parse(response.data);
 
                         if (result.success) {
-                            this.setAlert(translations.saved, 'success');
+                            this.$store.commit('setAlert', {type: 'success', message: translations.saved || "Saved", autohide: true});
                             this.new_menu_name = '';
                             this.getMenus();
                         } else {
-                            this.setAlert(result.message, 'error');
+                            this.$store.commit('setAlert', {type: 'error', message: result.message, autohide: true});
                         }
                     })
                     .catch(e => {
@@ -274,13 +273,13 @@
                                     var result = JSON.parse(response.data);
                                     if (result.success) {
                                         self.getMenus();
-                                        self.setAlert(translations.delete_confirmation, 'success');
+                                        this.$store.commit('setAlert', {type: 'success', message: translations.delete_confirmation || 'Deleted', autohide: true});
                                     } else {
-                                        self.setAlert(result.message, 'error');
+                                        this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
                                     }
                                 })
                                 .catch(e => {
-                                    this.setAlert(e, 'error');
+                                    this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                                     this.$modal.hide('dialog');
                                 });
                         }
@@ -298,7 +297,7 @@
                         this.available_admin = result.admin;
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             editMenu: function() {
@@ -349,7 +348,7 @@
                         var result = JSON.parse(response.data);
 
                         if (result.success) {
-                            this.setAlert(translations.saved, 'success');
+                            this.$store.commit('setAlert', {type: 'success', message: translations.saved || "Saved", autohide: true});
 
                             this.$parent.$parent.getRoutes();
 
@@ -359,7 +358,7 @@
 
 
                         } else {
-                            this.setAlert(result.message, 'error');
+                            this.$store.commit('setAlert', {type: 'error', message: result.message, autohide: true});
                         }
                     })
                     .catch(e => {
@@ -429,13 +428,7 @@
                 this.item.permission_id = parseInt(event.target.dataset.id);
                 this.item.route = event.target.dataset.route;
                 this.$modal.hide('route-modal');
-            },
-            setAlert: function(text, type) {
-                var self = this;
-                this.alert = {text: text, type: type};
-                setTimeout(function() { self.alert = {}; }, 5000);
             }
-
         }
     }
 </script>

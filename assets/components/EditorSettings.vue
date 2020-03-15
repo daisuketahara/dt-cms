@@ -432,7 +432,7 @@
                         this.$modal.show('available-routes');
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             setRoute: function(event) {

@@ -82,7 +82,6 @@
                 file: {},
                 upload: false,
                 upload_files:'',
-                alert: {},
                 loaded: false
             }
         },
@@ -103,7 +102,7 @@
                         this.filegroups = JSON.parse(response.data)['data'];
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             getFiles: function() {
@@ -114,7 +113,7 @@
                         this.loaded = true;
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             viewFile: function(event) {
@@ -150,13 +149,8 @@
                     this.getFiles();
                 })
                 .catch(e => {
-                    this.setAlert(e, 'error');
+                    this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                 });
-            },
-            setAlert: function(text, type) {
-                var self = this;
-                this.alert = {text: text, type: type};
-                setTimeout(function() { self.alert = {}; }, 5000);
             }
         }
     }

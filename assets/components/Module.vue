@@ -39,7 +39,6 @@
                     "X-AUTH-TOKEN" : this.$cookies.get('token')
                 },
                 loaded: false,
-                alert: '',
                 modules: []
             }
         },
@@ -74,7 +73,7 @@
                         this.loaded = true;
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             activate: function(event) {
@@ -87,13 +86,8 @@
                         this.getModules();
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
-            },
-            setAlert: function(text, type) {
-                var self = this;
-                this.alert = {text: text, type: type};
-                setTimeout(function() { self.alert = {}; }, 5000);
             }
         }
     }

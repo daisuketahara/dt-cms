@@ -33,6 +33,16 @@
                 </transition>
             </div>
         </transition>
+        <div class="dt-alerts">
+            <transition-group name="fade" enter-active-class="animated bounceInUp" leave-active-class="animated fadeOut">
+                <div v-for="alert in alerts" :class="'alert alert-'+alert.type" :key="alert.id">
+                    {{alert.message}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" @click="removeAlert" :data-key="alert.id">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </transition-group>
+        </div>
         <v-dialog/>
     </div>
 </template>
@@ -73,6 +83,9 @@
             },
             translations () {
                 return this.$store.state.translations;
+            },
+            alerts () {
+                return this.$store.state.alerts;
             }
         },
         created() {
@@ -93,7 +106,7 @@
                         this.$router.push('/' + this.locale + '/admin/login/');
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             checkUser: function() {
@@ -152,11 +165,6 @@
                 }
                 this.getTranslations(selected);
             },
-            setAlert: function(text, type) {
-                var self = this;
-                this.alert = {text: text, type: type};
-                setTimeout(function() { self.alert = {}; }, 5000);
-            },
             setViewMode: function(event) {
 
                 var body = document.body;
@@ -170,6 +178,9 @@
                     this.$store.commit('setDarkmode', 0);
                     this.$cookies.remove('darkmode');
                 }
+            },
+            removeAlert: function(event) {
+                this.$store.commit('removeAlert', event.target.dataset.key);
             }
         }
     };
@@ -177,5 +188,29 @@
 
 
 <style lang="scss" scoped>
+    .dt-alerts {
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+        margin-bottom: 0;
+        display: inline-block;
+        z-index: 9999;
+        min-width: 280px;
 
+        .alert {
+            text-align: left;
+            font-size: 0.9rem;
+            position: relative;
+            -webkit-box-shadow: -1px 2px 22px 0px rgba(0,0,0,0.75);
+            -moz-box-shadow: -1px 2px 22px 0px rgba(0,0,0,0.75);
+            box-shadow: -1px 2px 22px 0px rgba(0,0,0,0.75);
+
+            .close {
+                position: absolute;
+                top: 9px;
+                right: 9px;
+                font-size: 1rem;
+            }
+        }
+    }
 </style>

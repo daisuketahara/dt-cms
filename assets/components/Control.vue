@@ -1,13 +1,5 @@
 <template>
     <form id="" method="post"  v-on:submit.prevent="submit">
-        <transition name="fade" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
-            <div v-if="alert.text != '' && alert.type == 'success'" class="alert alert-success" role="alert">
-                {{alert.text}}
-            </div>
-            <div v-else-if="alert.text != '' && alert.type == 'error'" class="alert alert-danger" role="alert">
-                {{alert.text}}
-            </div>
-        </transition>
         <div v-for="element in elements">
             <div v-if="element.type === 'text'" class="form-group">
                 <label :for="'form-'+element.id">{{element.label}}</label>
@@ -64,7 +56,6 @@
                 },
                 elements: [],
                 form_data: {},
-                alert: {},
                 api: {},
                 editor: ClassicEditor, //ClassicEditor,
                 editorData: {}, //'<p>Rich-text editor content.</p>',
@@ -91,7 +82,7 @@
                         else this.settings = {};
                     })
                     .catch(e => {
-                        this.setAlert(e, 'error');
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
             customButton: function(event){
@@ -101,23 +92,18 @@
                         .then(response => {
                             var result = JSON.parse(response.data);
                             if (result.success) {
-                                this.setAlert(result.message, 'success');
+                                this.$store.commit('setAlert', {type: 'success', message: translations[result.message] || result.message, autohide: true});
                                 this.list();
                             } else {
-                                self.setAlert(result.message, 'error');
+                                this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
                             }
                         })
                         .catch(e => {
-                            this.errors.push(e)
+                            this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                         });
                 } else if (event.target.dataset.url) {
                     window.location.href = event.target.dataset.url;
                 }
-            },
-            setAlert: function(text, type) {
-                var self = this;
-                this.alert = {text: text, type: type};
-                setTimeout(function() { self.alert = {}; }, 5000);
             }
         },
     }

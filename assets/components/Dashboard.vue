@@ -42,7 +42,6 @@
         },
         created() {
             this.loadGADashboard();
-
         },
         methods: {
             loadGADashboard: function() {

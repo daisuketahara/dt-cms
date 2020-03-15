@@ -17,7 +17,13 @@ export default new Vuex.Store({
         default_locale_id: 0,
         menu: [],
         permissions: [],
-        darkmode: 0
+        darkmode: 0,
+        alerts: {}
+    },
+    getters: {
+        getAlerts: state => {
+            return state.alerts
+        }
     },
     mutations: {
         setInit (state, init) {
@@ -55,6 +61,32 @@ export default new Vuex.Store({
         },
         setDarkmode (state, darkmode) {
             state.darkmode = darkmode;
+        },
+        setAlert (state, alert) {
+
+            if (typeof alert === 'string') alert = {
+                message: alert,
+                type: 'info'
+            };
+
+            if (typeof alert.type != typeof undefined) {
+                if (alert.type == 'error') alert.type = 'danger'
+            } else alert.type = 'info';
+
+
+            var alert_id = 'alert_' + Date.now();
+            alert.id = alert_id;
+
+            if (typeof alert.autohide != typeof undefined && alert.autohide)
+                setTimeout(function() { Vue.delete(state.alerts, alert_id) }, 10000);
+
+            Vue.set(state.alerts, alert_id, alert);
+
+        },
+        removeAlert (state, key) {
+
+            Vue.delete(state.alerts, key);
+
         },
     }
 });
