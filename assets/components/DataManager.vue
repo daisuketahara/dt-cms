@@ -1161,7 +1161,7 @@ body.darkmode .table-filter a:hover {
 
 
 .data-card {
-
+    position: relative;
     -webkit-transition: background-color 0.1s ease-in-out;
     -moz-transition: background-color 0.1s ease-in-out;
     -o-transition: background-color 0.1s ease-in-out;
