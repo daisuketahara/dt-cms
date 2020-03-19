@@ -18,11 +18,15 @@ export default new Vuex.Store({
         menu: [],
         permissions: [],
         darkmode: 0,
-        alerts: {}
+        alerts: {},
+        settings: {}
     },
     getters: {
         getAlerts: state => {
-            return state.alerts
+            return state.alerts;
+        },
+        getSetting: state => key => {
+            return state.settings[key];
         }
     },
     mutations: {
@@ -87,6 +91,10 @@ export default new Vuex.Store({
 
             Vue.delete(state.alerts, key);
 
+        },
+        storeSetting (state, settings) {
+            var oldSettings = state.settings;
+            state.settings = {oldSettings, settings}
         },
     }
 });
