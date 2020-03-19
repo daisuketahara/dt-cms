@@ -38,6 +38,33 @@ Vue.component('User', User);
 Vue.component('vue-tel-input', VueTelInput);
 Vue.component('Map', Map);
 
+Vue.filter('formatTimestamp', function(value) {
+    if (value) {
+        return moment(value*1000).format('YYYY-MM-DD hh:mm');
+    }
+});
+Vue.filter('formatTime', function(minutes) {
+    var dHours = 0;
+    var dMinutes = minutes;
+
+    while (dMinutes > 59) {
+        dMinutes = dMinutes - 60;
+        dHours = dHours + 1;
+    }
+
+    return dHours + 'h ' + dMinutes + 'm';
+});
+Vue.filter('formatPrice', function(value) {
+    if (value) {
+		value = value / 100
+		value = value.toFixed(2);
+		value = value.toString();
+		value = value.replace('.', ',');
+
+		return value;
+    }
+});
+
 Vue.prototype.$axios = axios;
 
 Vue.config.productionTip = false;
