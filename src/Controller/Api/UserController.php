@@ -42,7 +42,7 @@ class UserController extends AbstractController
     */
     final public function fields(Request $request, TranslatorInterface $translator)
     {
-        $properties = Yaml::parseFile('src/Config/User.yaml');
+        $properties = Yaml::parseFile('src/Config/user.yaml');
 
         $info = array(
             'api' => array(
