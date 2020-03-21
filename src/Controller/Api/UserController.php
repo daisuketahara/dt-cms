@@ -23,7 +23,7 @@ use App\Entity\Permission;
 use App\Entity\UserRole;
 use App\Entity\UserPermission;
 use App\Entity\UserApiKey;
-use App\Service\GeocodeService;
+use App\Service\RouteService;
 use App\Service\LogService;
 
 
@@ -141,7 +141,7 @@ class UserController extends AbstractController
     * @Route("/api/v1/user/insert/", name="api_user_insert", methods={"PUT"})
     * @Route("/api/v1/user/update/{id}/", name="api_user_update", methods={"PUT"})
     */
-    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log, GeocodeService $geocode, UserPasswordEncoderInterface $encoder)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log, RouteService $route, UserPasswordEncoderInterface $encoder)
     {
         $logMessage = '';
         $logComment = 'Insert';
@@ -246,7 +246,7 @@ class UserController extends AbstractController
 
         if (!empty($newLocation) && $origLocation != $newLocation) {
 
-            $coordinates = $geocode->getCoordinates($newLocation);
+            $coordinates = $route->getCoordinates($newLocation);
 
             if (!empty($coordinates)) {
                 $userinfo->setMailLongitude($coordinates[0]);

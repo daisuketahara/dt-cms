@@ -10,7 +10,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 use App\Entity\UserInformation;
 use App\Service\LogService;
-use App\Service\GeocodeService;
+use App\Service\RouteService;
 
 
 class UserController extends AbstractController
@@ -18,7 +18,7 @@ class UserController extends AbstractController
     /**
     * @Route("/cron/user/geocode-user/", name="cron_user_geocode")
     */
-    final public function send(LogService $log, GeocodeService $geocode)
+    final public function send(LogService $log, RouteService $route)
     {
         $where = [
             "u.mailAddress1 IS NOT NULL AND u.mailAddress1 <> ''",
@@ -47,7 +47,7 @@ class UserController extends AbstractController
             $location[] = $info->getMailCountry();
             $location = implode(', ', $location);
 
-            $coordinates = $geocode->getCoordinates($location);
+            $coordinates = $route->getCoordinates($location);
 
             if (!empty($coordinates)) {
                 $info->setMailLongitude($coordinates[0]);
