@@ -4,6 +4,7 @@
 import '../scss/admin.scss';
 
 import Vue from 'vue';
+import vuetify from 'vuetify'
 import router from '../router';
 import store from '../store/admin.js';
 import axios from 'axios';
