@@ -130,25 +130,25 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-control-label" for="form_mail_address_1">{{translations.address || 'Address'}}</label>
-                            <input id="form_mail_address_1" name="form_mail_address_1" class="form-control" v-model="user.information.mailAddress1" type="text">
+                            <input id="form_mail_address_1" name="form_mail_address_1" class="form-control" v-model="user.information.address1" type="text">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-control-label" for="form_mail_address_2">{{translations.address_2 || 'Address 2'}}</label>
-                            <input id="form_mail_address_2" name="form_mail_address_2" class="form-control" v-model="user.information.mailAddress2" type="text">
+                            <input id="form_mail_address_2" name="form_mail_address_2" class="form-control" v-model="user.information.address2" type="text">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-control-label" for="form_mail_zipcode">{{translations.zipcode || 'Zipcode'}}</label>
-                            <input id="form_mail_zipcode" name="form_mail_zipcode" class="form-control" v-model="user.information.mailZipcode" type="text">
+                            <input id="form_mail_zipcode" name="form_mail_zipcode" class="form-control" v-model="user.information.zipcode" type="text">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="form-control-label ten" for="form_mail_city">{{translations.city || 'City'}}</label>
-                            <input id="form_mail_city" name="form_mail_city" class="form-control" v-model="user.information.mailCity" type="text">
+                            <input id="form_mail_city" name="form_mail_city" class="form-control" v-model="user.information.city" type="text">
                         </div>
                     </div>
                     <div class="col-md-6">

@@ -187,10 +187,10 @@ class UserController extends AbstractController
         }
 
         $origLocation = array();
-        $origLocation[] = $userinfo->getMailAddress1();
-        $origLocation[] = $userinfo->getMailZipcode();
-        $origLocation[] = $userinfo->getMailCity();
-        $origLocation[] = $userinfo->getMailCountry();
+        $origLocation[] = $userinfo->getAddress1();
+        $origLocation[] = $userinfo->getZipcode();
+        $origLocation[] = $userinfo->getCity();
+        $origLocation[] = $userinfo->getCountry();
         $origLocation = implode(', ', $origLocation);
 
         $user->setLocale($locale);
@@ -226,11 +226,11 @@ class UserController extends AbstractController
         if (isset($params['information']['website'])) $userinfo->setWebsite($params['information']['website']);
         if (isset($params['information']['vatNumber'])) $userinfo->setVatNumber($params['information']['vatNumber']);
         if (isset($params['information']['registrationNumber'])) $userinfo->setRegistrationNumber($params['information']['registrationNumber']);
-        if (isset($params['information']['mailAddress1'])) $userinfo->setMailAddress1($params['information']['mailAddress1']);
-        if (isset($params['information']['mailAddress2'])) $userinfo->setMailAddress2($params['information']['mailAddress2']);
-        if (isset($params['information']['mailZipcode'])) $userinfo->setMailZipcode($params['information']['mailZipcode']);
-        if (isset($params['information']['mailCity'])) $userinfo->setMailCity($params['information']['mailCity']);
-        if (isset($params['information']['mailCountry'])) $userinfo->setMailCountry($params['information']['mailCountry']);
+        if (isset($params['information']['address1'])) $userinfo->setAddress1($params['information']['address1']);
+        if (isset($params['information']['address2'])) $userinfo->setAddress2($params['information']['address2']);
+        if (isset($params['information']['zipcode'])) $userinfo->setZipcode($params['information']['zipcode']);
+        if (isset($params['information']['city'])) $userinfo->setCity($params['information']['city']);
+        if (isset($params['information']['mailCountry'])) $userinfo->setCountry($params['information']['mailCountry']);
         if (isset($params['information']['billingAddress1'])) $userinfo->setBillingAddress1($params['information']['billingAddress1']);
         if (isset($params['information']['billingAddress2'])) $userinfo->setBillingAddress2($params['information']['billingAddress2']);
         if (isset($params['information']['billingZipcode'])) $userinfo->setBillingZipcode($params['information']['billingZipcode']);
@@ -238,10 +238,10 @@ class UserController extends AbstractController
         if (isset($params['information']['billingCountry'])) $userinfo->setBillingCountry($params['information']['billingCountry']);
 
         $newLocation = array();
-        $newLocation[] = $userinfo->getMailAddress1();
-        $newLocation[] = $userinfo->getMailZipcode();
-        $newLocation[] = $userinfo->getMailCity();
-        $newLocation[] = $userinfo->getMailCountry();
+        $newLocation[] = $userinfo->getAddress1();
+        $newLocation[] = $userinfo->getZipcode();
+        $newLocation[] = $userinfo->getCity();
+        $newLocation[] = $userinfo->getCountry();
         $newLocation = implode(', ', $newLocation);
 
         if (!empty($newLocation) && $origLocation != $newLocation) {

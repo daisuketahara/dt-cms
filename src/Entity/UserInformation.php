@@ -46,37 +46,37 @@ class UserInformation
     /**
     * @ORM\Column(type="string", length=255, nullable=true)
     */
-    protected $mailAddress1;
+    protected $address1;
 
     /**
     * @ORM\Column(type="string", length=255, nullable=true)
     */
-    protected $mailAddress2;
+    protected $address2;
 
     /**
     * @ORM\Column(type="string", length=255, nullable=true)
     */
-    protected $mailZipcode;
+    protected $zipcode;
 
     /**
     * @ORM\Column(type="string", length=255, nullable=true)
     */
-    protected $mailCity;
+    protected $city;
 
     /**
     * @ORM\Column(type="string", length=255, nullable=true)
     */
-    protected $mailCountry;
+    protected $country;
 
     /**
     * @ORM\Column(type="decimal", precision=10, scale=8, nullable=true)
     */
-    protected $mailLatitude;
+    protected $latitude;
 
     /**
     * @ORM\Column(type="decimal", precision=11, scale=8, nullable=true)
     */
-    protected $mailLongitude;
+    protected $longitude;
 
     /**
     * @ORM\Column(type="string", length=255, nullable=true)
@@ -262,21 +262,21 @@ class UserInformation
      *
      * @return mixed
      */
-    public function getMailAddress1()
+    public function getAddress1()
     {
-        return $this->mailAddress1;
+        return $this->address1;
     }
 
     /**
      * Set the value of Mail Address
      *
-     * @param mixed mailAddress1
+     * @param mixed address1
      *
      * @return self
      */
-    public function setMailAddress1($mailAddress1)
+    public function setAddress1($address1)
     {
-        $this->mailAddress1 = $mailAddress1;
+        $this->address1 = $address1;
 
         return $this;
     }
@@ -286,21 +286,21 @@ class UserInformation
      *
      * @return mixed
      */
-    public function getMailAddress2()
+    public function getAddress2()
     {
-        return $this->mailAddress2;
+        return $this->address2;
     }
 
     /**
      * Set the value of Mail Address
      *
-     * @param mixed mailAddress2
+     * @param mixed address2
      *
      * @return self
      */
-    public function setMailAddress2($mailAddress2)
+    public function setAddress2($address2)
     {
-        $this->mailAddress2 = $mailAddress2;
+        $this->address2 = $address2;
 
         return $this;
     }
@@ -310,21 +310,21 @@ class UserInformation
      *
      * @return mixed
      */
-    public function getMailZipcode()
+    public function getZipcode()
     {
-        return $this->mailZipcode;
+        return $this->zipcode;
     }
 
     /**
      * Set the value of Mail Zipcode
      *
-     * @param mixed mailZipcode
+     * @param mixed zipcode
      *
      * @return self
      */
-    public function setMailZipcode($mailZipcode)
+    public function setZipcode($zipcode)
     {
-        $this->mailZipcode = $mailZipcode;
+        $this->zipcode = $zipcode;
 
         return $this;
     }
@@ -334,21 +334,21 @@ class UserInformation
      *
      * @return mixed
      */
-    public function getMailCity()
+    public function getCity()
     {
-        return $this->mailCity;
+        return $this->city;
     }
 
     /**
      * Set the value of Mail City
      *
-     * @param mixed mailCity
+     * @param mixed city
      *
      * @return self
      */
-    public function setMailCity($mailCity)
+    public function setCity($city)
     {
-        $this->mailCity = $mailCity;
+        $this->city = $city;
 
         return $this;
     }
@@ -358,7 +358,7 @@ class UserInformation
      *
      * @return mixed
      */
-    public function getMailCountry()
+    public function getCountry()
     {
         return $this->mailCountry;
     }
@@ -370,9 +370,9 @@ class UserInformation
      *
      * @return self
      */
-    public function setMailCountry($mailCountry)
+    public function setCountry($country)
     {
-        $this->mailCountry = $mailCountry;
+        $this->mailCountry = $country;
 
         return $this;
     }
@@ -390,13 +390,13 @@ class UserInformation
     /**
      * Set the value of Mail Latitude
      *
-     * @param mixed $mailLatitude
+     * @param mixed $latitude
      *
      * @return self
      */
-    public function setMailLatitude($mailLatitude)
+    public function setMailLatitude($latitude)
     {
-        $this->mailLatitude = $mailLatitude;
+        $this->mailLatitude = $latitude;
 
         return $this;
     }
@@ -414,13 +414,13 @@ class UserInformation
     /**
      * Set the value of Mail Longitude
      *
-     * @param mixed $mailLongitude
+     * @param mixed $longitude
      *
      * @return self
      */
-    public function setMailLongitude($mailLongitude)
+    public function setMailLongitude($longitude)
     {
-        $this->mailLongitude = $mailLongitude;
+        $this->mailLongitude = $longitude;
 
         return $this;
     }

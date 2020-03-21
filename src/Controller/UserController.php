@@ -21,9 +21,9 @@ class UserController extends AbstractController
     final public function send(LogService $log, RouteService $route)
     {
         $where = [
-            "u.mailAddress1 IS NOT NULL AND u.mailAddress1 <> ''",
-            "u.mailZipcode IS NOT NULL AND u.mailZipcode <> ''",
-            "u.mailCity IS NOT NULL AND u.mailCity <> ''",
+            "u.address1 IS NOT NULL AND u.address1 <> ''",
+            "u.zipcode IS NOT NULL AND u.zipcode <> ''",
+            "u.city IS NOT NULL AND u.city <> ''",
             //"u.mailCountry IS NOT NULL AND u.mailCountry <> ''",
             "(u.mailLatitude IS NULL OR u.mailLatitude = '')",
             "(u.mailLongitude IS NULL OR u.mailLongitude = '')",
@@ -41,10 +41,10 @@ class UserController extends AbstractController
         foreach($users as $info) {
 
             $location = array();
-            $location[] = $info->getMailAddress1();
-            $location[] = $info->getMailZipcode();
-            $location[] = $info->getMailCity();
-            $location[] = $info->getMailCountry();
+            $location[] = $info->getAddress1();
+            $location[] = $info->getZipcode();
+            $location[] = $info->getCity();
+            $location[] = $info->getCountry();
             $location = implode(', ', $location);
 
             $coordinates = $route->getCoordinates($location);
