@@ -72,7 +72,7 @@ fields:
     active:
         id: active
         label: active
-        type: checkbox
+        type: switch
         required: false
         editable: true
         list: true

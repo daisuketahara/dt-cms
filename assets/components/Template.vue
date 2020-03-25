@@ -1,8 +1,10 @@
 <template>
     <div class="h-100">
         <transition name="fade" enter-active-class="animated fadeIn">
-            <div v-if="view == 'template'" class="p-3">
-                <button class="btn btn-light mb-3" v-on:click.prevent="gotoList"><i class="fal fa-arrow-left"></i></button>
+            <v-container v-if="view == 'template'" fluid>
+                <v-btn class="mb-3" outlined x-small fab :dark="darkmode" v-on="on" @click="gotoList">
+                    <v-icon x-small>fal fa-arrow-left</v-icon>
+                </v-btn>
                 <form v-on:submit.prevent="save">
                     <div v-if="template.id == 1" class="form-group">
                         <label>{{translations.header || 'Header'}}</label>
@@ -106,23 +108,39 @@
                     <button class="btn btn-secondary">{{translations.submit}}</button>
                     <button class="btn btn-secondary float-right" v-on:click.prevent="gotoList">{{translations.back_to_list}}</button>
                 </form>
-            </div>
+            </v-container>
         </transition>
         <transition name="fade" enter-active-class="animated fadeIn">
-            <div v-if="view == 'list'" class="container py-3 ml-0 mt-5">
+            <v-container v-if="view == 'list'" fluid>
                 <div class="row">
                     <div v-for="item in templates" class="col-md-4 mb-3">
-                        <div class="card">
-                            <div :style="'background-image: url(/' + item.image.filePath + item.image.fileName + ')'" class="template-img"></div>
-                            <div class="card-body">
-                                <h5 class="card-title">{{item.name}}</h5>
-                                <p class="card-text">{{item.description}}</p>
-                                <button class="btn btn-secondary" @click="getTemplate" :data-id="item.id">{{translations['edit_template'] || edit_template}}</button>
-                            </div>
-                        </div>
+                        <v-card class="mx-auto" :dark="darkmode">
+                            <v-img
+                                class="white--text align-end"
+                                height="200px"
+                                :src="'/' + item.image.filePath + item.image.fileName"
+                            >
+                                <v-card-title>{{item.name}}</v-card-title>
+                            </v-img>
+                            <v-card-text>
+                                <p>
+                                    {{item.description}}
+                                </p>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-btn
+                                    block
+                                    color="secondary"
+                                    @click="getTemplate"
+                                    :data-id="item.id"
+                                >
+                                    {{translations['edit_template'] || edit_template}}
+                                </v-btn>
+                            </v-card-actions>
+                        </v-card>
                     </div>
                 </div>
-            </div>
+            </v-container>
         </transition>
     </div>
 </template>
@@ -174,6 +192,9 @@
         computed: {
             translations () {
                 return this.$store.state.translations;
+            },
+            darkmode () {
+                return this.$store.state.darkmode;
             },
         },
         created() {

@@ -1,37 +1,49 @@
 <template>
-    <transition name="fade" enter-active-class="animated flipInX" leave-active-class="animated flipOutX">
-        <div v-if="view =='login'" class="login-container">
+    <transition-group name="fade" enter-active-class="animated flipInX">
+        <v-card v-if="view =='login'" class="login-container" key="login" elevation="4">
             <h1>{{translations.signin || 'Sign in'}}</h1>
             <p>{{translations.signin || 'Hello! Sign in and start managing your website.'}}</p>
             <div class="site-logo">{{site.logo}}</div>
             {{block.login_notification}}
-            <form v-on:submit.prevent="login">
-                <div class="form-group">
-                    <input type="text" id="email" name="email" class="form-control" v-model="email" :placeholder="translations.email || 'Email'">
-                </div>
-                <div class="form-group">
-                    <input type="password" id="password" name="password" class="form-control" v-model="password" :placeholder="translations.password || 'Password'">
-                </div>
-                <button type="submit" class="btn btn-lg btn-secondary">{{translations.login}}</button>
-            </form>
+            <v-form>
+                <v-text-field
+                    v-model="email"
+                    :rules="[rules.required]"
+                    :label="translations.email || 'Email'"
+                ></v-text-field>
+                <v-text-field
+                    v-model="password"
+                    :append-icon="passwordShow ? 'fal fa-eye' : 'fal fa-eye-slash'"
+                    :type="passwordShow ? 'text' : 'password'"
+                    name="input-10-1"
+                    :rules="[rules.required, rules.min]"
+                    :label="translations.password || 'Password'"
+                    :hint="translations.login_password_hint || 'Enter your password'"
+                    @click:append="passwordShow = !passwordShow"
+                ></v-text-field>
+                <v-btn color="primary" @click="login">{{translations.login || 'Login'}}</v-btn>
+            </v-form>
 
-            <button class="btn btn-link" v-on:click.prevent="gotoForgetPassword">{{translations.forget_password}}</button>
-        </div>
-        <div v-else-if="view =='forgetPassword'" class="login-container">
+            <v-btn @click="gotoForgetPassword">{{translations.forget_password}}</v-btn>
+        </v-card>
+        <v-card v-else-if="view =='forgetPassword'" class="login-container" key="forget-password">
             <h1>{{translations.request_new_password || 'Request a new password'}}</h1>
             <p>{{translations.signin || 'Hello! Sign in and start managing your website.'}}</p>
             <div class="site-logo">{{site.logo}}</div>
             {{block.login_notification}}
-            <form v-on:submit.prevent="RequestPassword">
-                <div class="form-group">
-                    <label for="email">{{translations.email}}</label>
-                    <input type="text" id="email" name="email" class="form-control" v-model="email">
-                </div>
-                <button type="submit" class="btn btn-lg btn-secondary">{{translations.send}}</button>
-            </form>
-            <button class="btn btn-link" v-on:click.prevent="gotoLogin">{{translations.login}}</button>
-        </div>
-    </transition>
+
+            <v-form>
+                <v-text-field
+                    outlined
+                    v-model="email"
+                    :rules="[rules.required]"
+                    :label="translations.email || 'Email'"
+                ></v-text-field>
+                <v-btn color="primary"  @click="RequestPassword">{{translations.send}}</v-btn>
+            </v-form>
+            <v-btn @click="gotoLogin">{{translations.login}}</v-btn>
+        </v-card>
+    </transition-group>
 </template>
 
 <script>
@@ -43,8 +55,14 @@
                 view: 'login',
                 email: '',
                 password: '',
+                passwordShow: false,
                 site: {},
-                block: {}
+                block: {},
+                rules: {
+                    required: value => !!value || 'Required.',
+                    min: v => v.length >= 8 || 'Min 8 characters',
+                    emailMatch: () => ('The email and password you entered don\'t match'),
+                },
             }
         },
         computed: {

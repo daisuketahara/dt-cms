@@ -1,12 +1,14 @@
 <template>
-    <div v-if="tablemode" class="p-3">
-        <div v-if="mode === 'list'" id="data-manager-table" class="table-responsive" style="padding-right:-15px;">
-            <button v-if="api.insert" class="btn btn-success btn-sm mb-3" @click="add"><i class="fa fa-plus" aria-hidden="true"></i> {{translations.new || 'New'}}</button>
-            <button v-if="settings.insert" class="btn btn-success btn-sm mb-3" :data-url="settings.insert" @click="customButton"><i class="fa fa-plus" aria-hidden="true" :data-url="settings.insert"></i> {{translations.new || 'New'}}</button>
-            <button class="btn btn-light btn-sm mb-3" @click="setTableMode" data-tablemode="0">
-                <i class="fal fa-th-list"></i>
-                {{translations.list_view || 'List view'}}
-            </button>
+    <v-container v-if="tablemode" fluid>
+        <div v-if="mode === 'list'"class="table-responsive">
+            <div class="mb-3">
+                <v-btn color="secondary" small @click="setTableMode" data-tablemode="0">
+                    <i class="fal fa-th-list"></i>
+                    {{translations.list_view || 'List view'}}
+                </v-btn>
+                <v-btn v-if="api.insert" color="success" small @click="add"><i class="fa fa-plus" aria-hidden="true"></i> {{translations.new || 'New'}}</v-btn>
+                <v-btn v-if="settings.insert" color="success" small :data-url="settings.insert" @click="customButton"><i class="fa fa-plus" aria-hidden="true" :data-url="settings.insert"></i> {{translations.new || 'New'}}</v-btn>
+            </div>
             <table class="data-manager-table table table-striped">
                 <thead class="thead-dark">
                     <tr>
@@ -36,7 +38,7 @@
                             <input v-else type="text" :id="'filter-'+column.id" :name="'filter-'+column.id" placeholder="filter" v-on:keyup="filterlist">
                         </td>
                         <td class="text-right pr-2 pt-1">
-                            <button class="btn btn-secondary btn-sm text-white pointer ml-1" @click="resetFilter">{{translations.reset_filter || 'Reset filter'}}</button>
+                            <v-btn color="error" x-small @click="resetFilter">{{translations.reset_filter || 'Reset filter'}}</v-btn>
                         </td>
                     </tr>
                 </thead>
@@ -67,31 +69,25 @@
             </table>
             <div class="row">
                 <div class="col-3">
-                    <button class="btn btn-danger btn-sm" @click="dropMultiple">{{translations.delete_selected || 'Delete selected'}}</button>
+                    <v-btn color="error" small @click="dropMultiple">{{translations.delete_selected || 'Delete selected'}}</v-btn>
                 </div>
-                <div class="col-3 form-inline">
-                    <select class="select-limit form-control form-inline" v-on:change="change_amount">
-                        <option value="15">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                        <option value="250">250</option>
-                    </select>
+                <div class="col-3">
+                    <v-select class="d-inline" width="40" :items="[10,20,50,250]" v-model="limit" :dark="darkmode" solo x-small dense></v-select>
                 </div>
-                <div class="col-6">
-                    <paginate
-                        :page-count="pages"
-                        :click-handler="gotopage"
-                        :prev-text="translations.previous || 'Previous'"
-                        :next-text="translations.next || 'Next'"
-                        :container-class="'list-inline float-right'"
-                        :page-class="'list-inline-item'"
-                        :page-link-class="'btn btn-sm btn-secondary'"
-                        :prev-class="'list-inline-item'"
-                        :prev-link-class="'btn btn-sm btn-secondary'"
-                        :next-class="'list-inline-item'"
-                        :next-link-class="'btn btn-sm btn-secondary'">
-                    </paginate>
+                <div class="col-6 text-right">
+                    <v-pagination
+                        v-if="total > limit"
+                        v-model="offset"
+                        :length="pages"
+                        :page="offset"
+                        total-visible="7"
+                        :dark="darkmode"
+                        prev-icon="fal fa-angle-left"
+                        next-icon="fal fa-angle-right"
+                        small
+                        dense
+                        inline
+                    ></v-pagination>
                 </div>
             </div>
             <div v-if="buttons.length > 0">
@@ -138,7 +134,7 @@
                     <div v-if="column.type === 'checkbox' && (column.editable || (form_id === 0 && column.form))" class="form-group">
                         <div class="checkbox">
                             <label :for="'form-'+column.id">
-                                <input type="checkbox" :id="'form-'+column.id" :name="'form-'+column.id" v-model="form_data[column.id]">
+                                <input type="checkbox" v-model="form_data[column.id]">
                                 <span v-html="translations[column.label] || column.label"></span>
                             </label>
                         </div>
@@ -161,24 +157,24 @@
                     </div>
                     <div v-else-if="column.editable || (form_id === 0 && column.form)" class="form-group">
                         <label :for="'form-'+column.id">{{translations[column.label] || column.label}}</label>
-                        <input v-if="column.type === 'text'" type="text" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
-                        <input v-else-if="column.type === 'email'" type="email" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                        <input v-if="column.type === 'text'" type="text" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                        <input v-else-if="column.type === 'email'" type="email" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
                         <vue-tel-input v-else-if="column.type === 'phone'" v-model="form_data[column.id]" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-bind="phoneProps" :preferredCountries="['nl', 'be', 'gb']"></vue-tel-input>
-                        <input v-else-if="column.type === 'integer'" type="integer" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                        <input v-else-if="column.type === 'integer'" type="integer" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
                         <datepicker v-else-if="column.type === 'date'" format="yyyy-MM-dd" placeholder="Select Date":id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:input-class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}"></datepicker>
-                        <textarea v-else-if="column.type === 'textarea'" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">{{ form_data[column.id] }}</textarea>
-                        <select v-else-if="column.type === 'select'" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                        <textarea v-else-if="column.type === 'textarea'" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">{{ form_data[column.id] }}</textarea>
+                        <select v-else-if="column.type === 'select'" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
                             <option value=""></option>
                             <option v-for="(optionvalue, optionkey) in column.options" :value="optionkey">{{translations[optionvalue] || optionvalue}}</option>
                         </select>
                         <ckeditor v-else-if="column.type === 'texteditor'" :editor="editor" v-model="form_data[column.id]" :config="editorConfig"></ckeditor>
-                        <select v-else-if="column.type === 'switch'" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                        <select v-else-if="column.type === 'switch'" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
                             <option value=""></option>
                             <option v-for="(optionvalue, optionkey) in column.options" v-if="column.id != 'AgreeTerms' || optionkey == '0' || (optionkey == '1' && form_data[column.id] == '1')" :value="optionkey">{{translations[optionvalue] || optionvalue}}</option>
                         </select>
-                         <model-select v-else-if="column.type === 'selectfilter'" :options="select_options[column.id]" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control form-selectfilter" v-model="form_data[column.id]" @select="validateSelectFilter" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}"></model-select>
-                        <input v-else-if="column.type === 'password'" type="password" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="password" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
-                        <input v-else type="text" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                         <model-select v-else-if="column.type === 'selectfilter'" :options="select_options[column.id]" :data-id="column.id" class="form-control form-selectfilter" v-model="form_data[column.id]" @select="validateSelectFilter" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}"></model-select>
+                        <input v-else-if="column.type === 'password'" type="password" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="password" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                        <input v-else type="text" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
                     </div>
                 </div>
                 <div class="row">
@@ -193,23 +189,23 @@
                 </div>
             </form>
         </div>
-    </div>
+    </v-container>
     <div v-else class="row ml-0 mr-3">
         <div class="data-list-container col-6 col-lg-5 px-0">
             <transition name="fade" enter-active-class="animated fadeIn">
-                <paginate v-if="total > 7"
-                    :page-count="pages"
-                    :click-handler="gotopage"
-                    :prev-text="(translations.previous || 'Previous')"
-                    :next-text="(translations.next || 'Next')"
-                    :container-class="'d-flex data-card-pagination'"
-                    :page-class="''"
-                    :page-link-class="'btn btn-dark'"
-                    :prev-class="'flex-fill'"
-                    :prev-link-class="'btn btn-dark'"
-                    :next-class="'flex-fill'"
-                    :next-link-class="'btn btn-dark'">
-                </paginate>
+                <v-pagination
+                    v-if="total > limit"
+                    v-model="offset"
+                    :length="pages"
+                    :page="offset"
+                    total-visible="7"
+                    :dark="darkmode"
+                    prev-icon="fal fa-angle-left"
+                    next-icon="fal fa-angle-right"
+                    small
+                    dense
+                    inline
+                ></v-pagination>
             </transition>
             <transition-group name="fade" enter-active-class="animated flipInX">
                 <div v-for="item in data" :key="item.id" :id="'data-card-'+item.id" class="data-card d-flex">
@@ -267,46 +263,59 @@
             </transition-group>
         </div>
         <div class="data-form-container col-6 col-lg-7">
-            <transition name="fade-right" enter-active-class="animated fadeIn">
-                <div v-if="mode === 'list'" id="data-manager-view">
+            <transition-group name="fade-right" enter-active-class="animated fadeIn">
+                <div v-if="mode === 'list'" id="data-manager-view" key="list">
                     <div class="data-functions-container text-center">
                         <h1 v-if="typeof settings.title !== 'undefined'">{{translations[settings.title] || settings.title}}</h1>
                         <div v-else class="title-replace-spacer"></div>
-                        <button v-if="api.insert" class="btn btn-success btn-lg w-100 mt-5" @click="add">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                            {{translations.add_new_item || 'Add a new item'}}
-                        </button>
-                        <button v-if="settings.insert" class="btn btn-success btn-lg w-100 mt-5" :data-url="settings.insert" @click="customButton">
-                            <i class="fa fa-plus" aria-hidden="true" :data-url="settings.insert"></i>
-                            {{translations.add_new_item || 'Add a new item'}}
-                        </button>
-                        <button v-if="settings.component" class="btn btn-success btn-lg w-100 mt-5" @click="setComponent" :data-component="settings.component">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                            {{translations.add_new_item || 'Add a new item'}}
-                        </button>
-                        <button class="btn btn-primary btn-lg w-100 mt-5" @click="search">
-                            <i class="fad fa-trash-alt"></i>
-                            {{translations.search || 'Search'}}
-                        </button>
-                        <button class="btn btn-danger btn-lg w-100 mt-5" @click="dropMultiple">
-                            <i class="fad fa-trash-alt"></i>
-                            {{translations.delete_selected || 'Delete selected'}}
-                        </button>
-                        <button class="btn btn-dark btn-lg w-100 mt-5" @click="setTableMode" data-tablemode="1">
-                            <i class="fal fa-table"></i>
-                            {{translations.table_view || 'Table view'}}
-                        </button>
-
-                        <button v-for="button in buttons" class="btn btn-dark btn-lg w-100 mt-5" :data-id="button.id" :data-api="button.api" :data-url="button.url" @click="customButton">
-                            <i class="fal fa-cogs"></i>
-                            {{translations[button.label] || button.label}}
-                        </button>
+                        <div class="my-3">
+                            <v-btn v-if="api.insert" block color="success" x-large @click="add">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                {{translations.add_new_item || 'Add a new item'}}
+                            </v-btn>
+                        </div>
+                        <div class="my-3">
+                            <v-btn v-if="settings.insert" block color="success" x-large :data-url="settings.insert" @click="customButton">
+                                <i class="fa fa-plus" aria-hidden="true" :data-url="settings.insert"></i>
+                                {{translations.add_new_item || 'Add a new item'}}
+                            </v-btn>
+                        </div>
+                        <div class="my-3">
+                            <v-btn v-if="settings.component" block color="success" x-large @click="setComponent" :data-component="settings.component">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                {{translations.add_new_item || 'Add a new item'}}
+                            </v-btn>
+                        </div>
+                        <div class="my-3">
+                            <v-btn block color="primary" x-large @click="search">
+                                <i class="fad fa-trash-alt"></i>
+                                {{translations.search || 'Search'}}
+                            </v-btn>
+                        </div>
+                        <div class="my-3">
+                            <v-btn block color="error" x-large @click="dropMultiple">
+                                <i class="fad fa-trash-alt"></i>
+                                {{translations.delete_selected || 'Delete selected'}}
+                            </v-btn>
+                        </div>
+                        <div class="my-3">
+                            <v-btn block color="secondary" x-large @click="setTableMode" data-tablemode="1">
+                                <i class="fal fa-table"></i>
+                                {{translations.table_view || 'Table view'}}
+                            </v-btn>
+                        </div>
+                        <div v-for="button in buttons" class="my-3" :key="button.label">
+                            <v-btn block color="secondary" x-large :data-id="button.id" :data-api="button.api" :data-url="button.url" @click="customButton">
+                                <i class="fal fa-cogs"></i>
+                                {{translations[button.label] || button.label}}
+                            </v-btn>
+                        </div>
                     </div>
                 </div>
-            </transition>
-            <transition name="fade-right" enter-active-class="animated fadeIn">
-                <div v-if="mode === 'search'" id="data-manager-view">
-                    <button class="btn btn-light mb-3" v-on:click.prevent="gotoList"><i class="fal fa-arrow-left"></i></button>
+                <div v-if="mode === 'search'" id="data-manager-view" key="search">
+                    <v-btn class="mb-3" outlined x-small fab :dark="darkmode" v-on="on" @click="gotoList">
+                        <v-icon x-small>fal fa-arrow-left</v-icon>
+                    </v-btn>
                     <h1>{{translations.search || 'Search'}}</h1>
                     <table class="table-filter table table-striped">
                         <tbody>
@@ -345,10 +354,10 @@
                         </tfoot>
                     </table>
                 </div>
-            </transition>
-            <transition name="fade-right" enter-active-class="animated fadeIn">
-                <div v-if="mode === 'view'" id="data-manager-view">
-                    <button class="btn btn-light mb-3" v-on:click.prevent="gotoList"><i class="fal fa-arrow-left"></i></button>
+                <div v-if="mode === 'view'" id="data-manager-view" key="view">
+                    <v-btn class="mb-3" outlined x-small fab :dark="darkmode" v-on="on" @click="gotoList">
+                        <v-icon x-small>fal fa-arrow-left</v-icon>
+                    </v-btn>
                     <table class="table table-striped">
                         <tbody>
                             <tr v-for="column in columns">
@@ -372,25 +381,31 @@
                         </div>
                     </div>
                 </div>
-            </transition>
+            </transition-group>
             <transition name="fade-right" enter-active-class="animated fadeIn">
                 <div v-if="mode === 'form'" id="data-manager-form">
-                    <button class="btn btn-light mb-3" v-on:click.prevent="gotoList"><i class="fal fa-arrow-left"></i></button>
+                    <v-btn class="mb-3" outlined x-small fab :dark="darkmode" v-on="on" @click="gotoList">
+                        <v-icon x-small>fal fa-arrow-left</v-icon>
+                    </v-btn>
                     <ul v-if="settings.translate == true" class="nav nav-tabs">
                         <li v-for="item in locales" class="nav-item">
                             <a :class="{ 'nav-link': true, 'active' : (locale_id == item.id && translate_id === 0) || translate_id == item.id}" href="#" v-on:click.prevent="setTranslate" :data-locale="item.locale" :data-lid="item.id">{{item.name}}</a>
                         </li>
                     </ul>
-                    <form method="post" v-on:submit.prevent="update">
+                    <v-form>
                         <div v-for="column in columns">
-                            <div v-if="column.type === 'checkbox' && (column.editable || (form_id === 0 && column.form))" class="form-group">
-                                <div class="checkbox">
-                                    <label :for="'form-'+column.id">
-                                        <input type="checkbox" :id="'form-'+column.id" :name="'form-'+column.id" v-model="form_data[column.id]">
-                                        <span v-html="translations[column.label] || column.label"></span>
-                                    </label>
-                                </div>
-                            </div>
+                            <v-checkbox
+                                v-if="column.type === 'checkbox' && (column.editable || (form_id === 0 && column.form))"
+                                v-model="form_data[column.id]"
+                                :label="translations[column.label] || column.label"
+                                :dark="darkmode"
+                            ></v-checkbox>
+                            <v-switch
+                                v-else-if="column.type === 'switch' && (column.editable || (form_id === 0 && column.form))"
+                                v-model="form_data[column.id]"
+                                :label="translations[column.label] || column.label"
+                                :dark="darkmode"
+                            ></v-switch>
                             <div v-else-if="column.type === 'checkboxes' && (column.editable || (form_id === 0 && column.form))" class="form-group">
                                 <h4>
                                     {{translations[column.label] || column.label}}
@@ -407,43 +422,74 @@
                                     </div>
                                 </div>
                             </div>
-                            <div v-else-if="column.editable || (form_id === 0 && column.form)" class="form-group">
-                                <label :for="'form-'+column.id">{{translations[column.label] || column.label}}</label>
-                                <input v-if="column.type === 'text'" type="text" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
-                                <input v-else-if="column.type === 'email'" type="email" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                            <div v-else-if="column.editable || (form_id === 0 && column.form)">
+                                <v-text-field v-if="column.type === 'text'" v-model="form_data[column.id]" :label="translations[column.label] || column.label" :rules="validation[column.id]" :hint="column.tooltip" :dark="darkmode"></v-text-field>
+                                <input v-else-if="column.type === 'email'" type="email" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
                                 <vue-tel-input v-else-if="column.type === 'phone'" v-model="form_data[column.id]" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-bind="phoneProps" :preferredCountries="['nl', 'be', 'gb']"></vue-tel-input>
-                                <input v-else-if="column.type === 'integer'" type="integer" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                                <input v-else-if="column.type === 'integer'" type="integer" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+
+
                                 <datepicker v-else-if="column.type === 'date'" format="yyyy-MM-dd" placeholder="Select Date":id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:input-class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}"></datepicker>
-                                <textarea v-else-if="column.type === 'textarea'" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">{{ form_data[column.id] }}</textarea>
-                                <select v-else-if="column.type === 'select'" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
-                                    <option value=""></option>
-                                    <option v-for="(optionvalue, optionkey) in column.options" :value="optionkey">{{translations[optionvalue] || optionvalue}}</option>
-                                </select>
+
+                                <v-menu
+                                    v-else-if="column.type === 'date'"
+                                    v-model="menu2"
+                                    :close-on-content-click="false"
+                                    :nudge-right="40"
+                                    transition="scale-transition"
+                                    offset-y
+                                    min-width="290px"
+                                >
+                                    <template v-slot:activator="{ on }">
+                                        <v-text-field
+                                            v-model="date"
+                                            label="Picker without buttons"
+                                            prepend-icon="event"
+                                            readonly
+                                            v-on="on"
+                                        ></v-text-field>
+                                    </template>
+                                    <v-date-picker v-model="date" @input="menu2 = false"></v-date-picker>
+                                </v-menu>
+
+                                <v-textarea v-else-if="column.type === 'textarea'" v-model="form_data[column.id]" :label="translations[column.label] || column.label"  :rules="validation[column.id]" :hint="column.tooltip" :dark="darkmode">{{ form_data[column.id] }}</v-textarea>
+                                <v-select v-else-if="column.type === 'select'" v-model="form_data[column.id]" :items="column.options" :label="translations[column.label] || column.label" :rules="validation[column.id]" :hint="column.tooltip" :dark="darkmode"></v-select>
                                 <ckeditor v-else-if="column.type === 'texteditor'" :editor="editor" v-model="form_data[column.id]" :config="editorConfig"></ckeditor>
-                                <select v-else-if="column.type === 'switch'" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                                <select v-else-if="column.type === 'switch'" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
                                     <option value=""></option>
                                     <option v-for="(optionvalue, optionkey) in column.options" v-if="column.id != 'AgreeTerms' || optionkey == '0' || (optionkey == '1' && form_data[column.id] == '1')" :value="optionkey">{{translations[optionvalue] || optionvalue}}</option>
                                 </select>
-                                 <model-select v-else-if="column.type === 'selectfilter'" :options="select_options[column.id]" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" class="form-control form-selectfilter" v-model="form_data[column.id]" @select="validateSelectFilter" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}"></model-select>
-                                <input v-else-if="column.type === 'password'" type="password" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="password" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
-                                <input v-else type="text" :id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
+                                <v-text-field
+                                    v-else-if="column.type === 'password'"
+                                    v-model="password"
+                                    :append-icon="passwordShow ? 'fal fa-eye' : 'fal fa-eye-slash'"
+                                    :type="passwordShow ? 'text' : 'password'"
+                                    :rules="validation[column.id]"
+                                    :label="translations[column.label] || column.label"
+                                    :hint="column.tooltip"
+                                    :dark="darkmode"
+                                    @click:append="passwordShow = !passwordShow"
+                                ></v-text-field>
+                                <v-text-field v-else v-model="form_data[column.id]" :label="translations[column.label] || column.label" :rules="validation[column.id]" :hint="column.tooltip" :dark="darkmode"></v-text-field>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col">
                             </div>
                             <div class="col text-right">
-                                <button v-if="form_id != 0 && typeof settings.updateSubmitLabel != typeof undefined" class="btn btn-primary">{{translations[settings.updateSubmitLabel] || settings.updateSubmitLabel}}</button>
-                                <button v-else-if="typeof settings.insertSubmitLabel != typeof undefined" class="btn btn-primary">{{translations[settings.insertSubmitLabel] || settings.insertSubmitLabel}}</button>
-                                <button v-else class="btn btn-primary">{{translations.submit || 'Submit'}}</button>
+                                <v-btn v-if="form_id != 0 && typeof settings.updateSubmitLabel != typeof undefined" color="primary" :dark="darkmode">{{translations[settings.updateSubmitLabel] || settings.updateSubmitLabel}}</v-btn>
+                                <v-btn v-else-if="typeof settings.insertSubmitLabel != typeof undefined" color="primary" :dark="darkmode">{{translations[settings.insertSubmitLabel] || settings.insertSubmitLabel}}</v-btn>
+                                <v-btn v-else color="primary" :dark="darkmode">{{translations.submit || 'Submit'}}</v-btn>
                             </div>
                         </div>
-                    </form>
+                    </v-form>
                 </div>
             </transition>
             <transition name="fade-right" enter-active-class="animated fadeIn">
                 <div v-if="mode === 'component'">
-                    <button class="btn btn-light mb-3" v-on:click.prevent="gotoList"><i class="fal fa-arrow-left"></i></button>
+                    <v-btn class="mb-3" outlined x-small fab :dark="darkmode" v-on="on" @click="gotoList">
+                        <v-icon x-small>fal fa-arrow-left</v-icon>
+                    </v-btn>
                     <component v-bind:is="component" v-bind="{id: form_id}"></component>
                 </div>
             </transition>
@@ -453,12 +499,10 @@
 
 <script>
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-    import Datepicker from 'vuejs-datepicker';
     import { ModelSelect } from 'vue-search-select';
 
     export default {
         components: {
-            Datepicker,
             ModelSelect
         },
         name: "DataManager",
@@ -468,6 +512,7 @@
                     'Content-Type': 'application/json;charset=UTF-8',
                     "X-AUTH-TOKEN" : this.$cookies.get('token')
                 },
+                loaded: false,
                 tablemode: false,
                 mode: '',
                 default_locale_id: 0,
@@ -482,7 +527,7 @@
                 settings: {},
                 sort: {},
                 filter: '',
-                offset: 0,
+                offset: 1,
                 limit: 7,
                 total: 0,
                 pages: 0,
@@ -503,6 +548,13 @@
                 },
                 select_options: {},
                 component: '',
+                passwordShow: false,
+                validation: {},
+                rules: {
+                    required: value => !!value || 'Required.',
+                    min: v => v.length >= 8 || 'Min 8 characters',
+                    emailMatch: () => ('The email and password you entered don\'t match'),
+                },
             }
         },
         computed: {
@@ -521,6 +573,9 @@
             locale_id () {
                 return this.$store.state.locale_id;
             },
+            darkmode () {
+                return this.$store.state.darkmode;
+            },
             translations () {
                 return this.$store.state.translations;
             }
@@ -533,7 +588,14 @@
                 this.tablemode = true;
                 this.limit = 10;
             }
-
+        },
+        watch: {
+            offset: function(val, oldVal) {
+                if (this.loaded) this.list();
+            },
+            limit: function(val, oldVal) {
+                if (this.loaded) this.list();
+            }
         },
         methods: {
             getEntityInfo: function() {
@@ -551,6 +613,8 @@
                         else this.settings = {};
 
                         this.list();
+                        this.setRules();
+                        this.loaded = true;
                     })
                     .catch(e => {
                         this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
@@ -565,7 +629,7 @@
             list: function() {
 
                 let params = {};
-                params.offset = this.offset * this.limit;
+                params.offset = (this.offset-1) * this.limit;
                 params.limit = this.limit;
                 params.sort = this.sort.id;
                 params.dir = this.sort.dir;
@@ -623,15 +687,6 @@
                     let el = document.getElementById('filter-' + column);
                     if (el != null) el.value = '';
                 }
-                this.list();
-            },
-            gotopage: function(page) {
-                this.offset = page - 1;
-                this.list();
-            },
-            change_amount: function(event) {
-                this.offset = 0;
-                this.limit = event.target.value;
                 this.list();
             },
             search: function() {
@@ -709,32 +764,6 @@
                 this.form_data[event.target.dataset.id] = event.target.value;
             },
             update: function(event) {
-
-                var error = 0;
-
-                var fields = document.getElementsByClassName('form-required');
-                for(var i = 0; i < fields.length; i++) {
-
-                    var el = fields[i];
-
-                    if ('createEvent' in document) {
-             	        // modern browsers, IE9+
-             	        var e = document.createEvent('HTMLEvents');
-             	        e.initEvent('blur', false, true);
-             	        el.dispatchEvent(e);
-             	    } else {
-             	        // IE 8
-             	        var e = document.createEventObject();
-             	        e.eventType = 'blur';
-             	        el.fireEvent('on'+e.eventType, e);
-             	    }
-
-                    if (fields[i].classList.contains('is-invalid')) error = 1;
-                }
-                if (error > 0) {
-                    //this.setAlert(this.translations.form_errors || 'The form contains errors, please fill in all your data correctly', 'error');
-                    return false;
-                }
 
                 let params = {};
                 if (this.translate_id > 0) params['locale'] = this.translate_id;
@@ -990,6 +1019,27 @@
                     this.list();
                 }
             },
+
+            tableView: function() {
+
+
+
+
+            },
+            tableEdit: function() {
+
+
+
+
+            },
+            tableCloseDialog: function() {
+                this.table.dialog = false;
+                setTimeout(() => {
+                    this.editedItem = Object.assign({}, this.defaultItem)
+                    this.editedIndex = -1
+                }, 300)
+            },
+
             validateField: function(e) {
 
                 var value = e.target.value;
@@ -1063,12 +1113,24 @@
                         return;
                     }
                 }
+            },
+            setRules: function() {
+
+                for (var i in this.columns) {
+
+                    if (this.columns[i]['required']) {
+
+                        this.validation[this.columns[i]['id']] = [this.rules.required];
+
+                    }
+                }
+
             }
         }
     }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
 h1 {
     text-transform: uppercase;
@@ -1091,19 +1153,16 @@ body.darkmode h4 {
     color: white;
 }
 
-#admin-content > .row {
-    height: 100%;
-}
-
 .data-list-container {
     height: 100%;
     background-color: rgba(40,40,40,0.05);
+    padding-top: 0;
 }
 
-.data-card-pagination {
+.data-list-container .v-pagination {
     margin-bottom: 0;
     list-style: none;
-    padding-left: 0;
+    padding-left: 0 !important;
 
     .btn {
         display: inline-block;
@@ -1271,10 +1330,15 @@ body.darkmode .data-card.to-delete:hover {
     background-color: rgba(255,0,0,0.8);
 }
 
-body.darkmode .table {
+.table {
+    width: 100%;
 
-    background-color: rgba(40,40,40,0.05);
-    color: white;
+    border-spacing: 0;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    font-weight: 300;
+    overflow: hidden;
+    border-radius: 4px;
 
     tr:nth-child(odd) {
         background-color: rgba(0,0,0,0.15);
@@ -1284,7 +1348,28 @@ body.darkmode .table {
     }
 
     th, td {
+        padding: 12px 8px;
+
+    }
+
+    td:last
+
+    .table-sort {
+        color: black;
+    }
+}
+
+body.darkmode .table {
+
+    background-color: rgba(40,40,40,0.5);
+    color: white;
+
+    th, td {
         border-top: none;
+    }
+
+    .table-sort {
+        color: white;
     }
 }
 

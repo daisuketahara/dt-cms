@@ -3,8 +3,9 @@
 
 import '../scss/admin.scss';
 
+import 'babel-polyfill';
 import Vue from 'vue';
-import vuetify from 'vuetify'
+import vuetify from '../plugins/vuetify'
 import router from '../router';
 import store from '../store/admin.js';
 import axios from 'axios';
@@ -12,7 +13,6 @@ import CKEditor from '@ckeditor/ckeditor5-vue';
 import VueCookies from 'vue-cookies';
 import VModal from 'vue-js-modal';
 import VueCodemirror from 'vue-codemirror';
-import Paginate from 'vuejs-paginate';
 import VTooltip from 'v-tooltip';
 import VueTelInput from 'vue-tel-input';
 
@@ -34,7 +34,6 @@ Vue.use(VModal, { dialog: true });
 Vue.use(VueCookies);
 Vue.use(VTooltip);
 Vue.component('filemanager', FileManager);
-Vue.component('paginate', Paginate);
 Vue.component('User', User);
 Vue.component('vue-tel-input', VueTelInput);
 Vue.component('Map', Map);
@@ -72,6 +71,7 @@ Vue.config.productionTip = false;
 
 new Vue({
     el: '#admin-app',
+    vuetify,
     store,
     router,
     components: {

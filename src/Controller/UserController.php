@@ -24,9 +24,9 @@ class UserController extends AbstractController
             "u.address1 IS NOT NULL AND u.address1 <> ''",
             "u.zipcode IS NOT NULL AND u.zipcode <> ''",
             "u.city IS NOT NULL AND u.city <> ''",
-            //"u.mailCountry IS NOT NULL AND u.mailCountry <> ''",
-            "(u.mailLatitude IS NULL OR u.mailLatitude = '')",
-            "(u.mailLongitude IS NULL OR u.mailLongitude = '')",
+            //"u.country IS NOT NULL AND u.country <> ''",
+            "(u.latitude IS NULL OR u.latitude = '')",
+            "(u.longitude IS NULL OR u.longitude = '')",
         ];
         $where = implode(' AND ', $where);
 

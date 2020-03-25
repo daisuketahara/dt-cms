@@ -360,19 +360,19 @@ class UserInformation
      */
     public function getCountry()
     {
-        return $this->mailCountry;
+        return $this->country;
     }
 
     /**
      * Set the value of Mail Country
      *
-     * @param mixed mailCountry
+     * @param mixed country
      *
      * @return self
      */
     public function setCountry($country)
     {
-        $this->mailCountry = $country;
+        $this->country = $country;
 
         return $this;
     }
@@ -384,7 +384,7 @@ class UserInformation
      */
     public function getMailLatitude()
     {
-        return $this->mailLatitude;
+        return $this->latitude;
     }
 
     /**
@@ -396,7 +396,7 @@ class UserInformation
      */
     public function setMailLatitude($latitude)
     {
-        $this->mailLatitude = $latitude;
+        $this->latitude = $latitude;
 
         return $this;
     }
@@ -408,7 +408,7 @@ class UserInformation
      */
     public function getMailLongitude()
     {
-        return $this->mailLongitude;
+        return $this->longitude;
     }
 
     /**
@@ -420,7 +420,7 @@ class UserInformation
      */
     public function setMailLongitude($longitude)
     {
-        $this->mailLongitude = $longitude;
+        $this->longitude = $longitude;
 
         return $this;
     }

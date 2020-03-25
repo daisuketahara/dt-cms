@@ -17,7 +17,7 @@ export default new Vuex.Store({
         default_locale_id: 0,
         menu: [],
         permissions: [],
-        darkmode: 0,
+        darkmode: false,
         alerts: {},
         settings: {}
     },
@@ -72,11 +72,6 @@ export default new Vuex.Store({
                 message: alert,
                 type: 'info'
             };
-
-            if (typeof alert.type != typeof undefined) {
-                if (alert.type == 'error') alert.type = 'danger'
-            } else alert.type = 'info';
-
 
             var alert_id = 'alert_' + Date.now();
             alert.id = alert_id;

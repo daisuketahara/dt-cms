@@ -230,7 +230,7 @@ class UserController extends AbstractController
         if (isset($params['information']['address2'])) $userinfo->setAddress2($params['information']['address2']);
         if (isset($params['information']['zipcode'])) $userinfo->setZipcode($params['information']['zipcode']);
         if (isset($params['information']['city'])) $userinfo->setCity($params['information']['city']);
-        if (isset($params['information']['mailCountry'])) $userinfo->setCountry($params['information']['mailCountry']);
+        if (isset($params['information']['country'])) $userinfo->setCountry($params['information']['country']);
         if (isset($params['information']['billingAddress1'])) $userinfo->setBillingAddress1($params['information']['billingAddress1']);
         if (isset($params['information']['billingAddress2'])) $userinfo->setBillingAddress2($params['information']['billingAddress2']);
         if (isset($params['information']['billingZipcode'])) $userinfo->setBillingZipcode($params['information']['billingZipcode']);

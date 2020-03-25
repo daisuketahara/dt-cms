@@ -1,61 +1,97 @@
 <template>
-    <div id="admin-app">
+    <v-app id="admin-app">
         <div v-if="!initialised" class="init">
             <i class="fas fa-circle-notch fa-spin"></i>
             Loading...
         </div>
         <login v-else-if="!authenticated"></login>
-        <transition name="fadeIn" enter-active-class="animated fadeIn">
-            <div v-if="initialised && authenticated" class="admin-container d-flex">
-                <div v-if="authenticated" class="admin-sidebar">
-                    <div class="text-center mb-3">
-                        <div class="im-user-profile-picture mb-3"></div>
-                        <div class="im-user-profile-name mb-3"></div>
-                    </div>
-                    <navbar></navbar>
-                    <ul class="language-switcher list-inline">
-                        <li v-for="locale in locales" class="list-inline-item">
-                            <button class="btn btn-sm btn-link" @click="setLocale" :data-locale="locale.locale">
-                                <img class="img-fluid" :src="'/img/flags/' + locale.lcid + '.png'" :alt="locale.name" :data-locale="locale.locale">
-                            </button>
-                        </li>
-                    </ul>
-                </div>
-                <transition name="fade" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
-                    <main v-if="authenticated" id="admin-content" class="admin-content flex-grow-1">
-                        <router-view :key="$route.fullPath"></router-view>
-                        <div class="admin-functions">
-                            <button class="btn btn-light btn-sm mt-1" v-on:click.prevent="setViewMode"><i class="fas fa-adjust"></i></button>
-                            <button class="btn btn-light btn-sm mt-1" href="#"><i class="fal fa-user"></i> <span>{{translations.my_account || 'My account'}}</span></button>
-                            <button class="btn btn-light btn-sm mt-1 mr-2" @click="logout"><i class="fal fa-sign-out-alt"></i> <span>{{translations.logout || 'Logout'}}</span></button>
-                        </div>
-                    </main>
-                </transition>
+        <v-navigation-drawer v-if="initialised && authenticated" permanent color="transparent" :dark="darkmode" app>
+            <div class="text-center mb-3">
+                <div class="im-user-profile-picture mb-3"></div>
+                <div class="im-user-profile-name mb-3"></div>
             </div>
-        </transition>
+            <v-list dense nav>
+                <v-list-group
+                    v-for="route in menu"
+                    v-if="checkPermission(route.route_name)"
+                    v-bind:key="route.route_name"
+                    link
+
+                >
+                    <template v-slot:activator>
+                        <v-list-item-icon>
+                            <v-icon small v-text="route.icon"></v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-title v-text="translations[route.label] || route.label"></v-list-item-title>
+                    </template>
+                    <v-list-item
+                        v-for="subroute in route.submenu"
+                        v-if="checkPermission(subroute.route_name)"
+                        :key="subroute.route_name"
+                        link
+                        router v-bind:to="{name: locale + '_' + subroute.route_name}"
+                    >
+                        <v-list-item-icon>
+                            <v-icon></v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-title v-text="translations[subroute.label] || subroute.label"></v-list-item-title>
+                    </v-list-item>
+                </v-list-group>
+            </v-list>
+        </v-navigation-drawer>
+        <v-content v-if="initialised && authenticated">
+            <router-view :key="$route.fullPath"></router-view>
+            <div class="admin-functions">
+                <v-menu transition="slide-y-transition" bottom offset-x>
+                    <template v-slot:activator="{ on }">
+                        <v-btn outlined x-small fab :dark="darkmode" v-on="on">
+                            <v-icon x-small>fal fa-globe</v-icon>
+                        </v-btn>
+                    </template>
+                    <v-list>
+                        <v-list-item
+                            v-for="locale in locales"
+                            :key="locale.locale"
+                            :data-locale="locale.locale"
+                            @click="setLocale"
+                        >
+                            <v-list-item-title>{{ locale.name }}</v-list-item-title>
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
+                <v-btn outlined x-small fab :dark="darkmode"  @click="setViewMode">
+                    <v-icon x-small>fas fa-adjust</v-icon>
+                </v-btn>
+                <v-btn outlined x-small fab :dark="darkmode">
+                    <v-icon x-small>fal fa-user</v-icon>
+                </v-btn>
+                <v-btn outlined x-small fab :dark="darkmode" @click="logout">
+                    <v-icon x-small>fal fa-sign-out-alt</v-icon>
+                </v-btn>
+            </div>
+        </v-content>
+        <v-dialog/>
         <div class="dt-alerts">
             <transition-group name="fade" enter-active-class="animated bounceInUp" leave-active-class="animated fadeOut">
-                <div v-for="alert in alerts" :class="'alert alert-'+alert.type" :key="alert.id">
+                <v-alert v-for="alert in alerts" :type="alert.type" :key="alert.id">
                     {{alert.message}}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" @click="removeAlert" :data-key="alert.id">
+                    <v-btn class="close" data-dismiss="alert" aria-label="Close" @click="removeAlert" :data-key="alert.id">
                         <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
+                    </v-btn>
+                </v-alert>
             </transition-group>
         </div>
-        <v-dialog/>
-    </div>
+    </v-app>
 </template>
 
 <script>
     import Login from '../components/Login';
-    import Navbar from '../components/Navbar';
+
 
     export default {
         name: 'Admin',
         components: {
-            Login,
-            Navbar
+            Login
         },
         data() {
             return {
@@ -86,7 +122,16 @@
             },
             alerts () {
                 return this.$store.state.alerts;
-            }
+            },
+            darkmode () {
+                return this.$store.state.darkmode;
+            },
+            menu () {
+                return this.$store.state.menu;
+            },
+            permissions () {
+                return this.$store.state.permissions;
+            },
         },
         created() {
             this.getLocales();
@@ -118,8 +163,18 @@
                 }
                 if (this.$cookies.isKey('darkmode')) {
                     document.body.classList.add('darkmode');
-                    this.$store.commit('setDarkmode', 1);
+                    this.$store.commit('setDarkmode', true);
                 }
+            },
+            checkPermission(route_name) {
+
+                for (var i = 0; i < this.permissions.length; i++) {
+
+                    if (this.permissions[i].route_name == route_name) return true;
+
+                }
+
+                return false;
             },
             getLocales: function() {
                 this.$store.commit('setLocale', document.body.dataset.locale);
@@ -167,13 +222,13 @@
 
                 var body = document.body;
 
-                if (this.$store.state.darkmode == 0) {
+                if (this.$store.state.darkmode == false) {
                     body.classList.add('darkmode');
-                    this.$store.commit('setDarkmode', 1);
+                    this.$store.commit('setDarkmode', true);
                     this.$cookies.set('darkmode', 1);
                 } else {
                     body.classList.remove('darkmode');
-                    this.$store.commit('setDarkmode', 0);
+                    this.$store.commit('setDarkmode', false);
                     this.$cookies.remove('darkmode');
                 }
             },
@@ -211,4 +266,14 @@
             }
         }
     }
+
+
+        .v-list-item__icon {
+            text-align: center;
+            margin-right: 1rem !important;
+
+            i {
+                width: 24px;
+            }
+        }
 </style>

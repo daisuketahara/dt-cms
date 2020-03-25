@@ -1,210 +1,143 @@
 <template>
     <transition name="fade" enter-active-class="animated fadeInRight" leave-active-class="animated fadeOutDown">
-        <form v-on:submit.prevent="updateUser">
-            <div class="btn-group mb-3" role="group" aria-label="Basic example">
-                <button type="button" class="btn btn-secondary px-3" v-on:click.prevent="changeTab" data-tab="account">{{translations.account || 'Account'}}</button>
-                <button type="button" class="btn btn-secondary px-3" v-on:click.prevent="changeTab" data-tab="information">{{translations.personal_information || 'Personal information'}}</button>
-                <button type="button" class="btn btn-secondary px-3" v-on:click.prevent="changeTab" data-tab="note">{{translations.notes || 'Notes'}}</button>
-                <button type="button" class="btn btn-secondary px-3" v-on:click.prevent="changeTab" data-tab="permission">{{translations.permissions || 'Permissions'}}</button>
-            </div>
+        <v-form>
+
+            <v-tabs class="mb-3" color: transparent small :dark="darkmode">
+                <v-tab @click="changeTab" data-tab="account">{{translations.account || 'Account'}}</v-tab>
+                <v-tab @click="changeTab" data-tab="information">{{translations.personal_information || 'Personal information'}}</v-tab>
+                <v-tab @click="changeTab" data-tab="note">{{translations.notes || 'Notes'}}</v-tab>
+                <v-tab @click="changeTab" data-tab="permission">{{translations.permissions || 'Permissions'}}</v-tab>
+            </v-tabs>
             <div v-if="tab=='account'">
                 <div class="row mb-4">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label required" for="user-firstname">{{translations.firstname || 'Firstname'}}</label>
-                            <input id="user-firstname" name="user-firstname" required="required" class="form-control" v-model="user.firstname" type="text">
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-text-field v-model="user.firstname" :label="translations.firstname || 'Firstname'" :rules="[rules.required]" :dark="darkmode"></v-text-field>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label required" for="user-lastname">{{translations.lastname || 'Lastname'}}</label>
-                            <input id="user-lastname" name="user-lastname" required="required" class="form-control" v-model="user.lastname" type="text">
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-text-field v-model="user.lastname" :label="translations.lastname || 'Lastname'" :rules="[rules.required]" :dark="darkmode"></v-text-field>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label required" for="user-email">{{translations.email || 'Email'}}</label>
-                            <input id="user-email" name="user-email" required="required" class="form-control" v-model="user.email" type="email">
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-text-field v-model="user.email" :label="translations.email || 'Email'" :rules="[rules.required]" :dark="darkmode"></v-text-field>
                     </div>
-                    <div class="col-md-6" style="position:relative; z-index:2;">
+                    <div class="col-md-6 py-0" style="position:relative; z-index:2;">
                         <div class="form-group">
                             <label class="form-control-label ten required" for="user-phone">{{translations.phone || 'Phone'}}</label>
                             <vue-tel-input v-model="user.phone"></vue-tel-input>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label" for="user-password">{{translations.password || 'Password'}}</label>
-                            <input id="user-password" name="user-password" class="form-control" type="password" v-model="user.password">
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-text-field
+                            v-model="user.password"
+                            :append-icon="passwordShow ? 'fal fa-eye' : 'fal fa-eye-slash'"
+                            :type="passwordShow ? 'text' : 'password'"
+                            :rules="[rules.required]"
+                            :label="translations.password || 'Password'"
+                            :dark="darkmode"
+                            @click:append="passwordShow = !passwordShow"
+                        ></v-text-field>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label" for="user-password">{{translations.confirm_password || 'Comfirm password'}}</label>
-                            <input id="user-password-confirm" name="user-password-confirm" class="form-control" type="password" v-model="user.password">
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-text-field
+                            v-model="user.password"
+                            :append-icon="passwordShow ? 'fal fa-eye' : 'fal fa-eye-slash'"
+                            :type="passwordShow ? 'text' : 'password'"
+                            :rules="[rules.required]"
+                            :label="translations.confirm_password || 'Confirm password'"
+                            :dark="darkmode"
+                            @click:append="passwordShow = !passwordShow"
+                        ></v-text-field>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label" for="user-locale">{{translations.language || 'Language'}}</label>
-                            <select name="user-locale" class="user-locale form-control" v-model="user.locale.id">
-                                <option v-for="item in locales" :value="item.id">{{item.name}}</option>
-                            </select>
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-select v-model="user.locale.id" :items="locales" :label="translations.language || 'Language'" :rules="[rules.required]" :dark="darkmode"></v-select>
                     </div>
                 </div>
                 <div class="form-group mb-4">
                     <h4>{{translations.user_roles || 'User roles'}}</h4>
                     <div class="row">
-                        <div v-for="role in roles" class="col-md-2">
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input :id="'form-role-'+role.id" name="form_role[]" class="form-check-input" :value="role.id" v-model="user.roles[role.id]" type="checkbox">
-                                    {{ role.name }}
-                                </label>
-                            </div>
+                        <div v-for="role in roles" class="col-md-3">
+                            <v-checkbox
+                                v-model="user.roles[role.id]"
+                                :label="role.name"
+                                :dark="darkmode"
+                            ></v-checkbox>
                         </div>
                     </div>
                 </div>
                 <h4>{{translations.account_settings || 'Account settings'}}</h4>
-                <div class="form-group">
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input id="user-email-confirmed" name="user-email-confirmed" class="form-check-input" v-model="user.emailConfirmed" type="checkbox">
-                            {{translations.email_confirmed || 'Email confirmed'}}
-                        </label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input id="user-phone-confirmed" name="user-phone-confirmed" class="form-check-input" v-model="user.phoneConfirmed" type="checkbox">
-                            {{translations.phone_confirmed || 'Phone confirmed'}}
-                        </label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="form-check">
-                        <label class="form-check-label">
-                            <input id="active" name="active" class="form-check-input" v-model="user.active" type="checkbox">
-                            {{translations.active || 'Active'}}
-                        </label>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" id="save-account" name="save" class="btn-secondary btn">{{translations.save || 'Save'}}</button>
-                </div>
+                <v-switch
+                    v-model="user.emailConfirmed"
+                    :label="translations.email_confirmed || 'Email confirmed'"
+                    :dark="darkmode"
+                ></v-switch>
+                <v-switch
+                    v-model="user.phoneConfirmed"
+                    :label="translations.phone_confirmed || 'Phone confirmed'"
+                    :dark="darkmode"
+                ></v-switch>
+                <v-switch
+                    v-model="user.active"
+                    :label="translations.active || 'Active'"
+                    :dark="darkmode"
+                ></v-switch>
+                <v-btn color="primary" :dark="darkmode" @click="updateUser">{{translations.save || 'Save'}}</v-btn>
             </div>
             <div v-if="tab=='information'">
                 <h4>{{translations.company_information || 'Company information'}}</h4>
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label" for="form_company_name">{{translations.company_name || 'Company name'}}</label>
-                            <input id="form_company_name" name="form_company_name" class="form-control" v-model="user.information.companyName" type="text">
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-text-field v-model="user.information.companyName" :label="translations.company_name || 'Company name'" :dark="darkmode"></v-text-field>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label" for="form_website">{{translations.website || 'Website'}}</label>
-                            <input id="form_website" name="form_website" class="form-control" v-model="user.information.website" type="text">
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-text-field v-model="user.information.website" :label="translations.website || 'Website'" :dark="darkmode"></v-text-field>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label" for="form_vat_number">{{translations.vat_number || 'VAT Number'}}</label>
-                            <input id="form_vat_number" name="form_vat_number" class="form-control" v-model="user.information.vatNumber" type="text">
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-text-field v-model="user.information.vatNumber" :label="translations.vat_number || 'VAT Number'" :dark="darkmode"></v-text-field>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label" for="form_registration_number">{{translations.registration_number || 'Registration Number'}}</label>
-                            <input id="form_registration_number" name="form_registration_number" class="form-control" v-model="user.information.registrationNumber" type="text">
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-text-field v-model="user.information.registrationNumber" :label="translations.registration_number || 'Registration Number'" :dark="darkmode"></v-text-field>
                     </div>
                 </div>
                 <h4>{{translations.email || 'Email'}}</h4>
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label" for="form_mail_address_1">{{translations.address || 'Address'}}</label>
-                            <input id="form_mail_address_1" name="form_mail_address_1" class="form-control" v-model="user.information.address1" type="text">
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-text-field v-model="user.information.address1" :label="translations.address || 'Address'" :dark="darkmode"></v-text-field>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label" for="form_mail_address_2">{{translations.address_2 || 'Address 2'}}</label>
-                            <input id="form_mail_address_2" name="form_mail_address_2" class="form-control" v-model="user.information.address2" type="text">
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-text-field v-model="user.information.address2" :label="translations.address_2 || 'Address 2'" :dark="darkmode"></v-text-field>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label" for="form_mail_zipcode">{{translations.zipcode || 'Zipcode'}}</label>
-                            <input id="form_mail_zipcode" name="form_mail_zipcode" class="form-control" v-model="user.information.zipcode" type="text">
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-text-field v-model="user.information.zipcode" :label="translations.zipcode || 'Zipcode'" :dark="darkmode"></v-text-field>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label ten" for="form_mail_city">{{translations.city || 'City'}}</label>
-                            <input id="form_mail_city" name="form_mail_city" class="form-control" v-model="user.information.city" type="text">
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-text-field v-model="user.information.city" :label="translations.city || 'City'" :dark="darkmode"></v-text-field>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label" for="form_mail_country">{{translations.country || 'Country'}}</label>
-                            <input id="form_mail_country" name="form_mail_country" class="form-control" type="text" v-model="user.information.mailCountry">
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-text-field v-model="user.information.country" :label="translations.country || 'Country'" :dark="darkmode"></v-text-field>
                     </div>
                 </div>
                 <h4>{{translations.billing_address || 'Billing address'}}</h4>
                 <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label" for="form_billing_address_1">{{translations.address || 'Address'}}</label>
-                            <input id="form_billing_address_1" name="form_billing_address_1" class="form-control" v-model="user.information.billingAddress1" type="text">
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-text-field v-model="user.information.billingAddress1" :label="translations.address || 'Address'" :dark="darkmode"></v-text-field>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label" for="form_billing_address_2">{{translations.address_2 || 'Address 2'}}</label>
-                            <input id="form_billing_address_2" name="form_billing_address_2" class="form-control" v-model="user.information.billingAddress2" type="text">
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-text-field v-model="user.information.billingAddress2" :label="translations.address_2 || 'Address 2'" :dark="darkmode"></v-text-field>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label" for="form_billing_zipcode">{{translations.zipcode || 'Zipcode'}}</label>
-                            <input id="form_billing_zipcode" name="form_billing_zipcode" class="form-control" v-model="user.information.billingZipcode" type="text">
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-text-field v-model="user.information.billingZipcode" :label="translations.zipcode || 'zipcode'" :dark="darkmode"></v-text-field>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label ten" for="form_billing_city">{{translations.city || 'City'}}</label>
-                            <input id="form_billing_city" name="form_billing_city" class="form-control" v-model="user.information.billingCity" type="text">
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-text-field v-model="user.information.billingCity" :label="translations.city || 'City'" :dark="darkmode"></v-text-field>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-control-label" for="form_billing_country">{{translations.country || 'Country'}}</label>
-                            <input id="form_billing_country" name="form_billing_country" class="form-control" v-model="user.information.billingCountry" type="text">
-                        </div>
+                    <div class="col-md-6 py-0">
+                        <v-text-field v-model="user.information.billingCountry" :label="translations.country || 'Country'" :dark="darkmode"></v-text-field>
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <button type="submit" id="save-information" name="save" class="btn-secondary btn">{{translations.save || 'Save'}}</button>
-                </div>
+                <v-btn color="primary" :dark="darkmode" @click="updateUser">{{translations.save || 'Save'}}</v-btn>
             </div>
             <div v-if="tab=='note'">
-                <div class="form-group">
-                    <label for="form_note">{{translations.notes || 'Notes'}}</label>
-                    <textarea name="form_note" class="form-control" rows="30" :placeholder="translations.write_a_note || 'Write a note'" v-model="user.note.note"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" id="save-note" name="save" class="btn-secondary btn">{{translations.save || 'Save'}}</button>
-                </div>
+                <v-textarea v-model="user.note.note" rows="24" :label="translations.write_a_note || 'Write a note'" :dark="darkmode"></v-textarea>
+                <v-btn color="primary" :dark="darkmode">{{translations.save || 'Save'}}</v-btn>
             </div>
             <div v-if="tab=='permission'">
 
@@ -214,7 +147,7 @@
                         <button class="btn btn-sm btn-link" v-on:click.prevent="toggleCheckboxes" data-status="0">{{translations.select_all}}</button>
                     </h4>
                     <div class="row">
-                        <div v-for="(description, index) in permission.options" class="col-sm-6 col-md-4 col-lg-3">
+                        <div v-for="(description, index) in permission.options" class="col-sm-6 col-md-4 col-lg-3 py-1">
                             <div class="checkbox">
                                 <label :for="'permission-'+index">
                                     <input type="checkbox" :id="'permission-'+index" :name="'permission-'+index" :value="index" v-model="user.permissions[index]">
@@ -224,11 +157,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <button type="submit" id="save-permission" name="save" class="btn-secondary btn">{{translations.save || 'Save'}}</button>
-                </div>
+                <v-btn color="primary" :dark="darkmode" @click="updateUser">{{translations.save || 'Save'}}</v-btn>
             </div>
-        </form>
+        </v-form>
     </transition>
 </template>
 
@@ -250,7 +181,13 @@
                 },
                 roles: [],
                 permissions: [],
-                tab: 'account'
+                tab: 'account',
+                passwordShow: false,
+                rules: {
+                    required: value => !!value || 'Required.',
+                    min: v => v.length >= 8 || 'Min 8 characters',
+                    emailMatch: () => ('The email and password you entered don\'t match'),
+                },
             }
         },
         computed: {
@@ -259,6 +196,9 @@
             },
             translations () {
                 return this.$store.state.translations;
+            },
+            darkmode () {
+                return this.$store.state.darkmode;
             }
         },
         created() {
