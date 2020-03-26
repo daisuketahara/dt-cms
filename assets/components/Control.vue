@@ -1,5 +1,5 @@
 <template>
-    <form id="" method="post"  v-on:submit.prevent="submit">
+    <v-form>
         <div v-for="element in elements">
             <div v-if="element.type === 'text'" class="form-group">
                 <label :for="'form-'+element.id">{{element.label}}</label>
@@ -30,7 +30,7 @@
                 </div>
             </div>
             <div v-else-if="element.type === 'button'" class="form-group">
-                <button class="btn btn-sm btn-secondary" :data-id="element.id" :data-api="element.api" :data-url="element.url" v-on:click.prevent="customButton">{{translations[element.label] || element.label}}</button>
+                <v-btn color="primary" :data-id="element.id" :data-api="element.api" :data-url="element.url" @click="customButton">{{translations[element.label] || element.label}}</v-btn>
             </div>
             <div v-else class="form-group">
                 <label :for="'form-'+element.id">{{element.label}}</label>
@@ -38,9 +38,9 @@
             </div>
         </div>
         <div v-if="api.submit" class="form-group">
-            <button class="btn btn-primary">{{translations.submit}}</button>
+            <v-btn color="primary" @click="submit">{{translations.submit}}</v-btn>
         </div>
-    </form>
+    </v-form>
 </template>
 
 <script>
@@ -93,7 +93,6 @@
                             var result = JSON.parse(response.data);
                             if (result.success) {
                                 this.$store.commit('setAlert', {type: 'success', message: translations[result.message] || result.message, autohide: true});
-                                this.list();
                             } else {
                                 this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
                             }
