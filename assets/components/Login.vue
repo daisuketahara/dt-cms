@@ -96,7 +96,7 @@
                                 this.$store.commit('authenticate', true);
                                 this.$cookies.set('token', data.token);
                                 this.$cookies.set('email', this.email);
-                                this.$parent.$parent.getRoutes();
+                                this.$parent.$parent.$parent.getRoutes();
                             } else {
                                 this.$store.commit('setAlert', {type: 'error', message: translations.login_failed || "Login failed", autohide: true});
                             }
