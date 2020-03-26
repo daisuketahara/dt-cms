@@ -5,10 +5,10 @@
                 <v-btn class="mb-3" outlined x-small fab :dark="darkmode" v-on="on" @click="gotoList">
                     <v-icon x-small>fal fa-arrow-left</v-icon>
                 </v-btn>
-                <form v-on:submit.prevent="save">
+                <v-form>
                     <div v-if="template.id == 1" class="form-group">
                         <label>{{translations.header || 'Header'}}</label>
-                        <div class="row">
+                        <v-row fluid>
                             <div class="col-xs-6 col-sm-4 col-md-2">
                                 <div class="template-header-img"></div>
                                 <div class="form-check">
@@ -54,7 +54,7 @@
                                     </label>
                                 </div>
                             </div>
-                        </div>
+                        </v-row>
                     </div>
                     <div v-if="template.id == 1" class="form-group">
                         <label>{{translations.footer || 'Footer'}}</label>
@@ -97,22 +97,21 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label>{{translations.custom_css || 'Custom CSS'}}</label>
                         <codemirror v-model="template.customCss" :options="cmCssOptions"></codemirror>
                     </div>
-                    <div class="form-group">
+                    <div class="mb-3">
                         <label>{{translations.custom_javascript || 'Custom Javascript'}}</label>
                         <codemirror v-model="template.customJs" :options="cmJsOptions"></codemirror>
                     </div>
-                    <button class="btn btn-secondary">{{translations.submit}}</button>
-                    <button class="btn btn-secondary float-right" v-on:click.prevent="gotoList">{{translations.back_to_list}}</button>
-                </form>
+                    <v-btn color="primary" @click="save">{{translations.submit}}</v-btn>
+                </v-form>
             </v-container>
         </transition>
         <transition name="fade" enter-active-class="animated fadeIn">
-            <v-container v-if="view == 'list'" fluid>
-                <div class="row">
+            <v-container v-if="view == 'list'">
+                <div class="row mt-5 pt-3">
                     <div v-for="item in templates" class="col-md-4 mb-3">
                         <v-card class="mx-auto" :dark="darkmode">
                             <v-img
@@ -249,10 +248,6 @@
 
         height: 100%;
 
-        .row {
-            width: 100%;
-            max-width: 1000px;
-        }
 
         .card {
             text-align: left;
