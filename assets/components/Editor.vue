@@ -1,339 +1,386 @@
 <template>
-    <form method="post" v-on:submit.prevent="update">
-        <div class="row">
-            <div class="col-md-8 col-lg-9">
-                <nav class="editor-nav">
-                    <div class="btn-group mb-3" role="group" aria-label="Editor functions">
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownLocaleButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" @click="toggleDropdown">
-                                {{translate_name}}
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownLocaleButton">
-                                <button v-for="item in locales" class="dropdown-item" :data-lid="item.id" v-on:click.prevent="setTranslate">{{item.name}}</button>
-                            </div>
-                        </div>
-                        <button :class="{ 'btn': true, 'btn-secondary': true, ' px-3': true, 'active' : panel == 'meta'}" type="button" v-on:click.prevent="showPanel" data-panel="meta">{{translations.meta_data}}</button>
-                        <button :class="{ 'btn': true, 'btn-secondary': true, ' px-3': true, 'active' : panel == 'settings'}" type="button" v-on:click.prevent="showPanel" data-panel="settings">{{translations.settings}}</button>
-                        <button :class="{ 'btn': true, 'btn-secondary': true, ' px-3': true, 'active' : panel == 'css'}" type="button" v-on:click.prevent="showPanel" data-panel="css">{{translations.custom_css}}</button>
-                        <button :class="{ 'btn': true, 'btn-secondary': true, ' px-3': true, 'active' : panel == 'js'}" type="button" v-on:click.prevent="showPanel" data-panel="js">{{translations.custom_js}}</button>
+    <v-container fluid>
+        <v-form>
+            <v-row fluid>
+                <v-col cols="12" md="8" lg="9">
+                    <div class="mb-3">
+                        <v-menu offset-y>
+                            <template v-slot:activator="{ on }">
+                                <v-btn color="secondary" :dark="darkmode" v-on="on">
+                                    {{translate_name}}
+                                </v-btn>
+                            </template>
+                            <v-list>
+                                <v-list-item v-for="item in locales" :key="item.id" @click="setTranslate" :data-lid="item.id">
+                                    <v-list-item-title>{{ item.title }}</v-list-item-title>
+                                </v-list-item>
+                            </v-list>
+                        </v-menu>
+                        <v-btn color="secondary" @click="showPanel" data-panel="meta" :dark="darkmode">{{translations.meta_data}}</v-btn>
+                        <v-btn color="secondary" @click="showPanel" data-panel="settings" :dark="darkmode">{{translations.settings}}</v-btn>
+                        <v-btn color="secondary" @click="showPanel" data-panel="css" :dark="darkmode">{{translations.custom_css}}</v-btn>
+                        <v-btn color="secondary" @click="showPanel" data-panel="js" :dark="darkmode">{{translations.custom_js}}</v-btn>
+                        <v-menu offset-y>
+                            <template v-slot:activator="{ on }">
+                                <v-btn color="secondary" :dark="darkmode" v-on="on">
+                                    {{selected_editor_name}}
+                                </v-btn>
+                            </template>
+                            <v-list>
+                                <v-list-item @click="setEditor" data-editor="html">
+                                    <v-list-item-title>{{ translations.html || 'HTML' }}</v-list-item-title>
+                                </v-list-item>
+                                <v-list-item @click="setEditor" data-editor="editor">
+                                    <v-list-item-title>{{ translations.editor || 'Editor' }}</v-list-item-title>
+                                </v-list-item>
+                                <v-list-item @click="setEditor" data-editor="builder">
+                                    <v-list-item-title>{{ translations.builder || 'Builder' }}</v-list-item-title>
+                                </v-list-item>
+                            </v-list>
+                        </v-menu>
+                        <v-btn color="primary" @click="update">{{translations.submit}}</v-btn>
                     </div>
-                    <div class="btn-group mb-3" role="group" aria-label="Editor select">
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownEditorButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" @click="toggleDropdown">
-                                {{selected_editor_name}}
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownEditorButton">
-                                <button class="dropdown-item" data-editor="html" v-on:click.prevent="setEditor">{{translations.html || 'HTML'}}</button>
-                                <button class="dropdown-item" data-editor="editor" v-on:click.prevent="setEditor">{{translations.editor || 'Editor'}}</button>
-                                <button class="dropdown-item" data-editor="builder" v-on:click.prevent="setEditor">{{translations.builder || 'Builder'}}</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="btn-group mb-3" role="group" aria-label="Editor submit">
-                        <button class="btn btn-primary px-5">{{translations.submit}}</button>
-                    </div>
-                </nav>
-                <transition name="slide">
-                    <div v-if="panel == 'meta'" class="mb-2">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>{{translations['title_tag']}}</label>
-                                    <input type="input" id="page-meta-title" name="page-meta-title" class="form-control" v-model="page.metaTitle">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>{{translations['meta_keywords']}}</label>
-                                    <input type="input" id="page-meta-keywords" name="page-meta-keywords" class="form-control" v-model="page.metaKeywords">
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label>{{translations['meta_description']}}</label>
-                                    <input type="input" id="page-meta-description" name="page-meta-description" class="form-control" v-model="page.metaDescription">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>{{translations['custom_meta']}}</label>
-                            <textarea id="page-meta-custom" name="page-meta-custom" class="form-control" rows="4" v-model="page.metaCustom"></textarea>
-                        </div>
-                    </div>
-                    <div v-else-if="panel == 'settings'" class="mb-2">
-                        <div class="row">
-                            <div class="col-md-auto">
-                                <img v-if="page.main_image != ''" :src="page.main_image" alt="..." class="img-thumbnail">
-                                <img v-else src="/img/default-300x169.png" alt="" class="img-thumbnail">
-                                <a id="" class="btn btn-secondary w-100 margin-top-5" data-toggle="modal" data-target="#im-media-manager">{{translations['add_image']}}</a>
-                            </div>
-                            <div class="col">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>{{translations['publish_date']}}</label>
-                                            <input type="date" id="page-publish-date" name="page-publish-date" class="form-control" :value="page.publishDate">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>{{translations['expire_date']}}</label>
-                                            <input type="date" id="page-expire-date" name="page-expire-date" class="form-control" :value="page.expireDate">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>{{translations['page_status']}}</label>
-                                            <select id="page-status" name="page-status" class="form-control" v-model="page.pageStatus">
-                                                <option value="1">{{translations['publish']}}</option>
-                                                <option value="0">{{translations['draft']}}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>{{translations['page_width']}}</label>
-                                            <select id="page-width" name="page-width" class="form-control" v-model="page.pageWidth">
-                                                <option value="default">{{translations['default']}}</option>
-                                                <option value="1140">1140px</option>
-                                                <option value="980">980px</option>
-                                                <option value="700">700px</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label>{{translations['disable_layout']}}</label>
-                                            <select id="disable-layout" name="disable-layout" class="form-control" v-model="page.disableLayout">
-                                                <option value="0">{{translations['no']}}</option>
-                                                <option value="1">{{translations['yes']}}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            <label for="page-weight">{{translations['page_weight']}}</label>
-                                            <select id="page-weight" name="page-weight" class="form-control" v-model="page.pageWeight">
-                                                <option value="10">1.0</option>
-                                                <option value="9">0.9</option>
-                                                <option value="8">0.8</option>
-                                                <option value="7">0.7</option>
-                                                <option value="6">0.6</option>
-                                                <option value="5">0.5</option>
-                                                <option value="4">0.4</option>
-                                                <option value="3">0.3</option>
-                                                <option value="2">0.2</option>
-                                                <option value="1">0.1</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <label>{{translations['grant_access']}}</label>
-                                <div class="row">
-                                    <div v-for="role in roles" class="col-md-2">
-                                        <div class="form-check">
-                                            <label class="form-check-label">
-                                                <input id="form_role_" name="form-role[]" class="form-check-input" :value="role.id" type="checkbox" v-model="page.role[role.id]">
-                                                {{ role.name }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div v-if="panel == 'css'" class="mb-2">
-                        <codemirror v-model="page.customCss" :options="cmCssOptions"></codemirror>
-                    </div>
-                    <div v-if="panel == 'js'" class="mb-2">
-                        <codemirror v-model="page.customJs" :options="cmJsOptions"></codemirror>
-                    </div>
-                </transition>
-                <div class="form-group mb-2">
-                    <input type="text" id="page-title" name="page-title" class="form-control" v-model="page.pageTitle" :placeholder="translations['enter_title']">
-                </div>
-                <div class="input-group mb-2">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="basic-addon3">{{domain}}/{{locale}}</span>
-                    </div>
-                    <input type="text" class="form-control" id="page-route" name="page-route" v-model="page.pageRoute" aria-describedby="basic-addon3">
-                </div>
-                <textarea v-if="selected_editor == 'html'" id="page-content" class="form-control mb-2" v-model="page.content" rows="24"></textarea>
-                <ckeditor v-if="selected_editor == 'editor'" :editor="editor" v-model="page.content" :config="editorConfig"></ckeditor>
-                <div v-if="selected_editor == 'builder'" id="content-editor" class="mt-2">
-                    <div v-for="(element, index) in construct">
-                        <div v-if="element.type == 'text_left_image_right'" :id="element.id" v-bind:class="{ component: true, row: true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
-                            <div v-if="element.selected === true" class="component-functions">
-                                <button v-if="index < construct.length-1" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementDown(index)"><i class="far fa-chevron-down"></i></button>
-                                <button v-if="index > 0" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementUp(index)"><i class="far fa-chevron-up"></i></button>
-                                <button class="btn btn-sm btn-danger" v-on:click.prevent="removeElement(index)"><i class="fal fa-trash-alt"></i></button>
-                            </div>
-                            <div class="col-sm-6 wrap-content">
-                                <h3 v-if="element.parts.title.settings.display!='none'" v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
-                                <div v-if="element.parts.text.settings.display!='none'" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
-                                    <ckeditor :editor="inlineEditor" v-model="element.parts.text.content" :config="inlineEditorConfig"></ckeditor>
-                                </div>
-                                <a v-if="element.parts.button.settings.display!='none'" ::data-href="element.parts.button.settings.href" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
-                            </div>
-                            <div v-bind:class="{ 'col-sm-6': true, 'component-image': true, active: element.parts.image.selected == true}" v-on:click.stop="setActiveElement(element.parts.image, index);"></div>
-                        </div>
-                        <div v-else-if="element.type == 'text_right_image_left'" :id="element.id" v-bind:class="{ component: true, row: true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
-                            <div v-if="element.selected === true" class="component-functions">
-                                <button v-if="index < construct.length-1" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementDown(index)"><i class="far fa-chevron-down"></i></button>
-                                <button v-if="index > 0" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementUp(index)"><i class="far fa-chevron-up"></i></button>
-                                <button class="btn btn-sm btn-danger" v-on:click.prevent="removeElement(index)"><i class="fal fa-trash-alt"></i></button>
-                            </div>
-                            <div v-bind:class="{ 'col-sm-6': true, 'component-image': true, active: element.parts.image.selected == true}" v-on:click.stop="setActiveElement(element.parts.image, index);"></div>
-                            <div class="col-sm-6 wrap-content">
-                                <h3 v-if="element.parts.title.settings.display!='none'" v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
-                                <div v-if="element.parts.text.settings.display!='none'" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
-                                    <ckeditor :editor="inlineEditor" v-model="element.parts.text.content" :config="inlineEditorConfig"></ckeditor>
-                                </div>
-                                <a v-if="element.parts.button.settings.display!='none'" :data-href="element.parts.button.settings.href" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
-                            </div>
-                        </div>
-                        <div v-else-if="element.type == 'text_text'" :id="element.id" v-bind:class="{ component: true, row: true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
-                            <div v-if="element.selected === true" class="component-functions">
-                                <button v-if="index < construct.length-1" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementDown(index)"><i class="far fa-chevron-down"></i></button>
-                                <button v-if="index > 0" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementUp(index)"><i class="far fa-chevron-up"></i></button>
-                                <button class="btn btn-sm btn-danger" v-on:click.prevent="removeElement(index)"><i class="fal fa-trash-alt"></i></button>
-                            </div>
-                            <div class="col-sm-6 wrap-content">
-                                <h3 v-if="element.parts.title.settings.display!='none'" v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
-                                <div v-if="element.parts.text.settings.display!='none'" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
-                                    <ckeditor :editor="inlineEditor" v-model="element.parts.text.content" :config="inlineEditorConfig"></ckeditor>
-                                </div>
-                                <a v-if="element.parts.button.settings.display!='none'" :data-href="element.parts.button.settings.href" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
-                            </div>
-                            <div class="col-sm-6 wrap-content">
-                                <h3 v-if="element.parts.title2.settings.display!='none'" v-bind:class="{ 'component-title2': true, active: element.parts.title2.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title2.content" v-on:click.stop="setActiveElement(element.parts.title2, index);"></h3>
-                                <div v-if="element.parts.text2.settings.display!='none'" v-bind:class="{ 'component-text2': true, active: element.parts.text2.selected == true}" v-on:click.stop="setActiveElement(element.parts.text2, index);">
-                                    <ckeditor :editor="inlineEditor" v-model="element.parts.text2.content" :config="inlineEditorConfig"></ckeditor>
-                                </div>
-                                <a v-if="element.parts.button2.settings.display!='none'" :data-href="element.parts.button2.settings.href" v-bind:class="{ 'component-button2': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button2.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button2, index);">{{element.parts.button2.content}}</a>
-                            </div>
-                        </div>
-                        <div v-else-if="element.type == 'image_image'" :id="element.id" v-bind:class="{ 'component': true, row: true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
-                            <div v-if="element.selected === true" class="component-functions">
-                                <button v-if="index < construct.length-1" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementDown(index)"><i class="far fa-chevron-down"></i></button>
-                                <button v-if="index > 0" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementUp(index)"><i class="far fa-chevron-up"></i></button>
-                                <button class="btn btn-sm btn-danger" v-on:click.prevent="removeElement(index)"><i class="fal fa-trash-alt"></i></button>
-                            </div>
-                            <div v-bind:class="{ 'col-sm-6': true, 'component-image': true, active: element.parts.image.selected == true}" v-on:click.stop="setActiveElement(element.parts.image, index);"></div>
-                            <div v-bind:class="{ 'col-sm-6': true, 'component-image2': true, active: element.parts.image2.selected == true}" v-on:click.stop="setActiveElement(element.parts.image2, index);"></div>
-                        </div>
-                        <div v-else-if="element.type == 'block'" :id="element.id" class="" v-bind:class="{ 'component-block': true, 'px-3': true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
-                            <div v-if="element.selected === true" class="component-functions">
-                                <button v-if="index < construct.length-1" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementDown(index)"><i class="far fa-chevron-down"></i></button>
-                                <button v-if="index > 0" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementUp(index)"><i class="far fa-chevron-up"></i></button>
-                                <button class="btn btn-sm btn-danger" v-on:click.prevent="removeElement(index)"><i class="fal fa-trash-alt"></i></button>
-                            </div>
-                            <h3 v-if="element.parts.title.settings.display!='none'" v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
-                            <div v-if="element.parts.text.settings.display!='none'" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
-                                <ckeditor :editor="inlineEditor" v-model="element.parts.text.content" :config="inlineEditorConfig"></ckeditor>
-                            </div>
-                            <a v-if="element.parts.button.settings.display!='none'" :data-href="element.parts.button.settings.href" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
-                        </div>
-                    </div>
-                    <div v-if="enableEdit === true" class="text-center mt-3 py-5">
-                        <button class="btn btn-lg btn-warning" v-on:click.prevent="selectElement"><i class="fas fa-plus"></i> {{translations.add_element}}</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-lg-3 component-settings">
-                <div v-if="typeof active_component !== 'undefined' && active_component !== false" class="card">
-                    <div class="card-header" id="component-settings" @click="setActiveElement(construct[active_component], active_component);">
-                        {{translations.component || 'Component'}}
-                        <i v-if="construct[active_component].selected == true" class="fas fa-chevron-down float-right"></i>
-                        <i v-else class="fas fa-chevron-left float-right"></i>
-                    </div>
-                    <div v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].selected == true}">
-                        <settings :settings="construct[active_component].settings"></settings>
-                    </div>
-                    <div v-if="construct[active_component].parts.title != undefined" class="card-header" id="component-title-settings" @click="setActiveElement(construct[active_component].parts.title, active_component);">
-                        {{translations.title || 'Title'}}
-                        <i v-if="construct[active_component].parts.title.selected == true" class="fas fa-chevron-down float-right"></i>
-                        <i v-else class="fas fa-chevron-left float-right"></i>
-                    </div>
-                    <div v-if="construct[active_component].parts.title != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.title.selected == true}">
-                        <settings :settings="construct[active_component].parts.title.settings"></settings>
-                    </div>
-                    <div v-if="construct[active_component].parts.text != undefined" class="card-header" id="component-text-settings" @click="setActiveElement(construct[active_component].parts.text, active_component);">
-                        {{translations.content || 'Content'}}
-                        <i v-if="construct[active_component].parts.text.selected == true" class="fas fa-chevron-down float-right"></i>
-                        <i v-else class="fas fa-chevron-left float-right"></i>
-                    </div>
-                    <div v-if="construct[active_component].parts.text != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.text.selected == true}">
-                        <settings :settings="construct[active_component].parts.text.settings"></settings>
-                    </div>
-                    <div v-if="construct[active_component].parts.button != undefined" class="card-header" id="component-button-settings" @click="setActiveElement(construct[active_component].parts.button, active_component);">
-                        {{translations.button || 'Button'}}
-                        <i v-if="construct[active_component].parts.button.selected == true" class="fas fa-chevron-down float-right"></i>
-                        <i v-else class="fas fa-chevron-left float-right"></i>
-                    </div>
-                    <div v-if="construct[active_component].parts.button != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.button.selected == true}">
-                        <settings :settings="construct[active_component].parts.button.settings"></settings>
-                    </div>
-                    <div v-if="construct[active_component].parts.title2 != undefined" class="card-header" id="component-title-settings" @click="setActiveElement(construct[active_component].parts.title2, active_component);">
-                        {{translations.title || 'Title'}} 2
-                        <i v-if="construct[active_component].parts.title2.selected == true" class="fas fa-chevron-down float-right"></i>
-                        <i v-else class="fas fa-chevron-left float-right"></i>
-                    </div>
-                    <div v-if="construct[active_component].parts.title2 != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.title2.selected == true}">
-                        <settings :settings="construct[active_component].parts.title2.settings"></settings>
-                    </div>
-                    <div v-if="construct[active_component].parts.text2 != undefined" class="card-header" id="component-text-settings" @click="setActiveElement(construct[active_component].parts.text2, active_component);">
-                        {{translations.content || 'Content'}} 2
-                        <i v-if="construct[active_component].parts.text2.selected == true" class="fas fa-chevron-down float-right"></i>
-                        <i v-else class="fas fa-chevron-left float-right"></i>
-                    </div>
-                    <div v-if="construct[active_component].parts.text2 != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.text2.selected == true}">
-                        <settings :settings="construct[active_component].parts.text2.settings"></settings>
-                    </div>
-                    <div v-if="construct[active_component].parts.button2 != undefined" class="card-header" id="component-button-settings" @click="setActiveElement(construct[active_component].parts.button2, active_component);">
-                        {{translations.button || 'Button'}} 2
-                        <i v-if="construct[active_component].parts.button2.selected == true" class="fas fa-chevron-down float-right"></i>
-                        <i v-else class="fas fa-chevron-left float-right"></i>
-                    </div>
-                    <div v-if="construct[active_component].parts.button2 != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.button2.selected == true}">
-                        <settings :settings="construct[active_component].parts.button2.settings"></settings>
-                    </div>
-                    <div v-if="construct[active_component].parts.image != undefined" class="card-header" id="component-image-settings" @click="setActiveElement(construct[active_component].parts.image, active_component);">
-                        {{translations.image || 'Image'}}
-                        <i v-if="construct[active_component].parts.image.selected == true" class="fas fa-chevron-down float-right"></i>
-                        <i v-else class="fas fa-chevron-left float-right"></i>
-                    </div>
-                    <div v-if="construct[active_component].parts.image != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.image.selected == true}">
-                        <settings :settings="construct[active_component].parts.image.settings"></settings>
-                    </div>
-                    <div v-if="construct[active_component].parts.image2 != undefined" class="card-header" id="component-image-settings" @click="setActiveElement(construct[active_component].parts.image2, active_component);">
-                        {{translations.image || 'Image'}} 2
-                        <i v-if="construct[active_component].parts.image2.selected == true" class="fas fa-chevron-down float-right"></i>
-                        <i v-else class="fas fa-chevron-left float-right"></i>
-                    </div>
-                    <div v-if="construct[active_component].parts.image2 != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.image2.selected == true}">
-                        <settings :settings="construct[active_component].parts.image2.settings"></settings>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <modal name="page-elements" width="80%" height="90%">
-            <div class="container-fluid p-3">
-                <div class="row">
-                    <div v-for="(element, index) in elements" v-if="element.active == true" class="col-sm-6 col-md-4 col-lg-3 mb-4" :data-element="index">
-                        <img :src="element.image" :alt="element.title" class="img-fluid w-100 mb-1">
-                        <h4>
-                            {{element.title}}
-                            <button v-on:click.prevent="addElement" class="btn btn-sm btn-secondary float-right" :data-element="element.type">{{translations.select}}</button>
-                        </h4>
-                    </div>
-                </div>
-            </div>
-        </modal>
-        <modal name="html-editor" width="80%" height="90%">
 
-        </modal>
-    </form>
+                    <transition-group name="slide">
+                        <v-card v-if="panel == 'meta'" class="mb-3" key="meta" :dark="darkmode">
+                            <v-container fluid>
+                                <v-row fluid>
+                                    <v-col cols="12" md="6">
+                                        <v-text-field
+                                            :label="translations['title_tag'] || 'Meta title'"
+                                            v-model="page.metaTitle"
+                                            counter
+                                            maxlength="60"
+                                            :dark="darkmode"
+                                         ></v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" md="6">
+                                        <v-text-field
+                                            :label="translations['meta_keywords'] || 'Meta keywords'"
+                                            v-model="page.metaKeywords"
+                                            counter
+                                            maxlength="255"
+                                            :dark="darkmode"
+                                         ></v-text-field>
+                                    </v-col>
+                                </v-row>
+
+                                <v-textarea
+                                    :label="translations['meta_description'] || 'Meta description'"
+                                    v-model="page.metaDescription"
+                                    rows="3"
+                                    counter
+                                    maxlength="158"
+                                    :dark="darkmode"
+                                ></v-textarea>
+                                <v-textarea
+                                    :label="translations['custom_meta'] || 'Custom meta'"
+                                    v-model="page.metaCustom"
+                                    rows="2"
+                                    auto-grow
+                                    :dark="darkmode"
+                                ></v-textarea>
+                            </v-container>
+                        </v-card>
+                        <v-card v-else-if="panel == 'settings'" class="mb-3" key="panel" :dark="darkmode">
+                            <v-container fluid>
+                                <v-row fluid>
+                                    <v-col v-if="false" cols="12" md="3">
+                                        <v-img
+                                        ></v-img>
+                                        <v-btn color="secondary" @click="" data-toggle="modal" data-target="#im-media-manager">
+                                            {{ translations['add_image'] || 'Add image'}}
+                                        </v-btn>
+                                    </v-col>
+                                    <v-col cols="12" md="12">
+                                        <v-row fluid>
+                                            <v-col cols="12" sm="6" md="4">
+                                                <v-menu
+                                                    v-model="publishDateMenu"
+                                                    :close-on-content-click="false"
+                                                    :nudge-right="40"
+                                                    transition="scale-transition"
+                                                    offset-y
+                                                >
+                                                    <template v-slot:activator="{ on }">
+                                                        <v-text-field
+                                                            v-model="page.publishDate"
+                                                            :label="translations['publish_date'] || 'Publish date'"
+                                                            prepend-icon="fal fa-calendar-alt"
+                                                            readonly
+                                                            v-on="on"
+                                                        ></v-text-field>
+                                                    </template>
+                                                    <v-date-picker v-model="page.publishDate" @input="publishDateMenu = false"></v-date-picker>
+                                                </v-menu>
+                                            </v-col>
+                                            <v-col cols="12" sm="6" md="4">
+                                                <v-menu
+                                                    v-model="expireDateMenu"
+                                                    :close-on-content-click="false"
+                                                    :nudge-right="40"
+                                                    transition="scale-transition"
+                                                    offset-y
+                                                >
+                                                    <template v-slot:activator="{ on }">
+                                                        <v-text-field
+                                                            v-model="page.expireDate"
+                                                            :label="translations['expire_date'] || 'Expire date'"
+                                                            prepend-icon="fal fa-calendar-alt"
+                                                            readonly
+                                                            v-on="on"
+                                                        ></v-text-field>
+                                                    </template>
+                                                    <v-date-picker v-model="page.expireDate" @input="expireDateMenu = false"></v-date-picker>
+                                                </v-menu>
+                                            </v-col>
+                                            <v-col cols="12" sm="6" md="4">
+                                                <v-select
+                                                    :items="pageStatuses"
+                                                    :label="translations['page_status'] || 'Page status'"
+                                                    v-model="page.pageStatus"
+                                                ></v-select>
+                                            </v-col>
+                                            <v-col cols="12" sm="6" md="4">
+                                                <v-select
+                                                    :items="pageWidths"
+                                                    :label="translations['page_width'] || 'Page width'"
+                                                    v-model="page.pageWidth"
+                                                ></v-select>
+                                            </v-col>
+                                            <v-col cols="12" sm="6" md="4">
+                                                <v-select
+                                                    :items="yesno"
+                                                    :label="translations['page_wdisable_layoutidth'] || 'Disable layout'"
+                                                    v-model="page.disableLayout"
+                                                ></v-select>
+                                            </v-col>
+                                            <v-col cols="12" sm="6" md="4">
+                                                <v-select
+                                                    :items="pageWeights"
+                                                    :label="translations['page_weight'] || 'Page weight'"
+                                                    v-model="page.pageWeight"
+                                                ></v-select>
+                                            </v-col>
+                                        </v-row>
+                                        <label>{{translations['grant_access'] || 'Grant access to roles'}}</label>
+                                        <v-row>
+                                            <v-col cols="12" md="4" lg="3" v-for="role in roles" :key="role.id">
+                                                <v-checkbox dense v-model="page.role[role.id]" :label="role.name"></v-checkbox>
+                                            </v-col>
+                                        </v-row>
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+                        </v-card>
+                        <v-card v-if="panel == 'css'" class="mb-3" key="css" :dark="darkmode">
+                            <codemirror v-model="page.customCss" :options="cmCssOptions"></codemirror>
+                        </v-card>
+                        <v-card v-if="panel == 'js'" class="mb-3" key="js" :dark="darkmode">
+                            <codemirror v-model="page.customJs" :options="cmJsOptions"></codemirror>
+                        </v-card>
+                    </transition-group>
+
+
+                    <v-card class="mb-3" :dark="darkmode">
+                        <v-container fluid>
+                            <v-text-field
+                                :label="translations['enter_title'] || 'Enter a page title here...'"
+                                v-model="page.pageTitle"
+                                :dark="darkmode"
+                            ></v-text-field>
+                            <v-text-field
+                                :label="translations['enter_page_route'] || 'Enter a page route here...'"
+                                v-model="page.pageRoute"
+                                :dark="darkmode"
+                            ></v-text-field>
+                        </v-container>
+                    </v-card>
+                    <v-card v-if="selected_editor == 'html'" class="mb-3" :dark="darkmode">
+                        <v-container fluid>
+                            <v-textarea
+                                v-model="page.content"
+                                label="HTML"
+                                rows="24"
+                            ></v-textarea>
+                        </v-container>
+                    </v-card>
+                    <ckeditor v-if="selected_editor == 'editor'" :editor="editor" v-model="page.content" :config="editorConfig"></ckeditor>
+                    <div v-if="selected_editor == 'builder'" id="content-editor" class="mt-2">
+                        <div v-for="(element, index) in construct">
+                            <div v-if="element.type == 'text_left_image_right'" :id="element.id" v-bind:class="{ component: true, row: true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
+                                <div v-if="element.selected === true" class="component-functions">
+                                    <button v-if="index < construct.length-1" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementDown(index)"><i class="far fa-chevron-down"></i></button>
+                                    <button v-if="index > 0" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementUp(index)"><i class="far fa-chevron-up"></i></button>
+                                    <button class="btn btn-sm btn-danger" v-on:click.prevent="removeElement(index)"><i class="fal fa-trash-alt"></i></button>
+                                </div>
+                                <div class="col-sm-6 wrap-content">
+                                    <h3 v-if="element.parts.title.settings.display!='none'" v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
+                                    <div v-if="element.parts.text.settings.display!='none'" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
+                                        <ckeditor :editor="inlineEditor" v-model="element.parts.text.content" :config="inlineEditorConfig"></ckeditor>
+                                    </div>
+                                    <a v-if="element.parts.button.settings.display!='none'" ::data-href="element.parts.button.settings.href" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
+                                </div>
+                                <div v-bind:class="{ 'col-sm-6': true, 'component-image': true, active: element.parts.image.selected == true}" v-on:click.stop="setActiveElement(element.parts.image, index);"></div>
+                            </div>
+                            <div v-else-if="element.type == 'text_right_image_left'" :id="element.id" v-bind:class="{ component: true, row: true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
+                                <div v-if="element.selected === true" class="component-functions">
+                                    <button v-if="index < construct.length-1" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementDown(index)"><i class="far fa-chevron-down"></i></button>
+                                    <button v-if="index > 0" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementUp(index)"><i class="far fa-chevron-up"></i></button>
+                                    <button class="btn btn-sm btn-danger" v-on:click.prevent="removeElement(index)"><i class="fal fa-trash-alt"></i></button>
+                                </div>
+                                <div v-bind:class="{ 'col-sm-6': true, 'component-image': true, active: element.parts.image.selected == true}" v-on:click.stop="setActiveElement(element.parts.image, index);"></div>
+                                <div class="col-sm-6 wrap-content">
+                                    <h3 v-if="element.parts.title.settings.display!='none'" v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
+                                    <div v-if="element.parts.text.settings.display!='none'" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
+                                        <ckeditor :editor="inlineEditor" v-model="element.parts.text.content" :config="inlineEditorConfig"></ckeditor>
+                                    </div>
+                                    <a v-if="element.parts.button.settings.display!='none'" :data-href="element.parts.button.settings.href" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
+                                </div>
+                            </div>
+                            <div v-else-if="element.type == 'text_text'" :id="element.id" v-bind:class="{ component: true, row: true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
+                                <div v-if="element.selected === true" class="component-functions">
+                                    <button v-if="index < construct.length-1" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementDown(index)"><i class="far fa-chevron-down"></i></button>
+                                    <button v-if="index > 0" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementUp(index)"><i class="far fa-chevron-up"></i></button>
+                                    <button class="btn btn-sm btn-danger" v-on:click.prevent="removeElement(index)"><i class="fal fa-trash-alt"></i></button>
+                                </div>
+                                <div class="col-sm-6 wrap-content">
+                                    <h3 v-if="element.parts.title.settings.display!='none'" v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
+                                    <div v-if="element.parts.text.settings.display!='none'" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
+                                        <ckeditor :editor="inlineEditor" v-model="element.parts.text.content" :config="inlineEditorConfig"></ckeditor>
+                                    </div>
+                                    <a v-if="element.parts.button.settings.display!='none'" :data-href="element.parts.button.settings.href" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
+                                </div>
+                                <div class="col-sm-6 wrap-content">
+                                    <h3 v-if="element.parts.title2.settings.display!='none'" v-bind:class="{ 'component-title2': true, active: element.parts.title2.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title2.content" v-on:click.stop="setActiveElement(element.parts.title2, index);"></h3>
+                                    <div v-if="element.parts.text2.settings.display!='none'" v-bind:class="{ 'component-text2': true, active: element.parts.text2.selected == true}" v-on:click.stop="setActiveElement(element.parts.text2, index);">
+                                        <ckeditor :editor="inlineEditor" v-model="element.parts.text2.content" :config="inlineEditorConfig"></ckeditor>
+                                    </div>
+                                    <a v-if="element.parts.button2.settings.display!='none'" :data-href="element.parts.button2.settings.href" v-bind:class="{ 'component-button2': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button2.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button2, index);">{{element.parts.button2.content}}</a>
+                                </div>
+                            </div>
+                            <div v-else-if="element.type == 'image_image'" :id="element.id" v-bind:class="{ 'component': true, row: true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
+                                <div v-if="element.selected === true" class="component-functions">
+                                    <button v-if="index < construct.length-1" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementDown(index)"><i class="far fa-chevron-down"></i></button>
+                                    <button v-if="index > 0" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementUp(index)"><i class="far fa-chevron-up"></i></button>
+                                    <button class="btn btn-sm btn-danger" v-on:click.prevent="removeElement(index)"><i class="fal fa-trash-alt"></i></button>
+                                </div>
+                                <div v-bind:class="{ 'col-sm-6': true, 'component-image': true, active: element.parts.image.selected == true}" v-on:click.stop="setActiveElement(element.parts.image, index);"></div>
+                                <div v-bind:class="{ 'col-sm-6': true, 'component-image2': true, active: element.parts.image2.selected == true}" v-on:click.stop="setActiveElement(element.parts.image2, index);"></div>
+                            </div>
+                            <div v-else-if="element.type == 'block'" :id="element.id" class="" v-bind:class="{ 'component-block': true, 'px-3': true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
+                                <div v-if="element.selected === true" class="component-functions">
+                                    <button v-if="index < construct.length-1" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementDown(index)"><i class="far fa-chevron-down"></i></button>
+                                    <button v-if="index > 0" class="btn btn-sm btn-secondary" v-on:click.prevent="moveElementUp(index)"><i class="far fa-chevron-up"></i></button>
+                                    <button class="btn btn-sm btn-danger" v-on:click.prevent="removeElement(index)"><i class="fal fa-trash-alt"></i></button>
+                                </div>
+                                <h3 v-if="element.parts.title.settings.display!='none'" v-bind:class="{ 'component-title': true, active: element.parts.title.selected == true}" :contenteditable="enableEdit" v-html="element.parts.title.content" v-on:click.stop="setActiveElement(element.parts.title, index);"></h3>
+                                <div v-if="element.parts.text.settings.display!='none'" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
+                                    <ckeditor :editor="inlineEditor" v-model="element.parts.text.content" :config="inlineEditorConfig"></ckeditor>
+                                </div>
+                                <a v-if="element.parts.button.settings.display!='none'" :data-href="element.parts.button.settings.href" v-bind:class="{ 'component-button': true, btn: true, 'btn-lg': true, 'btn-secondary': true, active: element.parts.button.selected == true}" :contenteditable="enableEdit" v-on:click.stop="setActiveElement(element.parts.button, index);">{{element.parts.button.content}}</a>
+                            </div>
+                        </div>
+                        <div v-if="enableEdit === true" class="text-center mt-3 py-5">
+                            <v-btn large color="warning" @click="selectElement"><i class="fas fa-plus"></i> {{translations.add_element}}</v-btn>
+                        </div>
+                    </div>
+                </v-col>
+                <v-col cols="12" md="4" lg="3" class="component-settings">
+                    <div v-if="typeof active_component !== 'undefined' && active_component !== false" class="card">
+                        <div class="card-header" id="component-settings" @click="setActiveElement(construct[active_component], active_component);">
+                            {{translations.component || 'Component'}}
+                            <i v-if="construct[active_component].selected == true" class="fas fa-chevron-down float-right"></i>
+                            <i v-else class="fas fa-chevron-left float-right"></i>
+                        </div>
+                        <div v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].selected == true}">
+                            <settings :settings="construct[active_component].settings"></settings>
+                        </div>
+                        <div v-if="construct[active_component].parts.title != undefined" class="card-header" id="component-title-settings" @click="setActiveElement(construct[active_component].parts.title, active_component);">
+                            {{translations.title || 'Title'}}
+                            <i v-if="construct[active_component].parts.title.selected == true" class="fas fa-chevron-down float-right"></i>
+                            <i v-else class="fas fa-chevron-left float-right"></i>
+                        </div>
+                        <div v-if="construct[active_component].parts.title != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.title.selected == true}">
+                            <settings :settings="construct[active_component].parts.title.settings"></settings>
+                        </div>
+                        <div v-if="construct[active_component].parts.text != undefined" class="card-header" id="component-text-settings" @click="setActiveElement(construct[active_component].parts.text, active_component);">
+                            {{translations.content || 'Content'}}
+                            <i v-if="construct[active_component].parts.text.selected == true" class="fas fa-chevron-down float-right"></i>
+                            <i v-else class="fas fa-chevron-left float-right"></i>
+                        </div>
+                        <div v-if="construct[active_component].parts.text != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.text.selected == true}">
+                            <settings :settings="construct[active_component].parts.text.settings"></settings>
+                        </div>
+                        <div v-if="construct[active_component].parts.button != undefined" class="card-header" id="component-button-settings" @click="setActiveElement(construct[active_component].parts.button, active_component);">
+                            {{translations.button || 'Button'}}
+                            <i v-if="construct[active_component].parts.button.selected == true" class="fas fa-chevron-down float-right"></i>
+                            <i v-else class="fas fa-chevron-left float-right"></i>
+                        </div>
+                        <div v-if="construct[active_component].parts.button != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.button.selected == true}">
+                            <settings :settings="construct[active_component].parts.button.settings"></settings>
+                        </div>
+                        <div v-if="construct[active_component].parts.title2 != undefined" class="card-header" id="component-title-settings" @click="setActiveElement(construct[active_component].parts.title2, active_component);">
+                            {{translations.title || 'Title'}} 2
+                            <i v-if="construct[active_component].parts.title2.selected == true" class="fas fa-chevron-down float-right"></i>
+                            <i v-else class="fas fa-chevron-left float-right"></i>
+                        </div>
+                        <div v-if="construct[active_component].parts.title2 != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.title2.selected == true}">
+                            <settings :settings="construct[active_component].parts.title2.settings"></settings>
+                        </div>
+                        <div v-if="construct[active_component].parts.text2 != undefined" class="card-header" id="component-text-settings" @click="setActiveElement(construct[active_component].parts.text2, active_component);">
+                            {{translations.content || 'Content'}} 2
+                            <i v-if="construct[active_component].parts.text2.selected == true" class="fas fa-chevron-down float-right"></i>
+                            <i v-else class="fas fa-chevron-left float-right"></i>
+                        </div>
+                        <div v-if="construct[active_component].parts.text2 != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.text2.selected == true}">
+                            <settings :settings="construct[active_component].parts.text2.settings"></settings>
+                        </div>
+                        <div v-if="construct[active_component].parts.button2 != undefined" class="card-header" id="component-button-settings" @click="setActiveElement(construct[active_component].parts.button2, active_component);">
+                            {{translations.button || 'Button'}} 2
+                            <i v-if="construct[active_component].parts.button2.selected == true" class="fas fa-chevron-down float-right"></i>
+                            <i v-else class="fas fa-chevron-left float-right"></i>
+                        </div>
+                        <div v-if="construct[active_component].parts.button2 != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.button2.selected == true}">
+                            <settings :settings="construct[active_component].parts.button2.settings"></settings>
+                        </div>
+                        <div v-if="construct[active_component].parts.image != undefined" class="card-header" id="component-image-settings" @click="setActiveElement(construct[active_component].parts.image, active_component);">
+                            {{translations.image || 'Image'}}
+                            <i v-if="construct[active_component].parts.image.selected == true" class="fas fa-chevron-down float-right"></i>
+                            <i v-else class="fas fa-chevron-left float-right"></i>
+                        </div>
+                        <div v-if="construct[active_component].parts.image != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.image.selected == true}">
+                            <settings :settings="construct[active_component].parts.image.settings"></settings>
+                        </div>
+                        <div v-if="construct[active_component].parts.image2 != undefined" class="card-header" id="component-image-settings" @click="setActiveElement(construct[active_component].parts.image2, active_component);">
+                            {{translations.image || 'Image'}} 2
+                            <i v-if="construct[active_component].parts.image2.selected == true" class="fas fa-chevron-down float-right"></i>
+                            <i v-else class="fas fa-chevron-left float-right"></i>
+                        </div>
+                        <div v-if="construct[active_component].parts.image2 != undefined" v-bind:class="{ 'card-body': true, collapse: true, show: construct[active_component].parts.image2.selected == true}">
+                            <settings :settings="construct[active_component].parts.image2.settings"></settings>
+                        </div>
+                    </div>
+                </v-col>
+            </v-row>
+            <modal name="page-elements" width="80%" height="90%">
+                <div class="container-fluid p-3">
+                    <div class="row">
+                        <div v-for="(element, index) in elements" v-if="element.active == true" class="col-sm-6 col-md-4 col-lg-3 mb-4" :data-element="index">
+                            <img :src="element.image" :alt="element.title" class="img-fluid w-100 mb-1">
+                            <h4>
+                                {{element.title}}
+                                <v-btn block @click="addElement" :data-element="element.type">{{translations.select}}</v-btn>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </modal>
+            <modal name="html-editor" width="80%" height="90%">
+
+            </modal>
+        </v-form>
+    </v-container>
 </template>
 
 <script>
@@ -389,6 +436,35 @@
                     mode: 'text/javascript',
                     lineNumbers: true,
                 },
+                publishDateMenu: false,
+                expireDateMenu: false,
+                pageStatuses: [
+                    { text: translations['publish'] || 'Published', value: 1 },
+                    { text: translations['draft'] || 'Draft', value: 0 }
+                ],
+                pageWidths: [
+                    { text: translations['default'] || 'Default', value: 1 },
+                    { text: '1280px', value: 1280 },
+                    { text: '1140px', value: 1140 },
+                    { text: '980px', value: 980 },
+                    { text: '700px', value: 700 }
+                ],
+                yesno: [
+                    { text: translations['no'] || 'No', value: 0 },
+                    { text: translations['yes'] || 'Yes', value: 1 }
+                ],
+                pageWeights: [
+                    { text: '1.0', value: 10 },
+                    { text: '0.9', value: 9 },
+                    { text: '0.8', value: 8 },
+                    { text: '0.7', value: 7 },
+                    { text: '0.6', value: 6 },
+                    { text: '0.5', value: 5 },
+                    { text: '0.4', value: 4 },
+                    { text: '0.3', value: 3 },
+                    { text: '0.2', value: 2 },
+                    { text: '0.1', value: 1 }
+                ],
             }
         },
         computed: {
@@ -406,6 +482,9 @@
             },
             translations () {
                 return this.$store.state.translations;
+            },
+            darkmode () {
+                return this.$store.state.darkmode;
             },
         },
         created() {
@@ -1156,10 +1235,6 @@
 <style lang="scss">
 
 @import '../scss/components.scss';
-
-.editor-nav {
-    z-index: 10;
-}
 
 .slide-enter-active {
    -moz-transition-duration: 0.3s;
