@@ -337,18 +337,18 @@
                                         <option value="">{{translations.search_for || 'search for..'}}</option>
                                         <option v-for="(optionvalue, optionkey) in column.options" :value="optionkey">{{optionvalue}}</option>
                                     </select>
-                                    <input v-else type="text" :id="'filter-'+column.id" class="form-control" :name="'filter-'+column.id" v-on:keyup="filterlist">
+                                    <v-text-field dense v-else :id="'filter-'+column.id" :name="'filter-'+column.id" v-on:keyup="filterlist" :dark="darkmode"></v-text-field>
                                 </td>
                             </tr>
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td colspan="2">
-                                    <button class="btn btn-danger btn-sm" @click="dropMultiple">
+                                    <v-btn color="error" @click="dropMultiple">
                                         <i class="fad fa-trash-alt"></i>
                                         {{translations.delete_selected || 'Delete selected'}}
-                                    </button>
-                                    <button class="btn btn-secondary btn-sm text-white pointer ml-1" @click="resetFilter">{{translations.reset_filter || 'Reset filter'}}</button>
+                                    </v-btn>
+                                    <v-btn color="secondary" @click="resetFilter">{{translations.reset_filter || 'Reset filter'}}</v-btn>
                                 </td>
                             </tr>
                         </tfoot>
