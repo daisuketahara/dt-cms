@@ -97,7 +97,7 @@
                         <v-text-field v-model="user.information.registrationNumber" :label="translations.registration_number || 'Registration Number'" :dark="darkmode"></v-text-field>
                     </div>
                 </div>
-                <h4>{{translations.email || 'Email'}}</h4>
+                <h4>{{translations.address || 'Address'}}</h4>
                 <div class="row">
                     <div class="col-md-6 py-0">
                         <v-text-field v-model="user.information.address1" :label="translations.address || 'Address'" :dark="darkmode"></v-text-field>
