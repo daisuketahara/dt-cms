@@ -477,9 +477,9 @@
                             <div class="col">
                             </div>
                             <div class="col text-right">
-                                <v-btn v-if="form_id != 0 && typeof settings.updateSubmitLabel != typeof undefined" color="primary" :dark="darkmode">{{translations[settings.updateSubmitLabel] || settings.updateSubmitLabel}}</v-btn>
-                                <v-btn v-else-if="typeof settings.insertSubmitLabel != typeof undefined" color="primary" :dark="darkmode">{{translations[settings.insertSubmitLabel] || settings.insertSubmitLabel}}</v-btn>
-                                <v-btn v-else color="primary" :dark="darkmode">{{translations.submit || 'Submit'}}</v-btn>
+                                <v-btn @click="update" v-if="form_id != 0 && typeof settings.updateSubmitLabel != typeof undefined" color="primary" :dark="darkmode">{{translations[settings.updateSubmitLabel] || settings.updateSubmitLabel}}</v-btn>
+                                <v-btn @click="update" v-else-if="typeof settings.insertSubmitLabel != typeof undefined" color="primary" :dark="darkmode">{{translations[settings.insertSubmitLabel] || settings.insertSubmitLabel}}</v-btn>
+                                <v-btn @click="update" v-else color="primary" :dark="darkmode">{{translations.submit || 'Submit'}}</v-btn>
                             </div>
                         </div>
                     </v-form>
@@ -769,23 +769,13 @@
                 if (this.translate_id > 0) params['locale'] = this.translate_id;
                 for (var i in this.columns) {
                     if (this.columns[i]['editable'] || (this.form_id === 0 && this.columns[i]['form'])) {
-                        if (this.columns[i]['type'] == 'texteditor') {
-                            params[this.columns[i]['id']] = this.form_data[this.columns[i]['id']];
-                        } else if (this.columns[i]['type'] == 'checkbox') {
-                            if (document.getElementById('form-' + this.columns[i]['id']).checked) params[this.columns[i]['id']] = true;
-                            else params[this.columns[i]['id']] = false;
-                        } else if (this.columns[i]['type'] == 'selectfilter') {
-                            params[this.columns[i]['id']] = this.form_data[this.columns[i]['id']];
-                        } else if (this.columns[i]['type'] == 'phone') {
-                            params[this.columns[i]['id']] = this.form_data[this.columns[i]['id']];
-                        } else if (this.columns[i]['type'] == 'checkboxes') {
+                        if (this.columns[i]['type'] == 'checkboxes') {
                             for (var index in this.columns[i]['options']) {
                                 if (document.getElementById(this.columns[i].id+'-'+index).checked) params[this.columns[i].id+'-'+index] = true;
                                 else params[this.columns[i].id+'-'+index] = false;
                             }
                         } else {
-                            params[this.columns[i]['id']] = document.getElementById('form-' + this.columns[i]['id']).value;
-                            this.form_data[this.columns[i]['id']] = document.getElementById('form-' + this.columns[i]['id']).value;
+                            params[this.columns[i]['id']] = this.form_data[this.columns[i]['id']];
                         }
                     }
                 }
