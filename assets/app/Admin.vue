@@ -11,32 +11,44 @@
                 <div class="im-user-profile-name mb-3"></div>
             </div>
             <v-list dense nav>
-                <v-list-group
-                    v-for="route in menu"
-                    v-if="checkPermission(route.route_name)"
-                    v-bind:key="route.route_name"
-                    link
+                <template v-for="route in menu">
+                    <v-list-group
+                        v-if="route.submenu && checkPermission(route.route_name)"
+                        :key="route.route_name"
+                        link
 
-                >
-                    <template v-slot:activator>
+                    >
+                        <template v-slot:activator>
+                            <v-list-item-icon>
+                                <v-icon small v-text="route.icon"></v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-title v-text="translations[route.label] || route.label"></v-list-item-title>
+                        </template>
+                        <v-list-item
+                            v-for="subroute in route.submenu"
+                            v-if="checkPermission(subroute.route_name)"
+                            :key="subroute.route_name"
+                            link
+                            router v-bind:to="{name: locale + '_' + subroute.route_name}"
+                        >
+                            <v-list-item-icon>
+                                <v-icon></v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-title v-text="translations[subroute.label] || subroute.label"></v-list-item-title>
+                        </v-list-item>
+                    </v-list-group>
+                    <v-list-item
+                        v-else-if="checkPermission(route.route_name)"
+                        :key="route.route_name"
+                        link
+                        router v-bind:to="{name: locale + '_' + route.route_name}"
+                    >
                         <v-list-item-icon>
                             <v-icon small v-text="route.icon"></v-icon>
                         </v-list-item-icon>
                         <v-list-item-title v-text="translations[route.label] || route.label"></v-list-item-title>
-                    </template>
-                    <v-list-item
-                        v-for="subroute in route.submenu"
-                        v-if="checkPermission(subroute.route_name)"
-                        :key="subroute.route_name"
-                        link
-                        router v-bind:to="{name: locale + '_' + subroute.route_name}"
-                    >
-                        <v-list-item-icon>
-                            <v-icon></v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-title v-text="translations[subroute.label] || subroute.label"></v-list-item-title>
                     </v-list-item>
-                </v-list-group>
+                </template>
             </v-list>
         </v-navigation-drawer>
         <v-content v-if="initialised && authenticated">
