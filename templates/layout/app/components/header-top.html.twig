@@ -25,11 +25,13 @@
             {% endif %}
             </li>
         {% endfor %}
+            {% if {{settingservice.get('site.enable_language_switcher') == 1 %}
             <li>
                 <a id="language-switcher-open" class="nav-link pointer">
                     <i class="fal fa-globe"></i>
                 </a>
             </li>
+            {% endif %}
         </ul>
     </div>
 </nav>
