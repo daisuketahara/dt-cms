@@ -10,6 +10,7 @@
         {% for menuItem in menuservice.getMenu(1) %}
             <li class="nav-item">
                 <a href="/{{menuItem.route}}" class="nav-link">
+                {% if menuItem.icon != '' %}{{menuItem.icon|raw}}{% endif %}
                 {{menuItem.label|raw}}
                 {% if menuItem.submenu is defined %}<i class="fas fa-angle-down"></i>{% endif %}
                 </a>
