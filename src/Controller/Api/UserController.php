@@ -180,7 +180,7 @@ class UserController extends AbstractController
                 ->find($localeId);
         }
 
-        if (!$locale) {
+        if (empty($locale)) {
             $locale = $this->getDoctrine()
                 ->getRepository(Locale::class)
                 ->getDefaultLocale();
