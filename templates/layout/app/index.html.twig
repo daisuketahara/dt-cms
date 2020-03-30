@@ -91,9 +91,11 @@
             </div>
             <script>
                 document.addEventListener('DOMContentLoaded', function(event) {
+                    if (typof document.getElementById('language-switcher-close') != typeof undefined)
                     document.getElementById('language-switcher-close').addEventListener('click', function() {
                         document.getElementById('language-switcher-bar').style.top = "-80px";
                     });
+                    if (typof document.getElementById('language-switcher-open') != typeof undefined)
                     document.getElementById('language-switcher-open').addEventListener('click', function() {
                         document.getElementById('language-switcher-bar').style.top = "0";
                     });
