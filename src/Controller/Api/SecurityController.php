@@ -5,6 +5,10 @@ namespace App\Controller\Api;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 use App\Entity\UserApiKey;
 use App\Entity\User;
@@ -13,6 +17,13 @@ use App\Service\SettingService;
 
 class SecurityController extends AbstractController
 {
+    private $serializer;
+
+    public function __construct() {
+        $encoders = array(new XmlEncoder(), new JsonEncoder());
+        $normalizers = array(new ObjectNormalizer());
+        $this->serializer = new Serializer($normalizers, $encoders);
+    }
 
     /**
     * @Route("/api/v1/gettoken/", name="api_get_token"), methods={"GET","HEAD"})
@@ -67,6 +78,7 @@ class SecurityController extends AbstractController
                     'success' => true,
                     'token' => $token,
                     'expire' => $expire,
+                    'role' => $user->getUserRoles()[0]->getId()
                 );
             }
         } else {
@@ -77,7 +89,7 @@ class SecurityController extends AbstractController
 
         header('Access-Control-Allow-Origin: *');
         header('Content-Type: application/json');
-        $json = json_encode($response);
+        $json = $this->serializer->serialize($response, 'json');
         if (!empty($callback)) echo $callback . '(' . $json . ')';
         else echo $json;
         exit;
