@@ -63,8 +63,7 @@
                         <v-list-item
                             v-for="locale in locales"
                             :key="locale.locale"
-                            :data-locale="locale.locale"
-                            @click="setLocale"
+                            @click="setLocale(locale.locale)"
                         >
                             <v-list-item-title>{{ locale.name }}</v-list-item-title>
                         </v-list-item>
@@ -218,16 +217,14 @@
                         this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                     });
             },
-            setLocale: function(event) {
-                var selected = event.target.dataset.locale;
-                var locales = this.$store.state.locales;
-                for (var i = 0; i < locales.length; i++) {
-                    if (selected == locales[i]['locale']) {
-                        this.$store.commit('setLocale', locales[i]['locale']);
-                        this.$store.commit('setLocaleId', locales[i]['id']);
+            setLocale: function(locale) {
+                for (var i = 0; i < this.locales.length; i++) {
+                    if (locale == this.locales[i]['locale']) {
+                        this.$store.commit('setLocale', this.locales[i]['locale']);
+                        this.$store.commit('setLocaleId', this.locales[i]['id']);
                     }
                 }
-                this.getTranslations(selected);
+                this.getTranslations(locale);
             },
             setViewMode: function(event) {
 
