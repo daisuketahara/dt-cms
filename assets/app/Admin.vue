@@ -152,12 +152,12 @@
             logout() {
                 let headers= {
                     'Content-Type': 'application/json;charset=UTF-8',
-                    "X-AUTH-TOKEN" : this.$cookies.get('token')
+                    "X-AUTH-TOKEN" : this.$cookies.get('admintoken')
                 };
                 this.$axios.get('/api/v1/logout/', {headers: headers})
                     .then(response => {
                         this.$store.commit('authenticate', false);
-                        this.$cookies.remove('token');
+                        this.$cookies.remove('admintoken');
                         this.$cookies.remove('email');
                         this.$router.push('/' + this.locale + '/admin/login/');
                     })
@@ -166,7 +166,7 @@
                     });
             },
             checkUser: function() {
-                if (this.$cookies.isKey('token')) {
+                if (this.$cookies.isKey('admintoken')) {
                     this.$store.commit('authenticate', true);
                     this.$parent.getRoutes();
                 } else {

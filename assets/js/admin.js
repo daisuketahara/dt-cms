@@ -84,7 +84,7 @@ new Vue({
     },
     methods: {
         getRoutes() {
-            this.$axios.get('/api/v1/admin-routes/', { headers: {"X-AUTH-TOKEN" : this.$cookies.get('token')} })
+            this.$axios.get('/api/v1/admin-routes/', { headers: {"X-AUTH-TOKEN" : this.$cookies.get('admintoken')} })
                 .then(response => {
 
                     var menu = JSON.parse(response.data)['menu'];

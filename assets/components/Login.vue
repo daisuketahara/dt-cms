@@ -97,7 +97,7 @@
                             if (data.success == true) {
                                 this.$router.push('/' + this.locale + '/admin/');
                                 this.$store.commit('authenticate', true);
-                                this.$cookies.set('token', data.token);
+                                this.$cookies.set('admintoken', data.token);
                                 this.$cookies.set('email', this.email);
                                 this.$parent.$parent.$parent.getRoutes();
                             } else {

@@ -173,7 +173,7 @@
                 loaded: false,
                 headers: {
                     'Content-Type': 'application/json;charset=UTF-8',
-                    "X-AUTH-TOKEN" : this.$cookies.get('token')
+                    "X-AUTH-TOKEN" : this.$cookies.get('admintoken')
                 },
                 menus: [],
                 menu_id: 0,
