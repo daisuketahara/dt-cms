@@ -16,7 +16,6 @@
                         v-if="route.submenu && checkPermission(route.route_name)"
                         :key="route.route_name"
                         link
-
                     >
                         <template v-slot:activator>
                             <v-list-item-icon>

@@ -17,15 +17,15 @@ import VTooltip from 'v-tooltip';
 import VueTelInput from 'vue-tel-input';
 
 import Admin from '../app/Admin';
-import Editor from '../components/Editor';
-import MenuEditor from '../components/MenuEditor';
-import Control from '../components/Control';
-import DataManager from '../components/DataManager';
-import User from '../components/User';
-import FileManager from '../components/FileManager';
-import Dashboard from '../components/Dashboard';
-import Template from '../components/Template';
-import Module from '../components/Module';
+import Editor from '../components/admin/Editor';
+import MenuEditor from '../components/admin/MenuEditor';
+import Control from '../components/admin/Control';
+import DataManager from '../components/admin/DataManager';
+import User from '../components/admin/User';
+import FileManager from '../components/admin/FileManager';
+import Dashboard from '../components/admin/Dashboard';
+import Template from '../components/admin/Template';
+import Module from '../components/admin/Module';
 import Map from '../components/Map';
 
 Vue.use(CKEditor);

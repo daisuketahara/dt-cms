@@ -1,10 +1,27 @@
 <template>
-    <div class="container-fluid py-3">
+    <v-container fluid>
         <transition-group name="fade" enter-active-class="animated fadeIn">
             <div v-if="loaded && menu_id > 0" v-bind:key="menu_id">
-                <button class="btn btn-light mb-3" v-on:click.prevent="gotoList"><i class="fal fa-arrow-left"></i></button>
+                <v-btn class="mb-3" outlined x-small fab :dark="darkmode" v-on="on" @click="gotoList">
+                    <v-icon x-small>fal fa-arrow-left</v-icon>
+                </v-btn>
                 <div class="row">
                     <div class="col-md-6">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         <ul class="menu-editor-list list-group mb-3">
                             <li v-for="(item, index) in menu" class="list-group-item" @click="setActive" :data-id="index">
                                 <span v-html="item.icon"></span>
@@ -143,7 +160,7 @@
                 </div>
             </div>
         </modal>
-    </div>
+    </v-container>
 </template>
 
 <script>
@@ -182,6 +199,9 @@
         computed: {
             translations () {
                 return this.$store.state.translations;
+            },
+            darkmode () {
+                return this.$store.state.darkmode;
             }
         },
         methods: {

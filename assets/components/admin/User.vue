@@ -1,6 +1,21 @@
 <template>
-    <transition name="fade" enter-active-class="animated fadeInRight" leave-active-class="animated fadeOutDown">
-        <v-form>
+    <transition-group name="fade" enter-active-class="animated fadeIn">
+        <v-container v-if="!loaded" key="loading" fill-height>
+            <v-row justify="center" align="center">
+                <v-col cols="12" align="center" style="padding-top:40vh;">
+                    <v-progress-circular
+                        :size="50"
+                        color="white"
+                        indeterminate
+                        class="mr-5"
+                    ></v-progress-circular>
+                    <span class="text-uppercase">
+                        {{translations.loading || 'Loading...'}}
+                    </span>
+                </v-col>
+            </v-row>
+        </v-container>
+        <v-form v-else key="content">
 
             <v-tabs class="mb-3" color: transparent small :dark="darkmode">
                 <v-tab @click="changeTab" data-tab="account">{{translations.account || 'Account'}}</v-tab>
@@ -9,7 +24,7 @@
                 <v-tab @click="changeTab" data-tab="permission">{{translations.permissions || 'Permissions'}}</v-tab>
             </v-tabs>
             <div v-if="tab=='account'">
-                <div class="row mb-4">
+                <div class="row mb-2">
                     <div class="col-md-6 py-0">
                         <v-text-field v-model="user.firstname" :label="translations.firstname || 'Firstname'" :rules="[rules.required]" :dark="darkmode"></v-text-field>
                     </div>
@@ -26,31 +41,44 @@
                         </div>
                     </div>
                     <div class="col-md-6 py-0">
-                        <v-text-field
-                            v-model="user.password"
-                            :append-icon="passwordShow ? 'fal fa-eye' : 'fal fa-eye-slash'"
-                            :type="passwordShow ? 'text' : 'password'"
-                            :rules="[rules.required]"
-                            :label="translations.password || 'Password'"
-                            :dark="darkmode"
-                            @click:append="passwordShow = !passwordShow"
-                        ></v-text-field>
-                    </div>
-                    <div class="col-md-6 py-0">
-                        <v-text-field
-                            v-model="user.password"
-                            :append-icon="passwordShow ? 'fal fa-eye' : 'fal fa-eye-slash'"
-                            :type="passwordShow ? 'text' : 'password'"
-                            :rules="[rules.required]"
-                            :label="translations.confirm_password || 'Confirm password'"
-                            :dark="darkmode"
-                            @click:append="passwordShow = !passwordShow"
-                        ></v-text-field>
-                    </div>
-                    <div class="col-md-6 py-0">
-                        <v-select v-model="user.locale.id" :items="locales" :label="translations.language || 'Language'" :rules="[rules.required]" :dark="darkmode"></v-select>
+                        <v-select v-model="user.locale.id" :items="localesOptions" :label="translations.language || 'Language'" :rules="[rules.required]" :dark="darkmode"></v-select>
                     </div>
                 </div>
+                <v-row v-if="user.id > 0" class="mb-2">
+                    <v-col cols="12">
+                        <v-switch
+                            v-model="changePassword"
+                            :label="translations.change_password || 'Change password'"
+                            :dark="darkmode"
+                        ></v-switch>
+                    </v-col>
+                </v-row>
+                <transition name="fade" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+                    <div v-if="user.id == 0 || changePassword" class="row mb-4">
+                        <div class="col-md-6 py-0">
+                            <v-text-field
+                                v-model="user.password"
+                                :append-icon="passwordShow ? 'fal fa-eye' : 'fal fa-eye-slash'"
+                                :type="passwordShow ? 'text' : 'password'"
+                                :rules="[rules.required]"
+                                :label="translations.password || 'Password'"
+                                :dark="darkmode"
+                                @click:append="passwordShow = !passwordShow"
+                            ></v-text-field>
+                        </div>
+                        <div class="col-md-6 py-0">
+                            <v-text-field
+                                v-model="user.password"
+                                :append-icon="passwordShow ? 'fal fa-eye' : 'fal fa-eye-slash'"
+                                :type="passwordShow ? 'text' : 'password'"
+                                :rules="[rules.required]"
+                                :label="translations.confirm_password || 'Confirm password'"
+                                :dark="darkmode"
+                                @click:append="passwordShow = !passwordShow"
+                            ></v-text-field>
+                        </div>
+                    </div>
+                </transition>
                 <div class="form-group mb-4">
                     <h4>{{translations.user_roles || 'User roles'}}</h4>
                     <div class="row">
@@ -67,16 +95,19 @@
                 <v-switch
                     v-model="user.emailConfirmed"
                     :label="translations.email_confirmed || 'Email confirmed'"
+                    color="success"
                     :dark="darkmode"
                 ></v-switch>
                 <v-switch
                     v-model="user.phoneConfirmed"
                     :label="translations.phone_confirmed || 'Phone confirmed'"
+                    color="success"
                     :dark="darkmode"
                 ></v-switch>
                 <v-switch
                     v-model="user.active"
                     :label="translations.active || 'Active'"
+                    color="success"
                     :dark="darkmode"
                 ></v-switch>
                 <v-btn color="primary" :dark="darkmode" @click="updateUser">{{translations.save || 'Save'}}</v-btn>
@@ -115,24 +146,37 @@
                         <v-text-field v-model="user.information.country" :label="translations.country || 'Country'" :dark="darkmode"></v-text-field>
                     </div>
                 </div>
-                <h4>{{translations.billing_address || 'Billing address'}}</h4>
-                <div class="row">
-                    <div class="col-md-6 py-0">
-                        <v-text-field v-model="user.information.billingAddress1" :label="translations.address || 'Address'" :dark="darkmode"></v-text-field>
+                <v-row v-if="user.id > 0" class="mb-2">
+                    <v-col cols="12">
+                        <v-switch
+                            v-model="billingDifferent"
+                            :label="translations.billing_address_different || 'Billing address different'"
+                            :dark="darkmode"
+                        ></v-switch>
+                    </v-col>
+                </v-row>
+                <transition name="fade" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+                    <div v-if="billingDifferent" class="mb-4">
+                        <h4>{{translations.billing_address || 'Billing address'}}</h4>
+                        <div class="row">
+                            <div class="col-md-6 py-0">
+                                <v-text-field v-model="user.information.billingAddress1" :label="translations.address || 'Address'" :dark="darkmode"></v-text-field>
+                            </div>
+                            <div class="col-md-6 py-0">
+                                <v-text-field v-model="user.information.billingAddress2" :label="translations.address_2 || 'Address 2'" :dark="darkmode"></v-text-field>
+                            </div>
+                            <div class="col-md-6 py-0">
+                                <v-text-field v-model="user.information.billingZipcode" :label="translations.zipcode || 'zipcode'" :dark="darkmode"></v-text-field>
+                            </div>
+                            <div class="col-md-6 py-0">
+                                <v-text-field v-model="user.information.billingCity" :label="translations.city || 'City'" :dark="darkmode"></v-text-field>
+                            </div>
+                            <div class="col-md-6 py-0">
+                                <v-text-field v-model="user.information.billingCountry" :label="translations.country || 'Country'" :dark="darkmode"></v-text-field>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-6 py-0">
-                        <v-text-field v-model="user.information.billingAddress2" :label="translations.address_2 || 'Address 2'" :dark="darkmode"></v-text-field>
-                    </div>
-                    <div class="col-md-6 py-0">
-                        <v-text-field v-model="user.information.billingZipcode" :label="translations.zipcode || 'zipcode'" :dark="darkmode"></v-text-field>
-                    </div>
-                    <div class="col-md-6 py-0">
-                        <v-text-field v-model="user.information.billingCity" :label="translations.city || 'City'" :dark="darkmode"></v-text-field>
-                    </div>
-                    <div class="col-md-6 py-0">
-                        <v-text-field v-model="user.information.billingCountry" :label="translations.country || 'Country'" :dark="darkmode"></v-text-field>
-                    </div>
-                </div>
+                </transition>
                 <v-btn color="primary" :dark="darkmode" @click="updateUser">{{translations.save || 'Save'}}</v-btn>
             </div>
             <div v-if="tab=='note'">
@@ -160,7 +204,7 @@
                 <v-btn color="primary" :dark="darkmode" @click="updateUser">{{translations.save || 'Save'}}</v-btn>
             </div>
         </v-form>
-    </transition>
+    </transition-group>
 </template>
 
 <script>
@@ -173,16 +217,21 @@
                     'Content-Type': 'application/json;charset=UTF-8',
                     "X-AUTH-TOKEN" : this.$cookies.get('token')
                 },
+                loaded: false,
                 user: {
+                    'id': 0,
                     'information': {},
                     'roles': {},
                     'permissions': {},
                     'locale': {},
                 },
                 roles: [],
+                localesOptions: [],
                 permissions: [],
                 tab: 'account',
                 passwordShow: false,
+                changePassword: false,
+                billingDifferent: false,
                 rules: {
                     required: value => !!value || 'Required.',
                     min: v => v.length >= 8 || 'Min 8 characters',
@@ -203,12 +252,27 @@
         },
         created() {
             this.getRoles();
+
+            for(var i=0, n=this.locales.length;i<n;i++) {
+                this.localesOptions.push({
+                    text: this.locales[i].name,
+                    value: this.locales[i].id,
+                });
+            }
         },
         methods: {
             getUser: function() {
                 this.$axios.get('/api/v1/user/get/' + this.$attrs.id + '/', {headers: this.headers})
                 .then(response => {
                     this.user = JSON.parse(response.data)['data'];
+
+                    if (
+                        (this.user.information.billingAddress1 !== '' && this.user.information.address1 != this.user.information.billingAddress1) ||
+                        (this.user.information.billingAddress2 !== '' && this.user.information.address2 != this.user.information.billingAddress2) ||
+                        (this.user.information.billingZipcode !== '' && this.user.information.zipcode != this.user.information.billingZipcode) ||
+                        (this.user.information.billingCity !== '' && this.user.information.city != this.user.information.billingCity) ||
+                        (this.user.information.billingCountry !== '' && this.user.information.country != this.user.information.billingCountry)
+                    ) this.billingDifferent = true;
 
                     var roles = {};
                     for(var i=0, n=this.user.userRoles.length;i<n;i++) {
@@ -221,12 +285,22 @@
                         permissions[this.user.permissions[i].id] = true;
                     }
                     this.user.permissions = permissions;
+                    this.loaded = true;
                 })
                 .catch(e => {
                     this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
                 });
             },
             updateUser: function() {
+
+                if (!this.billingDifferent) {
+                    this.user.information.billingAddress1 = '';
+                    this.user.information.billingAddress2 = '';
+                    this.user.information.billingZipcode = '';
+                    this.user.information.billingCity = '';
+                    this.user.information.billingCountry = '';
+                }
+
                 let url = '/api/v1/user/insert/';
                 if (this.$attrs.id > 0) url = '/api/v1/user/update/' + this.$attrs.id + '/';
 
@@ -259,6 +333,7 @@
                     this.permissions = JSON.parse(response.data)['data'];
 
                     if (this.$attrs.id != undefined) this.getUser();
+                    else this.loaded = true;
                 })
                 .catch(e => {
                     this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});

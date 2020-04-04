@@ -387,7 +387,7 @@
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
     //import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 
-    import EditorSettings from '../components/EditorSettings';
+    import EditorSettings from './EditorSettings';
 
     export default {
         name: "editor",
@@ -1234,7 +1234,7 @@
 
 <style lang="scss">
 
-@import '../scss/components.scss';
+@import '../../scss/components.scss';
 
 .slide-enter-active {
    -moz-transition-duration: 0.3s;

@@ -10,6 +10,7 @@
                     v-model="email"
                     :rules="[rules.required]"
                     :label="translations.email || 'Email'"
+                    @keyup.enter="login"
                 ></v-text-field>
                 <v-text-field
                     v-model="password"
@@ -20,6 +21,7 @@
                     :label="translations.password || 'Password'"
                     :hint="translations.login_password_hint || 'Enter your password'"
                     @click:append="passwordShow = !passwordShow"
+                    @keyup.enter="login"
                 ></v-text-field>
                 <v-btn color="primary" @click="login">{{translations.login || 'Login'}}</v-btn>
             </v-form>
@@ -38,6 +40,7 @@
                     v-model="email"
                     :rules="[rules.required]"
                     :label="translations.email || 'Email'"
+                    @keyup.enter="RequestPassword"
                 ></v-text-field>
                 <v-btn color="primary"  @click="RequestPassword">{{translations.send}}</v-btn>
             </v-form>
