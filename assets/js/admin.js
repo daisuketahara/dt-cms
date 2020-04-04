@@ -26,6 +26,7 @@ import FileManager from '../components/admin/FileManager';
 import Dashboard from '../components/admin/Dashboard';
 import Template from '../components/admin/Template';
 import Module from '../components/admin/Module';
+import Profile from '../components/Profile';
 import Map from '../components/Map';
 
 Vue.use(CKEditor);
@@ -108,6 +109,7 @@ new Vue({
                         if (permissions[i]['component'] == 'User') newRoute.component = User;
                         if (permissions[i]['component'] == 'Template') newRoute.component = Template;
                         if (permissions[i]['component'] == 'Module') newRoute.component = Module;
+                        if (permissions[i]['component'] == 'Profile') newRoute.component = Profile;
                         if (permissions[i]['props'] != '') newRoute.props = JSON.parse(permissions[i]['props']);
 
                         var checkExist = this.$router.resolve({path: newRoute.path});

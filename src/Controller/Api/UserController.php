@@ -352,4 +352,139 @@ class UserController extends AbstractController
         $json = json_encode($response);
         return $this->json($json);
     }
+
+    /**
+    * @Route("/api/v1/user/get-profile/", name="api_user_get_profile"), methods={"GET","HEAD"})
+    */
+    final public function getProfile(Request $request)
+    {
+        $user = $this->getUser();
+
+        if ($user) {
+
+            $user->setPassword('');
+
+            $response = [
+                'success' => true,
+                'data' => $user,
+            ];
+        } else {
+            $response = [
+                'success' => false,
+                'message' => 'Cannot find user',
+            ];
+        }
+
+        $json = $this->serializer->serialize($response, 'json');
+        return $this->json($json);
+    }
+
+    /**
+    * @Route("/api/v1/user/save-profile/", name="api_user_save_profile", methods={"PUT"})
+    */
+    final public function saveProfile(Request $request, TranslatorInterface $translator, LogService $log, RouteService $route, UserPasswordEncoderInterface $encoder)
+    {
+        $logMessage = '';
+        $logComment = 'Insert';
+        $errors = array();
+
+        $user = $this->getUser();
+
+        if (!$user) {
+            $response = [
+                'success' => false,
+                'message' => 'Cannot find user',
+            ];
+            $json = $this->serializer->serialize($response, 'json');
+            return $this->json($json);
+        }
+
+        $userinfo = $user->getInformation();
+
+        $params = json_decode(file_get_contents("php://input"),true);
+
+        if (!empty($params['locale']['id'])) {
+            $localeId = $params['locale']['id'];
+            $locale = $this->getDoctrine()
+                ->getRepository(Locale::class)
+                ->find($localeId);
+
+            $user->setLocale($locale);
+        }
+
+        $origLocation = array();
+        $origLocation[] = $userinfo->getAddress1();
+        $origLocation[] = $userinfo->getZipcode();
+        $origLocation[] = $userinfo->getCity();
+        $origLocation[] = $userinfo->getCountry();
+        $origLocation = implode(', ', $origLocation);
+
+        if (!empty($params['email'])) $user->setEmail($params['email']);
+        else $errors[] = 'Email cannot be empty';
+
+        if (isset($params['firstname'])) $user->setFirstname($params['firstname']);
+        if (isset($params['lastname'])) $user->setLastname($params['lastname']);
+        if (isset($params['phone'])) $user->setPhone($params['phone']);
+
+        if (!empty($params['password'])) {
+            $password = $params['password'];
+            if ($password != 'passwordnotchanged') {
+                $encoded = $encoder->encodePassword($user, $password);
+                $user->setPassword($encoded);
+            }
+        }
+
+        if (empty($user->getPassword())) {
+            $errors[] = 'Password cannot be empty';
+        }
+
+        $logMessage .= '<i>New data:</i><br>';
+        $logMessage .= $this->serializer->serialize($user, 'json');
+
+        if (isset($params['information']['Address1'])) $userinfo->setAddress1($params['information']['Address1']);
+        if (isset($params['information']['Address2'])) $userinfo->setAddress2($params['information']['Address2']);
+        if (isset($params['information']['Zipcode'])) $userinfo->setZipcode($params['information']['Zipcode']);
+        if (isset($params['information']['City'])) $userinfo->setCity($params['information']['City']);
+        if (isset($params['information']['Country'])) $userinfo->setCountry($params['information']['mailCountry']);
+        if (isset($params['information']['billingAddress1'])) $userinfo->setBillingAddress1($params['information']['billingAddress1']);
+        if (isset($params['information']['billingAddress2'])) $userinfo->setBillingAddress2($params['information']['billingAddress2']);
+        if (isset($params['information']['billingZipcode'])) $userinfo->setBillingZipcode($params['information']['billingZipcode']);
+        if (isset($params['information']['billingCity'])) $userinfo->setBillingCity($params['information']['billingCity']);
+        if (isset($params['information']['billingCountry'])) $userinfo->setBillingCountry($params['information']['billingCountry']);
+
+        $newLocation = array();
+        $newLocation[] = $userinfo->getAddress1();
+        $newLocation[] = $userinfo->getZipcode();
+        $newLocation[] = $userinfo->getCity();
+        $newLocation[] = $userinfo->getCountry();
+        $newLocation = implode(', ', $newLocation);
+
+        if (!empty($newLocation) && $origLocation != $newLocation) {
+
+            $coordinates = $route->getCoordinates($newLocation);
+
+            if (!empty($coordinates)) {
+                $userinfo->setLongitude($coordinates[0]);
+                $userinfo->setLatitude($coordinates[1]);
+            }
+
+        }
+
+        $user->setInformation($userinfo);
+        $logMessage .= $this->serializer->serialize($userinfo, 'json');
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($user);
+        $em->flush();
+        $id = $user->getId();
+
+        $log->add('User profile', $id, $logMessage, $logComment);
+
+        $response = array(
+            'success' => true,
+            'id' => $id
+        );
+        $json = json_encode($response);
+        return $this->json($json);
+    }
 }

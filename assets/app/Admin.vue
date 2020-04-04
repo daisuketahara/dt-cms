@@ -70,10 +70,10 @@
                         </v-list-item>
                     </v-list>
                 </v-menu>
-                <v-btn outlined x-small fab :dark="darkmode"  @click="setViewMode">
+                <v-btn outlined x-small fab :dark="darkmode" @click="setViewMode">
                     <v-icon x-small>fas fa-adjust</v-icon>
                 </v-btn>
-                <v-btn outlined x-small fab :dark="darkmode">
+                <v-btn outlined x-small fab :dark="darkmode" router v-bind:to="{name: locale + '_admin_profile'}">
                     <v-icon x-small>fal fa-user</v-icon>
                 </v-btn>
                 <v-btn outlined x-small fab :dark="darkmode" @click="logout">
