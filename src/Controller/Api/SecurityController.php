@@ -26,7 +26,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-    * @Route("/api/v1/gettoken/", name="api_get_token"), methods={"GET","HEAD"})
+    * @Route("/api/v1/gettoken/", name="api_get_token"), methods={"POST"})
     */
     public function getToken(Request $request)
     {
@@ -60,6 +60,19 @@ class SecurityController extends AbstractController
 
             if (password_verify($password, $hash)) {
 
+                $roles = $user->getUserRoles();
+                if ($roles) {
+                    $adminAccess = $user->getUserRoles()[0]->getAdminAccess();
+                    $roleId = $user->getUserRoles()[0]->getId();
+                } else {
+                    $response = [
+                        'success' => false,
+                        'message' => 'User has no role',
+                    ];
+                    $json = json_encode($response);
+                    return $this->json($json);
+                }
+
                 $token = md5($user->getEmail().rand(0,9999).time());
                 $expire = date('Y-m-d H:i:s', strtotime('+ 1 day'));
 
@@ -78,7 +91,8 @@ class SecurityController extends AbstractController
                     'success' => true,
                     'token' => $token,
                     'expire' => $expire,
-                    'role' => $user->getUserRoles()[0]->getId()
+                    'adminAccess' => $adminAccess,
+                    'role' => $roleId
                 );
             }
         } else {
@@ -96,7 +110,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-    * @Route("/api/v1/logout/", name="api_logout"), methods={"GET","HEAD"})
+    * @Route("/api/v1/logout/", name="api_logout"), methods={"POST"})
     */
     public function logout(Request $request)
     {
@@ -105,7 +119,8 @@ class SecurityController extends AbstractController
 
         if (empty($token)) {
             $response = [
-                'success' => false,
+                'success' => true,
+                'message' => 'token_not_found'
             ];
         }
 
@@ -117,12 +132,16 @@ class SecurityController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $em->remove($key);
             $em->flush();
-            $response = ['success' => true];
+            $response = [
+                'success' => true,
+                'message' => 'token_deleted'
+            ];
         }
 
         if (empty($response)) {
             $response = [
                 'success' => false,
+                'message' => 'token_not_found'
             ];
         }
 

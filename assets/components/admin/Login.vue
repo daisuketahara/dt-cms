@@ -94,7 +94,7 @@
                     this.$axios.post('/api/v1/gettoken/', params)
                         .then(response => {
                             var data = response.data;
-                            if (data.success == true) {
+                            if (data.success == true && data.adminAccess == true) {
                                 this.$router.push('/' + this.locale + '/admin/');
                                 this.$store.commit('authenticate', true);
                                 this.$cookies.set('admintoken', data.token);

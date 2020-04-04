@@ -57,6 +57,15 @@ fields:
         list: true
         form: true
         translate: false
+    adminAccess:
+        id: adminAccess
+        label: admin_access
+        type: switch
+        required: false
+        editable: true
+        list: true
+        form: true
+        translate: false
     active:
         id: active
         label: active

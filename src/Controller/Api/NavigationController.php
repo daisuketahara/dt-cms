@@ -292,7 +292,15 @@ class NavigationController extends AbstractController
     {
         //$this->denyAccessUnlessGranted('ROLE_API');
 
-        $menu = $menuService->getMenu(2, false);
+        $roles = $this->getUser()->getUserRoles();
+        if (!empty($roles)) {
+            $menu = $this->getUser()->getUserRoles()[0]->getAdminMenu();
+            if ($menu) {
+                $menu = $menuService->getMenu($menu->getId(), false);
+            }
+        }
+
+        if (empty($menu)) $menu = [];
         $email = $this->getUser()->getUsername();
         $permissions = $this->getDoctrine()->getRepository(Permission::class)->getUserPermissions($email);
 

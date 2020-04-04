@@ -29,6 +29,16 @@ class Role
     protected $description;
 
     /**
+    * @ORM\ManyToOne(targetEntity="App\Entity\Menu")
+    */
+    protected $adminMenu;
+
+    /**
+    * @ORM\Column(type="boolean")
+    */
+    protected $adminAccess = false;
+
+    /**
     * @ORM\ManyToMany(targetEntity="App\Entity\Permission")
     */
     protected $permissions;
@@ -183,4 +193,53 @@ class Role
 
         return $this;
     }
+
+    /**
+     * Get the value of Admin Menu
+     *
+     * @return mixed
+     */
+    public function getAdminMenu()
+    {
+        return $this->adminMenu;
+    }
+
+    /**
+     * Set the value of Admin Menu
+     *
+     * @param mixed $adminMenu
+     *
+     * @return self
+     */
+    public function setAdminMenu($adminMenu)
+    {
+        $this->adminMenu = $adminMenu;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Admin Access
+     *
+     * @return mixed
+     */
+    public function getAdminAccess()
+    {
+        return $this->adminAccess;
+    }
+
+    /**
+     * Set the value of Admin Access
+     *
+     * @param mixed $adminAccess
+     *
+     * @return self
+     */
+    public function setAdminAccess($adminAccess)
+    {
+        $this->adminAccess = $adminAccess;
+
+        return $this;
+    }
+
 }

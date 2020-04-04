@@ -96,7 +96,7 @@
 </template>
 
 <script>
-    import Login from '../components/Login';
+    import Login from '../components/admin/Login';
 
 
     export default {
