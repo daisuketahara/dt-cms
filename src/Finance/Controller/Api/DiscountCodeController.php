@@ -13,11 +13,11 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Yaml\Yaml;
 
-use App\Finance\Entity\Vat;
+use App\Finance\Entity\DiscountCode;
 use App\Service\LogService;
 use App\Service\CacheService;
 
-class VatController extends AbstractController
+class DiscountCodeController extends AbstractController
 {
     private $serializer;
 
@@ -28,14 +28,14 @@ class VatController extends AbstractController
     }
 
     /**
-    * @Route("/api/v1/vat/info/", name="api_vat_info"), methods={"GET","HEAD"})
+    * @Route("/api/v1/discount-code/info/", name="api_discount_code_info"), methods={"GET","HEAD"})
     */
     final public function info(Request $request, TranslatorInterface $translator)
     {
-        $properties = Yaml::parseFile('src/Finance/Config/Vat.yaml');
+        $properties = Yaml::parseFile('src/Finance/Config/DiscountCode.yaml');
 
         $api = [];
-        $settings = ['title' => 'vats'];
+        $settings = ['title' => 'discount_codes'];
 
         if (!empty($properties['actions'])) {
             foreach($properties['actions'] as $key => $action) {
@@ -56,13 +56,13 @@ class VatController extends AbstractController
     }
 
     /**
-    * @Route("/api/v1/vat/list/", name="api_vat_list"), methods={"GET","HEAD"})
+    * @Route("/api/v1/discount-code/list/", name="api_discount_code_list"), methods={"GET","HEAD"})
     */
     final public function list(Request $request)
     {
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['sort'])) $sort_column = $params['sort']; else $sort_column = 'id';
-        if (!empty($params['dir'])) $sort_direction = $params['dir']; else $sort_direction = 'asc';
+        if (!empty($params['dir'])) $sort_direction = $params['dir']; else $sort_direction = 'desc';
         if (!empty($params['limit'])) $limit = $params['limit']; else $limit = 15;
         if (!empty($params['offset'])) $offset = $params['offset']; else $offset = 0;
         if (!empty($params['filter'])) $filter = $params['filter'];
@@ -78,22 +78,22 @@ class VatController extends AbstractController
             }
         }
 
-        $qb = $this->getDoctrine()->getRepository(Vat::class)->createQueryBuilder('l');
+        $qb = $this->getDoctrine()->getRepository(DiscountCode::class)->createQueryBuilder('l');
         $qb->select('count(l.id)');
         $qb->where($whereString);
         $count = $qb->getQuery()->getSingleScalarResult();
 
-        $qb = $this->getDoctrine()->getRepository(Vat::class)->createQueryBuilder('l');
+        $qb = $this->getDoctrine()->getRepository(DiscountCode::class)->createQueryBuilder('l');
         $qb->select();
         $qb->where($whereString);
         $qb->orderBy('l.'.$sort_column, $sort_direction);
         $qb->setMaxResults($limit);
         $qb->setFirstResult($offset);
-        $vats = $qb->getQuery()->getResult();
+        $discountCodes = $qb->getQuery()->getResult();
 
         $json = array(
             'total' => $count,
-            'data' => $vats,
+            'data' => $discountCodes,
         );
 
         $json = $this->serializer->serialize($json, 'json');
@@ -102,23 +102,23 @@ class VatController extends AbstractController
     }
 
     /**
-    * @Route("/api/v1/vat/get/{id}/", name="api_vat_get"), methods={"GET","HEAD"})
+    * @Route("/api/v1/discount-code/get/{id}/", name="api_discount_code_get"), methods={"GET","HEAD"})
     */
-    final public function getVat(int $id, Request $request)
+    final public function getDiscountCode(int $id, Request $request)
     {
         if (!empty($id)) {
-            $vat = $this->getDoctrine()
-            ->getRepository(Vat::class)
+            $discountCode = $this->getDoctrine()
+            ->getRepository(DiscountCode::class)
             ->find($id);
-            if ($vat) {
+            if ($discountCode) {
                 $response = [
                     'success' => true,
-                    'data' => $vat,
+                    'data' => $discountCode,
                 ];
             } else {
                 $response = [
                     'success' => false,
-                    'message' => 'Cannot find vat',
+                    'message' => 'Cannot find discountCode',
                 ];
             }
         } else {
@@ -133,8 +133,8 @@ class VatController extends AbstractController
     }
 
     /**
-    * @Route("/api/v1/vat/insert/", name="api_vat_insert", methods={"PUT"})
-    * @Route("/api/v1/vat/update/{id}/", name="api_vat_update", methods={"PUT"})
+    * @Route("/api/v1/discount-code/insert/", name="api_discount_code_insert", methods={"PUT"})
+    * @Route("/api/v1/discount-code/update/{id}/", name="api_discount_code_update", methods={"PUT"})
     */
     final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
@@ -142,38 +142,38 @@ class VatController extends AbstractController
         $logComment = 'Insert';
 
         if (!empty($id)) {
-            $vat = $this->getDoctrine()
-            ->getRepository(Vat::class)
+            $discountCode = $this->getDoctrine()
+            ->getRepository(DiscountCode::class)
             ->find($id);
-            if (!$vat) {
+            if (!$discountCode) {
                 $response = [
                     'success' => false,
-                    'message' => 'Cannot find vat',
+                    'message' => 'Cannot find discountCode',
                 ];
                 $json = json_encode($response);
                 return $this->json($json);
 
             } else {
                 $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $this->serializer->serialize($vat, 'json');
+                $logMessage .= $this->serializer->serialize($discountCode, 'json');
                 $logMessage .= '<br><br>';
                 $logComment = 'Update';
-                $message = 'Vat has been updated';
+                $message = 'DiscountCode has been updated';
 
             }
         } else {
-            $vat = new Vat();
-            $message = 'Vat has been inserted';
+            $discountCode = new DiscountCode();
+            $message = 'DiscountCode has been inserted';
         }
 
         if ($request->isMethod('PUT')) {
 
             $params = json_decode(file_get_contents("php://input"),true);
 
-            if (isset($params['vatKey'])) $vat->setVatKey($params['vatKey']);
+            if (isset($params['discountCodeKey'])) $discountCode->setDiscountCodeKey($params['discountCodeKey']);
             else $errors[] = 'Key cannot be empty';
 
-            if (isset($params['vatValue'])) $vat->setVatValue($params['vatValue']);
+            if (isset($params['discountCodeValue'])) $discountCode->setDiscountCodeValue($params['discountCodeValue']);
             else $errors[] = 'Value cannot be empty';
 
             if (!empty($errors)) {
@@ -187,17 +187,17 @@ class VatController extends AbstractController
             }
 
             $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $this->serializer->serialize($vat, 'json');
+            $logMessage .= $this->serializer->serialize($discountCode, 'json');
 
             $em = $this->getDoctrine()->getManager();
-            $em->persist($vat);
+            $em->persist($discountCode);
             $em->flush();
-            $id = $vat->getId();
+            $id = $discountCode->getId();
 
-            $log->add('Vat', $id, $logMessage, $logComment);
+            $log->add('DiscountCode', $id, $logMessage, $logComment);
 
             $cache = new CacheService();
-            $cache->delete('vat.'.$vat->getVatKey());
+            $cache->delete('discountCode.'.$discountCode->getDiscountCodeKey());
 
             $response = [
                 'success' => true,
@@ -211,8 +211,8 @@ class VatController extends AbstractController
     }
 
     /**
-    * @Route("/api/v1/vat/delete/", name="api_vat_delete", methods={"PUT"})
-    * @Route("/api/v1/vat/delete/{id}/", name="api_vat_delete_multiple", methods={"DELETE"})
+    * @Route("/api/v1/discount-code/delete/", name="api_discount_code_delete", methods={"PUT"})
+    * @Route("/api/v1/discount-code/delete/{id}/", name="api_discount_code_delete_multiple", methods={"DELETE"})
     */
     final public function delete(int $id=0, LogService $log)
     {
@@ -221,18 +221,18 @@ class VatController extends AbstractController
         elseif (!empty($id)) $toRemove = array($id);
 
         if (!empty($toRemove)) {
-            foreach($toRemove as $vatId) {
+            foreach($toRemove as $discountCodeId) {
 
                 $em = $this->getDoctrine()->getManager();
-                $vat = $em->getRepository(Vat::class)->find($vatId);
+                $discountCode = $em->getRepository(DiscountCode::class)->find($discountCodeId);
 
-                if ($vat) {
+                if ($discountCode) {
                     $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $this->serializer->serialize($vat, 'json');
+                    $logMessage .= $this->serializer->serialize($discountCode, 'json');
 
-                    $log->add('Vat', $id, $logMessage, 'Delete');
+                    $log->add('DiscountCode', $id, $logMessage, 'Delete');
 
-                    $em->remove($vat);
+                    $em->remove($discountCode);
                     $em->flush();
                 }
             }
@@ -240,7 +240,7 @@ class VatController extends AbstractController
             $response = ['success' => true];
 
             $cache = new CacheService();
-            $cache->delete('vat.'.$vat->getVatKey());
+            $cache->delete('discountCode.'.$discountCode->getDiscountCodeKey());
 
         } else {
             $response = [

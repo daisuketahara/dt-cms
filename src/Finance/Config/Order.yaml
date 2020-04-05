@@ -1,0 +1,59 @@
+actions:
+    list:
+        name: Orders
+        api: /order/list/
+        permissions: ['admin_order_list', 'api_order_list']
+        roles: ['superadmin']
+
+    get:
+        name: View order
+        api: /order/get/
+        permissions: ['admin_order_list', 'api_order_list', 'api_order_info']
+        roles: ['superadmin']
+
+    insert:
+        name: Create order
+        api: /order/insert/
+        permissions: ['admin_order_insert', 'api_order_insert']
+        roles: ['superadmin']
+
+    update:
+        name: Update order
+        api: /order/update/
+        permissions: ['admin_order_update', 'api_order_update', 'api_order_info']
+        roles: ['superadmin']
+
+    delete:
+        screen: order/
+        api: /order/delete/
+        name: Delete order
+        permissions: ['api_order_delete', 'api_order_delete_multiple']
+        roles: ['superadmin']
+
+fields:
+    id:
+        id: id
+        label: id
+        type: int
+        required: true
+        editable: false
+        list: true
+        form: false
+        translate: false
+    orderKey:
+        id: orderKey
+        label: key
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
+    orderValue:
+        id: orderValue
+        label: value
+        type: textarea
+        editable: true
+        list: true
+        form: true
+        translate: false

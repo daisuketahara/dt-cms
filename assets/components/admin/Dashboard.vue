@@ -1,13 +1,23 @@
 <template>
-    <div>
-        dsad
-        <transition name="fadeIn" enter-active-class="animated fadeIn">
-            <div class="container">
-            </div>
-        </transition>
+    <v-container>
+
+        <v-card :dark="darkmode">
+            <v-card-text>
+                <v-radio-group v-model="selected_method">
+                    <v-radio v-for="method in payment_methods" :key="method.id">
+                        <template slot="label">
+                            <v-img :src="method.image2x" width="40" max-width="40" class="mr-3"></v-img>
+                            {{ method.description }}
+                        </template>
+                    </v-radio>
+                </v-radio-group>
+            </v-card-text>
+        </v-card>
 
 
-    </div>
+
+
+    </v-container>
 </template>
 
 <script>
@@ -18,7 +28,14 @@
         components: {
         },
         data() {
-            return {}
+            return {
+                headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    "X-AUTH-TOKEN" : this.$cookies.get('admintoken')
+                },
+                payment_methods: [],
+                selected_method: '',
+            }
         },
         computed: {
             authenticated () {
@@ -38,15 +55,31 @@
             },
             translations () {
                 return this.$store.state.translations;
+            },
+            darkmode () {
+                return this.$store.state.darkmode;
             }
         },
         created() {
-            this.loadGADashboard();
+            this.getPaymentMethods();
         },
         methods: {
             loadGADashboard: function() {
 
-            }
+            },
+            getPaymentMethods: function() {
+
+                this.$axios.get('/api/v1/payment/get-methods/', {headers: this.headers})
+                    .then(response => {
+                        var result = JSON.parse(response.data);
+                        if (result.success) this.payment_methods = result.data;
+                        else this.$store.commit('setAlert', {type: 'error', message: result.message, autohide: true});
+                    })
+                    .catch(e => {
+                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
+                    });
+
+            },
         }
     }
 </script>

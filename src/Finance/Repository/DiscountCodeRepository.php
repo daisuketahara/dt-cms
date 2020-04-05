@@ -5,12 +5,12 @@ namespace App\Finance\Repository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-use App\Finance\Entity\Vat;
+use App\Finance\Entity\DiscountCode;
 
-class VatRepository extends ServiceEntityRepository
+class DiscountCodeRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Vat::class);
+        parent::__construct($registry, DiscountCode::class);
     }
 }

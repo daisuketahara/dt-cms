@@ -3,12 +3,11 @@
 namespace App\Finance\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\InvoiceLineRepository")
+ * @ORM\Entity(repositoryClass="App\Finance\Repository\SubscriptionRepository")
  */
-class InvoiceLine
+class Subscription
 {
     /**
      * @ORM\Id
@@ -19,9 +18,8 @@ class InvoiceLine
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
      */
-    private $title;
+    protected $title;
 
     /**
      * @ORM\Column(type="text")
@@ -29,24 +27,24 @@ class InvoiceLine
     protected $description;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    protected $amount;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    protected $vat;
-
-    /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", length=255)
      */
     protected $price;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="string", length=255)
      */
-    protected $ref;
+    protected $term;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Finance\Entity\Vat")
+     */
+    private $vat;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected $active = false;
 
     /**
      * Get the value of Id
@@ -61,7 +59,7 @@ class InvoiceLine
     /**
      * Set the value of Id
      *
-     * @param mixed id
+     * @param mixed $id
      *
      * @return self
      */
@@ -85,7 +83,7 @@ class InvoiceLine
     /**
      * Set the value of Title
      *
-     * @param mixed title
+     * @param mixed $title
      *
      * @return self
      */
@@ -109,61 +107,13 @@ class InvoiceLine
     /**
      * Set the value of Description
      *
-     * @param mixed description
+     * @param mixed $description
      *
      * @return self
      */
     public function setDescription($description)
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of Amount
-     *
-     * @return mixed
-     */
-    public function getAmount()
-    {
-        return $this->amount;
-    }
-
-    /**
-     * Set the value of Amount
-     *
-     * @param mixed amount
-     *
-     * @return self
-     */
-    public function setAmount($amount)
-    {
-        $this->amount = $amount;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of Vat
-     *
-     * @return mixed
-     */
-    public function getVat()
-    {
-        return $this->vat;
-    }
-
-    /**
-     * Set the value of Vat
-     *
-     * @param mixed vat
-     *
-     * @return self
-     */
-    public function setVat($vat)
-    {
-        $this->vat = $vat;
 
         return $this;
     }
@@ -181,7 +131,7 @@ class InvoiceLine
     /**
      * Set the value of Price
      *
-     * @param mixed price
+     * @param mixed $price
      *
      * @return self
      */
@@ -193,25 +143,73 @@ class InvoiceLine
     }
 
     /**
-     * Get the value of Ref
+     * Get the value of Term
      *
      * @return mixed
      */
-    public function getRef()
+    public function getTerm()
     {
-        return $this->ref;
+        return $this->term;
     }
 
     /**
-     * Set the value of Ref
+     * Set the value of Term
      *
-     * @param mixed ref
+     * @param mixed $term
      *
      * @return self
      */
-    public function setRef($ref)
+    public function setTerm($term)
     {
-        $this->ref = $ref;
+        $this->term = $term;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Vat
+     *
+     * @return mixed
+     */
+    public function getVat()
+    {
+        return $this->vat;
+    }
+
+    /**
+     * Set the value of Vat
+     *
+     * @param mixed $vat
+     *
+     * @return self
+     */
+    public function setVat($vat)
+    {
+        $this->vat = $vat;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Active
+     *
+     * @return mixed
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * Set the value of Active
+     *
+     * @param mixed $active
+     *
+     * @return self
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
 
         return $this;
     }

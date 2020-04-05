@@ -20,6 +20,9 @@
     "bordercloud/tether": {
         "version": "1.1.1"
     },
+    "composer/ca-bundle": {
+        "version": "1.2.6"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {

@@ -5,7 +5,7 @@ namespace App\Finance\Repository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
-use App\Entity\Invoice;
+use App\Finance\Entity\Invoice;
 
 class InvoiceRepository extends ServiceEntityRepository
 {

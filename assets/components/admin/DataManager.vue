@@ -392,7 +392,7 @@
                             <a :class="{ 'nav-link': true, 'active' : (locale_id == item.id && translate_id === 0) || translate_id == item.id}" href="#" v-on:click.prevent="setTranslate" :data-locale="item.locale" :data-lid="item.id">{{item.name}}</a>
                         </li>
                     </ul>
-                    <v-form>
+                    <v-form :dark="darkmode">
                         <div v-for="column in columns">
                             <v-checkbox
                                 v-if="column.type === 'checkbox' && (column.editable || (form_id === 0 && column.form))"
@@ -405,6 +405,7 @@
                                 v-model="form_data[column.id]"
                                 :label="translations[column.label] || column.label"
                                 :dark="darkmode"
+                                color="success"
                             ></v-switch>
                             <div v-else-if="column.type === 'checkboxes' && (column.editable || (form_id === 0 && column.form))" class="form-group">
                                 <h4>
@@ -427,33 +428,44 @@
                                 <input v-else-if="column.type === 'email'" type="email" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
                                 <vue-tel-input v-else-if="column.type === 'phone'" v-model="form_data[column.id]" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-bind="phoneProps" :preferredCountries="['nl', 'be', 'gb']"></vue-tel-input>
                                 <input v-else-if="column.type === 'integer'" type="integer" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
-
-
-                                <datepicker v-else-if="column.type === 'date'" format="yyyy-MM-dd" placeholder="Select Date":id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:input-class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}"></datepicker>
+                                <template v-else-if="column.type === 'slider'">
+                                    <label class="mt-3">{{ translations[column.label] || column.label }}</label>
+                                    <v-slider v-model="form_data[column.id]" color="primary" track-color="grey" always-dirty thumb-label="always" :min="column.min" :max="column.max">
+                                        <template v-slot:prepend>
+                                            <v-icon color="primary" @click="form_data[column.id]--">fal fa-minus</v-icon>
+                                        </template>
+                                        <template v-slot:append>
+                                            <v-icon color="primary" @click="form_data[column.id]++">fal fa-plus</v-icon>
+                                        </template>
+                                    </v-slider>
+                                </template>
 
                                 <v-menu
                                     v-else-if="column.type === 'date'"
-                                    v-model="menu2"
+                                    v-model="column.trigger"
                                     :close-on-content-click="false"
                                     :nudge-right="40"
                                     transition="scale-transition"
                                     offset-y
                                     min-width="290px"
+                                    :dark="darkmode"
                                 >
                                     <template v-slot:activator="{ on }">
                                         <v-text-field
-                                            v-model="date"
-                                            label="Picker without buttons"
-                                            prepend-icon="event"
+                                            v-model="form_data[column.id]"
+                                            :label="translations[column.label] || column.label"
+                                            prepend-icon="fal fa-calendar-alt"
                                             readonly
                                             v-on="on"
+                                            :dark="darkmode"
                                         ></v-text-field>
                                     </template>
-                                    <v-date-picker v-model="date" @input="menu2 = false"></v-date-picker>
+                                    <v-date-picker v-model="form_data[column.id]" @input="column.trigger = false"></v-date-picker>
                                 </v-menu>
 
                                 <v-textarea v-else-if="column.type === 'textarea'" v-model="form_data[column.id]" :label="translations[column.label] || column.label"  :rules="validation[column.id]" :hint="column.tooltip" :dark="darkmode">{{ form_data[column.id] }}</v-textarea>
                                 <v-select v-else-if="column.type === 'select'" v-model="form_data[column.id]" :items="column.options" :label="translations[column.label] || column.label" :rules="validation[column.id]" :hint="column.tooltip" :dark="darkmode"></v-select>
+                                <v-select v-else-if="column.type === 'selectfilter'" v-model="form_data[column.id]" :items="select_options[column.id]" :label="translations[column.label] || column.label" :rules="validation[column.id]" :hint="column.tooltip" :dark="darkmode"></v-select>
                                 <ckeditor v-else-if="column.type === 'texteditor'" :editor="editor" v-model="form_data[column.id]" :config="editorConfig"></ckeditor>
                                 <select v-else-if="column.type === 'switch'" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
                                     <option value=""></option>
@@ -470,6 +482,7 @@
                                     :dark="darkmode"
                                     @click:append="passwordShow = !passwordShow"
                                 ></v-text-field>
+                                <v-text-field v-else-if="column.type === 'price'" v-model="form_data[column.id]" :label="translations[column.label]+' (e.g. 10.00)' || column.label+' (e.g. 10.00)'" :rules="validation[column.id]" :hint="column.tooltip" :dark="darkmode"></v-text-field>
                                 <v-text-field v-else v-model="form_data[column.id]" :label="translations[column.label] || column.label" :rules="validation[column.id]" :hint="column.tooltip" :dark="darkmode"></v-text-field>
                             </div>
                         </div>
@@ -582,7 +595,6 @@
         },
         created() {
             this.getEntityInfo();
-            this.loadSelectOptions();
 
             if (this.$cookies.isKey('tablemode')) {
                 this.tablemode = true;
@@ -614,6 +626,7 @@
 
                         this.list();
                         this.setRules();
+                        this.loadSelectOptions();
                         this.loaded = true;
                     })
                     .catch(e => {
@@ -946,7 +959,9 @@
                 this.$axios.get('/api/v1' + column.options_source, { headers: this.headers })
                     .then(response => {
 
-                        var data = JSON.parse(response.data.data);
+                        var data = JSON.parse(response.data)['data'];
+
+                        console.log(data);
 
                         for (var n = 0; n < data.length; n++) {
 
@@ -1115,7 +1130,7 @@
                     }
                 }
 
-            }
+            },
         }
     }
 </script>

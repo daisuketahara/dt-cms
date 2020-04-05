@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\InvoiceRepository")
+ * @ORM\Entity(repositoryClass="App\Finance\Repository\InvoiceRepository")
  */
 class Invoice
 {
@@ -18,9 +18,19 @@ class Invoice
     private $id;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    protected $invoiceNumber;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      */
     private $user;
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Finance\Entity\Orders")
+     */
+    private $order;
 
     /**
      * @ORM\Column(type="date")
@@ -28,24 +38,24 @@ class Invoice
     protected $invoiceDate;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Finance\Entity\InvoiceLine")
+     * @ORM\Column(type="date")
      */
-    protected $invoiceLines;
+    protected $reminderDate1;
 
     /**
      * @ORM\Column(type="date")
      */
-    protected $reminderDate;
+    protected $reminderDate2;
 
     /**
      * @ORM\Column(type="date")
      */
-    protected $secondReminderDate;
+    protected $reminderDate3;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    protected $status = 0;
+    protected $cancel = false;
 
     /**
      * Get the value of Id
@@ -60,13 +70,37 @@ class Invoice
     /**
      * Set the value of Id
      *
-     * @param mixed id
+     * @param mixed $id
      *
      * @return self
      */
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Invoice Number
+     *
+     * @return mixed
+     */
+    public function getInvoiceNumber()
+    {
+        return $this->invoiceNumber;
+    }
+
+    /**
+     * Set the value of Invoice Number
+     *
+     * @param mixed $invoiceNumber
+     *
+     * @return self
+     */
+    public function setInvoiceNumber($invoiceNumber)
+    {
+        $this->invoiceNumber = $invoiceNumber;
 
         return $this;
     }
@@ -84,13 +118,37 @@ class Invoice
     /**
      * Set the value of User
      *
-     * @param mixed user
+     * @param mixed $user
      *
      * @return self
      */
     public function setUser($user)
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Order
+     *
+     * @return mixed
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+    /**
+     * Set the value of Order
+     *
+     * @param mixed $order
+     *
+     * @return self
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
 
         return $this;
     }
@@ -108,7 +166,7 @@ class Invoice
     /**
      * Set the value of Invoice Date
      *
-     * @param mixed invoiceDate
+     * @param mixed $invoiceDate
      *
      * @return self
      */
@@ -120,25 +178,25 @@ class Invoice
     }
 
     /**
-     * Get the value of Order Lines
+     * Get the value of Reminder Date
      *
      * @return mixed
      */
-    public function getOrderLines()
+    public function getReminderDate1()
     {
-        return $this->orderLines;
+        return $this->reminderDate1;
     }
 
     /**
-     * Set the value of Order Lines
+     * Set the value of Reminder Date
      *
-     * @param mixed orderLines
+     * @param mixed $reminderDate1
      *
      * @return self
      */
-    public function setOrderLines($orderLines)
+    public function setReminderDate1($reminderDate1)
     {
-        $this->orderLines = $orderLines;
+        $this->reminderDate1 = $reminderDate1;
 
         return $this;
     }
@@ -148,69 +206,69 @@ class Invoice
      *
      * @return mixed
      */
-    public function getReminderDate()
+    public function getReminderDate2()
     {
-        return $this->reminderDate;
+        return $this->reminderDate2;
     }
 
     /**
      * Set the value of Reminder Date
      *
-     * @param mixed reminderDate
+     * @param mixed $reminderDate2
      *
      * @return self
      */
-    public function setReminderDate($reminderDate)
+    public function setReminderDate2($reminderDate2)
     {
-        $this->reminderDate = $reminderDate;
+        $this->reminderDate2 = $reminderDate2;
 
         return $this;
     }
 
     /**
-     * Get the value of Second Reminder Date
+     * Get the value of Reminder Date
      *
      * @return mixed
      */
-    public function getSecondReminderDate()
+    public function getReminderDate3()
     {
-        return $this->secondReminderDate;
+        return $this->reminderDate3;
     }
 
     /**
-     * Set the value of Second Reminder Date
+     * Set the value of Reminder Date
      *
-     * @param mixed secondReminderDate
+     * @param mixed $reminderDate3
      *
      * @return self
      */
-    public function setSecondReminderDate($secondReminderDate)
+    public function setReminderDate3($reminderDate3)
     {
-        $this->secondReminderDate = $secondReminderDate;
+        $this->reminderDate3 = $reminderDate3;
 
         return $this;
     }
 
     /**
-     * Get the value of Status
+     * Get the value of Cancel
      *
      * @return mixed
      */
-    public function getStatus()
+    public function getCancel()
     {
-        return $this->status;
+        return $this->cancel;
     }
 
     /**
-     * Set the value of Status
+     * Set the value of Cancel
      *
-     * @param mixed status
+     * @param mixed $cancel
      *
      * @return self
      */
-    public function setStatus($status)
+    public function setCancel($cancel)
     {
-        $this->status = $status;
+        $this->cancel = $cancel;
 
         return $this;
     }

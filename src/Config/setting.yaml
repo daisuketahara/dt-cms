@@ -25,7 +25,7 @@ actions:
 
     delete:
         screen: setting/
-        api: /etting/delete/
+        api: /setting/delete/
         name: Delete setting
         permissions: ['api_setting_delete', 'api_setting_delete_multiple']
         roles: ['superadmin']

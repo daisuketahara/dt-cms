@@ -193,7 +193,8 @@ footer {
     background: rgba(0,0,0,0.7) !important;
 }
 
-.v-input--selection-controls__input input[role="checkbox"] {
+.v-input--selection-controls__input input[role="checkbox"],
+.v-input--selection-controls__input input[role="radio"] {
     opacity: 1 !important;
 }
 

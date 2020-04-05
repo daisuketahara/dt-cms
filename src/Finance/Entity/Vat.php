@@ -5,7 +5,7 @@ namespace App\Finance\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\VatRepository")
+ * @ORM\Entity(repositoryClass="App\Finance\Repository\VatRepository")
  */
 class Vat
 {
@@ -19,12 +19,12 @@ class Vat
     /**
      * @ORM\Column(type="string", length=255)
      */
-    protected $name;
+    protected $title;
 
     /**
      * @ORM\Column(type="integer")
      */
-    protected $vat;
+    protected $percentage;
 
     /**
      * Get the value of Id
@@ -39,7 +39,7 @@ class Vat
     /**
      * Set the value of Id
      *
-     * @param mixed id
+     * @param mixed $id
      *
      * @return self
      */
@@ -51,73 +51,49 @@ class Vat
     }
 
     /**
-     * Get the value of Country
+     * Get the value of Title
      *
      * @return mixed
      */
-    public function getCountry()
+    public function getTitle()
     {
-        return $this->country;
+        return $this->title;
     }
 
     /**
-     * Set the value of Country
+     * Set the value of Title
      *
-     * @param mixed country
+     * @param mixed $title
      *
      * @return self
      */
-    public function setCountry($country)
+    public function setTitle($title)
     {
-        $this->country = $country;
+        $this->title = $title;
 
         return $this;
     }
 
     /**
-     * Get the value of Name
+     * Get the value of Percentage
      *
      * @return mixed
      */
-    public function getName()
+    public function getPercentage()
     {
-        return $this->name;
+        return $this->percentage;
     }
 
     /**
-     * Set the value of Name
+     * Set the value of Percentage
      *
-     * @param mixed name
+     * @param mixed $percentage
      *
      * @return self
      */
-    public function setName($name)
+    public function setPercentage($percentage)
     {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of Vat
-     *
-     * @return mixed
-     */
-    public function getVat()
-    {
-        return $this->vat;
-    }
-
-    /**
-     * Set the value of Vat
-     *
-     * @param mixed vat
-     *
-     * @return self
-     */
-    public function setVat($vat)
-    {
-        $this->vat = $vat;
+        $this->percentage = $percentage;
 
         return $this;
     }

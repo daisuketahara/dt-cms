@@ -1,0 +1,62 @@
+actions:
+    list:
+        name: Settings
+        api: /vat/list/
+        permissions: ['admin_vat_list', 'api_vat_list']
+        roles: ['superadmin']
+
+    get:
+        name: View vat
+        api: /vat/get/
+        permissions: ['admin_vat_list', 'api_vat_list', 'api_vat_info']
+        roles: ['superadmin']
+
+    insert:
+        name: Create vat
+        api: /vat/insert/
+        permissions: ['admin_vat_insert', 'api_vat_insert']
+        roles: ['superadmin']
+
+    update:
+        name: Update vat
+        api: /vat/update/
+        permissions: ['admin_vat_update', 'api_vat_update', 'api_vat_info']
+        roles: ['superadmin']
+
+    delete:
+        screen: vat/
+        api: /vat/delete/
+        name: Delete vat
+        permissions: ['api_vat_delete', 'api_vat_delete_multiple']
+        roles: ['superadmin']
+
+fields:
+    id:
+        id: id
+        label: id
+        type: int
+        required: true
+        editable: false
+        list: true
+        form: false
+        translate: false
+    title:
+        id: title
+        label: vat_title
+        type: text
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
+    percentage:
+        id: percentage
+        label: percentage
+        type: slider
+        min: 0
+        max: 100
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
