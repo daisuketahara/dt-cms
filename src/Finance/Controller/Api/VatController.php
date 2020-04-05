@@ -15,7 +15,6 @@ use Symfony\Component\Yaml\Yaml;
 
 use App\Finance\Entity\Vat;
 use App\Service\LogService;
-use App\Service\CacheService;
 
 class VatController extends AbstractController
 {
@@ -170,11 +169,11 @@ class VatController extends AbstractController
 
             $params = json_decode(file_get_contents("php://input"),true);
 
-            if (isset($params['vatKey'])) $vat->setVatKey($params['vatKey']);
-            else $errors[] = 'Key cannot be empty';
+            if (isset($params['title'])) $vat->setTitle($params['title']);
+            else $errors[] = 'Title cannot be empty';
 
-            if (isset($params['vatValue'])) $vat->setVatValue($params['vatValue']);
-            else $errors[] = 'Value cannot be empty';
+            if (isset($params['percentage'])) $vat->setPercentage($params['percentage']);
+            else $errors[] = 'Percentage cannot be empty';
 
             if (!empty($errors)) {
 
@@ -195,9 +194,6 @@ class VatController extends AbstractController
             $id = $vat->getId();
 
             $log->add('Vat', $id, $logMessage, $logComment);
-
-            $cache = new CacheService();
-            $cache->delete('vat.'.$vat->getVatKey());
 
             $response = [
                 'success' => true,
@@ -238,9 +234,6 @@ class VatController extends AbstractController
             }
 
             $response = ['success' => true];
-
-            $cache = new CacheService();
-            $cache->delete('vat.'.$vat->getVatKey());
 
         } else {
             $response = [

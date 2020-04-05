@@ -42,7 +42,7 @@ class MollieService
         return $paymentMethods;
     }
 
-    public function getInvoicePaymentLink($invoice)
+    public function getPaymentLink($invoice)
     {
         $key = $this->setting->get('finance.payment.provider.apikey');
 
@@ -66,7 +66,7 @@ class MollieService
             ],
             "description" => "Order #{$orderId}",
             "redirectUrl" => "{$path}/mollie/return/order_id={$orderId}",
-            "webhookUrl" => "{$path}/mollie/webhook/",
+            "webhookUrl" => "{$path}/api/v1/payment/handle/{$order->getId()}/",
             "metadata" => [
                 "invoice_id" => $orderId,
             ],

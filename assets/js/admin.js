@@ -15,6 +15,7 @@ import VModal from 'vue-js-modal';
 import VueCodemirror from 'vue-codemirror';
 import VTooltip from 'v-tooltip';
 import VueTelInput from 'vue-tel-input';
+import moment from 'moment';
 
 import Admin from '../app/Admin';
 import Editor from '../components/admin/Editor';
@@ -38,6 +39,12 @@ Vue.component('filemanager', FileManager);
 Vue.component('User', User);
 Vue.component('vue-tel-input', VueTelInput);
 Vue.component('Map', Map);
+
+Vue.filter('formatDate', function(value) {
+    if (value) {
+        return moment(value).format('YYYY-MM-DD');
+    }
+});
 
 Vue.filter('formatTimestamp', function(value) {
     if (value) {

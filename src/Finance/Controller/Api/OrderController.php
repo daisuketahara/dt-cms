@@ -252,4 +252,10 @@ class OrderController extends AbstractController
         $json = json_encode($response);
         return $this->json($json);
     }
+
+    /**
+    * @Route("/api/v1/order/get/{id}/", name="api_order_get"), methods={"POST"})
+    */
+    final public function createOrder(int $id, Request $request)
+    {
 }

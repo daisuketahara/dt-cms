@@ -27,7 +27,7 @@ class DiscountCode
     protected $code;
 
     /**
-    * @ORM\Column(type="date")
+    * @ORM\Column(type="date", nullable=true)
     */
     protected $startDate;
 
@@ -37,14 +37,24 @@ class DiscountCode
     protected $endDate;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     protected $price;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     protected $percentage;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    protected $maxUse;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    protected $used;
 
     /**
      * @ORM\Column(type="boolean")
@@ -215,6 +225,54 @@ class DiscountCode
     public function setPercentage($percentage)
     {
         $this->percentage = $percentage;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Max Use
+     *
+     * @return mixed
+     */
+    public function getMaxUse()
+    {
+        return $this->maxUse;
+    }
+
+    /**
+     * Set the value of Max Use
+     *
+     * @param mixed $maxUse
+     *
+     * @return self
+     */
+    public function setMaxUse($maxUse)
+    {
+        $this->maxUse = $maxUse;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Used
+     *
+     * @return mixed
+     */
+    public function getUsed()
+    {
+        return $this->used;
+    }
+
+    /**
+     * Set the value of Used
+     *
+     * @param mixed $used
+     *
+     * @return self
+     */
+    public function setUsed($used)
+    {
+        $this->used = $used;
 
         return $this;
     }

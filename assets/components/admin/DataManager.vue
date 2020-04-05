@@ -55,7 +55,7 @@
                             <span v-else-if="column.type=='select'">
                                 {{translations[column.options[item[column.id]]] || column.options[item[column.id]]}}
                             </span>
-                            <span v-else-if="column.type=='date'">{{formatDate(item[column.id])}}</span>
+                            <span v-else-if="column.type=='date'">{{ item[column.id] | formatDate }}</span>
                             <span v-else>{{item[column.id]}}</span>
                         </td>
                         <td>
@@ -238,7 +238,7 @@
                                 <h3 v-else-if="column.type=='select'">
                                     {{translations[column.options[item[column.id]]] || column.options[item[column.id]]}}
                                 </h3>
-                                <h3 v-else-if="column.type=='date'">{{formatDate(item[column.id])}}</h3>
+                                <h3 v-else-if="column.type=='date'">{{ item[column.id] | formatDate }}</h3>
                                 <h3 v-else>{{item[column.id]}}</h3>
                             </div>
                             <div v-else-if="index > 1">
@@ -252,7 +252,7 @@
                                 <span class="data-card-value" v-else-if="column.type=='select'">
                                     {{translations[column.options[item[column.id]]] || column.options[item[column.id]]}}
                                 </span>
-                                <span class="data-card-value" v-else-if="column.type=='date'">{{formatDate(item[column.id])}}</span>
+                                <span class="data-card-value" v-else-if="column.type=='date'">{{ item[column.id] | formatDate }}</span>
                                 <span class="data-card-value" v-else>{{item[column.id]}}</span>
                             </div>
                         </div>

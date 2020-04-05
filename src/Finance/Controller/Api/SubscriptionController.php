@@ -14,8 +14,8 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Yaml\Yaml;
 
 use App\Finance\Entity\Subscription;
+use App\Finance\Entity\Vat;
 use App\Service\LogService;
-use App\Service\CacheService;
 
 class SubscriptionController extends AbstractController
 {
@@ -170,11 +170,28 @@ class SubscriptionController extends AbstractController
 
             $params = json_decode(file_get_contents("php://input"),true);
 
-            if (isset($params['subscriptionKey'])) $subscription->setSubscriptionKey($params['subscriptionKey']);
-            else $errors[] = 'Key cannot be empty';
+            if (isset($params['title'])) $subscription->setTitle($params['title']);
+            else $errors[] = 'TItle cannot be empty';
 
-            if (isset($params['subscriptionValue'])) $subscription->setSubscriptionValue($params['subscriptionValue']);
-            else $errors[] = 'Value cannot be empty';
+            if (isset($params['price'])) $subscription->setPrice($params['price']);
+            else $errors[] = 'Price cannot be empty';
+
+            if (isset($params['term'])) $subscription->setTerm($params['term']);
+            else $errors[] = 'Term cannot be empty';
+
+            if (isset($params['vat'])) {
+
+                $vat = $this->getDoctrine()
+                    ->getRepository(Vat::class)
+                    ->find($params['vat']);
+
+                if ($vat) $subscription->setVat($vat);
+                 else $errors[] = 'Given Vat id doesn  not exist';
+
+            } else $errors[] = 'Vat cannot be empty';
+
+            if (isset($params['description'])) $subscription->setDescription($params['description']);
+            if (isset($params['active'])) $subscription->setActive($params['active']);
 
             if (!empty($errors)) {
 
@@ -195,9 +212,6 @@ class SubscriptionController extends AbstractController
             $id = $subscription->getId();
 
             $log->add('Subscription', $id, $logMessage, $logComment);
-
-            $cache = new CacheService();
-            $cache->delete('subscription.'.$subscription->getSubscriptionKey());
 
             $response = [
                 'success' => true,
@@ -238,9 +252,6 @@ class SubscriptionController extends AbstractController
             }
 
             $response = ['success' => true];
-
-            $cache = new CacheService();
-            $cache->delete('subscription.'.$subscription->getSubscriptionKey());
 
         } else {
             $response = [

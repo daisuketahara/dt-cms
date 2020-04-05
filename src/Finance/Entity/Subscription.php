@@ -22,7 +22,7 @@ class Subscription
     protected $title;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     protected $description;
 
@@ -32,7 +32,7 @@ class Subscription
     protected $price;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=10)
      */
     protected $term;
 

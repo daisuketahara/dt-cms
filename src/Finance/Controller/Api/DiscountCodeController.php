@@ -15,7 +15,6 @@ use Symfony\Component\Yaml\Yaml;
 
 use App\Finance\Entity\DiscountCode;
 use App\Service\LogService;
-use App\Service\CacheService;
 
 class DiscountCodeController extends AbstractController
 {
@@ -170,11 +169,18 @@ class DiscountCodeController extends AbstractController
 
             $params = json_decode(file_get_contents("php://input"),true);
 
-            if (isset($params['discountCodeKey'])) $discountCode->setDiscountCodeKey($params['discountCodeKey']);
-            else $errors[] = 'Key cannot be empty';
+            if (isset($params['description'])) $discountCode->setDescription($params['description']);
+            else $errors[] = 'Description cannot be empty';
 
-            if (isset($params['discountCodeValue'])) $discountCode->setDiscountCodeValue($params['discountCodeValue']);
-            else $errors[] = 'Value cannot be empty';
+            if (isset($params['code'])) $discountCode->setCode($params['code']);
+            else $errors[] = 'Code cannot be empty';
+
+            if (isset($params['startDate'])) $discountCode->setStartDate(new \DateTime($params['startDate']));
+            if (isset($params['endDate'])) $discountCode->setEndDate(new \DateTime($params['endDate']));
+            if (isset($params['price'])) $discountCode->setPrice($params['price']);
+            if (isset($params['percentage'])) $discountCode->setPercentage($params['percentage']);
+            if (isset($params['maxUse'])) $discountCode->setMaxUse($params['maxUse']);
+            if (isset($params['active'])) $discountCode->setActive($params['active']);
 
             if (!empty($errors)) {
 
@@ -195,9 +201,6 @@ class DiscountCodeController extends AbstractController
             $id = $discountCode->getId();
 
             $log->add('DiscountCode', $id, $logMessage, $logComment);
-
-            $cache = new CacheService();
-            $cache->delete('discountCode.'.$discountCode->getDiscountCodeKey());
 
             $response = [
                 'success' => true,
@@ -239,9 +242,6 @@ class DiscountCodeController extends AbstractController
 
             $response = ['success' => true];
 
-            $cache = new CacheService();
-            $cache->delete('discountCode.'.$discountCode->getDiscountCodeKey());
-
         } else {
             $response = [
                 'success' => false,
@@ -252,4 +252,55 @@ class DiscountCodeController extends AbstractController
         $json = json_encode($response);
         return $this->json($json);
     }
+
+    /**
+    * @Route("/api/v1/discount-code/check/{code}/", name="api_discount_code_check"), methods={"GET","HEAD"})
+    */
+    final public function checkCode($code, Request $request)
+    {
+        $discountCode = $this->getDoctrine()
+        ->getRepository(DiscountCode::class)
+        ->findOneBy(['code' => $code]);
+
+        if (!$discountCode) {
+            $response = [
+                'success' => false,
+                'message' => 'Cannot find discountCode',
+            ];
+        }
+
+        $now = new \DateTime();
+
+        if ($discountCode->getStartDate() > $now) {
+            $response = [
+                'success' => false,
+                'message' => 'Discount code not valid yet',
+            ];
+        }
+
+        if ($discountCode->getEndDate() < $now) {
+            $response = [
+                'success' => false,
+                'message' => 'Discount code has expired',
+            ];
+        }
+
+        if ($discountCode->getMaxUse() >= $discountCode->getUsed()) {
+            $response = [
+                'success' => false,
+                'message' => 'Discount code cannot be used anymore',
+            ];
+        }
+
+        if (empty($response)) {
+            $response = [
+                'success' => true,
+                'data' => $discountCode,
+            ];
+        }
+
+        $json = $this->serializer->serialize($response, 'json');
+        return $this->json($json);
+    }
+
 }

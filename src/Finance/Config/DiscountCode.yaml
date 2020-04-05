@@ -90,6 +90,14 @@ fields:
         list: true
         form: true
         translate: false
+    maxUse:
+        id: maxUse
+        label: maximum_usage
+        type: integer
+        editable: true
+        list: true
+        form: true
+        translate: false
     active:
         id: active
         label: active
