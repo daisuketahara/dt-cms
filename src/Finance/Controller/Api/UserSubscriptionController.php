@@ -259,8 +259,8 @@ class UserSubscriptionController extends AbstractController
     final public function getSubscription(Request $request)
     {
         $subscription = $this->getDoctrine()
-        ->getRepository(UserSubscription::class)
-        ->findOneBy(['user' => $this.getUser()]);
+            ->getRepository(UserSubscription::class)
+            ->findOneBy(['user' => $this->getUser()]);
 
         if ($subscription) {
             $response = [
