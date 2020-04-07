@@ -254,14 +254,14 @@ class UserSubscriptionController extends AbstractController
     }
 
     /**
-    * @Route("/api/v1/user-subscription/get/", name="api_subscription_get"), methods={"GET","HEAD"})
+    * @Route("/api/v1/user-subscription/get/", name="api_user_subscription_get_by_user"), methods={"GET","HEAD"})
     */
     final public function getSubscription(Request $request)
     {
         $subscription = $this->getDoctrine()
         ->getRepository(UserSubscription::class)
         ->findOneBy(['user' => $this.getUser()]);
-        
+
         if ($subscription) {
             $response = [
                 'success' => true,
