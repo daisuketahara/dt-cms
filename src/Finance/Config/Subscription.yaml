@@ -66,6 +66,15 @@ fields:
         list: true
         form: true
         translate: false
+    amountTerms:
+        id: amountTerms
+        label: amout_of_terms
+        type: integer
+        required: true
+        editable: true
+        list: true
+        form: true
+        translate: false
     term:
         id: term
         label: interval
