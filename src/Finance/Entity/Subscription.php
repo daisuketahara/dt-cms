@@ -32,6 +32,11 @@ class Subscription
     protected $price;
 
     /**
+     * @ORM\Column(type="integer", length=10, nullable=true)
+     */
+    protected $amountTerms;
+
+    /**
      * @ORM\Column(type="string", length=10)
      */
     protected $term;
@@ -138,6 +143,30 @@ class Subscription
     public function setPrice($price)
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Amount Terms
+     *
+     * @return mixed
+     */
+    public function getAmountTerms()
+    {
+        return $this->amountTerms;
+    }
+
+    /**
+     * Set the value of Amount Terms
+     *
+     * @param mixed $amountTerms
+     *
+     * @return self
+     */
+    public function setAmountTerms($amountTerms)
+    {
+        $this->amountTerms = $amountTerms;
 
         return $this;
     }

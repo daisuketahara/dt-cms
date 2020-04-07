@@ -176,6 +176,9 @@ class SubscriptionController extends AbstractController
             if (isset($params['price'])) $subscription->setPrice($params['price']);
             else $errors[] = 'Price cannot be empty';
 
+            if (isset($params['amountTerms'])) $subscription->setAmountTerms($params['amountTerms']);
+            else $errors[] = 'Term amount cannot be empty';
+
             if (isset($params['term'])) $subscription->setTerm($params['term']);
             else $errors[] = 'Term cannot be empty';
 
