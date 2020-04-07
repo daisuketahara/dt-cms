@@ -252,4 +252,26 @@ class UserSubscriptionController extends AbstractController
         $json = json_encode($response);
         return $this->json($json);
     }
+
+    /**
+    * @Route("/api/v1/user-subscription/get/", name="api_subscription_get"), methods={"GET","HEAD"})
+    */
+    final public function getSubscription(Request $request)
+    {
+        $subscription = $this->getDoctrine()
+        ->getRepository(UserSubscription::class)
+        ->findOneBy(['user' => $this.getUser()]);
+        
+        if ($subscription) {
+            $response = [
+                'success' => true,
+                'data' => $subscription,
+            ];
+        } else {
+            $response = [
+                'success' => false,
+                'message' => 'Cannot find subscription',
+            ];
+        }
+    }
 }
