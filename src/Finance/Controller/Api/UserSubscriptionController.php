@@ -91,13 +91,12 @@ class UserSubscriptionController extends AbstractController
         $qb->setFirstResult($offset);
         $settings = $qb->getQuery()->getResult();
 
-        $json = array(
+        $response = array(
             'total' => $count,
             'data' => $settings,
         );
 
-        $json = $this->serializer->serialize($json, 'json');
-
+        $json = $this->serializer->serialize($response, 'json');
         return $this->json($json);
     }
 
@@ -182,7 +181,8 @@ class UserSubscriptionController extends AbstractController
                     'success' => false,
                     'message' => $errors,
                 ];
-                $json = json_encode($response);
+
+                $json = $this->serializer->serialize($response, 'json');
                 return $this->json($json);
             }
 
@@ -206,7 +206,7 @@ class UserSubscriptionController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
+        $json = $this->serializer->serialize($response, 'json');
         return $this->json($json);
     }
 
@@ -249,7 +249,7 @@ class UserSubscriptionController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
+        $json = $this->serializer->serialize($response, 'json');
         return $this->json($json);
     }
 
@@ -273,5 +273,8 @@ class UserSubscriptionController extends AbstractController
                 'message' => 'Cannot find subscription',
             ];
         }
+
+        $json = $this->serializer->serialize($response, 'json');
+        return $this->json($json);
     }
 }
