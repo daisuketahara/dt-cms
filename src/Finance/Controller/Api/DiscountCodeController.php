@@ -259,8 +259,8 @@ class DiscountCodeController extends AbstractController
     final public function checkCode($code, Request $request)
     {
         $discountCode = $this->getDoctrine()
-        ->getRepository(DiscountCode::class)
-        ->findOneBy(['code' => $code]);
+            ->getRepository(DiscountCode::class)
+            ->findOneBy(['code' => $code]);
 
         if (!$discountCode) {
             $response = [
@@ -271,21 +271,21 @@ class DiscountCodeController extends AbstractController
 
         $now = new \DateTime();
 
-        if ($discountCode->getStartDate() > $now) {
+        if ($discountCode && $discountCode->getStartDate() > $now) {
             $response = [
                 'success' => false,
                 'message' => 'Discount code not valid yet',
             ];
         }
 
-        if ($discountCode->getEndDate() < $now) {
+        if ($discountCode && $discountCode->getEndDate() < $now) {
             $response = [
                 'success' => false,
                 'message' => 'Discount code has expired',
             ];
         }
 
-        if ($discountCode->getMaxUse() >= $discountCode->getUsed()) {
+        if ($discountCode && $discountCode->getMaxUse() >= $discountCode->getUsed()) {
             $response = [
                 'success' => false,
                 'message' => 'Discount code cannot be used anymore',
