@@ -265,7 +265,7 @@ class DiscountCodeController extends AbstractController
         if (!$discountCode) {
             $response = [
                 'success' => false,
-                'message' => 'Cannot find discountCode',
+                'message' => 'cannot_find_discountCode',
             ];
         }
 
@@ -274,21 +274,21 @@ class DiscountCodeController extends AbstractController
         if ($discountCode && $discountCode->getStartDate() > $now) {
             $response = [
                 'success' => false,
-                'message' => 'Discount code not valid yet',
+                'message' => 'discount_code_not_valid_yet',
             ];
         }
 
         if ($discountCode && $discountCode->getEndDate() < $now) {
             $response = [
                 'success' => false,
-                'message' => 'Discount code has expired',
+                'message' => 'discount_code_has_expired',
             ];
         }
 
         if ($discountCode && $discountCode->getMaxUse() >= $discountCode->getUsed()) {
             $response = [
                 'success' => false,
-                'message' => 'Discount code cannot be used anymore',
+                'message' => 'discount_code_cannot_be_used_anymore',
             ];
         }
 
