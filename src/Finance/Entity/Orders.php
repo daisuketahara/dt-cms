@@ -36,6 +36,21 @@ class Orders
     */
     protected $orderLines;
 
+    /**
+     * @ORM\Column(type="integer", length=255)
+     */
+    protected $total_excl;
+
+    /**
+     * @ORM\Column(type="integer", length=255)
+     */
+    protected $total_incl;
+
+    /**
+     * @ORM\Column(type="integer", length=255)
+     */
+    protected $total_vat;
+
     public function __construct()
     {
         $this->orderLines = new ArrayCollection();
@@ -180,4 +195,77 @@ class Orders
 
         return $this;
     }
+
+    /**
+     * Get the value of Total Excl
+     *
+     * @return mixed
+     */
+    public function getTotalExcl()
+    {
+        return $this->total_excl / 100;
+    }
+
+    /**
+     * Set the value of Total Excl
+     *
+     * @param mixed $total_excl
+     *
+     * @return self
+     */
+    public function setTotalExcl($total_excl)
+    {
+        $this->total_excl = $total_excl * 100;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Total Incl
+     *
+     * @return mixed
+     */
+    public function getTotalIncl()
+    {
+        return $this->total_incl / 100;
+    }
+
+    /**
+     * Set the value of Total Incl
+     *
+     * @param mixed $total_incl
+     *
+     * @return self
+     */
+    public function setTotalIncl($total_incl)
+    {
+        $this->total_incl = $total_incl * 100;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Total Vat
+     *
+     * @return mixed
+     */
+    public function getTotalVat()
+    {
+        return $this->total_vat / 100;
+    }
+
+    /**
+     * Set the value of Total Vat
+     *
+     * @param mixed $total_vat
+     *
+     * @return self
+     */
+    public function setTotalVat($total_vat)
+    {
+        $this->total_vat = $total_vat * 100;
+
+        return $this;
+    }
+
 }
