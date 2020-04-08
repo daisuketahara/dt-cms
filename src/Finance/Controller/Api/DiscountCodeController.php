@@ -265,7 +265,7 @@ class DiscountCodeController extends AbstractController
         if (!$discountCode) {
             $response = [
                 'success' => false,
-                'message' => 'cannot_find_discountCode',
+                'message' => 'cannot_find_discount_code',
             ];
         }
 
