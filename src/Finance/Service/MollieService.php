@@ -49,7 +49,7 @@ class MollieService
         $mollie = new \Mollie\Api\MollieApiClient();
         $mollie->setApiKey($key);
 
-        $path = $setting->get('site.url');
+        $path = $this->setting->get('site.url');
 
         /*
          * Payment parameters:
