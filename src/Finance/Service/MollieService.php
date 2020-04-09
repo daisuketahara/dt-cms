@@ -42,7 +42,7 @@ class MollieService
         return $paymentMethods;
     }
 
-    public function getPaymentLink($invoice)
+    public function getPaymentLink($order)
     {
         $key = $this->setting->get('finance.payment.provider.apikey');
 
@@ -62,13 +62,13 @@ class MollieService
         $payment = $mollie->payments->create([
             "amount" => [
                 "currency" => "EUR",
-                "value" => "10.00" // You must send the correct number of decimals, thus we enforce the use of strings
+                "value" => $order->getTotalIncl() // You must send the correct number of decimals, thus we enforce the use of strings
             ],
-            "description" => "Order #{$orderId}",
-            "redirectUrl" => "{$path}/mollie/return/order_id={$orderId}",
+            "description" => "Order #{$order->getId()}",
+            "redirectUrl" => "{$path}/mollie/return/order_id={$order->getId()}",
             "webhookUrl" => "{$path}/api/v1/payment/handle/{$order->getId()}/",
             "metadata" => [
-                "invoice_id" => $orderId,
+                "order_id" => $order->getId(),
             ],
         ]);
 
