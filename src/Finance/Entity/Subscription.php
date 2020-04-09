@@ -32,6 +32,11 @@ class Subscription
     protected $price;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Finance\Entity\DiscountCode")
+     */
+    private $discount;
+
+    /**
      * @ORM\Column(type="integer", length=10, nullable=true)
      */
     protected $amountTerms;
@@ -143,6 +148,30 @@ class Subscription
     public function setPrice($price)
     {
         $this->price = $price * 100;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Discount
+     *
+     * @return mixed
+     */
+    public function getDiscount()
+    {
+        return $this->discount;
+    }
+
+    /**
+     * Set the value of Discount
+     *
+     * @param mixed $discount
+     *
+     * @return self
+     */
+    public function setDiscount($discount)
+    {
+        $this->discount = $discount;
 
         return $this;
     }

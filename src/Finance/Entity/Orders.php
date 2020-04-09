@@ -53,6 +53,11 @@ class Orders
      */
     protected $total_vat;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Finance\Entity\DiscountCode")
+     */
+    private $discount;
+
     public function __construct()
     {
         $this->orderLines = new ArrayCollection();
@@ -266,6 +271,31 @@ class Orders
     public function setTotalVat($total_vat)
     {
         $this->total_vat = $total_vat * 100;
+
+        return $this;
+    }
+
+
+    /**
+     * Get the value of Discount
+     *
+     * @return mixed
+     */
+    public function getDiscount()
+    {
+        return $this->discount;
+    }
+
+    /**
+     * Set the value of Discount
+     *
+     * @param mixed $discount
+     *
+     * @return self
+     */
+    public function setDiscount($discount)
+    {
+        $this->discount = $discount;
 
         return $this;
     }
