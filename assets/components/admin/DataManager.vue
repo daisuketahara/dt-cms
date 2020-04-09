@@ -803,7 +803,8 @@
                         if (result.success) {
                             this.form_id = parseInt(result['id']);
                             this.mode = 'form';
-                            this.$store.commit('setAlert', {type: 'success', message: translations.saved || "Saved", autohide: true});
+                            this.list();
+                            this.$store.commit('setAlert', {type: 'success', message: translations.saved || "Saved", autohide: true});this.list();
                         } else {
                             this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
                         }
