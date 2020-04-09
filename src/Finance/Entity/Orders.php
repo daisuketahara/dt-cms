@@ -58,6 +58,11 @@ class Orders
      */
     private $discount;
 
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    protected $state = 'PENDING';
+
     public function __construct()
     {
         $this->orderLines = new ArrayCollection();
