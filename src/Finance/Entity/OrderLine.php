@@ -116,7 +116,7 @@ class OrderLine
      */
     public function getPrice()
     {
-        return $this->price;
+        return $this->price / 100;
     }
 
     /**
@@ -128,7 +128,7 @@ class OrderLine
      */
     public function setPrice($price)
     {
-        $this->price = $price;
+        $this->price = $price * 100;
 
         return $this;
     }
