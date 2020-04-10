@@ -693,7 +693,9 @@ class User implements UserInterface
     */
     public function getSettings()
     {
-        return json_decode($this->settings);
+        if (!empty($this->settings)) return json_decode($this->settings);
+
+        return false;
     }
 
     /**
@@ -703,9 +705,11 @@ class User implements UserInterface
     */
     public function getSetting($key)
     {
-        $settings = json_decode($this->settings);
+        if (!empty($this->settings)) {
+            $settings = json_decode($this->settings);
 
-        if (array_key_exists($key, $settings)) return $settings[$key];
+            if (array_key_exists($key, $settings)) return $settings[$key];
+        }
 
         return false;
     }
