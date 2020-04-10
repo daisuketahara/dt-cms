@@ -50,7 +50,7 @@ class MollieService
         $mollie->setApiKey($key);
 
         $path = $this->setting->get('site.url');
-        if (empty($redirectUrl)) $redirectUrl = "{$path}/mollie/return/order_id={$order->getId()}";
+        if (empty($redirectUrl)) $redirectUrl = "{$path}/payment/return/{$order->getId()}/";
 
         /*
          * Payment parameters:
@@ -60,7 +60,7 @@ class MollieService
          *   webhookUrl    Webhook location, used to report when the payment changes state.
          *   metadata      Custom metadata that is stored with the payment.
          */
-        $payment = $mollie->payments->create([
+        $data = array(
             "amount" => [
                 "currency" => "EUR",
                 "value" => $order->getTotalIncl() // You must send the correct number of decimals, thus we enforce the use of strings
@@ -71,7 +71,10 @@ class MollieService
             "metadata" => [
                 "order_id" => $order->getId(),
             ],
-        ]);
+        );
+
+
+        $payment = $mollie->payments->create($data);
 
         return $payment->getCheckoutUrl();
     }
