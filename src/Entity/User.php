@@ -706,7 +706,7 @@ class User implements UserInterface
     public function getSetting($key)
     {
         if (!empty($this->settings)) {
-            $settings = json_decode($this->settings);
+            $settings = json_decode($this->settings, true);
 
             if (array_key_exists($key, $settings)) return $settings[$key];
         }
