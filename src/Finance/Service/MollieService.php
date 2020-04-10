@@ -78,7 +78,7 @@ class MollieService
         if ($userSubscription) {
 
             $user = $order->getUser();
-            $mollieCustomerId = $user->getSetting['mollieId'];
+            $mollieCustomerId = $user->getSetting('mollieId');
 
             try {
                 $customer = $mollie->customers->create([
