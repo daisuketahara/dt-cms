@@ -66,6 +66,11 @@ class User implements UserInterface
     protected $locale;
 
     /**
+    * @ORM\Column(type="text", nullable=true)
+    */
+    protected $settings;
+
+    /**
     * @ORM\OneToOne(targetEntity="App\Entity\UserInformation", cascade={"persist", "remove"})
     */
     private $information;
@@ -679,5 +684,42 @@ class User implements UserInterface
     public function getMobile()
     {
         return $this->mobile;
+    }
+
+    /**
+    * Get array of Settings
+    *
+    * @return mixed
+    */
+    public function getSettings()
+    {
+        return json_decode($this->settings);
+    }
+
+    /**
+    * Get the value of a Setting
+    *
+    * @return mixed
+    */
+    public function getSetting($key)
+    {
+        return json_decode($this->settings)[$key];
+    }
+
+    /**
+    * Set the value of Setting
+    *
+    * @param mixed settings
+    *
+    * @return self
+    */
+    public function setSettings($key, $value)
+    {
+        $settings = json_decode($this->settings);
+        $settings[$key] = $value;
+
+        $this->settings = json_encode($settings);
+
+        return $this;
     }
 }
