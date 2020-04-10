@@ -37,6 +37,11 @@ class UserSubscription
     protected $endDate;
 
     /**
+    * @ORM\Column(type="date", nullable=true)
+    */
+    protected $renewDate;
+
+    /**
      * @ORM\Column(type="integer")
      */
     protected $price;
@@ -167,6 +172,30 @@ class UserSubscription
     }
 
     /**
+     * Get the value of Renew Date
+     *
+     * @return mixed
+     */
+    public function getRenewDate()
+    {
+        return $this->renewDate;
+    }
+
+    /**
+     * Set the value of Renew Date
+     *
+     * @param mixed $renewDate
+     *
+     * @return self
+     */
+    public function setRenewDate($renewDate)
+    {
+        $this->renewDate = $renewDate;
+
+        return $this;
+    }
+
+    /**
      * Get the value of Price
      *
      * @return mixed
@@ -213,4 +242,5 @@ class UserSubscription
 
         return $this;
     }
+
 }
