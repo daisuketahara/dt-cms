@@ -50,6 +50,8 @@ class MollieService
         $mollie->setApiKey($key);
 
         $path = $this->setting->get('site.url');
+        $siteName = $this->setting->get('site.name');
+
         if (empty($redirectUrl)) $redirectUrl = "{$path}/payment/return/{$order->getId()}/";
 
         /*
@@ -65,7 +67,7 @@ class MollieService
                 "currency" => "EUR",
                 "value" => $order->getTotalIncl() // You must send the correct number of decimals, thus we enforce the use of strings
             ],
-            "description" => "Order #{$order->getId()}",
+            "description" => $siteName . ' - Order #' . $order->getId(),
             "redirectUrl" => $redirectUrl,
             "webhookUrl" => "{$path}/api/v1/payment/handle/{$order->getId()}/",
             "metadata" => [
@@ -94,7 +96,7 @@ class MollieService
                 $this->em->persist($user);
                 $this->em->flush();
 
-                $data['description'] = 'Subscription first payment';
+                $data['description'] = $siteName . ' - Subscription first payment #' . $order->getId();
                 $data['customerId'] = $customer->id;
                 $data['sequenceType'] = 'first';
 
@@ -108,5 +110,66 @@ class MollieService
         $payment = $mollie->payments->create($data);
 
         return $payment->getCheckoutUrl();
+    }
+
+    public function sendRecurringPayment($order)
+    {
+        $key = $this->setting->get('finance.payment.provider.apikey');
+
+        $mollie = new \Mollie\Api\MollieApiClient();
+        $mollie->setApiKey($key);
+
+        $path = $this->setting->get('site.url');
+        $siteName = $this->setting->get('site.name');
+
+        $user = $order->getUser();
+        $mollieId = $user->getSetting('mollieId');
+
+        $hasMandate = $this->customerHasMandate($mollieId);
+        if (!$hasMandate) return false;
+
+        /*
+         * Payment parameters:
+         *   amount        Amount in EUROs. This example creates a € 10,- payment.
+         *   description   Description of the payment.
+         *   redirectUrl   Redirect location. The customer will be redirected there after the payment.
+         *   webhookUrl    Webhook location, used to report when the payment changes state.
+         *   metadata      Custom metadata that is stored with the payment.
+         */
+        $data = array(
+            "amount" => [
+                "currency" => "EUR",
+                "value" => $order->getTotalIncl() // You must send the correct number of decimals, thus we enforce the use of strings
+            ],
+            "customerId" => $mollieId,
+            "description" => $siteName . ' - Order #' . $order->getId(),
+            "webhookUrl" => "{$path}/api/v1/payment/handle/{$order->getId()}/",
+            "sequenceType" => 'recurring',
+            "metadata" => [
+                "order_id" => $order->getId(),
+            ],
+        );
+
+
+        $payment = $mollie->payments->create($data);
+        // TODO: Check if payment is created
+
+        return true;
+    }
+
+    public function customerHasMandate($customerId)
+    {
+        $key = $this->setting->get('finance.payment.provider.apikey');
+
+        $mollie = new \Mollie\Api\MollieApiClient();
+        $mollie->setApiKey($key);
+
+        $customer = $mollie->customers->get($customerId);
+
+        foreach ($customer->mandates() as $mandate) {
+            if ($mandate->status == 'valid') return true;
+        }
+
+        return false;
     }
 }
