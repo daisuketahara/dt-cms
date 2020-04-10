@@ -73,6 +73,37 @@ class MollieService
             ],
         );
 
+        $userSubscription = $order->UserSubscription();
+
+        if ($userSubscription) {
+
+            $user = $order->getUser();
+            $mollieCustomerId = $user->getSetting['mollieId'];
+
+            try {
+                $customer = $mollie->customers->create([
+                    "name" => $user->getFirstname() . ' ' . $user->getLastname(),
+                    "email" => $user->getEmail(),
+                    "metadata" => [
+                        "id" => $user->getId(),
+                    ],
+                ]);
+
+                $user->setSetting('mollieId', $customer->id);
+
+                $this->em->persist($user);
+                $this->em->flush();
+
+                $data['description'] = 'Subscription first payment';
+                $data['customerId'] = $customer->id;
+                $data['sequenceType'] = 'first';
+
+            } catch (\Mollie\Api\Exceptions\ApiException $e) {
+                //echo "API call failed: " . htmlspecialchars($e->getMessage());
+                return false;
+            }
+
+        }
 
         $payment = $mollie->payments->create($data);
 
