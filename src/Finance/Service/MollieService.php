@@ -42,7 +42,7 @@ class MollieService
         return $paymentMethods;
     }
 
-    public function getPaymentLink($order)
+    public function getPaymentLink($order, $redirectUrl='')
     {
         $key = $this->setting->get('finance.payment.provider.apikey');
 
@@ -50,6 +50,7 @@ class MollieService
         $mollie->setApiKey($key);
 
         $path = $this->setting->get('site.url');
+        if (empty($redirectUrl)) $redirectUrl = "{$path}/mollie/return/order_id={$order->getId()}";
 
         /*
          * Payment parameters:
@@ -65,7 +66,7 @@ class MollieService
                 "value" => $order->getTotalIncl() // You must send the correct number of decimals, thus we enforce the use of strings
             ],
             "description" => "Order #{$order->getId()}",
-            "redirectUrl" => "{$path}/mollie/return/order_id={$order->getId()}",
+            "redirectUrl" => $redirectUrl,
             "webhookUrl" => "{$path}/api/v1/payment/handle/{$order->getId()}/",
             "metadata" => [
                 "order_id" => $order->getId(),
