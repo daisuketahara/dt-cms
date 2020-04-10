@@ -73,7 +73,7 @@ class MollieService
             ],
         );
 
-        $userSubscription = $order->UserSubscription();
+        $userSubscription = $order->getUserSubscription();
 
         if ($userSubscription) {
 
