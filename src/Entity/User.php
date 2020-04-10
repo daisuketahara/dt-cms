@@ -703,7 +703,11 @@ class User implements UserInterface
     */
     public function getSetting($key)
     {
-        return json_decode($this->settings)[$key];
+        $settings = json_decode($this->settings);
+
+        if (array_key_exists($key, $settings)) return $settings[$key];
+
+        return false;
     }
 
     /**
