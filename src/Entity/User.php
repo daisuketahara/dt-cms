@@ -721,7 +721,7 @@ class User implements UserInterface
     *
     * @return self
     */
-    public function setSettings($key, $value)
+    public function setSetting($key, $value)
     {
         $settings = json_decode($this->settings);
         $settings[$key] = $value;
