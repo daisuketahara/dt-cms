@@ -451,7 +451,7 @@ class TranslationController extends AbstractController
     }
 
     /**
-    * @Route("/api/v1/translation/locale/{locale}", name="api_translation_by_locale"), methods={"GET","HEAD"))
+    * @Route("/api/v1/translation/locale/{locale}/", name="api_translation_by_locale"), methods={"GET","HEAD"))
     */
     final public function getTranslationsByLocale(string $locale)
     {
