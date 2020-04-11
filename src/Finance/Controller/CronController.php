@@ -54,6 +54,21 @@ class CronController extends AbstractController
                         $userSubscription->setActive(false);
                         $em->persist($userSubscription);
                         $em->flush();
+
+                        $user = $userSubscription->getUser();
+
+                        // Send email
+                        if (!empty($user->getEmail())) {
+                            $mail->addToQueue(
+                                $user->getEmail(),
+                                'finance-subscription-ended',
+                                $user->getLocale()->getId(),
+                                array(
+                                    'name' => $user->getFirstname() . ' ' . $user->getLastname(),
+                                    'site' => $setting->get('site.name'),
+                                )
+                            );
+                        }
                         continue;
                     }
                 }
