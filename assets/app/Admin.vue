@@ -1,5 +1,5 @@
 <template>
-    <v-app id="admin-app">
+    <v-app id="admin-app" v-bind:class="{ authenticated: authenticated }">
         <div v-if="!initialised" class="init">
             <i class="fas fa-circle-notch fa-spin"></i>
             Loading...
@@ -146,6 +146,20 @@
         created() {
             this.getLocales();
             this.checkUser();
+
+            var self = this;
+
+            this.$axios.interceptors.response.use((response) => {
+                return response;
+            }, function (error) {
+                if (error.response.status === 401 || error.response.status === 403) {
+                    self.$store.commit('authenticate', false);
+                    if (self.$cookies.isKey('admintoken')) self.$cookies.remove('admintoken');
+                    if (self.$cookies.isKey('email')) self.$cookies.remove('email');
+                    self.$router.push('/' + self.locale + '/admin/login/');
+                }
+                return Promise.reject(error.response);
+            });
         },
         methods: {
             logout() {
