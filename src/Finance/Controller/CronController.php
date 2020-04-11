@@ -46,6 +46,18 @@ class CronController extends AbstractController
 
             foreach($userSubscriptions as $userSubscription) {
 
+                $endDate = $userSubscription->getEndDate();
+                $now = new \DateTime();
+                if (!empty($endDate)) {
+
+                    if ($endDate->getTimestamp() < $now->getTimestamp()) {
+                        $userSubscription->setActive(false);
+                        $em->persist($userSubscription);
+                        $em->flush();
+                        continue;
+                    }
+                }
+
                 $subscription = $userSubscription->getSubscription();
                 $term = $subscription->getTerm();
                 $amountTerms = $subscription->getAmountTerms();
