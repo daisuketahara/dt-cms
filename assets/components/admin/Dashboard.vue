@@ -45,7 +45,6 @@
             }
         },
         created() {
-            this.getPaymentMethods();
         },
         methods: {
             loadGADashboard: function() {
