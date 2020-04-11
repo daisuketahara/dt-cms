@@ -94,10 +94,16 @@ class SecurityController extends AbstractController
                     'adminAccess' => $adminAccess,
                     'role' => $roleId
                 );
+            } else {
+                $response = array(
+                    'success' => false,
+                    'message' => 'password_incorrect'
+                );
             }
         } else {
             $response = array(
                 'success' => false,
+                'message' => 'user_not_found'
             );
         }
 
