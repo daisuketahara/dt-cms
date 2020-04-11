@@ -20,20 +20,20 @@
                         <v-btn color="secondary" @click="showPanel" data-panel="settings" :dark="darkmode">{{translations.settings}}</v-btn>
                         <v-btn color="secondary" @click="showPanel" data-panel="css" :dark="darkmode">{{translations.custom_css}}</v-btn>
                         <v-btn color="secondary" @click="showPanel" data-panel="js" :dark="darkmode">{{translations.custom_js}}</v-btn>
-                        <v-menu offset-y>
+                        <v-menu>
                             <template v-slot:activator="{ on }">
                                 <v-btn color="secondary" :dark="darkmode" v-on="on">
                                     {{selected_editor_name}}
                                 </v-btn>
                             </template>
-                            <v-list>
-                                <v-list-item @click="setEditor" data-editor="html">
+                            <v-list dense :dark="darkmode">
+                                <v-list-item @click="setEditor('html')">
                                     <v-list-item-title>{{ translations.html || 'HTML' }}</v-list-item-title>
                                 </v-list-item>
-                                <v-list-item @click="setEditor" data-editor="editor">
+                                <v-list-item @click="setEditor('editor')">
                                     <v-list-item-title>{{ translations.editor || 'Editor' }}</v-list-item-title>
                                 </v-list-item>
-                                <v-list-item @click="setEditor" data-editor="builder">
+                                <v-list-item @click="setEditor('builder')">
                                     <v-list-item-title>{{ translations.builder || 'Builder' }}</v-list-item-title>
                                 </v-list-item>
                             </v-list>
@@ -498,10 +498,10 @@
                 this.page_id = this.$attrs.id;
                 this.getPage();
             }
-            var checkSelectedEditor = this.readCookie('selected_editor');
-            if (checkSelectedEditor) {
-                this.selected_editor = checkSelectedEditor;
-                this.selected_editor_name = this.translations[checkSelectedEditor] || checkSelectedEditor;
+            if (this.$cookies.isKey('selected_editor')) {
+                let selectedEditor =this.$cookies.get('selected_editor');
+                this.selected_editor = selectedEditor;
+                this.selected_editor_name = this.translations[selectedEditor] || selectedEditor;
             }
         },
         methods: {
@@ -1191,11 +1191,12 @@
                         });
                 }, 2);
             },
-            setEditor: function(event) {
+            setEditor: function(editor) {
+                console.log(editor);
                 event.target.parentNode.classList.toggle("d-block");
-                this.createCookie('selected_editor', event.target.dataset.editor);
-                this.selected_editor = event.target.dataset.editor;
-                this.selected_editor_name = event.target.textContent;
+                this.$cookies.set('selected_editor', editor);
+                this.selected_editor = editor;
+                this.selected_editor_name = event.target.textContent.trim();
             },
             toggleDropdown: function(event) {
                 var dropdown = event.target.parentNode.getElementsByClassName('dropdown-menu');
@@ -1207,27 +1208,6 @@
                 if (this.panel != event.target.dataset.panel) this.panel = event.target.dataset.panel;
                 else this.panel = '';
             },
-            createCookie: function(name, value, days) {
-                var expires;
-                if (days) {
-                    var date = new Date();
-                    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                    expires = "; expires=" + date.toGMTString();
-                } else {
-                    expires = "";
-                }
-                document.cookie = escape(name) + "=" + escape(value) + expires + "; path=/;";
-            },
-            readCookie: function(name) {
-                var nameEQ = escape(name) + "=";
-                var ca = document.cookie.split(';');
-                for (var i = 0; i < ca.length; i++) {
-                    var c = ca[i];
-                    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-                    if (c.indexOf(nameEQ) === 0) return unescape(c.substring(nameEQ.length, c.length));
-                }
-                return false;
-            }
         }
     }
 </script>
