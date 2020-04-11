@@ -75,6 +75,15 @@ class SecurityController extends AbstractController
 
                 $token = md5($user->getEmail().rand(0,9999).time());
                 $expire = date('Y-m-d H:i:s', strtotime('+ 1 day'));
+                $em = $this->getDoctrine()->getManager();
+
+                $oldKeys = $this->getDoctrine()
+                    ->getRepository(UserApiKey::class)
+                    ->findBy(['user' => $user]);
+                foreach ($oldKeys as $oldKey) {
+                    $em->remove($oldKey);
+                }
+                $em->flush();
 
                 $userApiKey = new UserApiKey();
                 $userApiKey->setUser($user);
@@ -83,7 +92,6 @@ class SecurityController extends AbstractController
                 $userApiKey->setExpire(new \DateTime($expire));
                 $userApiKey->setActive(true);
 
-                $em = $this->getDoctrine()->getManager();
                 $em->persist($userApiKey);
                 $em->flush();
 
