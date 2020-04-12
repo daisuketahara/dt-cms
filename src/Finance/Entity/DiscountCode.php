@@ -188,7 +188,7 @@ class DiscountCode
      */
     public function getPrice()
     {
-        return $this->price;
+        return $this->price/100;
     }
 
     /**
@@ -200,7 +200,7 @@ class DiscountCode
      */
     public function setPrice($price)
     {
-        $this->price = $price;
+        $this->price = round($price * 100);
 
         return $this;
     }
