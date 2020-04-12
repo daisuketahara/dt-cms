@@ -73,6 +73,7 @@
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
         {% block bottom %}
+            {% if settingservice.get('language.switch.enabled') %}
             <div id="language-switcher-bar">
                 <div class="container text-center">
                     {% trans %}The content of this website is available in other languages.{% endtrans %}
@@ -103,6 +104,7 @@
                     }
                 });
             </script>
+            {% endif %}
         {% endblock %}
     </body>
 </html>
