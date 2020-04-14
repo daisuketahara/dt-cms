@@ -80,6 +80,10 @@ services:
         arguments:
             $em: '@doctrine.orm.entity_manager'
 
+    # App\Finance\Service\MollieService:
+        # arguments:
+            # $em: '@doctrine.orm.entity_manager'
+
     # inject dependencies into routing
 
     App\Routing\ExtraLoader:
@@ -89,10 +93,6 @@ services:
 
     # inject dependencies into security
 
-    App\Security\ApiKeyUserProvider:
-        arguments:
-            $em: '@doctrine.orm.entity_manager'
-
-    App\Security\ApiKeyAuthenticator:
+    App\Security\TokenAuthenticator:
         arguments:
             $em: '@doctrine.orm.entity_manager'

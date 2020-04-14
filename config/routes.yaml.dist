@@ -3,6 +3,14 @@ controllers:
     resource: ../src/Controller/
     type: annotation
 
+# shop:
+    # resource: ../src/Shop/Controller/
+    # type: annotation
+
+# finance:
+    # resource: ../src/Finance/Controller/
+    # type: annotation
+
 app_extra:
     resource: .
     type: extra

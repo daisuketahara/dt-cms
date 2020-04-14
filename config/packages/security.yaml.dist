@@ -4,10 +4,13 @@ security:
         App\Entity\User:
             algorithm: bcrypt
             cost: 8
+
     providers:
-        db_provider:
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
             entity:
                 class: App\Entity\User
+                property: email
                 # if you're using multiple entity managers
                 # manager_name: customer
     firewalls:
@@ -31,22 +34,33 @@ security:
             pattern: ^/api/v1/app-routes/
             security: false
         api_public_contact:
-            methods: [GET]
+            methods: [POST]
             pattern: ^/api/v1/contact/post/
             security: false
         api_public_page:
             methods: [GET]
             pattern: ^/api/v1/page/
             security: false
+        # api_payment_get_methods:
+            # methods: [GET]
+            # pattern: ^/api/v1/payment/get-methods/
+            # security: false
+        # api_payment_handle:
+            # methods: [POST]
+            # pattern: ^/api/v1/payment/handle/
+            # security: false
+        # api_discount_code_check:
+            # methods: [GET]
+            # pattern: ^/api/v1/discount-code/check/
+            # security: false
         api_main:
             pattern: ^/api
-            stateless: true
-            simple_preauth:
-                authenticator: App\Security\ApiKeyAuthenticator
-            provider: api_key_user_provider
+            guard:
+                authenticators:
+                    - App\Security\TokenAuthenticator
         main:
             anonymous: ~
-            provider: db_provider
+            provider: app_user_provider
 
     access_control:
         - { path: ^/api, roles: [ROLE_API,ROLE_ADMIN]  }
