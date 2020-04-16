@@ -278,7 +278,7 @@ class DiscountCodeController extends AbstractController
             ];
         }
 
-        if ($discountCode && $discountCode->getEndDate() < $now) {
+        if ($discountCode && !empty($discountCode->getEndDate()) && $discountCode->getEndDate() < $now) {
             $response = [
                 'success' => false,
                 'message' => 'discount_code_has_expired',
