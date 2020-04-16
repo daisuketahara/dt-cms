@@ -37,6 +37,11 @@ class UserApiKey
     protected $expire;
 
     /**
+    * @ORM\Column(name="locked", type="boolean")
+    */
+    private $locked = false;
+
+    /**
     * @ORM\Column(name="active", type="boolean")
     */
     private $active;
@@ -163,6 +168,30 @@ class UserApiKey
     }
 
     /**
+     * Get the value of Locked
+     *
+     * @return mixed
+     */
+    public function getLocked()
+    {
+        return $this->locked;
+    }
+
+    /**
+     * Set the value of Locked
+     *
+     * @param mixed $locked
+     *
+     * @return self
+     */
+    public function setLocked($locked)
+    {
+        $this->locked = $locked;
+
+        return $this;
+    }
+
+    /**
     * Get the value of Active
     *
     * @return mixed
@@ -185,5 +214,4 @@ class UserApiKey
 
         return $this;
     }
-
 }

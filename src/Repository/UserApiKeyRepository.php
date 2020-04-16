@@ -18,4 +18,16 @@ class UserApiKeyRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, UserApiKey::class);
     }
+
+    public function deleteOldKeys(int $days)
+    {
+        $sql = "DELETE FROM user_api_key WHERE expire < NOW()";
+
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+        //$stmt->execute(['price' => 10]);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+    }
 }
