@@ -285,7 +285,7 @@ class DiscountCodeController extends AbstractController
             ];
         }
 
-        if ($discountCode && $discountCode->getMaxUse() >= $discountCode->getUsed()) {
+        if ($discountCode && !empty($discountCode->getMaxUse()) && $discountCode->getMaxUse() >= $discountCode->getUsed()) {
             $response = [
                 'success' => false,
                 'message' => 'discount_code_cannot_be_used_anymore',
