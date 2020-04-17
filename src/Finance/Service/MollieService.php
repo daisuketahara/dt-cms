@@ -65,7 +65,7 @@ class MollieService
         $data = array(
             "amount" => [
                 "currency" => "EUR",
-                "value" => $order->getTotalIncl() // You must send the correct number of decimals, thus we enforce the use of strings
+                "value" => number_format($order->getTotalIncl(), 2)
             ],
             "description" => $siteName . ' - Order #' . $order->getId(),
             "redirectUrl" => $redirectUrl,
