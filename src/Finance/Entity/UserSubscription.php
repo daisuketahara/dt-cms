@@ -47,6 +47,11 @@ class UserSubscription
     protected $price;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Finance\Entity\DiscountCode")
+     */
+    private $discount;
+
+    /**
      * @ORM\Column(type="boolean")
      */
     protected $active = false;
@@ -220,6 +225,30 @@ class UserSubscription
     }
 
     /**
+     * Get the value of Discount
+     *
+     * @return mixed
+     */
+    public function getDiscount()
+    {
+        return $this->discount;
+    }
+
+    /**
+     * Set the value of Discount
+     *
+     * @param mixed $discount
+     *
+     * @return self
+     */
+    public function setDiscount($discount)
+    {
+        $this->discount = $discount;
+
+        return $this;
+    }
+
+    /**
      * Get the value of Active
      *
      * @return mixed
@@ -242,5 +271,4 @@ class UserSubscription
 
         return $this;
     }
-
 }
