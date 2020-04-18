@@ -60,7 +60,7 @@ class PaymentController extends AbstractController
     /**
     * @Route("/api/v1/payment/handle/{id}/", name="api_payment_handle"), methods={"POST"})
     */
-    final public function handlePayment(int $id, Request $request, SettingService $setting, MollieService $mollie, KernelInterface $kernel)
+    final public function handlePayment($id, Request $request, SettingService $setting, MollieService $mollie, KernelInterface $kernel)
     {
         $paymentProvider = $setting->get('finance.payment.provider');
 
