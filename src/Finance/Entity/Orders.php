@@ -305,4 +305,29 @@ class Orders
         return $this;
     }
 
+
+    /**
+     * Get the value of State
+     *
+     * @return mixed
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    /**
+     * Set the value of State
+     *
+     * @param mixed $state
+     *
+     * @return self
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
 }
