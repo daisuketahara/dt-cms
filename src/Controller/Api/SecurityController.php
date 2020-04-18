@@ -178,7 +178,7 @@ class SecurityController extends AbstractController
             $em->flush();
 
             $mail->addToQueue(
-                $this->setting->get('site.email'),
+                $this->setting->get('mail.from'),
                 'password-forget',
                 $locale->getId(),
                 array(

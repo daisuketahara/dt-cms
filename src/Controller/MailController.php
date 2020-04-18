@@ -29,7 +29,7 @@ class MailController extends AbstractController
         foreach($mails as $mail) {
 
             $from = $mail->getFromEmail();
-            if (!$from) $from = $setting->get('site.email.from');
+            if (!$from) $from = $setting->get('mail.from.name');
 
             $message = (new \Swift_Message($mail->getSubject()))
             ->setFrom($from)
