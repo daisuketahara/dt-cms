@@ -62,6 +62,7 @@ class MollieService
          *   webhookUrl    Webhook location, used to report when the payment changes state.
          *   metadata      Custom metadata that is stored with the payment.
          */
+
         $data = array(
             "amount" => [
                 "currency" => "EUR",
@@ -69,7 +70,7 @@ class MollieService
             ],
             "description" => $siteName . ' - Order #' . $order->getId(),
             "redirectUrl" => $redirectUrl,
-            "webhookUrl" => "{$path}/api/v1/payment/handle/{$order->getId()}/",
+            "webhookUrl" => $path . '/hook/payment/handle/' . $order->getId() . '/',
             "metadata" => [
                 "order_id" => $order->getId(),
             ],
@@ -136,6 +137,7 @@ class MollieService
          *   webhookUrl    Webhook location, used to report when the payment changes state.
          *   metadata      Custom metadata that is stored with the payment.
          */
+
         $data = array(
             "amount" => [
                 "currency" => "EUR",
@@ -143,7 +145,7 @@ class MollieService
             ],
             "customerId" => $mollieId,
             "description" => $siteName . ' - Order #' . $order->getId(),
-            "webhookUrl" => "{$path}/api/v1/payment/handle/{$order->getId()}/",
+            "webhookUrl" => $path . '/hook/payment/handle/' . $order->getId() . '/',
             "sequenceType" => 'recurring',
             "metadata" => [
                 "order_id" => $order->getId(),

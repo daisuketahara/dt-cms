@@ -58,7 +58,7 @@ class PaymentController extends AbstractController
     }
 
     /**
-    * @Route("/api/v1/payment/handle/{id}/", name="api_payment_handle"), methods={"POST"})
+    * @Route("/hook/payment/handle/{id}/", name="api_payment_handle"), methods={"HEAD"})
     */
     final public function handlePayment($id, Request $request, SettingService $setting, MollieService $mollie, KernelInterface $kernel)
     {
@@ -75,11 +75,11 @@ class PaymentController extends AbstractController
                 /*
                  * Retrieve the payment's current state.
                  */
-                $postId= $request->request->get('id');
-                $payment = $mollie->payments->get($postId);
+
+                $payment = $mollie->payments->get($_POST["id"]);
                 $orderId = $payment->metadata->order_id;
 
-                if (!empty($orderId)) {
+                if (empty($orderId)) {
 
                     $response = array(
                         'success' => false,
