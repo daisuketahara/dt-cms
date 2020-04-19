@@ -503,7 +503,7 @@
                     <v-btn class="mb-3" outlined x-small fab :dark="darkmode" v-on="on" @click="gotoList">
                         <v-icon x-small>fal fa-arrow-left</v-icon>
                     </v-btn>
-                    <component v-bind:is="component" v-bind="{id: form_id}"></component>
+                    <component v-bind:is="component" v-bind="{id: form_id}" @refresh="list"></component>
                 </div>
             </transition>
         </div>
