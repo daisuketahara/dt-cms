@@ -527,7 +527,7 @@
                 },
                 loaded: false,
                 tablemode: false,
-                mode: '',
+                mode: 'list',
                 default_locale_id: 0,
                 translate_id: 0,
                 data: {},
@@ -654,7 +654,6 @@
                         this.data = JSON.parse(response.data)['data'];
                         this.total = parseInt(JSON.parse(response.data)['total']);
                         this.pages = Math.ceil(this.total/this.limit);
-                        this.mode = 'list';
                     })
                     .catch(e => {
                         this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
