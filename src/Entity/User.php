@@ -71,6 +71,11 @@ class User implements UserInterface
     protected $settings;
 
     /**
+    * @ORM\Column(type="string", length=255, nullable=true)
+    */
+    private $picture;
+
+    /**
     * @ORM\OneToOne(targetEntity="App\Entity\UserInformation", cascade={"persist", "remove"})
     */
     private $information;
@@ -730,4 +735,45 @@ class User implements UserInterface
 
         return $this;
     }
+
+    /**
+     * Set the value of Settings
+     *
+     * @param mixed $settings
+     *
+     * @return self
+     */
+    public function setSettings($settings)
+    {
+        $this->settings = $settings;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Picture
+     *
+     * @return mixed
+     */
+    public function getPicture()
+    {
+        if (empty($this->picture)) return '/img/default-user-image.png';
+
+        return $this->picture;
+    }
+
+    /**
+     * Set the value of Picture
+     *
+     * @param mixed $picture
+     *
+     * @return self
+     */
+    public function setPicture($picture)
+    {
+        $this->picture = $picture;
+
+        return $this;
+    }
+
 }
