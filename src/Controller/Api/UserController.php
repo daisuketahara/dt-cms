@@ -203,7 +203,7 @@ class UserController extends AbstractController
             ->getRepository(User::class)
             ->findOneBy(['email' => $params['email']]);
 
-        if ($checkEmail) {
+        if ($checkEmail && $checkEmail->getId() != $user->getId()) {
             $response = [
                 'success' => false,
                 'message' => 'email_exists',
@@ -232,7 +232,7 @@ class UserController extends AbstractController
         if (empty($user->getPassword())) {
             $errors[] = 'Password cannot be empty';
         }
-        
+
         if (!empty($errors)) {
             $response = [
                 'success' => false,
