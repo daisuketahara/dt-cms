@@ -198,6 +198,20 @@ class UserController extends AbstractController
         if (!empty($params['email'])) $user->setEmail($params['email']);
         else $errors[] = 'Email cannot be empty';
 
+        // Check if email already exists
+        $checkEmail = $this->getDoctrine()
+            ->getRepository(User::class)
+            ->findOneBy(['email' => $params['email']]);
+
+        if ($checkEmail) {
+            $response = [
+                'success' => false,
+                'message' => 'email_exists',
+            ];
+            $json = $this->serializer->serialize($response, 'json');
+            return $this->json($json);
+        }
+
         if (isset($params['firstname'])) $user->setFirstname($params['firstname']);
         if (isset($params['lastname'])) $user->setLastname($params['lastname']);
         if (isset($params['phone'])) $user->setPhone($params['phone']);
@@ -217,6 +231,15 @@ class UserController extends AbstractController
 
         if (empty($user->getPassword())) {
             $errors[] = 'Password cannot be empty';
+        }
+        
+        if (!empty($errors)) {
+            $response = [
+                'success' => false,
+                'message' => $errors,
+            ];
+            $json = $this->serializer->serialize($response, 'json');
+            return $this->json($json);
         }
 
         $logMessage .= '<i>New data:</i><br>';
