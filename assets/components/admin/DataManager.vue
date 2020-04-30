@@ -392,7 +392,7 @@
                             <a :class="{ 'nav-link': true, 'active' : (locale_id == item.id && translate_id === 0) || translate_id == item.id}" href="#" v-on:click.prevent="setTranslate" :data-locale="item.locale" :data-lid="item.id">{{item.name}}</a>
                         </li>
                     </ul>
-                    <v-form :dark="darkmode">
+                    <v-form :dark="darkmode" ref="form">
                         <div v-for="column in columns">
                             <v-checkbox
                                 v-if="column.type === 'checkbox' && (column.editable || (form_id === 0 && column.form))"
@@ -776,41 +776,42 @@
                 this.form_data[event.target.dataset.id] = event.target.value;
             },
             update: function(event) {
-
-                let params = {};
-                if (this.translate_id > 0) params['locale'] = this.translate_id;
-                for (var i in this.columns) {
-                    if (this.columns[i]['editable'] || (this.form_id === 0 && this.columns[i]['form'])) {
-                        if (this.columns[i]['type'] == 'checkboxes') {
-                            for (var index in this.columns[i]['options']) {
-                                if (document.getElementById(this.columns[i].id+'-'+index).checked) params[this.columns[i].id+'-'+index] = true;
-                                else params[this.columns[i].id+'-'+index] = false;
+                if (this.$refs.form.validate()) {
+                    let params = {};
+                    if (this.translate_id > 0) params['locale'] = this.translate_id;
+                    for (var i in this.columns) {
+                        if (this.columns[i]['editable'] || (this.form_id === 0 && this.columns[i]['form'])) {
+                            if (this.columns[i]['type'] == 'checkboxes') {
+                                for (var index in this.columns[i]['options']) {
+                                    if (document.getElementById(this.columns[i].id+'-'+index).checked) params[this.columns[i].id+'-'+index] = true;
+                                    else params[this.columns[i].id+'-'+index] = false;
+                                }
+                            } else {
+                                params[this.columns[i]['id']] = this.form_data[this.columns[i]['id']];
                             }
-                        } else {
-                            params[this.columns[i]['id']] = this.form_data[this.columns[i]['id']];
                         }
                     }
+
+                    let url = '/api/v1'+this.api.insert;
+                    if (this.form_id > 0) url = '/api/v1'+this.api.update + this.form_id + '/';
+
+                    this.$axios.put(url, params, {headers: this.headers})
+                        .then(response => {
+                            var result = JSON.parse(response.data);
+
+                            if (result.success) {
+                                this.form_id = parseInt(result['id']);
+                                this.mode = 'form';
+                                this.list();
+                                this.$store.commit('setAlert', {type: 'success', message: translations.saved || "Saved", autohide: true});this.list();
+                            } else {
+                                this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
+                            }
+                        })
+                        .catch(e => {
+                            this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
+                        });
                 }
-
-                let url = '/api/v1'+this.api.insert;
-                if (this.form_id > 0) url = '/api/v1'+this.api.update + this.form_id + '/';
-
-                this.$axios.put(url, params, {headers: this.headers})
-                    .then(response => {
-                        var result = JSON.parse(response.data);
-
-                        if (result.success) {
-                            this.form_id = parseInt(result['id']);
-                            this.mode = 'form';
-                            this.list();
-                            this.$store.commit('setAlert', {type: 'success', message: translations.saved || "Saved", autohide: true});this.list();
-                        } else {
-                            this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
-                        }
-                    })
-                    .catch(e => {
-                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
-                    });
             },
             drop: function(event) {
 
