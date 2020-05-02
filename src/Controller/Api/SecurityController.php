@@ -4,12 +4,15 @@ namespace App\Controller\Api;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
+use App\Entity\Locale;
 use App\Entity\UserApiKey;
 use App\Entity\User;
 use App\Service\MailService;
@@ -156,7 +159,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-    * @Route("/api/v1/request-password/", name="api_request_password"), methods={"GET","HEAD"})
+    * @Route("/api/v1/request-password/", name="api_request_password"), methods={"POST"})
     */
     public function requestPassword(Request $request, MailService $mail, SettingService $setting)
     {
@@ -164,12 +167,37 @@ class SecurityController extends AbstractController
         $error = array();
 
         if (!empty($params['email'])) $email = $params['email'];
+        else {
+
+            $response = [
+                'success' => false,
+                'message' => 'email_required'
+            ];
+            $json = json_encode($response);
+            return $this->json($json);
+        }
 
         $user = $this->getDoctrine()
             ->getRepository(User::class)
-            ->findOneBy(array('email' => $email));
+            ->findOneBy(['email' => $email]);
 
         if ($user) {
+
+            if (!empty($params['locale'])) {
+                $locale = $this->getDoctrine()
+                    ->getRepository(Locale::class)
+                    ->findOneBy(['locale' => $params['locale']]);
+            } elseif (!empty($params['locale_id'])) {
+                $locale = $this->getDoctrine()
+                    ->getRepository(Locale::class)
+                    ->findOneBy(['id' => $params['locale_id']]);
+            }
+
+            if (empty($locale)) {
+                $locale = $this->getDoctrine()
+                    ->getRepository(Locale::class)
+                    ->findOneBy(['default' => true]);
+            }
 
             $confirmKey = md5($email.time());
             $user->setConfirmKey($confirmKey);
@@ -178,7 +206,7 @@ class SecurityController extends AbstractController
             $em->flush();
 
             $mail->addToQueue(
-                $this->setting->get('mail.from'),
+                $setting->get('mail.from'),
                 'password-forget',
                 $locale->getId(),
                 array(
@@ -189,15 +217,80 @@ class SecurityController extends AbstractController
             );
             $response = [
                 'success' => true,
-                'message' => true,
+                'message' => 'mail_sent',
             ];
         }
 
         if (empty($response)) {
             $response = [
                 'success' => false,
+                'message' => 'user_not_found'
             ];
         }
+
+        $json = json_encode($response);
+        return $this->json($json);
+    }
+
+    /**
+    * @Route("/api/v1/set-password/", name="api_set_password"), methods={"POST"})
+    */
+    public function setPassword(Request $request, MailService $mail, SettingService $setting, UserPasswordEncoderInterface $encoder)
+    {
+        $params = json_decode(file_get_contents("php://input"),true);
+        $error = array();
+
+        if (!empty($params['key'])) $key = $params['key'];
+        else {
+
+            $response = [
+                'success' => false,
+                'message' => 'key_required'
+            ];
+            $json = json_encode($response);
+            return $this->json($json);
+        }
+
+        if (!empty($params['password'])) $password = $params['password'];
+        else {
+
+            $response = [
+                'success' => false,
+                'message' => 'password_required'
+            ];
+            $json = json_encode($response);
+            return $this->json($json);
+        }
+
+        $user = $this->getDoctrine()
+            ->getRepository(User::class)
+            ->findOneBy(['confirmKey' => $key]);
+
+        if ($user) {
+
+            $encoded = $encoder->encodePassword($user, $password);
+            $user->setPassword($encoded);
+
+            $confirmKey = md5($user->getEmail().time());
+            $user->setConfirmKey($confirmKey);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+
+            $response = [
+                'success' => true,
+                'message' => 'password_set',
+            ];
+
+            $json = json_encode($response);
+            return $this->json($json);
+        }
+
+        $response = [
+            'success' => false,
+            'message' => 'user_not_found'
+        ];
 
         $json = json_encode($response);
         return $this->json($json);
