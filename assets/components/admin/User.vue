@@ -15,7 +15,7 @@
                 </v-col>
             </v-row>
         </v-container>
-        <v-form v-else key="content">
+        <v-form v-else key="content" ref="form">
 
             <v-tabs class="mb-3" color: transparent small :dark="darkmode">
                 <v-tab @click="changeTab" data-tab="account">{{translations.account || 'Account'}}</v-tab>
@@ -293,29 +293,32 @@
             },
             updateUser: function() {
 
-                if (!this.billingDifferent) {
-                    this.user.information.billingAddress1 = '';
-                    this.user.information.billingAddress2 = '';
-                    this.user.information.billingZipcode = '';
-                    this.user.information.billingCity = '';
-                    this.user.information.billingCountry = '';
+                if (this.$refs.form.validate()) {
+
+                    if (!this.billingDifferent) {
+                        this.user.information.billingAddress1 = '';
+                        this.user.information.billingAddress2 = '';
+                        this.user.information.billingZipcode = '';
+                        this.user.information.billingCity = '';
+                        this.user.information.billingCountry = '';
+                    }
+
+                    let url = '/api/v1/user/insert/';
+                    if (this.$attrs.id > 0) url = '/api/v1/user/update/' + this.$attrs.id + '/';
+
+                    this.$axios.put(url, this.user, {headers: this.headers})
+                        .then(response => {
+                            var result = JSON.parse(response.data);
+                            if (result.success) {
+                                this.$store.commit('setAlert', {type: 'success', message: translations.saved || "Saved", autohide: true});
+                            } else {
+                                this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
+                            }
+                        })
+                        .catch(e => {
+                            this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
+                        });
                 }
-
-                let url = '/api/v1/user/insert/';
-                if (this.$attrs.id > 0) url = '/api/v1/user/update/' + this.$attrs.id + '/';
-
-                this.$axios.put(url, this.user, {headers: this.headers})
-                    .then(response => {
-                        var result = JSON.parse(response.data);
-                        if (result.success) {
-                            this.$store.commit('setAlert', {type: 'success', message: translations.saved || "Saved", autohide: true});
-                        } else {
-                            this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
-                        }
-                    })
-                    .catch(e => {
-                        this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
-                    });
             },
             getRoles: function() {
                 this.$axios.get('/api/v1/user/role/list/', {headers: this.headers})
