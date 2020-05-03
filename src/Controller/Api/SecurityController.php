@@ -233,19 +233,59 @@ class SecurityController extends AbstractController
     }
 
     /**
+    * @Route("/api/v1/check-reset-token/", name="api_check_reset_token"), methods={"POST"})
+    */
+    public function checkResetToken(Request $request)
+    {
+        $params = json_decode(file_get_contents("php://input"),true);
+
+        if (!empty($params['token'])) $token = $params['token'];
+        else {
+
+            $response = [
+                'success' => false,
+                'message' => 'token_required'
+            ];
+            $json = json_encode($response);
+            return $this->json($json);
+        }
+
+        $user = $this->getDoctrine()
+            ->getRepository(User::class)
+            ->findOneBy(['confirmKey' => $token]);
+
+        if ($user) {
+            $response = array(
+                'success' => true,
+                'message' => 'token_found'
+            );
+
+            $json = json_encode($response);
+            return $this->json($json);
+        }
+
+        $response = [
+            'success' => false,
+            'message' => 'token_not_found'
+        ];
+
+        $json = json_encode($response);
+        return $this->json($json);
+    }
+
+    /**
     * @Route("/api/v1/set-password/", name="api_set_password"), methods={"POST"})
     */
     public function setPassword(Request $request, MailService $mail, SettingService $setting, UserPasswordEncoderInterface $encoder)
     {
         $params = json_decode(file_get_contents("php://input"),true);
-        $error = array();
 
-        if (!empty($params['key'])) $key = $params['key'];
+        if (!empty($params['token'])) $token = $params['token'];
         else {
 
             $response = [
                 'success' => false,
-                'message' => 'key_required'
+                'message' => 'token_required'
             ];
             $json = json_encode($response);
             return $this->json($json);
@@ -264,12 +304,13 @@ class SecurityController extends AbstractController
 
         $user = $this->getDoctrine()
             ->getRepository(User::class)
-            ->findOneBy(['confirmKey' => $key]);
+            ->findOneBy(['confirmKey' => $token]);
 
         if ($user) {
 
             $encoded = $encoder->encodePassword($user, $password);
             $user->setPassword($encoded);
+            $user->setEmailConfirmed(true);
 
             $confirmKey = md5($user->getEmail().time());
             $user->setConfirmKey($confirmKey);
@@ -278,10 +319,40 @@ class SecurityController extends AbstractController
             $em->persist($user);
             $em->flush();
 
-            $response = [
+            $roles = $user->getUserRoles();
+            if ($roles) {
+                $adminAccess = $user->getUserRoles()[0]->getAdminAccess();
+                $roleId = $user->getUserRoles()[0]->getId();
+            } else {
+                $response = [
+                    'success' => false,
+                    'message' => 'User has no role',
+                ];
+                $json = json_encode($response);
+                return $this->json($json);
+            }
+
+            $token = md5($user->getEmail().rand(0,9999).time());
+            $expire = date('Y-m-d H:i:s', strtotime('+ 1 day'));
+
+            $userApiKey = new UserApiKey();
+            $userApiKey->setUser($user);
+            $userApiKey->setKeyName('Request token by API');
+            $userApiKey->setToken($token);
+            $userApiKey->setExpire(new \DateTime($expire));
+            $userApiKey->setActive(true);
+
+            $em->persist($userApiKey);
+            $em->flush();
+
+            $response = array(
                 'success' => true,
-                'message' => 'password_set',
-            ];
+                'email' => $user->getEmail(),
+                'token' => $token,
+                'expire' => $expire,
+                'adminAccess' => $adminAccess,
+                'role' => $roleId
+            );
 
             $json = json_encode($response);
             return $this->json($json);
