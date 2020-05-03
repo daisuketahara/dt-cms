@@ -115,7 +115,7 @@ class UserController extends AbstractController
             ->getRepository(User::class)
             ->find($id);
             if ($user) {
-                $user->setPassword('passwordnotchanged');
+                $user->setPassword('');
                 $response = [
                     'success' => true,
                     'data' => $user,
