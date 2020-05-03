@@ -210,9 +210,8 @@ class SecurityController extends AbstractController
                 'password-forget',
                 $locale->getId(),
                 array(
-                    'confirm_key' => $confirmKey,
-                    'firstname' => $user->getFirstname(),
-                    'lastname' => $user->getlastname(),
+                    'token' => $confirmKey,
+                    'name' => $user->getFirstname() . ' ' . $user->getlastname(),
                 )
             );
             $response = [
