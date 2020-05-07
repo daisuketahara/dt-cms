@@ -81,10 +81,6 @@ services:
         arguments:
             $em: '@doctrine.orm.entity_manager'
 
-    # App\Finance\Service\MollieService:
-        # arguments:
-            # $em: '@doctrine.orm.entity_manager'
-
     # inject dependencies into routing
 
     App\Routing\ExtraLoader:
@@ -97,3 +93,11 @@ services:
     App\Security\TokenAuthenticator:
         arguments:
             $em: '@doctrine.orm.entity_manager'
+
+    Module\:
+        resource: '../modules/*'
+        exclude: '../modules/{Entity,Migrations,Tests,Kernel.php}'
+
+    # Module\Finance\Service\MollieService:
+    #    arguments:
+    #        $em: '@doctrine.orm.entity_manager'

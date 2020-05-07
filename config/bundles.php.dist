@@ -14,7 +14,8 @@ return [
     ApiPlatform\Core\Bridge\Symfony\Bundle\ApiPlatformBundle::class => ['all' => true],
     Symfony\WebpackEncoreBundle\WebpackEncoreBundle::class => ['all' => true],
 
-    //App\Shop\ShopBundle::class => ['all' => true],
-    //App\Blog\BlogBundle::class => ['all' => true],
-    //App\Finance\FinanceBundle::class => ['all' => true],
+    //Module\Shop\ShopBundle::class => ['all' => true],
+    //Module\Blog\BlogBundle::class => ['all' => true],
+    //Module\Finance\FinanceBundle::class => ['all' => true],
+    //Module\Support\SupportBundle::class => ['all' => true],
 ];
