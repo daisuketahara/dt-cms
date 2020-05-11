@@ -1,12 +1,12 @@
 {
     "devDependencies": {
         "@fortawesome/fontawesome-free": "^5.8.2",
-        "@symfony/webpack-encore": "^0.28.2",
+        "@symfony/webpack-encore": "^0.30.0",
         "deepmerge": "^4.2.2",
         "fibers": "^4.0.2",
-        "node-sass": "^4.13.1",
+        "node-sass": "^4.14.1",
         "sass": "^1.26.3",
-        "sass-loader": "^7.3.1",
+        "sass-loader": "^8.0.0",
         "webpack-notifier": "^1.6.0"
     },
     "license": "UNLICENSED",
@@ -23,8 +23,8 @@
         "@ckeditor/ckeditor5-editor-classic": "^12.1.0",
         "@ckeditor/ckeditor5-editor-inline": "^12.1.0",
         "@ckeditor/ckeditor5-vue": "ckeditor/ckeditor5-vue",
-        "@tomtom-international/web-sdk-maps": "^5.47.0",
-        "@tomtom-international/web-sdk-services": "^5.47.0",
+        "@tomtom-international/web-sdk-maps": "^5.55.0",
+        "@tomtom-international/web-sdk-services": "^5.55.0",
         "animate.css": "^3.7.0",
         "axios": "^0.18.0",
         "babel-polyfill": "^6.26.0",
