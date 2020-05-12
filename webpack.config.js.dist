@@ -49,4 +49,12 @@ Encore
     .enableSassLoader()
 ;
 
-module.exports = Encore.getWebpackConfig();
+var config = Encore.getWebpackConfig();
+
+// add an extension
+config.resolve.alias = {
+    'vue$': 'vue/dist/vue.esm.js'
+}
+
+// export the final config
+module.exports = config;
