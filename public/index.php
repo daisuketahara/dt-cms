@@ -9,8 +9,7 @@ chdir(dirname(__DIR__));
 
 // Check if .env exist, else redirect to install script
 if (!file_exists('.env')) {
-    header('Location: /install.php');
-    exit;
+    require '../install/index.php';
 }
 
 require 'vendor/autoload.php';
