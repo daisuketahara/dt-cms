@@ -413,9 +413,10 @@
                                     <button class="btn btn-sm btn-link" v-on:click.prevent="toggleCheckboxes" data-status="0">{{translations.select_all || 'Select all'}}</button>
                                 </h4>
                                 <v-row>
-                                    <v-col v-for="(description, index) in column.options" class="col-sm-6 col-md-4 py-0">
+                                    <v-col v-for="(description, index) in column.options" class="col-sm-6 col-md-4 py-0" :key="column.id+'-'+index">
                                         <v-checkbox
                                           v-model="form_data[column.id+'-'+index]"
+                                          :id="column.id+'-'+index"
                                           :label="description"
                                           :value="index"
                                           :dark="darkmode"
