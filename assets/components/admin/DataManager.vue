@@ -412,16 +412,17 @@
                                     {{translations[column.label] || column.label}}
                                     <button class="btn btn-sm btn-link" v-on:click.prevent="toggleCheckboxes" data-status="0">{{translations.select_all || 'Select all'}}</button>
                                 </h4>
-                                <div class="row">
-                                    <div v-for="(description, index) in column.options" class="col-sm-6 col-md-4 col-lg-3">
-                                        <div class="checkbox">
-                                            <label :for="column.id+'-'+index">
-                                                <input type="checkbox" :id="column.id+'-'+index" :name="column.id+'-'+index" :value="index" v-model="form_data[column.id+'-'+index]">
-                                                {{description}}
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
+                                <v-row>
+                                    <v-col v-for="(description, index) in column.options" class="col-sm-6 col-md-4 py-0">
+                                        <v-checkbox
+                                          v-model="form_data[column.id+'-'+index]"
+                                          :label="description"
+                                          :value="index"
+                                          :dark="darkmode"
+                                          dense
+                                        ></v-checkbox>
+                                    </v-col>
+                                </v-row>
                             </div>
                             <div v-else-if="column.editable || (form_id === 0 && column.form)">
                                 <v-text-field v-if="column.type === 'text'" v-model="form_data[column.id]" :label="translations[column.label] || column.label" :rules="validation[column.id]" :hint="column.tooltip" :dark="darkmode"></v-text-field>
