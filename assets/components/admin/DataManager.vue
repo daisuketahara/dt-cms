@@ -415,12 +415,11 @@
                                 <v-row>
                                     <v-col v-for="(description, index) in column.options" class="col-sm-6 col-md-4 py-0" :key="column.id+'-'+index">
                                         <v-checkbox
-                                          v-model="form_data[column.id+'-'+index]"
-                                          :id="column.id+'-'+index"
-                                          :label="description"
-                                          :value="index"
-                                          :dark="darkmode"
-                                          dense
+                                            v-model="form_data[column.id+'-'+index]"
+                                            :id="column.id+'-'+index"
+                                            :label="description"
+                                            :dark="darkmode"
+                                            dense
                                         ></v-checkbox>
                                     </v-col>
                                 </v-row>
@@ -475,7 +474,7 @@
                                 </select>
                                 <v-text-field
                                     v-else-if="column.type === 'password'"
-                                    v-model="password"
+                                    v-model="form_data[column.id]"
                                     :append-icon="passwordShow ? 'fal fa-eye' : 'fal fa-eye-slash'"
                                     :type="passwordShow ? 'text' : 'password'"
                                     :rules="validation[column.id]"
