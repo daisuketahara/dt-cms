@@ -15,7 +15,7 @@
                 <div class="col-md-6 py-0" style="position:relative; z-index:2;">
                     <div class="form-group">
                         <label class="form-control-label ten required" for="user-phone">{{translations.phone || 'Phone'}}</label>
-                        <vue-tel-input v-model="user.phone"></vue-tel-input>
+                        <vue-tel-input-vuetify v-model="user.phone"></vue-tel-input-vuetify>
                     </div>
                 </div>
             </div>

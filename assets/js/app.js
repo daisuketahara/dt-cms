@@ -7,7 +7,7 @@ require('./usability.js');
 require('./simple-cookie-bar.js');
 
 import Vue from 'vue';
-import VueTelInput from 'vue-tel-input';
+import VueTelInput from 'vue-tel-input-vuetify';
 import axios from 'axios';
 //import Datepicker from 'vuejs-datepicker';
 import Contact from '../components/Contact';

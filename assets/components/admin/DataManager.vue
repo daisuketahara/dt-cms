@@ -46,8 +46,8 @@
                     <tr v-for="item in data" :key="item.id" :id="'row-'+item.id">
                         <td><input type="checkbox" name="select-delete[]" class="select-delete" :value="item.id" @click="markToDelete"></td>
                         <td v-for="column in columns" v-if="column.list == true">
-                            <span v-if="typeof column.object !== 'undefined' && typeof column.object2 !== 'undefined'">{{item[column.object][column.object2][column.id]}}</span>
-                            <span v-if="typeof column.object !== 'undefined'">{{item[column.object][column.id]}}</span>
+                            <span v-if="typeof column.object !== 'undefined' && typeof column.object2 !== 'undefined'">{{item[column.object][column.object2][column.object_label]}}</span>
+                            <span v-if="typeof column.object !== 'undefined'">{{item[column.object][column.object_label]}}</span>
                             <span v-else-if="column.type=='switch'">
                                 <i v-if="item[column.id] == 1" class="fas fa-check"></i>
                                 <i v-else class="fas fa-times"></i>
@@ -159,7 +159,7 @@
                         <label :for="'form-'+column.id">{{translations[column.label] || column.label}}</label>
                         <input v-if="column.type === 'text'" type="text" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
                         <input v-else-if="column.type === 'email'" type="email" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
-                        <vue-tel-input v-else-if="column.type === 'phone'" v-model="form_data[column.id]" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-bind="phoneProps" :preferredCountries="['nl', 'be', 'gb']"></vue-tel-input>
+                        <vue-tel-input-vuetify v-else-if="column.type === 'phone'" v-model="form_data[column.id]" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-bind="phoneProps" :preferredCountries="['nl', 'be', 'gb']"></vue-tel-input-vuetify>
                         <input v-else-if="column.type === 'integer'" type="integer" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
                         <datepicker v-else-if="column.type === 'date'" format="yyyy-MM-dd" placeholder="Select Date":id="'form-'+column.id" :name="'form-'+column.id" :data-id="column.id" v-bind:input-class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}"></datepicker>
                         <textarea v-else-if="column.type === 'textarea'" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">{{ form_data[column.id] }}</textarea>
@@ -243,8 +243,8 @@
                             </div>
                             <div v-else-if="index > 1">
                                 <span class="data-card-label">{{translations[column.label] || column.label}}: </span>
-                                <span class="data-card-value" v-if="typeof column.object !== 'undefined' && typeof column.object2 !== 'undefined'">{{item[column.object][column.object2][column.id]}}</span>
-                                <span class="data-card-value" v-else-if="typeof column.object !== 'undefined'">{{item[column.object][column.id]}}</span>
+                                <span class="data-card-value" v-if="typeof column.object !== 'undefined' && typeof column.object2 !== 'undefined'">{{item[column.object][column.object2][column.object_label]}}</span>
+                                <span class="data-card-value" v-else-if="typeof column.object !== 'undefined'">{{item[column.object][column.object_label]}}</span>
                                 <span class="data-card-value" v-else-if="column.type=='switch'">
                                     <i v-if="item[column.id] == 1" class="fas fa-check"></i>
                                     <i v-else class="fas fa-times"></i>
@@ -427,7 +427,7 @@
                             <div v-else-if="column.editable || (form_id === 0 && column.form)">
                                 <v-text-field v-if="column.type === 'text'" v-model="form_data[column.id]" :label="translations[column.label] || column.label" :rules="validation[column.id]" :hint="column.tooltip" :dark="darkmode"></v-text-field>
                                 <input v-else-if="column.type === 'email'" type="email" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
-                                <vue-tel-input v-else-if="column.type === 'phone'" v-model="form_data[column.id]" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-bind="phoneProps" :preferredCountries="['nl', 'be', 'gb']"></vue-tel-input>
+                                <vue-tel-input-vuetify v-else-if="column.type === 'phone'" v-model="form_data[column.id]" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-bind="phoneProps" :preferredCountries="['nl', 'be', 'gb']"></vue-tel-input-vuetify>
                                 <input v-else-if="column.type === 'integer'" type="integer" :data-id="column.id" v-bind:class="{ 'form-control': true, 'form-required': column.required == true}" v-model="form_data[column.id]" v-on:blur="validateField" v-on:keyup="validateField" :data-required="column.required" v-tooltip.bottom-start="{ content: column.tooltip || 'Field required', show: tooltip == 'form-'+column.id, trigger: 'manual'}">
                                 <template v-else-if="column.type === 'slider'">
                                     <label class="mt-3">{{ translations[column.label] || column.label }}</label>
@@ -472,17 +472,43 @@
                                     <option value=""></option>
                                     <option v-for="(optionvalue, optionkey) in column.options" v-if="column.id != 'AgreeTerms' || optionkey == '0' || (optionkey == '1' && form_data[column.id] == '1')" :value="optionkey">{{translations[optionvalue] || optionvalue}}</option>
                                 </select>
-                                <v-text-field
-                                    v-else-if="column.type === 'password'"
-                                    v-model="form_data[column.id]"
-                                    :append-icon="passwordShow ? 'fal fa-eye' : 'fal fa-eye-slash'"
-                                    :type="passwordShow ? 'text' : 'password'"
-                                    :rules="validation[column.id]"
-                                    :label="translations[column.label] || column.label"
-                                    :hint="column.tooltip"
-                                    :dark="darkmode"
-                                    @click:append="passwordShow = !passwordShow"
-                                ></v-text-field>
+                                <div v-else-if="column.type === 'password'">
+                                    <v-row v-if="form_id > 0" class="mb-2">
+                                        <v-col cols="12">
+                                            <v-switch
+                                                v-model="changePassword"
+                                                :label="translations.change_password || 'Change password'"
+                                                :dark="darkmode"
+                                            ></v-switch>
+                                        </v-col>
+                                    </v-row>
+                                    <transition name="fade" enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+                                        <v-row v-if="form_id == 0 || changePassword" class="mb-4">
+                                            <v-col cols="12" md="6" class="py-0">
+                                                <v-text-field
+                                                    v-model="form_data[column.id]"
+                                                    :append-icon="passwordShow ? 'fal fa-eye' : 'fal fa-eye-slash'"
+                                                    :type="passwordShow ? 'text' : 'password'"
+                                                    :rules="validation[column.id]"
+                                                    :label="translations[column.label] || column.label"
+                                                    :dark="darkmode"
+                                                    @click:append="passwordShow = !passwordShow"
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12" md="6" class="py-0">
+                                                <v-text-field
+                                                    v-model="form_data[column.id]"
+                                                    :append-icon="passwordShow ? 'fal fa-eye' : 'fal fa-eye-slash'"
+                                                    :type="passwordShow ? 'text' : 'password'"
+                                                    :rules="[rules.required]"
+                                                    :label="translations.confirm_password || 'Confirm password'"
+                                                    :dark="darkmode"
+                                                    @click:append="passwordShow = !passwordShow"
+                                                ></v-text-field>
+                                            </v-col>
+                                        </v-row>
+                                    </transition>
+                                </div>
                                 <v-text-field v-else-if="column.type === 'price'" v-model="form_data[column.id]" :label="translations[column.label]+' (e.g. 10.00)' || column.label+' (e.g. 10.00)'" :rules="validation[column.id]" :hint="column.tooltip" :dark="darkmode"></v-text-field>
                                 <v-text-field v-else v-model="form_data[column.id]" :label="translations[column.label] || column.label" :rules="validation[column.id]" :hint="column.tooltip" :dark="darkmode"></v-text-field>
                             </div>
@@ -563,6 +589,7 @@
                 select_options: {},
                 component: '',
                 passwordShow: false,
+                changePassword: false,
                 validation: {},
                 rules: {
                     required: value => !!value || 'Required.',
@@ -751,8 +778,8 @@
                     .then(response => {
                         var result = JSON.parse(response.data);
                         if (result.success) {
-                            if (result['data'].constructor === {}.constructor) this.form_data = result['data'];
-                            else this.form_data = {};
+                            //if (result['data'].constructor === {}.constructor) this.form_data = result['data'];
+                            //else this.form_data = {};
 
                             for (var i in this.columns) {
                                 if (this.columns[i]['type'] == 'checkboxes') {
@@ -761,6 +788,16 @@
                                     for (var k = 0; k < values.length; k++) {
                                         this.form_data[this.columns[i]['id']+'-'+values[k]['id']] = true;
                                     }
+                                } else {
+
+                                    var cValue = '';
+
+                                    if (this.columns[i]['type'] == 'password') cValue = '';
+                                    else if (typeof this.columns[i]['object'] != typeof undefined) cValue = result['data'][this.columns[i]['object']][this.columns[i]['object_id']];
+                                    else cValue = result['data'][this.columns[i]['id']];
+
+                                    this.form_data[this.columns[i]['id']] = cValue;
+
                                 }
                             }
 
