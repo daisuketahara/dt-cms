@@ -7,13 +7,16 @@ require('./usability.js');
 require('./simple-cookie-bar.js');
 
 import Vue from 'vue';
-import VueTelInput from 'vue-tel-input-vuetify';
+import VueTelInputVuetify from 'vue-tel-input-vuetify/lib';
 import axios from 'axios';
 //import Datepicker from 'vuejs-datepicker';
 import Contact from '../components/Contact';
 
 //Vue.component('datepicker', Datepicker);
-Vue.component('vue-tel-input', VueTelInput);
+
+Vue.use(VueTelInputVuetify, {
+  vuetify,
+});
 
 Vue.prototype.$axios = axios;
 

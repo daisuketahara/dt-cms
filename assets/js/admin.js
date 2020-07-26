@@ -14,7 +14,7 @@ import VueCookies from 'vue-cookies';
 import VModal from 'vue-js-modal';
 import VueCodemirror from 'vue-codemirror';
 import VTooltip from 'v-tooltip';
-import VueTelInput from 'vue-tel-input';
+import VueTelInputVuetify from 'vue-tel-input-vuetify/lib';
 import moment from 'moment';
 
 import Admin from '../app/Admin';
@@ -35,9 +35,12 @@ Vue.use(VueCodemirror);
 Vue.use(VModal, { dialog: true });
 Vue.use(VueCookies);
 Vue.use(VTooltip);
+
+Vue.use(VueTelInputVuetify, {
+  vuetify,
+});
 Vue.component('filemanager', FileManager);
 Vue.component('User', User);
-Vue.component('vue-tel-input', VueTelInput);
 Vue.component('Map', Map);
 
 Vue.filter('formatDate', function(value) {
