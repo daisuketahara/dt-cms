@@ -50,7 +50,7 @@
                 </template>
             </v-list>
         </v-navigation-drawer>
-        <v-content v-if="initialised && authenticated">
+        <v-main v-if="initialised && authenticated">
             <router-view :key="$route.fullPath"></router-view>
             <div class="admin-functions">
                 <v-menu transition="slide-y-transition" bottom offset-x>
@@ -79,7 +79,7 @@
                     <v-icon x-small>fal fa-sign-out-alt</v-icon>
                 </v-btn>
             </div>
-        </v-content>
+        </v-main>
         <v-dialog/>
         <div class="dt-alerts">
             <transition-group name="fade" enter-active-class="animated bounceInUp" leave-active-class="animated fadeOut">

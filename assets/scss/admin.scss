@@ -1,6 +1,5 @@
 @import '~animate.css';
 @import '~vuejs-dialog/dist/vuejs-dialog.min.css';
-@import '~vue-tel-input/dist/vue-tel-input.css';
 @import '../scss/form.scss';
 @import '~vue-search-select/dist/VueSearchSelect.css';
 @import '~@tomtom-international/web-sdk-maps/dist/maps.css';
@@ -80,7 +79,7 @@ body {
     font-size: 2rem;
 }
 
-.v-content {
+.v-main {
     min-height: 100vh;
     position: relative;
     z-index: 11;
@@ -91,19 +90,19 @@ body {
     text-align: left;
 }
 
-body.darkmode .v-content {
+body.darkmode .v-main {
     background: rgba(20,20,20,0.7);
     color: white;
 }
 
 @media screen and (min-width: 992px) {
 
-    .v-content {
+    .v-main {
         min-height: 96vh;
     }
 }
 
-.v-content .admin-functions {
+.v-main .admin-functions {
     display: inline-block;
     position: absolute;
     top: 10px;
@@ -151,11 +150,11 @@ body.darkmode .v-content {
     background-position: center center;
     background-attachment: fixed;
 }
-.v-content::after {
+.v-main::after {
     background-color: rgba(255,255,255,0.75);
 }
 
-.v-content::before {
+.v-main::before {
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
