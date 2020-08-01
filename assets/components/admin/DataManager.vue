@@ -313,7 +313,7 @@
                     </div>
                 </div>
                 <div v-if="mode === 'search'" id="data-manager-view" key="search">
-                    <v-btn class="mb-3" outlined x-small fab :dark="darkmode" v-on="on" @click="gotoList">
+                    <v-btn class="mb-3" outlined x-small fab :dark="darkmode" @click="gotoList">
                         <v-icon x-small>fal fa-arrow-left</v-icon>
                     </v-btn>
                     <h1>{{translations.search || 'Search'}}</h1>
@@ -355,7 +355,7 @@
                     </table>
                 </div>
                 <div v-if="mode === 'view'" id="data-manager-view" key="view">
-                    <v-btn class="mb-3" outlined x-small fab :dark="darkmode" v-on="on" @click="gotoList">
+                    <v-btn class="mb-3" outlined x-small fab :dark="darkmode" @click="gotoList">
                         <v-icon x-small>fal fa-arrow-left</v-icon>
                     </v-btn>
                     <table class="table table-striped">
@@ -384,7 +384,7 @@
             </transition-group>
             <transition name="fade-right" enter-active-class="animated fadeIn">
                 <div v-if="mode === 'form'" id="data-manager-form">
-                    <v-btn class="mb-3" outlined x-small fab :dark="darkmode" v-on="on" @click="gotoList">
+                    <v-btn class="mb-3" outlined x-small fab :dark="darkmode" @click="gotoList">
                         <v-icon x-small>fal fa-arrow-left</v-icon>
                     </v-btn>
                     <ul v-if="settings.translate == true" class="nav nav-tabs">
@@ -527,7 +527,7 @@
             </transition>
             <transition name="fade-right" enter-active-class="animated fadeIn">
                 <div v-if="mode === 'component'">
-                    <v-btn class="mb-3" outlined x-small fab :dark="darkmode" v-on="on" @click="gotoList">
+                    <v-btn class="mb-3" outlined x-small fab :dark="darkmode" @click="gotoList">
                         <v-icon x-small>fal fa-arrow-left</v-icon>
                     </v-btn>
                     <component v-bind:is="component" v-bind="{id: form_id}" @refresh="list"></component>
