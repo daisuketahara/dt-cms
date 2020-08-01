@@ -24,26 +24,23 @@
                 <v-tab @click="changeTab" data-tab="permission">{{translations.permissions || 'Permissions'}}</v-tab>
             </v-tabs>
             <div v-if="tab=='account'">
-                <div class="row mb-2">
-                    <div class="col-md-6 py-0">
+                <v-row class="mb-2">
+                    <v-col cols="12" md="6" class="py-0">
                         <v-text-field v-model="user.firstname" :label="translations.firstname || 'Firstname'" :rules="[rules.required]" :dark="darkmode"></v-text-field>
-                    </div>
-                    <div class="col-md-6 py-0">
+                    </v-col>
+                    <v-col cols="12" md="6" class="py-0">
                         <v-text-field v-model="user.lastname" :label="translations.lastname || 'Lastname'" :rules="[rules.required]" :dark="darkmode"></v-text-field>
-                    </div>
-                    <div class="col-md-6 py-0">
+                    </v-col>
+                    <v-col cols="12" md="6" class="py-0">
                         <v-text-field v-model="user.email" :label="translations.email || 'Email'" :rules="[rules.required]" :dark="darkmode"></v-text-field>
-                    </div>
-                    <div class="col-md-6 py-0" style="position:relative; z-index:2;">
-                        <div class="form-group">
-                            <label class="form-control-label ten required" for="user-phone">{{translations.phone || 'Phone'}}</label>
-                            <vue-tel-input-vuetify v-model="user.phone"></vue-tel-input-vuetify>
-                        </div>
-                    </div>
-                    <div class="col-md-6 py-0">
+                    </v-col>
+                    <v-col cols="12" md="6" class="py-0" style="position:relative; z-index:2;">
+                        <vue-tel-input-vuetify :label="translations.phone || 'Phone'" v-model="user.phone" :dark="darkmode"></vue-tel-input-vuetify>
+                    </v-col>
+                    <v-col cols="12" md="6" class="py-0">
                         <v-select v-model="user.locale.id" :items="localesOptions" :label="translations.language || 'Language'" :rules="[rules.required]" :dark="darkmode"></v-select>
-                    </div>
-                </div>
+                    </v-col>
+                </v-row>
                 <v-row v-if="user.id > 0" class="mb-2">
                     <v-col cols="12">
                         <v-switch
