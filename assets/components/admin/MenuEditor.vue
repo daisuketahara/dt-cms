@@ -2,7 +2,7 @@
     <v-container fluid>
         <transition-group name="fade" enter-active-class="animated fadeIn">
             <div v-if="loaded && menu_id > 0" v-bind:key="menu_id">
-                <v-btn class="mb-3" outlined x-small fab :dark="darkmode" v-on="on" @click="gotoList">
+                <v-btn class="mb-3" outlined x-small fab :dark="darkmode" @click="gotoList">
                     <v-icon x-small>fal fa-arrow-left</v-icon>
                 </v-btn>
                 <div class="row">
