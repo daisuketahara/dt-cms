@@ -183,7 +183,7 @@
                     this.$store.commit('authenticate', true);
                     this.$parent.getRoutes();
                 } else {
-                    this.$router.push('/' + this.$store.state.locale + '/admin/login/');
+                    if (this.$router.currentRoute.path != '/' + this.$store.state.locale + '/admin/login/') this.$router.push('/' + this.$store.state.locale + '/admin/login/');
                 }
                 if (this.$cookies.isKey('darkmode')) {
                     document.body.classList.add('darkmode');
