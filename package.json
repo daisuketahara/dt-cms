@@ -49,7 +49,7 @@
         "vue-tel-input-vuetify": "^1.2.11",
         "vuejs-datepicker": "^1.5.4",
         "vuejs-dialog": "^1.4.0",
-        "vuetify": "^2.3.6",
+        "vuetify": "^2.3.8",
         "vuex": "^3.5.1"
     }
 }
