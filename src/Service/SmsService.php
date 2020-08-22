@@ -2,8 +2,7 @@
 
 namespace App\Service;
 
-use SpryngApiHttpPhp\Client;
-use SpryngApiHttpPhp\Exception\InvalidRequestException;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -24,14 +23,14 @@ class SmsService
     }
 
     // http://www.spryng.nl/developers/http-api/
-    public function send(string $recipient, string $message, string $reference='') {
+    public function send(array $recipients, string $message, string $reference='') {
 
         $enabled = $this->setting->get('sms.enable');
-        $username = $this->setting->get('spryng.username');
-        $password = $this->setting->get('spryng.password');
+        $token = $this->setting->get('spryng.token');
         $route = $this->setting->get('spryng.route');
         $long = $this->setting->get('spryng.long');
         $company = $this->setting->get('company.name');
+        $site = $this->setting->get('site.url');
 
         if (empty($reference)) $reference = $this->setting->get('spryng.reference');
         if (empty($reference)) $reference = $company;
@@ -39,26 +38,39 @@ class SmsService
 
         if (!empty($enabled)) {
 
-            $company = $this->setting->get('site.name');
-            $message = $company . ' - ' . $message;
+            $data = json_encode([
+                'encoding' => 'auto',
+                'body' => $message,
+                'originator' => $company,
+                'recipients' => $recipients,
+                'route' => 'business',
+                'reference' => $site
+            ]);
 
-            $spryng = new Client($username, $password, $company);
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => "https://rest.spryngsms.com/v1/messages",
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "POST",
+                CURLOPT_POSTFIELDS => $data,
+                CURLOPT_HTTPHEADER => array(
+                    "Accept: application/json",
+                    "Authorization: Bearer " . $token,
+                    "Content-Type: application/json"
+                ),
+            ));
+            $response = curl_exec($curl);
+            $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+            curl_close($curl);
 
-            try {
-                $spryng->sms->send($recipient, $message, array(
-                    'route' => $route,
-                    'allowlong' => true,
-                    'reference' => $reference)
-                );
-                return true;
-            } catch (InvalidRequestException $e) {
-
-                $logMessage = '<i>Error:</i><br>';
-                $logMessage .= $e->getMessage();
-
-                $this->log->add('SMS', 0, $logMessage, 'Send');
-            }
+            if ($httpcode == 200) return true;
         }
+
         return false;
     }
 
