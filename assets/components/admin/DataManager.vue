@@ -229,8 +229,8 @@
                     <div class="data-card-content flex-grow-1">
                         <div v-for="(column, key, index) in columns" v-if="column.list == true">
                             <div v-if="index == 1">
-                                <h3 v-if="typeof column.object !== 'undefined' && typeof column.object2 !== 'undefined'">{{item[column.object][column.object2][column.id]}}</h3>
-                                <h3 v-else-if="typeof column.object !== 'undefined'">{{item[column.object][column.id]}}</h3>
+                                <h3 v-if="typeof column.object !== 'undefined' && typeof column.object2 !== 'undefined'">{{item[column.object][column.object2][column.object_label]}}</h3>
+                                <h3 v-else-if="typeof column.object !== 'undefined'">{{item[column.object][column.object_label]}}</h3>
                                 <h3 v-else-if="column.type=='switch'">
                                     <i v-if="item[column.id] == 1" class="fas fa-check"></i>
                                     <i v-else class="fas fa-times"></i>
