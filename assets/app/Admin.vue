@@ -69,8 +69,12 @@
                         </v-list-item>
                     </v-list>
                 </v-menu>
-                <v-btn outlined x-small fab :dark="darkmode" @click="setViewMode">
+                <v-btn outlined x-small fab :dark="darkmode" @click="setDarkMode">
                     <v-icon x-small>fas fa-adjust</v-icon>
+                </v-btn>
+                <v-btn outlined x-small fab :dark="darkmode" @click="setFullscreen">
+                    <v-icon v-if="fullscreen" x-small>fas fa-compress</v-icon>
+                    <v-icon v-else x-small>fas fa-expand-wide</v-icon>
                 </v-btn>
                 <v-btn outlined x-small fab :dark="darkmode" router v-bind:to="{name: locale + '_admin_profile'}">
                     <v-icon x-small>fal fa-user</v-icon>
@@ -136,6 +140,9 @@
             darkmode () {
                 return this.$store.state.darkmode;
             },
+            fullscreen () {
+                return this.$store.state.fullscreen;
+            },
             menu () {
                 return this.$store.state.menu;
             },
@@ -189,6 +196,10 @@
                     document.body.classList.add('darkmode');
                     this.$store.commit('setDarkmode', true);
                 }
+                if (this.$cookies.isKey('fullscreen')) {
+                    document.body.classList.add('fullscreen');
+                    this.$store.commit('setFullscreen', true);
+                }
             },
             checkPermission(route_name) {
 
@@ -240,7 +251,7 @@
                 }
                 this.getTranslations(locale);
             },
-            setViewMode: function(event) {
+            setDarkMode: function(event) {
 
                 var body = document.body;
 
@@ -252,6 +263,20 @@
                     body.classList.remove('darkmode');
                     this.$store.commit('setDarkmode', false);
                     this.$cookies.remove('darkmode');
+                }
+            },
+            setFullscreen: function(event) {
+
+                var body = document.body;
+
+                if (this.$store.state.fullscreen == false) {
+                    body.classList.add('fullscreen');
+                    this.$store.commit('setFullscreen', true);
+                    this.$cookies.set('fullscreen', 1);
+                } else {
+                    body.classList.remove('fullscreen');
+                    this.$store.commit('setFullscreen', false);
+                    this.$cookies.remove('fullscreen');
                 }
             },
             removeAlert: function(event) {

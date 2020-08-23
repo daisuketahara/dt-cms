@@ -18,6 +18,7 @@ export default new Vuex.Store({
         menu: [],
         permissions: [],
         darkmode: false,
+        fullscreen: false,
         alerts: {},
         settings: {}
     },
@@ -65,6 +66,9 @@ export default new Vuex.Store({
         },
         setDarkmode (state, darkmode) {
             state.darkmode = darkmode;
+        },
+        setFullscreen (state, fullscreen) {
+            state.fullscreen = fullscreen;
         },
         setAlert (state, alert) {
 

@@ -23,6 +23,9 @@ body {
     body {
         padding-top: 2vh;
     }
+    body.fullscreen {
+        padding-top: 0;
+    }
 }
 
 #admin-app {
@@ -62,6 +65,12 @@ body {
             background: transparent;
         }
 
+    }
+
+    body.fullscreen #admin-app {
+        width: 100%;
+        min-height: 100vh;
+        border-radius: 0;
     }
 }
 
