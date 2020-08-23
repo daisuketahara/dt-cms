@@ -1,9 +1,6 @@
 <template>
-
     <v-navigation-drawer permanent color="transparent" :dark="darkmode">
         <v-list dense nav>
-
-
             <v-list-group
                 v-for="route in menu"
                 v-if="checkPermission(route.route_name)"
@@ -32,9 +29,6 @@
             </v-list-group>
         </v-list>
     </v-navigation-drawer>
-
-
-
 </template>
 <script>
     export default {
