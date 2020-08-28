@@ -84,7 +84,7 @@ class FileController extends AbstractController
     /**
     * @Route("/api/v1/file/delete/{id}/", name="api_file_delete"))
     */
-    final public function delete(int $id, LogService $log)
+    final public function delete(int $id)
     {
         $em = $this->getDoctrine()->getManager();
         $file = $em->getRepository(File::class)->find($id);
