@@ -1,8 +1,6 @@
 // assets/js/pwa.js
 
 require('../scss/pwa.scss');
-require('../vendor/onsen-ui/css/onsenui.min.css');
-require('../vendor/onsen-ui/css/onsen-css-components.min.css');
 require('animate.css');
 import '@fortawesome/fontawesome-free/js/all';
 

@@ -20,15 +20,15 @@ class TranslationController extends AbstractController
     /**
     * @Route("/{_locale}/export/translation/", name="admin_translation_export"))
     */
-    final public function export(TranslatorInterface $translator, LogService $log)
+    final public function export(TranslatorInterface $translator)
     {
         $translations = $this->getDoctrine()
-        ->getRepository(Translation::class)
-        ->getExport();
+            ->getRepository(Translation::class)
+            ->getExport();
 
         $locales = $this->getDoctrine()
-        ->getRepository(Locale::class)
-        ->findAll();
+            ->getRepository(Locale::class)
+            ->findAll();
 
         $response = new StreamedResponse();
         $response->setCallback(function() use ($translator, $translations, $locales) {

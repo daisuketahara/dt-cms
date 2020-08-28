@@ -20,7 +20,7 @@ class AppTranslationController extends AbstractController
     /**
     * @Route("/{_locale}/admin/apptranslation/export/", name="admin_apptranslation_export"))
     */
-    final public function export(TranslatorInterface $translator, LogService $log)
+    final public function export(TranslatorInterface $translator)
     {
         $translations = $this->getDoctrine()
         ->getRepository(AppTranslation::class)

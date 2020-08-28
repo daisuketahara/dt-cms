@@ -10,6 +10,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 use App\Entity\MailQueue;
 use App\Service\SettingService;
+use App\Service\LogService;
 
 
 class MailController extends AbstractController

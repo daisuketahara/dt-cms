@@ -127,7 +127,7 @@ class PermissionController extends AbstractController
     * @Route("/api/v1/permission/insert/", name="api_permission_insert", methods={"PUT"})
     * @Route("/api/v1/permission/update/{id}/", name="api_permission_update", methods={"PUT"})
     */
-    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator)
     {
         if (!empty($id)) {
             $permission = $this->getDoctrine()

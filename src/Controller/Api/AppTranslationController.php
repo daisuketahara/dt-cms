@@ -306,8 +306,6 @@ class AppTranslationController extends AbstractController
             ->getRepository(Locale::class)
             ->findActiveLocales();
 
-        $logMessage = '<i>AppTranslation files created:</i><br>';
-
         foreach($locales as $locale) {
 
             $file = $path. '/messages.' . $locale->getLocale() . '.yml';

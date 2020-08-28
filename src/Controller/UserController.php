@@ -17,7 +17,7 @@ class UserController extends AbstractController
     /**
     * @Route("/cron/user/geocode-user/", name="cron_user_geocode")
     */
-    final public function send(LogService $log, RouteService $route)
+    final public function send(RouteService $route)
     {
         $where = [
             "u.address1 IS NOT NULL AND u.address1 <> ''",
@@ -57,9 +57,6 @@ class UserController extends AbstractController
             $em->persist($info);
             $em->flush();
         }
-
-        $logMessage = '5 users have been updated with geocode';
-        //$log->add('Cron User Geocode', 0, $logMessage, 'Cron Geocode User');
 
         return new Response($logMessage);
     }
