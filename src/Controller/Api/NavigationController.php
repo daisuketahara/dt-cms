@@ -27,16 +27,12 @@ class NavigationController extends AbstractController
     {
         $menus = $this->getDoctrine()->getRepository(Menu::class)->findAll();
 
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $this->serializer = new Serializer($normalizers, $encoders);
-
-        $json = array(
+        $response = array(
             'success' => true,
             'data' => $menus,
         );
 
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
