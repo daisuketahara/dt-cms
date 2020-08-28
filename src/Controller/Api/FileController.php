@@ -7,28 +7,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 use App\Entity\File;
 use App\Entity\FileGroup;
 use App\Form\FileForm;
 use App\Service\FileService;
-use App\Service\LogService;
 
 
 class FileController extends AbstractController
 {
-    private $serializer;
-
-    public function __construct() {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $this->serializer = new Serializer($normalizers, $encoders);
-    }
-
     /**
     * @Route("/api/v1/file/list/", name="api_file_list"))
     */
@@ -72,8 +59,6 @@ class FileController extends AbstractController
             'data' => $files
         );
 
-        $json = $this->serializer->serialize($json, 'json');
-
         return $this->json($json);
     }
 
@@ -93,7 +78,7 @@ class FileController extends AbstractController
             'success' => true,
         );
 
-        return $this->json(json_encode($json));
+        return $this->json($json);
     }
 
     /**
@@ -104,11 +89,6 @@ class FileController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $file = $em->getRepository(File::class)->find($id);
 
-        $logMessage = '<i>Data:</i><br>';
-        $logMessage .= $this->serializer->serialize($file, 'json');
-
-        $log->add('File', $id, $logMessage, 'Delete');
-
         $em->remove($file);
         $em->flush();
 
@@ -116,6 +96,6 @@ class FileController extends AbstractController
             'success' => true,
         );
 
-        return $this->json(json_encode($json));
+        return $this->json($json);
     }
 }

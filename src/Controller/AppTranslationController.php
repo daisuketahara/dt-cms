@@ -14,7 +14,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 use App\Entity\Locale;
 use App\Entity\Translation;
-use App\Service\LogService;
 
 class AppTranslationController extends AbstractController
 {

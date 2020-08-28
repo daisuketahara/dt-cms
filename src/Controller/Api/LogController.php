@@ -7,25 +7,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Yaml\Yaml;
 
 use App\Entity\Log;
-use App\Service\LogService;
 
 class LogController extends AbstractController
 {
-    private $serializer;
-
-    public function __construct() {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $this->serializer = new Serializer($normalizers, $encoders);
-    }
-
     /**
     * @Route("/api/v1/log/info/", name="api_log_info"), methods={"GET","HEAD"})
     */
@@ -95,8 +82,6 @@ class LogController extends AbstractController
             'data' => $logs,
         );
 
-        $json = $this->serializer->serialize($json, 'json');
-
         return $this->json($json);
     }
 
@@ -127,8 +112,7 @@ class LogController extends AbstractController
             ];
         }
 
-        $json = $this->serializer->serialize($response, 'json');
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
@@ -162,7 +146,6 @@ class LogController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 }

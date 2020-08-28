@@ -7,25 +7,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Yaml\Yaml;
 
 use App\Entity\Country;
-use App\Service\LogService;
 
 class CountryController extends AbstractController
 {
-    private $serializer;
-
-    public function __construct() {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $this->serializer = new Serializer($normalizers, $encoders);
-    }
-
     /**
     * @Route("/api/v1/country/info/", name="api_country_info"), methods={"GET","HEAD"})
     */
@@ -95,8 +82,6 @@ class CountryController extends AbstractController
             'data' => $countries,
         );
 
-        $json = $this->serializer->serialize($json, 'json');
-
         return $this->json($json);
     }
 
@@ -107,8 +92,8 @@ class CountryController extends AbstractController
     {
         if (!empty($id)) {
             $country = $this->getDoctrine()
-            ->getRepository(Country::class)
-            ->find($id);
+                ->getRepository(Country::class)
+                ->find($id);
             if ($country) {
                 $response = [
                     'success' => true,
@@ -127,23 +112,22 @@ class CountryController extends AbstractController
             ];
         }
 
-        $json = $this->serializer->serialize($response, 'json');
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/country/insert/", name="api_country_insert", methods={"PUT"})
     * @Route("/api/v1/country/update/{id}/", name="api_country_update", methods={"PUT"})
     */
-    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator)
     {
         $logMessage = '';
         $logComment = 'Insert';
 
         if (!empty($id)) {
             $country = $this->getDoctrine()
-            ->getRepository(Country::class)
-            ->find($id);
+                ->getRepository(Country::class)
+                ->find($id);
             if (!$country) {
                 $response = [
                     'success' => false,
@@ -153,10 +137,6 @@ class CountryController extends AbstractController
                 return $this->json($json);
 
             } else {
-                $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $this->serializer->serialize($country, 'json');
-                $logMessage .= '<br><br>';
-                $logComment = 'Update';
                 $message = 'Country has been updated';
 
             }
@@ -178,19 +158,13 @@ class CountryController extends AbstractController
                     'success' => false,
                     'message' => $errors,
                 ];
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
             }
-
-            $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $this->serializer->serialize($country, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($country);
             $em->flush();
             $id = $country->getId();
-
-            $log->add('Country', $id, $logMessage, $logComment);
 
             $response = [
                 'success' => true,
@@ -199,15 +173,14 @@ class CountryController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/country/delete/", name="api_country_delete", methods={"PUT"})
     * @Route("/api/v1/country/delete/{id}/", name="api_country_delete_multiple", methods={"DELETE"})
     */
-    final public function delete(int $id=0, LogService $log)
+    final public function delete(int $id=0)
     {
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
@@ -220,11 +193,6 @@ class CountryController extends AbstractController
                 $country = $em->getRepository(Country::class)->find($countryId);
 
                 if ($country) {
-                    $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $this->serializer->serialize($country, 'json');
-
-                    $log->add('Country', $id, $logMessage, 'Delete');
-
                     $em->remove($country);
                     $em->flush();
                 }
@@ -239,7 +207,6 @@ class CountryController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 }

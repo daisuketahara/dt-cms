@@ -90,7 +90,7 @@
                 if (event.target.dataset.api) {
                     this.$axios.get('/api/v1'+event.target.dataset.api, {headers: this.headers})
                         .then(response => {
-                            var result = JSON.parse(response.data);
+                            var result = response.data;
                             if (result.success) {
                                 this.$store.commit('setAlert', {type: 'success', message: translations[result.message] || result.message, autohide: true});
                             } else {

@@ -76,7 +76,7 @@
 
                 this.$axios.post('/api/v1/contact/post/', params, {headers: this.headers})
                     .then(response => {
-                        var result = JSON.parse(response.data);
+                        var result = response.data;
                         if (result.success) {
                             this.send = true;
                         }

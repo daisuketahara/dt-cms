@@ -61,7 +61,7 @@
             getModules: function() {
                 this.$axios.get('/api/v1/module/', {headers: this.headers})
                     .then(response => {
-                        this.modules = JSON.parse(response.data).data;
+                        this.modules = response.data.data;
                         this.loaded = true;
                     })
                     .catch(e => {

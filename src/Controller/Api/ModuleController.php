@@ -14,20 +14,11 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Yaml\Yaml;
 
 use App\Entity\Module;
-use App\Service\LogService;
 use App\Service\CacheService;
 
 
 class ModuleController extends AbstractController
 {
-    private $serializer;
-
-    public function __construct() {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $this->serializer = new Serializer($normalizers, $encoders);
-    }
-
     /**
         * @Route("/api/v1/module/", name="api_module"), methods={"GET","HEAD"})
     */
@@ -64,8 +55,6 @@ class ModuleController extends AbstractController
             'total' => $count,
             'data' => $settings,
         );
-
-        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -106,8 +95,6 @@ class ModuleController extends AbstractController
             'total' => $count,
             'data' => $modules,
         );
-
-        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }

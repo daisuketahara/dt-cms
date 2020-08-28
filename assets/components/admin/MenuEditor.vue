@@ -209,7 +209,7 @@
 
                 this.$axios.get('/api/v1/navigation/list/', {headers: this.headers})
                     .then(response => {
-                        this.menus = JSON.parse(response.data)['data'];
+                        this.menus = response.data.data;
                         this.loaded = true;
                     })
                     .catch(e => {
@@ -221,7 +221,7 @@
                 this.collapse = [];
                 this.$axios.get('/api/v1/navigation/get-to-edit/'+this.menu_id+'/', {headers: this.headers})
                     .then(response => {
-                        this.menu = JSON.parse(response.data)['data'];
+                        this.menu = response.data.data;
                         for (var i = 0; i < this.menu.length; i++) {
                             this.collapse[i] = false;
                         }
@@ -240,7 +240,7 @@
 
                 this.$axios.put(url, params, {headers: this.headers})
                     .then(response => {
-                        var result = JSON.parse(response.data);
+                        var result = response.data;
 
                         if (result.success) {
                             this.$store.commit('setAlert', {type: 'success', message: translations.saved || "Saved", autohide: true});
@@ -274,7 +274,7 @@
                             this.$modal.hide('dialog');
                             this.$axios.delete('/api/v1/navigation/delete/' + event.target.dataset.id + '/', {headers: this.headers})
                                 .then(response => {
-                                    var result = JSON.parse(response.data);
+                                    var result = response.data;
                                     if (result.success) {
                                         self.getMenus();
                                         this.$store.commit('setAlert', {type: 'success', message: translations.delete_confirmation || 'Deleted', autohide: true});
@@ -295,7 +295,7 @@
 
                 this.$axios.get('/api/v1/navigation/routes/', {headers: this.headers})
                     .then(response => {
-                        var result = JSON.parse(response.data);
+                        var result = response.data;
                         this.available_pages = result.pages;
                         this.available_app = result.app;
                         this.available_admin = result.admin;
@@ -349,7 +349,7 @@
 
                 this.$axios.put(url, this.menu, {headers: this.headers})
                     .then(response => {
-                        var result = JSON.parse(response.data);
+                        var result = response.data;
 
                         if (result.success) {
                             this.$store.commit('setAlert', {type: 'success', message: translations.saved || "Saved", autohide: true});

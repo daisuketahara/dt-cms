@@ -50,8 +50,7 @@ class SecurityController extends AbstractController
                 'success' => false,
                 'message' => $errors,
             ];
-            $json = json_encode($response);
-            return $this->json($json);
+            return $this->json($response);
         }
 
         $user = $this->getDoctrine()
@@ -154,8 +153,7 @@ class SecurityController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
@@ -173,8 +171,7 @@ class SecurityController extends AbstractController
                 'success' => false,
                 'message' => 'email_required'
             ];
-            $json = json_encode($response);
-            return $this->json($json);
+            return $this->json($response);
         }
 
         $user = $this->getDoctrine()
@@ -227,8 +224,7 @@ class SecurityController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
@@ -245,8 +241,7 @@ class SecurityController extends AbstractController
                 'success' => false,
                 'message' => 'token_required'
             ];
-            $json = json_encode($response);
-            return $this->json($json);
+            return $this->json($response);
         }
 
         $user = $this->getDoctrine()
@@ -259,8 +254,7 @@ class SecurityController extends AbstractController
                 'message' => 'token_found'
             );
 
-            $json = json_encode($response);
-            return $this->json($json);
+            return $this->json($response);
         }
 
         $response = [
@@ -268,8 +262,7 @@ class SecurityController extends AbstractController
             'message' => 'token_not_found'
         ];
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
@@ -286,8 +279,7 @@ class SecurityController extends AbstractController
                 'success' => false,
                 'message' => 'token_required'
             ];
-            $json = json_encode($response);
-            return $this->json($json);
+            return $this->json($response);
         }
 
         if (!empty($params['password'])) $password = $params['password'];
@@ -297,8 +289,7 @@ class SecurityController extends AbstractController
                 'success' => false,
                 'message' => 'password_required'
             ];
-            $json = json_encode($response);
-            return $this->json($json);
+            return $this->json($response);
         }
 
         $user = $this->getDoctrine()
@@ -327,8 +318,7 @@ class SecurityController extends AbstractController
                     'success' => false,
                     'message' => 'User has no role',
                 ];
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
             }
 
             $token = md5($user->getEmail().rand(0,9999).time());
@@ -353,8 +343,7 @@ class SecurityController extends AbstractController
                 'role' => $roleId
             );
 
-            $json = json_encode($response);
-            return $this->json($json);
+            return $this->json($response);
         }
 
         $response = [
@@ -362,7 +351,6 @@ class SecurityController extends AbstractController
             'message' => 'user_not_found'
         ];
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 }

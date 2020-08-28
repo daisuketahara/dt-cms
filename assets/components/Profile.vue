@@ -178,7 +178,7 @@
             get: function() {
                 this.$axios.get('/api/v1/user/get-profile/', {headers: this.headers})
                 .then(response => {
-                    this.user = JSON.parse(response.data)['data'];
+                    this.user = response.data.data;
 
                     if (
                         (this.user.information.billingAddress1 !== '' && this.user.information.address1 != this.user.information.billingAddress1) ||
@@ -207,7 +207,7 @@
 
                 this.$axios.put(url, this.user, {headers: this.headers})
                     .then(response => {
-                        var result = JSON.parse(response.data);
+                        var result = response.data;
                         if (result.success) {
                             this.$store.commit('setAlert', {type: 'success', message: translations.saved || 'Data saved', autohide: true});
                         } else {

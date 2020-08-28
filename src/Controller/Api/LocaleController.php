@@ -14,18 +14,9 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Yaml\Yaml;
 
 use App\Entity\Locale;
-use App\Service\LogService;
 
 class LocaleController extends AbstractController
 {
-    private $serializer;
-
-    public function __construct() {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $this->serializer = new Serializer($normalizers, $encoders);
-    }
-
     /**
     * @Route("/api/v1/locale/info/", name="api_locale_info"), methods={"GET","HEAD"})
     */
@@ -95,8 +86,6 @@ class LocaleController extends AbstractController
             'data' => $locales,
         );
 
-        $json = $this->serializer->serialize($json, 'json');
-
         return $this->json($json);
     }
 
@@ -127,38 +116,28 @@ class LocaleController extends AbstractController
             ];
         }
 
-        $json = $this->serializer->serialize($response, 'json');
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/locale/insert/", name="api_locale_insert", methods={"PUT"})
     * @Route("/api/v1/locale/update/{id}/", name="api_locale_update", methods={"PUT"})
     */
-    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator)
     {
-        $logMessage = '';
-        $logComment = 'Insert';
-
         if (!empty($id)) {
             $locale = $this->getDoctrine()
-            ->getRepository(Locale::class)
-            ->find($id);
+                ->getRepository(Locale::class)
+                ->find($id);
             if (!$locale) {
                 $response = [
                     'success' => false,
                     'message' => 'Cannot find locale',
                 ];
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
 
             } else {
-                $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $this->serializer->serialize($locale, 'json');
-                $logMessage .= '<br><br>';
-                $logComment = 'Update';
                 $message = 'Locale has been updated';
-
             }
         } else {
             $locale = new Locale();
@@ -197,15 +176,10 @@ class LocaleController extends AbstractController
                 return $this->json($json);
             }
 
-            $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $this->serializer->serialize($locale, 'json');
-
             $em = $this->getDoctrine()->getManager();
             $em->persist($locale);
             $em->flush();
             $id = $locale->getId();
-
-            $log->add('Locale', $id, $logMessage, $logComment);
 
             $response = [
                 'success' => true,
@@ -214,15 +188,14 @@ class LocaleController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/locale/delete/", name="api_locale_delete", methods={"PUT"})
     * @Route("/api/v1/locale/delete/{id}/", name="api_locale_delete_multiple", methods={"DELETE"})
     */
-    final public function delete(int $id=0, LogService $log)
+    final public function delete(int $id=0)
     {
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
@@ -235,11 +208,6 @@ class LocaleController extends AbstractController
                 $locale = $em->getRepository(Locale::class)->find($localeId);
 
                 if ($locale) {
-                    $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $this->serializer->serialize($locale, 'json');
-
-                    $log->add('Locale', $id, $logMessage, 'Delete');
-
                     $em->remove($locale);
                     $em->flush();
                 }
@@ -254,7 +222,6 @@ class LocaleController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 }

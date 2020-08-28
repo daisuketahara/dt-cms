@@ -12,28 +12,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Yaml\Yaml;
 
 use App\Entity\Permission;
 use App\Entity\PermissionGroup;
-use App\Service\LogService;
 
 class PermissionController extends AbstractController
 {
-    private $serializer;
-
-    public function __construct() {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $this->serializer = new Serializer($normalizers, $encoders);
-    }
-
     /**
     * @Route("/api/v1/permission/info/", name="api_permission_info"), methods={"GET","HEAD"})
     */
@@ -103,8 +90,6 @@ class PermissionController extends AbstractController
             'data' => $permissions,
         );
 
-        $json = $this->serializer->serialize($json, 'json');
-
         return $this->json($json);
     }
 
@@ -135,8 +120,7 @@ class PermissionController extends AbstractController
             ];
         }
 
-        $json = $this->serializer->serialize($response, 'json');
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
@@ -145,26 +129,19 @@ class PermissionController extends AbstractController
     */
     final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
     {
-        $logMessage = '';
-        $logComment = 'Insert';
-
         if (!empty($id)) {
             $permission = $this->getDoctrine()
-            ->getRepository(Permission::class)
-            ->find($id);
+                ->getRepository(Permission::class)
+                ->find($id);
+
             if (!$permission) {
                 $response = [
                     'success' => false,
                     'message' => 'Cannot find permission',
                 ];
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
 
             } else {
-                $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $this->serializer->serialize($permission, 'json');
-                $logMessage .= '<br><br>';
-                $logComment = 'Update';
                 $message = 'Permission has been updated';
 
             }
@@ -193,19 +170,13 @@ class PermissionController extends AbstractController
                     'success' => false,
                     'message' => $errors,
                 ];
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
             }
-
-            $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $this->serializer->serialize($permission, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($permission);
             $em->flush();
             $id = $permission->getId();
-
-            $log->add('Permission', $id, $logMessage, $logComment);
 
             $response = [
                 'success' => true,
@@ -214,15 +185,14 @@ class PermissionController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/permission/delete/", name="api_permission_delete", methods={"PUT"})
     * @Route("/api/v1/permission/delete/{id}/", name="api_permission_delete_multiple", methods={"DELETE"})
     */
-    final public function delete(int $id=0, LogService $log)
+    final public function delete(int $id=0)
     {
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
@@ -235,11 +205,6 @@ class PermissionController extends AbstractController
                 $permission = $em->getRepository(Permission::class)->find($permissionId);
 
                 if ($permission) {
-                    $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $this->serializer->serialize($permission, 'json');
-
-                    $log->add('Permission', $id, $logMessage, 'Delete');
-
                     $em->remove($permission);
                     $em->flush();
                 }
@@ -254,14 +219,13 @@ class PermissionController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/permission/populate/", name="api_permission_populate"), methods={"GET","HEAD"})
     */
-    final public function populate(TranslatorInterface $translator, LogService $log, KernelInterface $kernel)
+    final public function populate(TranslatorInterface $translator, KernelInterface $kernel)
     {
         $application = new Application($kernel);
         $application->setAutoExit(false);
@@ -314,8 +278,8 @@ class PermissionController extends AbstractController
                 }
 
                 $permission = $this->getDoctrine()
-                ->getRepository(Permission::class)
-                ->findOneBy(['routeName' => $route['name']]);
+                    ->getRepository(Permission::class)
+                    ->findOneBy(['routeName' => $route['name']]);
 
                 if (!$permission) {
                     $permission = new Permission();
@@ -334,13 +298,11 @@ class PermissionController extends AbstractController
             }
         }
 
-        $log->add('Permission', 0, '<i>Permissions table populated:</i><br>', 'Permission populate');
         $response = [
             'success' => true,
             'message'=> $translator->trans('Missing permissions scan completed'),
         ];
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
@@ -383,8 +345,8 @@ class PermissionController extends AbstractController
         }
 
         $permissions = $this->getDoctrine()
-        ->getRepository(Permission::class)
-        ->findBy(['permissionGroup' => null]);
+            ->getRepository(Permission::class)
+            ->findBy(['permissionGroup' => null]);
 
         $options = array();
         if ($permissions) {
@@ -405,10 +367,10 @@ class PermissionController extends AbstractController
                 'form' => true,
             ];
         }
-        $json = $this->serializer->serialize([
+        $response = [
             'success' => true,
             'data' => $info
-        ], 'json');
-        return $this->json($json);
+        ];
+        return $this->json($response);
     }
 }

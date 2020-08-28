@@ -7,10 +7,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 use App\Entity\Locale;
 use App\Entity\Menu;
@@ -20,19 +16,10 @@ use App\Entity\PageContent;
 use App\Entity\Permission;
 use App\Service\CacheService;
 use App\Service\MenuService;
-use App\Service\LogService;
 
 
 class NavigationController extends AbstractController
 {
-    private $serializer;
-
-    public function __construct() {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $this->serializer = new Serializer($normalizers, $encoders);
-    }
-
     /**
     * @Route("/api/v1/navigation/list/", name="api_navigation_menu_list"), methods={"GET","HEAD"})
     */
@@ -49,8 +36,6 @@ class NavigationController extends AbstractController
             'data' => $menus,
         );
 
-        $json = $this->serializer->serialize($json, 'json');
-
         return $this->json($json);
     }
 
@@ -65,8 +50,6 @@ class NavigationController extends AbstractController
             'data' => $items,
         );
 
-        $json = $this->serializer->serialize($json, 'json');
-
         return $this->json($json);
     }
 
@@ -80,8 +63,6 @@ class NavigationController extends AbstractController
             'success' => true,
             'data' => $items,
         );
-
-        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -100,11 +81,11 @@ class NavigationController extends AbstractController
 
         if (!empty($errors)) {
 
-            $json = json_encode([
+            $response = [
                 'success' => false,
                 'message' => $errors,
-            ]);
-            return $this->json($json);
+            ];
+            return $this->json($response);
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -112,17 +93,17 @@ class NavigationController extends AbstractController
         $em->flush();
         $id = $menu->getId();
 
-        $json = json_encode([
+        $response = [
             'success' => true,
             'id' => $id,
-        ]);
-        return $this->json($json);
+        ];
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/navigation/delete/{id}/", name="api_navigation_delete", methods={"DELETE"})
     */
-    final public function delete(int $id=0, LogService $log)
+    final public function delete(int $id=0)
     {
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
@@ -132,7 +113,6 @@ class NavigationController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $menu = $em->getRepository(Menu::class)->find($id);
             if ($menu) {
-                $log->add('Menu', $id, '', 'Delete');
                 $em->remove($menu);
                 $em->flush();
             }
@@ -145,8 +125,7 @@ class NavigationController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
@@ -159,13 +138,13 @@ class NavigationController extends AbstractController
 
         if (!empty($id)) {
             $menu = $this->getDoctrine()
-            ->getRepository(Menu::class)
-            ->find($id);
+                ->getRepository(Menu::class)
+                ->find($id);
             if ($menu) {
 
                 $items = $this->getDoctrine()
-                ->getRepository(MenuItems::class)
-                ->findBy(['menu' => $menu]);
+                    ->getRepository(MenuItems::class)
+                    ->findBy(['menu' => $menu]);
 
                 foreach ($items as $item) {
                     $em->remove($item);
@@ -233,9 +212,9 @@ class NavigationController extends AbstractController
                     $order++;
                 }
 
-                $json = json_encode([
+                $response = [
                     'success' => true,
-                ]);
+                ];
 
                 $cache = new CacheService();
 
@@ -247,19 +226,19 @@ class NavigationController extends AbstractController
                 }
 
             } else {
-                $json = json_encode([
+                $response = json_encode([
                     'success' => false,
                     'message' => 'Menu does not exist',
                 ]);
             }
         } else {
-            $json = json_encode([
+            $response = json_encode([
                 'success' => false,
                 'message' => 'Id cannot be empty',
             ]);
         }
 
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
@@ -273,16 +252,14 @@ class NavigationController extends AbstractController
         $pages = $this->getDoctrine()->getRepository(Page::class)->getUserPages($email);
         $permissions = $this->getDoctrine()->getRepository(Permission::class)->getUserPermissions($email);
 
-        $json = array(
+        $response = array(
             'success' => true,
             'menu' => $menu,
             'pages' => $pages,
             'permissions' => $permissions,
         );
 
-        $json = $this->serializer->serialize($json, 'json');
-
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
@@ -304,15 +281,13 @@ class NavigationController extends AbstractController
         $email = $this->getUser()->getUsername();
         $permissions = $this->getDoctrine()->getRepository(Permission::class)->getUserPermissions($email);
 
-        $json = array(
+        $response = array(
             'success' => true,
             'menu' => $menu,
             'permissions' => $permissions,
         );
 
-        $json = $this->serializer->serialize($json, 'json');
-
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
@@ -331,7 +306,6 @@ class NavigationController extends AbstractController
             'admin' => $admin,
         );
 
-        $json = $this->serializer->serialize($json, 'json');
         return $this->json($json);
     }
 }

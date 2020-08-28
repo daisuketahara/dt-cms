@@ -7,10 +7,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Yaml\Yaml;
 
@@ -24,19 +20,10 @@ use App\Entity\UserRole;
 use App\Entity\UserPermission;
 use App\Entity\UserApiKey;
 use App\Service\RouteService;
-use App\Service\LogService;
 
 
 class UserController extends AbstractController
 {
-    private $serializer;
-
-    public function __construct() {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $this->serializer = new Serializer($normalizers, $encoders);
-    }
-
     /**
     * @Route("/api/v1/user/info/", name="api_user_info"), methods={"GET","HEAD"})
     */
@@ -100,8 +87,6 @@ class UserController extends AbstractController
             'data' => $users,
         );
 
-        $json = $this->serializer->serialize($json, 'json');
-
         return $this->json($json);
     }
 
@@ -133,18 +118,15 @@ class UserController extends AbstractController
             ];
         }
 
-        $json = $this->serializer->serialize($response, 'json');
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/user/insert/", name="api_user_insert", methods={"PUT"})
     * @Route("/api/v1/user/update/{id}/", name="api_user_update", methods={"PUT"})
     */
-    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log, RouteService $route, UserPasswordEncoderInterface $encoder)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, RouteService $route, UserPasswordEncoderInterface $encoder)
     {
-        $logMessage = '';
-        $logComment = 'Insert';
         $errors = array();
 
         if (!empty($id)) {
@@ -153,12 +135,8 @@ class UserController extends AbstractController
             ->find($id);
             if (!$user) {
                 $error[] = 'User does not exist';
-            } else {
-                $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $this->serializer->serialize($user, 'json');
-                $logMessage .= '<br><br>';
-                $logComment = 'Update';
             }
+
             $userinfo = $user->getInformation();
             if (!$userinfo) $userinfo = new UserInformation();
 
@@ -207,9 +185,8 @@ class UserController extends AbstractController
             $response = [
                 'success' => false,
                 'message' => 'email_exists',
-            ];
-            $json = $this->serializer->serialize($response, 'json');
-            return $this->json($json);
+            ];;
+            return $this->json($response);
         }
 
         if (isset($params['firstname'])) $user->setFirstname($params['firstname']);
@@ -238,12 +215,8 @@ class UserController extends AbstractController
                 'success' => false,
                 'message' => $errors,
             ];
-            $json = $this->serializer->serialize($response, 'json');
-            return $this->json($json);
+            return $this->json($response);
         }
-
-        $logMessage .= '<i>New data:</i><br>';
-        $logMessage .= $this->serializer->serialize($user, 'json');
 
         if (isset($params['information']['companyName'])) $userinfo->setCompanyName($params['information']['companyName']);
         if (isset($params['information']['website'])) $userinfo->setWebsite($params['information']['website']);
@@ -279,11 +252,9 @@ class UserController extends AbstractController
         }
 
         $user->setInformation($userinfo);
-        $logMessage .= $this->serializer->serialize($userinfo, 'json');
 
         if (isset($params['note']['note'])) $usernote->setNote($params['note']['note']);
         $user->setNote($usernote);
-        $logMessage .= $this->serializer->serialize($usernote, 'json');
 
         $userRoles = $user->getUserRoles();
         if (!empty($userRoles)) {
@@ -326,21 +297,19 @@ class UserController extends AbstractController
         $em->flush();
         $id = $user->getId();
 
-        $log->add('User', $id, $logMessage, $logComment);
-
         $response = array(
             'success' => true,
             'id' => $id
         );
-        $json = json_encode($response);
-        return $this->json($json);
+
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/user/delete/", name="api_user_delete", methods={"PUT"})
     * @Route("/api/v1/user/delete/{id}/", name="api_user_delete_multiple", methods={"DELETE"})
     */
-    final public function delete(int $id=0, LogService $log)
+    final public function delete(int $id=0)
     {
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
@@ -353,11 +322,6 @@ class UserController extends AbstractController
                 $user = $em->getRepository(User::class)->find($userId);
 
                 if ($user) {
-                    $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $this->serializer->serialize($user, 'json');
-
-                    $log->add('User', $id, $logMessage, 'Delete');
-
                     $em->remove($user);
                     $em->flush();
                 }
@@ -372,8 +336,7 @@ class UserController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
@@ -398,17 +361,14 @@ class UserController extends AbstractController
             ];
         }
 
-        $json = $this->serializer->serialize($response, 'json');
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/user/save-profile/", name="api_user_save_profile", methods={"PUT"})
     */
-    final public function saveProfile(Request $request, TranslatorInterface $translator, LogService $log, RouteService $route, UserPasswordEncoderInterface $encoder)
+    final public function saveProfile(Request $request, TranslatorInterface $translator, RouteService $route, UserPasswordEncoderInterface $encoder)
     {
-        $logMessage = '';
-        $logComment = 'Insert';
         $errors = array();
 
         $user = $this->getUser();
@@ -418,8 +378,8 @@ class UserController extends AbstractController
                 'success' => false,
                 'message' => 'Cannot find user',
             ];
-            $json = $this->serializer->serialize($response, 'json');
-            return $this->json($json);
+
+            return $this->json($response);
         }
 
         $userinfo = $user->getInformation();
@@ -461,9 +421,6 @@ class UserController extends AbstractController
             $errors[] = 'Password cannot be empty';
         }
 
-        $logMessage .= '<i>New data:</i><br>';
-        $logMessage .= $this->serializer->serialize($user, 'json');
-
         if (isset($params['information']['Address1'])) $userinfo->setAddress1($params['information']['Address1']);
         if (isset($params['information']['Address2'])) $userinfo->setAddress2($params['information']['Address2']);
         if (isset($params['information']['Zipcode'])) $userinfo->setZipcode($params['information']['Zipcode']);
@@ -494,20 +451,17 @@ class UserController extends AbstractController
         }
 
         $user->setInformation($userinfo);
-        $logMessage .= $this->serializer->serialize($userinfo, 'json');
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($user);
         $em->flush();
         $id = $user->getId();
 
-        $log->add('User profile', $id, $logMessage, $logComment);
-
         $response = array(
             'success' => true,
             'id' => $id
         );
-        $json = json_encode($response);
-        return $this->json($json);
+
+        return $this->json($response);
     }
 }

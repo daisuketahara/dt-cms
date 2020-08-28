@@ -7,25 +7,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Yaml\Yaml;
 
 use App\Entity\Redirect;
-use App\Service\LogService;
 
 class RedirectController extends AbstractController
 {
-    private $serializer;
-
-    public function __construct() {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $this->serializer = new Serializer($normalizers, $encoders);
-    }
-
     /**
     * @Route("/api/v1/redirect/info/", name="api_redirect_info"), methods={"GET","HEAD"})
     */
@@ -95,8 +82,6 @@ class RedirectController extends AbstractController
             'data' => $redirects,
         );
 
-        $json = $this->serializer->serialize($json, 'json');
-
         return $this->json($json);
     }
 
@@ -127,36 +112,28 @@ class RedirectController extends AbstractController
             ];
         }
 
-        $json = $this->serializer->serialize($response, 'json');
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/redirect/insert/", name="api_redirect_insert", methods={"PUT"})
     * @Route("/api/v1/redirect/update/{id}/", name="api_redirect_update", methods={"PUT"})
     */
-    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator)
     {
-        $logMessage = '';
-        $logComment = 'Insert';
-
         if (!empty($id)) {
             $redirect = $this->getDoctrine()
-            ->getRepository(Redirect::class)
-            ->find($id);
+                ->getRepository(Redirect::class)
+                ->find($id);
+
             if (!$redirect) {
                 $response = [
                     'success' => false,
                     'message' => 'Cannot find redirect',
                 ];
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
 
             } else {
-                $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $this->serializer->serialize($redirect, 'json');
-                $logMessage .= '<br><br>';
-                $logComment = 'Update';
                 $message = 'Redirect has been updated';
 
             }
@@ -187,19 +164,13 @@ class RedirectController extends AbstractController
                     'success' => false,
                     'message' => $errors,
                 ];
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
             }
-
-            $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $this->serializer->serialize($redirect, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($redirect);
             $em->flush();
             $id = $redirect->getId();
-
-            $log->add('Redirect', $id, $logMessage, $logComment);
 
             $response = [
                 'success' => true,
@@ -208,15 +179,14 @@ class RedirectController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/redirect/delete/", name="api_redirect_delete", methods={"PUT"})
     * @Route("/api/v1/redirect/delete/{id}/", name="api_redirect_delete_multiple", methods={"DELETE"})
     */
-    final public function delete(int $id=0, LogService $log)
+    final public function delete(int $id=0)
     {
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
@@ -229,11 +199,6 @@ class RedirectController extends AbstractController
                 $redirect = $em->getRepository(Redirect::class)->find($redirectId);
 
                 if ($redirect) {
-                    $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $this->serializer->serialize($redirect, 'json');
-
-                    $log->add('Redirect', $id, $logMessage, 'Delete');
-
                     $em->remove($redirect);
                     $em->flush();
                 }
@@ -248,7 +213,6 @@ class RedirectController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 }

@@ -7,29 +7,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 use App\Entity\Locale;
 use App\Entity\MailQueue;
 use App\Entity\MailTemplate;
 use App\Entity\MailTemplateContent;
-use App\Service\LogService;
 use App\Service\SettingService;
 
 
 class MailController extends AbstractController
 {
-    private $serializer;
-
-    public function __construct() {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $this->serializer = new Serializer($normalizers, $encoders);
-    }
-
     /**
     * @Route("/api/v1/mail/queue/info/", name="api_mail_queue_info"), methods={"GET","HEAD"})
     */
@@ -151,8 +138,6 @@ class MailController extends AbstractController
             'data' => $mailqueues,
         );
 
-        $json = $this->serializer->serialize($json, 'json');
-
         return $this->json($json);
     }
 
@@ -183,15 +168,14 @@ class MailController extends AbstractController
             ];
         }
 
-        $json = $this->serializer->serialize($response, 'json');
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/mail/queue/delete/", name="api_mail_queue_delete", methods={"PUT"})
     * @Route("/api/v1/mail/queue/delete/{id}/", name="api_mail_queue_delete_multiple", methods={"DELETE"})
     */
-    final public function deleteFromQueue(int $id=0, LogService $log)
+    final public function deleteFromQueue(int $id=0)
     {
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
@@ -223,8 +207,7 @@ class MailController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
@@ -310,8 +293,8 @@ class MailController extends AbstractController
         if (!empty($params['locale'])) $localeId = $params['locale'];
 
         $locale = $this->getDoctrine()
-        ->getRepository(Locale::class)
-        ->find($localeId);
+            ->getRepository(Locale::class)
+            ->find($localeId);
 
         $whereString = 'l.locale='. $locale->getId();
         if (!empty($filter)) {
@@ -342,8 +325,6 @@ class MailController extends AbstractController
             'data' => $mailTemplates,
         );
 
-        $json = $this->serializer->serialize($json, 'json');
-
         return $this->json($json);
     }
 
@@ -356,20 +337,20 @@ class MailController extends AbstractController
         if (!empty($params['locale'])) {
             $localeId = $params['locale'];
             $locale = $this->getDoctrine()
-            ->getRepository(Locale::class)
-            ->find($localeId);
+                ->getRepository(Locale::class)
+                ->find($localeId);
         }
 
         if (!empty($id)) {
 
             $mailTemplate = $this->getDoctrine()
-            ->getRepository(MailTemplateContent::class)
-            ->find($id);
+                ->getRepository(MailTemplateContent::class)
+                ->find($id);
 
             if (!empty($localeId) && $localeId != $mailTemplate->getLocale()->getId()) {
                 $otherMailTemplate = $this->getDoctrine()
-                ->getRepository(MailTemplateContent::class)
-                ->findOneBy(['locale' => $locale, 'mailTemplate' => $mailTemplate->getMailTemplate()]);
+                    ->getRepository(MailTemplateContent::class)
+                    ->findOneBy(['locale' => $locale, 'mailTemplate' => $mailTemplate->getMailTemplate()]);
                 if ($otherMailTemplate) $mailTemplate = $otherMailTemplate;
                 else $mailTemplate = true;
             }
@@ -392,44 +373,40 @@ class MailController extends AbstractController
             ];
         }
 
-        $json = $this->serializer->serialize($response, 'json');
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/mail/template/insert/", name="api_mail_template_insert", methods={"PUT"})
     * @Route("/api/v1/mail/template/update/{id}/", name="api_mail_template_update", methods={"PUT"})
     */
-    final public function editTemplate(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function editTemplate(int $id=0, Request $request, TranslatorInterface $translator)
     {
-        $logMessage = '';
-        $logComment = 'Insert';
-
         $params = json_decode(file_get_contents("php://input"),true);
 
         if (!empty($params['locale'])) {
             $localeId = $params['locale'];
             $locale = $this->getDoctrine()
-            ->getRepository(Locale::class)
-            ->find($localeId);
+                ->getRepository(Locale::class)
+                ->find($localeId);
         }
 
         if (empty($locale)) {
             $locale = $this->getDoctrine()
-            ->getRepository(Locale::class)
-            ->getDefaultLocale();
+                ->getRepository(Locale::class)
+                ->getDefaultLocale();
         }
 
         if (!empty($id)) {
 
             $mailTemplate = $this->getDoctrine()
-            ->getRepository(MailTemplateContent::class)
-            ->find($id);
+                ->getRepository(MailTemplateContent::class)
+                ->find($id);
 
             if (!empty($mailTemplate) && !empty($localeId) && $localeId != $mailTemplate->getLocale()->getId()) {
                 $otherMailTemplate = $this->getDoctrine()
-                ->getRepository(MailTemplateContent::class)
-                ->findOneBy(['locale' => $locale, 'mailTemplate' => $mailTemplate->getMailTemplate()]);
+                    ->getRepository(MailTemplateContent::class)
+                    ->findOneBy(['locale' => $locale, 'mailTemplate' => $mailTemplate->getMailTemplate()]);
                 if (!$otherMailTemplate) {
                     $otherMailTemplate = new MailTemplateContent();
                     $otherMailTemplate->setMailTemplate($mailTemplate->getMailTemplate());
@@ -443,17 +420,10 @@ class MailController extends AbstractController
                     'success' => false,
                     'message' => 'Cannot find mailTemplate',
                 ];
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
 
             } else {
-
-                $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $this->serializer->serialize($mailTemplate, 'json');
-                $logMessage .= '<br><br>';
-                $logComment = 'Update';
                 $message = 'MailTemplate has been updated';
-
             }
         }
 
@@ -485,19 +455,13 @@ class MailController extends AbstractController
                     'success' => false,
                     'message' => $errors,
                 ];
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
             }
-
-            $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $this->serializer->serialize($mailTemplate, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($mailTemplate);
             $em->flush();
             $id = $mailTemplate->getId();
-
-            $log->add('MailTemplate', $id, $logMessage, $logComment);
 
             $response = [
                 'success' => true,
@@ -506,15 +470,14 @@ class MailController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/mail/template/delete/", name="api_mail_template_delete", methods={"PUT"})
     * @Route("/api/v1/mail/template/delete/{id}/", name="api_mail_template_delete_multiple", methods={"DELETE"})
     */
-    final public function deleteTemplate(int $id=0, LogService $log)
+    final public function deleteTemplate(int $id=0)
     {
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
@@ -527,10 +490,6 @@ class MailController extends AbstractController
                 $mailTemplate = $em->getRepository(MailTemplateContent::class)->find($mailTemplateId);
 
                 if ($mailTemplate) {
-                    $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $this->serializer->serialize($mailTemplate, 'json');
-
-                    $log->add('MailTemplate', $id, $logMessage, 'Delete');
 
                     $mailTemplate = $mailTemplate->getMailTemplate();
 
@@ -548,7 +507,6 @@ class MailController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 }

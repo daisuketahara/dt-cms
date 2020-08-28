@@ -679,8 +679,8 @@
 
                 this.$axios.post('/api/v1'+this.api.list, params, {headers: this.headers})
                     .then(response => {
-                        this.data = JSON.parse(response.data)['data'];
-                        this.total = parseInt(JSON.parse(response.data)['total']);
+                        this.data = response.data.data;
+                        this.total = parseInt(response.data.total);
                         this.pages = Math.ceil(this.total/this.limit);
                     })
                     .catch(e => {
@@ -737,7 +737,7 @@
                 this.form_id = parseInt(event.target.dataset.id);
                 this.$axios.get('/api/v1'+this.api.get + event.target.dataset.id + '/', {headers: this.headers})
                     .then(response => {
-                        this.form_data = JSON.parse(response.data)['data'];
+                        this.form_data = response.data.data;
                         this.mode = 'view';
                     })
                     .catch(e => {
@@ -756,7 +756,7 @@
 
                     this.$axios.get('/api/v1'+this.api.custom_form, {headers: this.headers})
                         .then(response => {
-                            var result = JSON.parse(response.data);
+                            var result = response.data;
                             if (result.success) {
                                 this.columns = result.fields;
                             } else {
@@ -776,7 +776,7 @@
 
                 this.$axios.post(url, params, {headers: this.headers})
                     .then(response => {
-                        var result = JSON.parse(response.data);
+                        var result = response.data;
                         if (result.success) {
                             //if (result['data'].constructor === {}.constructor) this.form_data = result['data'];
                             //else this.form_data = {};
@@ -835,7 +835,7 @@
 
                     this.$axios.put(url, params, {headers: this.headers})
                         .then(response => {
-                            var result = JSON.parse(response.data);
+                            var result = response.data;
 
                             if (result.success) {
                                 this.form_id = parseInt(result['id']);
@@ -875,7 +875,7 @@
                             this.$modal.hide('dialog');
                             this.$axios.delete('/api/v1'+this.api.delete + event.target.dataset.id + '/', {headers: this.headers})
                                 .then(response => {
-                                    var result = JSON.parse(response.data);
+                                    var result = response.data;
                                     if (result.success) {
                                         self.list();
                                         this.$store.commit('setAlert', {type: 'success', message: translations.delete_confirmation || 'Deleted', autohide: true});
@@ -920,7 +920,7 @@
 
                             this.$axios.put('/api/v1'+this.api.delete, params, {headers: this.headers})
                                 .then(response => {
-                                    var result = JSON.parse(response.data);
+                                    var result = response.data;
 
                                     if (result.success) {
                                         self.list();
@@ -998,16 +998,24 @@
                 this.$axios.get('/api/v1' + column.options_source, { headers: this.headers })
                     .then(response => {
 
-                        var data = JSON.parse(response.data)['data'];
+                        var data = response.data.data;
 
                         console.log(data);
 
                         for (var n = 0; n < data.length; n++) {
 
-                            var value = {
-                                value: data[n][column.option_key],
-                                text: data[n][column.option_value],
-                            };
+                            if (typeof column.object2 != typeof undefined) {
+                                var value = {
+                                    value: data[n][column.option_key],
+                                    text: data[n][column.object2][column.option_value],
+                                };
+                            } else {
+                                var value = {
+                                    value: data[n][column.option_key],
+                                    text: data[n][column.option_value],
+                                };
+                            }
+
                             options.push(value);
                         }
                         this.select_options[column.id] = options;
@@ -1020,7 +1028,7 @@
                 if (event.target.dataset.api) {
                     this.$axios.get('/api/v1' + event.target.dataset.api, {headers: this.headers})
                         .then(response => {
-                            var result = JSON.parse(response.data);
+                            var result = response.data;
                             if (result.success) {
                                 this.$store.commit('setAlert', {type: 'success', message: translations[result.message] || result.message, autohide: true});
                                 this.list();

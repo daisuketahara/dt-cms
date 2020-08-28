@@ -8,26 +8,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Leafo\ScssPhp\Compiler;
 
 use App\Entity\Template;
 use App\Service\CacheService;
-use App\Service\LogService;
 
 class TemplateController extends AbstractController
 {
-    private $serializer;
-
-    public function __construct() {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $this->serializer = new Serializer($normalizers, $encoders);
-    }
-
     /**
     * @Route("/api/v1/template/list/", name="api_template_list"), methods={"GET","HEAD"})
     */
@@ -41,8 +28,6 @@ class TemplateController extends AbstractController
             'success' => true,
             'data' => $templates,
         );
-
-        $json = $this->serializer->serialize($json, 'json');
 
         return $this->json($json);
     }
@@ -74,37 +59,29 @@ class TemplateController extends AbstractController
             ];
         }
 
-        $json = $this->serializer->serialize($response, 'json');
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/template/update/{id}/", name="api_template_update", methods={"PUT"})
     */
-    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log, Filesystem $fileSystem)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, Filesystem $fileSystem)
     {
         ini_set('max_execution_time', 300);
 
-        $logMessage = '';
-        $logComment = 'Insert';
-
         if (!empty($id)) {
             $template = $this->getDoctrine()
-            ->getRepository(Template::class)
-            ->find($id);
+                ->getRepository(Template::class)
+                ->find($id);
+
             if (!$template) {
                 $response = [
                     'success' => false,
                     'message' => 'Cannot find template',
                 ];
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
 
             } else {
-                $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $this->serializer->serialize($template, 'json');
-                $logMessage .= '<br><br>';
-                $logComment = 'Update';
                 $message = 'Template has been updated';
 
             }
@@ -132,18 +109,12 @@ class TemplateController extends AbstractController
                     'success' => false,
                     'message' => $errors,
                 ];
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
             }
-
-            $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $this->serializer->serialize($template, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($template);
             $em->flush();
-
-            $log->add('Template', $id, $logMessage, $logComment);
 
             try {
                 $scss = new Compiler();
@@ -177,8 +148,7 @@ class TemplateController extends AbstractController
                     'message' => $e->getMessage()
                 );
 
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
             }
 
             // Create symlinks
@@ -215,7 +185,6 @@ class TemplateController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 }

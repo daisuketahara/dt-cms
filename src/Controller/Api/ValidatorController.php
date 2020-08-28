@@ -22,7 +22,6 @@ class ValidatorController extends AbstractController
         if ($result) $response = ['success' => true];
         else $response = ['success' => false];
 
-        $json = json_encode($response);
         return $this->json($json);
     }
 
@@ -36,7 +35,6 @@ class ValidatorController extends AbstractController
         if ($result) $response = ['success' => true];
         else $response = ['success' => false];
 
-        $json = json_encode($response);
         return $this->json($json);
     }
 
@@ -50,7 +48,6 @@ class ValidatorController extends AbstractController
         if ($result) $response = ['success' => true];
         else $response = ['success' => false];
 
-        $json = json_encode($response);
         return $this->json($json);
     }
 }

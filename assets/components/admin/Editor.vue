@@ -508,7 +508,7 @@
             getRoles: function() {
                 this.$axios.get('/api/v1/user/role/list/', {headers: this.headers})
                 .then(response => {
-                    this.roles = JSON.parse(response.data)['data'];
+                    this.roles = response.data.data;
                 })
                 .catch(e => {
                     this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
@@ -545,7 +545,7 @@
 
                 this.$axios.post(url, params, {headers: this.headers})
                 .then(response => {
-                    var result = JSON.parse(response.data);
+                    var result = response.data;
                     if (result.success) {
                         if (result['data'].constructor === {}.constructor) {
                             this.page = result['data'];
@@ -1175,7 +1175,7 @@
 
                     self.$axios.put(url, params, {headers: self.headers})
                         .then(response => {
-                            var result = JSON.parse(response.data);
+                            var result = response.data;
 
                             if (result.success) {
                                 self.page_id = parseInt(result['id']);

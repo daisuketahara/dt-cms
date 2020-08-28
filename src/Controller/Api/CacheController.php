@@ -56,7 +56,6 @@ class CacheController extends AbstractController
             'success' => true,
             'message' => $translator->trans('Cache has been cleared'),
         ];
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 }

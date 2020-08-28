@@ -7,24 +7,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 use App\Entity\FileGroup;
-use App\Service\LogService;
 
 class FileGroupController extends AbstractController
 {
-    private $serializer;
-
-    public function __construct() {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $this->serializer = new Serializer($normalizers, $encoders);
-    }
-
     /**
     * @Route("/api/v1/filegroup/info/", name="api_filegroup_info"), methods={"GET","HEAD"})
     */
@@ -103,8 +90,6 @@ class FileGroupController extends AbstractController
             'data' => $filegroups,
         );
 
-        $json = $this->serializer->serialize($json, 'json');
-
         return $this->json($json);
     }
 
@@ -135,36 +120,30 @@ class FileGroupController extends AbstractController
             ];
         }
 
-        $json = $this->serializer->serialize($response, 'json');
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/filegroup/insert/", name="api_filegroup_insert", methods={"PUT"})
     * @Route("/api/v1/filegroup/update/{id}/", name="api_filegroup_update", methods={"PUT"})
     */
-    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator)
     {
         $logMessage = '';
         $logComment = 'Insert';
 
         if (!empty($id)) {
             $filegroup = $this->getDoctrine()
-            ->getRepository(FileGroup::class)
-            ->find($id);
+                ->getRepository(FileGroup::class)
+                ->find($id);
             if (!$filegroup) {
                 $response = [
                     'success' => false,
                     'message' => 'Cannot find filegroup',
                 ];
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
 
             } else {
-                $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $this->serializer->serialize($filegroup, 'json');
-                $logMessage .= '<br><br>';
-                $logComment = 'Update';
                 $message = 'Filegroup has been updated';
 
             }
@@ -186,19 +165,13 @@ class FileGroupController extends AbstractController
                     'success' => false,
                     'message' => $errors,
                 ];
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
             }
-
-            $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $this->serializer->serialize($filegroup, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($filegroup);
             $em->flush();
             $id = $filegroup->getId();
-
-            $log->add('Filegroup', $id, $logMessage, $logComment);
 
             $response = [
                 'success' => true,
@@ -207,15 +180,14 @@ class FileGroupController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/filegroup/delete/", name="api_filegroup_delete", methods={"PUT"})
     * @Route("/api/v1/filegroup/delete/{id}/", name="api_filegroup_delete_multiple", methods={"DELETE"})
     */
-    final public function delete(int $id=0, LogService $log)
+    final public function delete(int $id=0)
     {
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
@@ -228,11 +200,6 @@ class FileGroupController extends AbstractController
                 $filegroup = $em->getRepository(FileGroup::class)->find($filegroupId);
 
                 if ($filegroup) {
-                    $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $this->serializer->serialize($filegroup, 'json');
-
-                    $log->add('Filegroup', $id, $logMessage, 'Delete');
-
                     $em->remove($filegroup);
                     $em->flush();
                 }
@@ -247,7 +214,6 @@ class FileGroupController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 }

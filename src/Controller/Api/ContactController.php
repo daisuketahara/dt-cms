@@ -45,8 +45,8 @@ class ContactController extends AbstractController
         if (!empty($params['locale'])) {
             $localeTag = $params['locale'];
             $locale = $this->getDoctrine()
-            ->getRepository(Locale::class)
-            ->findOneBy(['locale' => $localeTag]);
+                ->getRepository(Locale::class)
+                ->findOneBy(['locale' => $localeTag]);
         }
 
         if (!$locale) $locale = $this->getDoctrine()->getRepository(Locale::class)->getDefaultLocale();
@@ -59,8 +59,7 @@ class ContactController extends AbstractController
                 'success' => false,
                 'message' => $errors,
             ];
-            $json = json_encode($response);
-            return $this->json($json);
+            return $this->json($response);
         }
 
         $em = $this->getDoctrine()->getManager();
@@ -92,7 +91,6 @@ class ContactController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 }

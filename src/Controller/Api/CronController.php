@@ -7,25 +7,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Yaml\Yaml;
 
 use App\Entity\Cron;
-use App\Service\LogService;
 
 class CronController extends AbstractController
 {
-    private $serializer;
-
-    public function __construct() {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $this->serializer = new Serializer($normalizers, $encoders);
-    }
-
     /**
     * @Route("/api/v1/cron/info/", name="api_cron_info"), methods={"GET","HEAD"})
     */
@@ -95,8 +82,6 @@ class CronController extends AbstractController
             'data' => $crons,
         );
 
-        $json = $this->serializer->serialize($json, 'json');
-
         return $this->json($json);
     }
 
@@ -127,19 +112,15 @@ class CronController extends AbstractController
             ];
         }
 
-        $json = $this->serializer->serialize($response, 'json');
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/cron/insert/", name="api_cron_insert", methods={"PUT"})
     * @Route("/api/v1/cron/update/{id}/", name="api_cron_update", methods={"PUT"})
     */
-    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator)
     {
-        $logMessage = '';
-        $logComment = 'Insert';
-
         if (!empty($id)) {
             $cron = $this->getDoctrine()
             ->getRepository(Cron::class)
@@ -149,14 +130,9 @@ class CronController extends AbstractController
                     'success' => false,
                     'message' => 'Cannot find cron',
                 ];
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
 
             } else {
-                $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $this->serializer->serialize($cron, 'json');
-                $logMessage .= '<br><br>';
-                $logComment = 'Update';
                 $message = 'Cron has been updated';
 
             }
@@ -199,19 +175,13 @@ class CronController extends AbstractController
                     'success' => false,
                     'message' => $errors,
                 ];
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
             }
-
-            $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $this->serializer->serialize($cron, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($cron);
             $em->flush();
             $id = $cron->getId();
-
-            $log->add('Cron', $id, $logMessage, $logComment);
 
             $response = [
                 'success' => true,
@@ -220,15 +190,14 @@ class CronController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/cron/delete/", name="api_cron_delete", methods={"PUT"})
     * @Route("/api/v1/cron/delete/{id}/", name="api_cron_delete_multiple", methods={"DELETE"})
     */
-    final public function delete(int $id=0, LogService $log)
+    final public function delete(int $id=0)
     {
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
@@ -241,11 +210,6 @@ class CronController extends AbstractController
                 $cron = $em->getRepository(Cron::class)->find($cronId);
 
                 if ($cron) {
-                    $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $this->serializer->serialize($cron, 'json');
-
-                    $log->add('Cron', $id, $logMessage, 'Delete');
-
                     $em->remove($cron);
                     $em->flush();
                 }
@@ -260,7 +224,6 @@ class CronController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 }

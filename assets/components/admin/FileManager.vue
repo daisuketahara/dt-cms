@@ -91,7 +91,7 @@
 
                 this.$axios.get('/api/v1/filegroup/list/', {headers: this.headers})
                     .then(response => {
-                        this.filegroups = JSON.parse(response.data)['data'];
+                        this.filegroups = response.data.data;
                     })
                     .catch(e => {
                         this.$store.commit('setAlert', {type: 'error', message: e, autohide: true});
@@ -101,7 +101,7 @@
 
                 this.$axios.get('/api/v1/file/list/', {headers: this.headers})
                     .then(response => {
-                        this.files = JSON.parse(response.data)['data'];
+                        this.files = response.data.data;
                         this.loaded = true;
                     })
                     .catch(e => {

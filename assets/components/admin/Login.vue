@@ -149,7 +149,7 @@
 
                 this.$axios.get('/api/v1/locale/list/')
                     .then(response => {
-                        var locales = JSON.parse(response.data)['data'];
+                        var locales = response.data.data;
                         this.$store.commit('setLocales', locales);
                         for (var i = 0; i < locales.length; i++) {
                             if (this.$store.state.locale == locales[i]['locale']) this.$store.commit('setLocaleId', locales[i]['id']);
@@ -164,7 +164,7 @@
             getTranslations: function(locale) {
                 this.$axios.get('/api/v1/translation/locale/'+locale+'/')
                     .then(response => {
-                        var translations = JSON.parse(response.data)['data'];
+                        var translations = response.data.data;
                         this.$store.commit('setTranslations', translations);
                         this.$parent.getRoutes();
                     })

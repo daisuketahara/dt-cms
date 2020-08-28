@@ -7,26 +7,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Yaml\Yaml;
 
 use App\Entity\Setting;
-use App\Service\LogService;
 use App\Service\CacheService;
 
 class SettingController extends AbstractController
 {
-    private $serializer;
-
-    public function __construct() {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $this->serializer = new Serializer($normalizers, $encoders);
-    }
-
     /**
     * @Route("/api/v1/setting/info/", name="api_setting_info"), methods={"GET","HEAD"})
     */
@@ -96,8 +83,6 @@ class SettingController extends AbstractController
             'data' => $settings,
         );
 
-        $json = $this->serializer->serialize($json, 'json');
-
         return $this->json($json);
     }
 
@@ -108,8 +93,9 @@ class SettingController extends AbstractController
     {
         if (!empty($id)) {
             $setting = $this->getDoctrine()
-            ->getRepository(Setting::class)
-            ->find($id);
+                ->getRepository(Setting::class)
+                ->find($id);
+
             if ($setting) {
                 $response = [
                     'success' => true,
@@ -128,36 +114,28 @@ class SettingController extends AbstractController
             ];
         }
 
-        $json = $this->serializer->serialize($response, 'json');
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/setting/insert/", name="api_setting_insert", methods={"PUT"})
     * @Route("/api/v1/setting/update/{id}/", name="api_setting_update", methods={"PUT"})
     */
-    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator)
     {
-        $logMessage = '';
-        $logComment = 'Insert';
-
         if (!empty($id)) {
             $setting = $this->getDoctrine()
-            ->getRepository(Setting::class)
-            ->find($id);
+                ->getRepository(Setting::class)
+                ->find($id);
+
             if (!$setting) {
                 $response = [
                     'success' => false,
                     'message' => 'Cannot find setting',
                 ];
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
 
             } else {
-                $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $this->serializer->serialize($setting, 'json');
-                $logMessage .= '<br><br>';
-                $logComment = 'Update';
                 $message = 'Setting has been updated';
 
             }
@@ -182,19 +160,13 @@ class SettingController extends AbstractController
                     'success' => false,
                     'message' => $errors,
                 ];
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
             }
-
-            $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $this->serializer->serialize($setting, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($setting);
             $em->flush();
             $id = $setting->getId();
-
-            $log->add('Setting', $id, $logMessage, $logComment);
 
             $cache = new CacheService();
             $cache->delete('setting.'.$setting->getSettingKey());
@@ -206,15 +178,14 @@ class SettingController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/setting/delete/", name="api_setting_delete", methods={"PUT"})
     * @Route("/api/v1/setting/delete/{id}/", name="api_setting_delete_multiple", methods={"DELETE"})
     */
-    final public function delete(int $id=0, LogService $log)
+    final public function delete(int $id=0)
     {
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
@@ -227,11 +198,6 @@ class SettingController extends AbstractController
                 $setting = $em->getRepository(Setting::class)->find($settingId);
 
                 if ($setting) {
-                    $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $this->serializer->serialize($setting, 'json');
-
-                    $log->add('Setting', $id, $logMessage, 'Delete');
-
                     $em->remove($setting);
                     $em->flush();
                 }
@@ -249,7 +215,6 @@ class SettingController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 }

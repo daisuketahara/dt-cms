@@ -203,7 +203,7 @@
             getTemplates() {
                 this.$axios.get('/api/v1/template/list/', {headers: this.headers})
                     .then(response => {
-                        this.templates = JSON.parse(response.data)['data'];
+                        this.templates = response.data.data;
                         this.view = 'list';
                     })
                     .catch(e => {
@@ -214,7 +214,7 @@
                 var id = event.target.dataset.id;
                 this.$axios.get('/api/v1/template/get/'+id+'/', {headers: this.headers})
                     .then(response => {
-                        this.template = JSON.parse(response.data)['data'];
+                        this.template = response.data.data;
                         if (this.template.settings == '')  this.template.settings = {};
                         this.view = 'template';
                     })
@@ -226,7 +226,7 @@
                 var id = event.target.dataset.id;
                 this.$axios.put('/api/v1/template/update/'+this.template.id+'/', this.template, {headers: this.headers})
                     .then(response => {
-                        var result = JSON.parse(response.data);
+                        var result = response.data;
                         if (result.success) this.$store.commit('setAlert', {type: 'success', message: translations[result.message] || result.message, autohide: true});
                         else this.$store.commit('setAlert', {type: 'error', message: translations[result.message] || result.message, autohide: true});
                     })

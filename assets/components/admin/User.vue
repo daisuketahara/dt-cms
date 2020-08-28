@@ -261,7 +261,7 @@
             getUser: function() {
                 this.$axios.get('/api/v1/user/get/' + this.$attrs.id + '/', {headers: this.headers})
                 .then(response => {
-                    this.user = JSON.parse(response.data)['data'];
+                    this.user = response.data.data;
 
                     if (
                         (this.user.information.billingAddress1 !== '' && this.user.information.address1 != this.user.information.billingAddress1) ||
@@ -305,7 +305,7 @@
 
                     this.$axios.put(url, this.user, {headers: this.headers})
                         .then(response => {
-                            var result = JSON.parse(response.data);
+                            var result = response.data;
                             if (result.success) {
                                 this.$store.commit('setAlert', {type: 'success', message: translations.saved || "Saved", autohide: true});
                             } else {
@@ -320,7 +320,7 @@
             getRoles: function() {
                 this.$axios.get('/api/v1/user/role/list/', {headers: this.headers})
                 .then(response => {
-                    this.roles = JSON.parse(response.data)['data'];
+                    this.roles = response.data.data;
                     this.getPermissions();
                 })
                 .catch(e => {
@@ -330,7 +330,7 @@
             getPermissions: function () {
                 this.$axios.get('/api/v1/permission/fields/', {headers: this.headers})
                 .then(response => {
-                    this.permissions = JSON.parse(response.data)['data'];
+                    this.permissions = response.data.data;
 
                     if (this.$attrs.id != undefined) this.getUser();
                     else this.loaded = true;

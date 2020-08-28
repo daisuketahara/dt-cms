@@ -8,10 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Yaml\Yaml;
 
 use Leafo\ScssPhp\Compiler;
@@ -29,19 +25,10 @@ use App\Entity\PermissionGroup;
 use App\Entity\Setting;
 use App\Entity\Role;
 use App\Entity\RolePermission;
-use App\Service\LogService;
 use App\Service\RedirectService;
 
 class PageController extends AbstractController
 {
-    private $serializer;
-
-    public function __construct() {
-        $encoders = array(new XmlEncoder(), new JsonEncoder());
-        $normalizers = array(new ObjectNormalizer());
-        $this->serializer = new Serializer($normalizers, $encoders);
-    }
-
     /**
     * @Route("/api/v1/page/info/", name="api_page_info"), methods={"GET","HEAD"})
     */
@@ -116,8 +103,6 @@ class PageController extends AbstractController
             'data' => $pages,
         );
 
-        $json = $this->serializer->serialize($json, 'json');
-
         return $this->json($json);
     }
 
@@ -137,13 +122,13 @@ class PageController extends AbstractController
         if (!empty($id)) {
 
             $page = $this->getDoctrine()
-            ->getRepository(PageContent::class)
-            ->find($id);
+                ->getRepository(PageContent::class)
+                ->find($id);
 
             if (!empty($localeId) && $localeId != $page->getLocale()->getId()) {
                 $otherPage = $this->getDoctrine()
-                ->getRepository(PageContent::class)
-                ->findOneBy(['locale' => $locale, 'page' => $page->getPage()]);
+                    ->getRepository(PageContent::class)
+                    ->findOneBy(['locale' => $locale, 'page' => $page->getPage()]);
                 if ($otherPage) $page = $otherPage;
                 else $page = true;
             }
@@ -186,44 +171,40 @@ class PageController extends AbstractController
             ];
         }
 
-        $json = $this->serializer->serialize($response, 'json');
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
     * @Route("/api/v1/page/insert/", name="api_page_insert", methods={"PUT"})
     * @Route("/api/v1/page/update/{id}/", name="api_page_update", methods={"PUT"})
     */
-    final public function edit(int $id=0, Request $request, TranslatorInterface $translator, LogService $log)
+    final public function edit(int $id=0, Request $request, TranslatorInterface $translator)
     {
-        $logMessage = '';
-        $logComment = 'Insert';
-
         $params = json_decode(file_get_contents("php://input"),true);
 
         if (!empty($params['locale'])) {
             $localeId = $params['locale'];
             $locale = $this->getDoctrine()
-            ->getRepository(Locale::class)
-            ->find($localeId);
+                ->getRepository(Locale::class)
+                ->find($localeId);
         }
 
         if (empty($locale)) {
             $locale = $this->getDoctrine()
-            ->getRepository(Locale::class)
-            ->getDefaultLocale();
+                ->getRepository(Locale::class)
+                ->getDefaultLocale();
         }
 
         if (!empty($id)) {
 
             $page = $this->getDoctrine()
-            ->getRepository(PageContent::class)
-            ->find($id);
+                ->getRepository(PageContent::class)
+                ->find($id);
 
             if (!empty($page) && !empty($localeId) && $localeId != $page->getLocale()->getId()) {
                 $otherPage = $this->getDoctrine()
-                ->getRepository(PageContent::class)
-                ->findOneBy(['locale' => $locale, 'page' => $page->getPage()]);
+                    ->getRepository(PageContent::class)
+                    ->findOneBy(['locale' => $locale, 'page' => $page->getPage()]);
                 if (!$otherPage) {
                     $otherPage = new PageContent();
                     $otherPage->setPage($page->getPage());
@@ -237,15 +218,9 @@ class PageController extends AbstractController
                     'success' => false,
                     'message' => 'Cannot find page',
                 ];
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
 
             } else {
-
-                $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $this->serializer->serialize($page, 'json');
-                $logMessage .= '<br><br>';
-                $logComment = 'Update';
                 $message = 'Page has been updated';
 
             }
@@ -262,8 +237,8 @@ class PageController extends AbstractController
 
                 if (empty($locale)) {
                     $locale= $this->getDoctrine()
-                    ->getRepository(Locale::class)
-                    ->getDefaultLocale();
+                        ->getRepository(Locale::class)
+                        ->getDefaultLocale();
                 }
                 $page->setLocale($locale);
             }
@@ -298,12 +273,8 @@ class PageController extends AbstractController
                     'success' => false,
                     'message' => $errors,
                 ];
-                $json = json_encode($response);
-                return $this->json($json);
+                return $this->json($response);
             }
-
-            $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $this->serializer->serialize($page, 'json');
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($page);
@@ -312,8 +283,8 @@ class PageController extends AbstractController
 
             // Get permission group
             $permissionGroup = $this->getDoctrine()
-                ->getRepository(PermissionGroup::class)
-                ->findOneBy(array('name' => 'Pages'));
+                    ->getRepository(PermissionGroup::class)
+                    ->findOneBy(array('name' => 'Pages'));
 
             // Create permission group for pages if not exists
             if (!$permissionGroup) {
@@ -363,8 +334,6 @@ class PageController extends AbstractController
             }
             $em->flush();
 
-            $log->add('Page', $id, $logMessage, $logComment);
-
             $response = [
                 'success' => true,
                 'id' => $id,
@@ -372,28 +341,25 @@ class PageController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 
-    final public function edit2(int $id=0, Request $request, TranslatorInterface $translator, LogService $log, KernelInterface $kernel)
+    final public function edit2(int $id=0, Request $request, TranslatorInterface $translator, KernelInterface $kernel)
     {
-        $logMessage = '';
-        $logComment = 'Insert';
         $urlLocale = '';
 
         if (empty($localeId)) {
             $localeSlug = $this->container->getParameter('kernel.default_locale');
             $locale = $this->getDoctrine()
-            ->getRepository(Locale::class)
-            ->findOneBy(array('locale' => $localeSlug));
+                ->getRepository(Locale::class)
+                ->findOneBy(array('locale' => $localeSlug));
             if ($locale) $localeId = $locale->getId();
         }
 
         if (empty($locale)) {
             $locale = $this->getDoctrine()
-            ->getRepository(Locale::class)
-            ->find($localeId);
+                ->getRepository(Locale::class)
+                ->find($localeId);
         }
 
         if (empty($locale->getDefault())) $urlLocale = $locale->getLocale() . '/';
@@ -403,8 +369,8 @@ class PageController extends AbstractController
             if (!$locale->getDefault()) {
 
                 $page = $this->getDoctrine()
-                ->getRepository(Page::class)
-                ->findOneBy(array('defaultId' => $id, 'locale' => $localeId));
+                    ->getRepository(Page::class)
+                    ->findOneBy(array('defaultId' => $id, 'locale' => $localeId));
 
                 if (!$page) $page = new Page();
 
@@ -413,8 +379,8 @@ class PageController extends AbstractController
             } else {
 
                 $page = $this->getDoctrine()
-                ->getRepository(Page::class)
-                ->find($id);
+                    ->getRepository(Page::class)
+                    ->find($id);
 
                 if (!$page) {
                     $page = new Page();
@@ -425,13 +391,6 @@ class PageController extends AbstractController
                 }
             }
 
-            if ($page) {
-                $logMessage .= '<i>Old data:</i><br>';
-                $logMessage .= $this->serializer->serialize($page, 'json');
-                $logMessage .= '<br><br>';
-                $logComment = 'Update';
-            }
-
         } else {
             $page = new Page();
         }
@@ -440,8 +399,8 @@ class PageController extends AbstractController
 
         // Get anonymous role
         $role = $this->getDoctrine()
-        ->getRepository(Role::class)
-        ->findBy(array('name' => 'Anonymous'));
+            ->getRepository(Role::class)
+            ->findBy(array('name' => 'Anonymous'));
 
         // Create anonymous role
         if (!$role) {
@@ -463,8 +422,9 @@ class PageController extends AbstractController
 
                 $localeSlugDefault = $this->container->getParameter('kernel.default_locale');
                 $localeDefault = $this->getDoctrine()
-                ->getRepository(Locale::class)
-                ->findOneBy(array('locale' => $localeSlugDefault));
+                    ->getRepository(Locale::class)
+                    ->findOneBy(array('locale' => $localeSlugDefault));
+
                 $pageDefault = new Page();
                 $pageDefault->setLocale($localeDefault);
                 $pageDefault->setPageTitle($request->request->get('page-title', ''));
@@ -520,20 +480,15 @@ class PageController extends AbstractController
             $page->setCustomJs($request->request->get('custom-js', ''));
             $page->setLastModified(new \DateTime());
 
-            $logMessage .= '<i>New data:</i><br>';
-            $logMessage .= $this->serializer->serialize($page, 'json');
-
             $em = $this->getDoctrine()->getManager();
             $em->persist($page);
             $em->flush();
             if (empty($id)) $id = $page->getId();
 
-            $log->add('Page', $page->getId(), $logMessage, $logComment);
-
             // Get permission group
             $permissionGroup = $this->getDoctrine()
-            ->getRepository(PermissionGroup::class)
-            ->findOneBy(array('name' => 'Pages'));
+                ->getRepository(PermissionGroup::class)
+                ->findOneBy(array('name' => 'Pages'));
 
             // Create permission group
             if (!$permissionGroup) {
@@ -546,8 +501,8 @@ class PageController extends AbstractController
 
             // Check permission
             $permission = $this->getDoctrine()
-            ->getRepository(Permission::class)
-            ->findOneBy(array('page' => $page));
+                ->getRepository(Permission::class)
+                ->findOneBy(array('page' => $page));
 
             // Create permission group
             if (!$permission) $permission = new Permission();
@@ -562,8 +517,8 @@ class PageController extends AbstractController
 
             $formRoles = $request->request->get('form_role', '');
             $roles = $this->getDoctrine()
-            ->getRepository(Role::class)
-            ->findAll();
+                ->getRepository(Role::class)
+                ->findAll();
 
             foreach($roles as $role) {
 
@@ -600,21 +555,21 @@ class PageController extends AbstractController
 
 
         $permission = $this->getDoctrine()
-        ->getRepository(Permission::class)
-        ->findOneBy(array('page' => $page));
+            ->getRepository(Permission::class)
+            ->findOneBy(array('page' => $page));
 
         $roles = $this->getDoctrine()
-        ->getRepository(Role::class)
-        ->findAll();
+            ->getRepository(Role::class)
+            ->findAll();
 
         $locales = $this->getDoctrine()
-        ->getRepository(Locale::class)
-        ->findAll();
+            ->getRepository(Locale::class)
+            ->findAll();
 
         if ($permission) {
             $setRoles = $this->getDoctrine()
-            ->getRepository(Role::class)
-            ->findByRolesByPermissionId($permission->getId());
+                ->getRepository(Role::class)
+                ->findByRolesByPermissionId($permission->getId());
         } else {
             $setRoles = array();
         }
@@ -655,7 +610,7 @@ class PageController extends AbstractController
     * @Route("/api/v1/page/delete/", name="api_page_delete", methods={"PUT"})
     * @Route("/api/v1/page/delete/{id}/", name="api_page_delete_multiple", methods={"DELETE"})
     */
-    final public function delete(int $id=0, LogService $log)
+    final public function delete(int $id=0)
     {
         $params = json_decode(file_get_contents("php://input"),true);
         if (!empty($params['ids'])) $toRemove = $params['ids'];
@@ -668,11 +623,6 @@ class PageController extends AbstractController
                 $page = $em->getRepository(PageContent::class)->find($pageId);
 
                 if ($page) {
-                    $logMessage = '<i>Data:</i><br>';
-                    $logMessage .= $this->serializer->serialize($page, 'json');
-
-                    $log->add('Page', $id, $logMessage, 'Delete');
-
                     $page = $page->getPage();
 
                     $em->remove($page);
@@ -689,8 +639,7 @@ class PageController extends AbstractController
             ];
         }
 
-        $json = json_encode($response);
-        return $this->json($json);
+        return $this->json($response);
     }
 
     /**
@@ -705,8 +654,8 @@ class PageController extends AbstractController
         if (!empty($id)) {
 
             $page = $this->getDoctrine()
-            ->getRepository(PageContent::class)
-            ->findOneBy(['page' => $id, 'locale' => $locale]);
+                ->getRepository(PageContent::class)
+                ->findOneBy(['page' => $id, 'locale' => $locale]);
 
             if ($page) {
                 $response = [
@@ -726,7 +675,6 @@ class PageController extends AbstractController
             ];
         }
 
-        $json = $this->serializer->serialize($response, 'json');
-        return $this->json($json);
+        return $this->json($response);
     }
 }

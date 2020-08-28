@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 use App\Entity\MailQueue;
-use App\Service\LogService;
 use App\Service\SettingService;
 
 

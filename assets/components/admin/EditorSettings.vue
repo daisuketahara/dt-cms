@@ -425,7 +425,7 @@
             showAvailableRoutes: function() {
                 this.$axios.get('/api/v1/navigation/routes/', {headers: this.headers})
                     .then(response => {
-                        var result = JSON.parse(response.data);
+                        var result = response.data;
                         this.available_pages = result.pages;
                         this.available_app = result.app;
                         this.available_admin = result.admin;
