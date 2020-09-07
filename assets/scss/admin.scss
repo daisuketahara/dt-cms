@@ -119,22 +119,22 @@ body.darkmode .v-main {
     z-index: 5;
 }
 
-.im-user-profile-picture {
+.dt-user-profile-picture {
     width: 100%;
     height: 30px;
     margin: 0 auto;
     background-color: rgba(10,10,10,0.45);
     background-position: center center;
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: contain;
 }
 @media screen and (min-width: 992px) {
-    .im-user-profile-picture {
+    .dt-user-profile-picture {
         width: 100%;
         height: 200px;
     }
 }
-.im-user-profile-name {
+.dt-user-profile-name {
     letter-spacing: 0.1rem;
     text-transform: uppercase;
 }

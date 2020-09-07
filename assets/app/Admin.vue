@@ -7,8 +7,8 @@
         <login v-else-if="!authenticated"></login>
         <v-navigation-drawer v-if="initialised && authenticated" permanent color="transparent" :dark="darkmode" app>
             <div class="text-center mb-3">
-                <div class="im-user-profile-picture mb-3"></div>
-                <div class="im-user-profile-name mb-3"></div>
+                <div class="dt-user-profile-picture mb-3"></div>
+                <div class="dt-user-profile-name mb-3"></div>
             </div>
             <v-list dense nav>
                 <template v-for="route in menu">
