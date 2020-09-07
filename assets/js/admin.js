@@ -97,10 +97,10 @@ new Vue({
             this.$axios.get('/api/v1/admin-routes/', { headers: {"X-AUTH-TOKEN" : this.$cookies.get('admintoken')} })
                 .then(response => {
 
-                    var menu = JSON.parse(response.data)['menu'];
+                    var menu = response.data.menu;
                     this.$store.commit('setMenu', menu);
 
-                    var permissions = JSON.parse(response.data)['permissions'];
+                    var permissions = response.data.permissions;
                     this.$store.commit('setPermissions', permissions);
 
                     for (var i = 0; i < permissions.length; i++) {
