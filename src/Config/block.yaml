@@ -62,7 +62,7 @@ fields:
         editable: true
         list: true
         form: true
-        translate: true
+        translate: false
     description:
         id: description
         label: description
@@ -71,7 +71,7 @@ fields:
         editable: true
         list: true
         form: true
-        translate: true
+        translate: false
     content:
         id: content
         label: content
@@ -80,4 +80,4 @@ fields:
         editable: true
         list: false
         form: true
-        translate: true
+        translate: false

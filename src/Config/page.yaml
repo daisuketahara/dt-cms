@@ -57,7 +57,7 @@ fields:
         editable: true
         list: true
         form: true
-        translate: true
+        translate: false
     publishDate:
         object: page
         id: publishDate
@@ -67,7 +67,7 @@ fields:
         editable: true
         list: false
         form: true
-        translate: true
+        translate: false
     content:
         object: page
         id: status
@@ -77,4 +77,4 @@ fields:
         editable: true
         list: true
         form: true
-        translate: true
+        translate: false
