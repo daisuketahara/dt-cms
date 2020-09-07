@@ -74,7 +74,7 @@
 
                 this.$axios.post('/api/v1/module/activate/'+id+'/', {headers: this.headers})
                     .then(response => {
-                        let result = JSON.parse(response.data).data;
+                        let result = response.data.data;
                         this.getModules();
                     })
                     .catch(e => {
