@@ -9,6 +9,7 @@
         "bassjobsen/bootstrap-3-typeahead": "^4.0",
         "bordercloud/tether": "^1.1",
         "dragonmantank/cron-expression": "^2.0",
+        "knplabs/doctrine-behaviors": "^2.0",
         "leafo/scssphp": "^0.7.7",
         "mollie/mollie-api-php": "^2.0",
         "nnnick/chartjs": "^2.7",
