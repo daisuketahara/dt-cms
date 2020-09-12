@@ -92,7 +92,7 @@ body {
     min-height: 100vh;
     position: relative;
     z-index: 11;
-    background: rgba(255,255,255,0.75);
+    background: rgba(255,255,255,1);
     -webkit-border-radius: 0.1rem;
     -moz-border-radius: 0.1rem;
     border-radius: 0.2rem;
@@ -206,5 +206,9 @@ footer {
 }
 
 button > * {
-  pointer-events: none;
+    pointer-events: none;
+}
+
+.ck-content {
+    color: black;
 }
