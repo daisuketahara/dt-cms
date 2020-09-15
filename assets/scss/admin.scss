@@ -212,3 +212,31 @@ button > * {
 .ck-content {
     color: black;
 }
+
+.form-locale-selector {
+
+    .v-input__slot {
+        min-height: 24px !important;
+    }
+
+    .v-select__selection {
+        font-size: 12px;
+        line-height: 14px;
+    }
+
+    .v-select__selections {
+        padding: 0 !important;
+    }
+
+    .v-input__append-inner {
+        margin-top: 8px !important;
+    }
+
+    .v-text-field__details {
+        display: none !important;
+    }
+
+    input {
+        display: none;
+    }
+}

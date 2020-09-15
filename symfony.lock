@@ -404,6 +404,9 @@
     "symfony/serializer": {
         "version": "v4.0.4"
     },
+    "symfony/serializer-pack": {
+        "version": "v1.0.3"
+    },
     "symfony/service-contracts": {
         "version": "v1.1.5"
     },
