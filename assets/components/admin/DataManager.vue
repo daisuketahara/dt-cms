@@ -15,9 +15,9 @@
                 </v-col>
             </v-row>
         </v-container>
-        <v-container v-else v-bind:class="{ 'pl-0': !tablemode, }" fluid key="datamanager">
+        <v-container v-else v-bind:class="{ 'pl-0': !tablemode, 'py-0': !tablemode, }" fluid key="datamanager">
             <v-row>
-                <v-col v-bind:class="{ 'col-6': !tablemode && mode === 'list', 'col-lg-5': !tablemode && mode === 'list', 'col-12': tablemode && mode === 'list', 'd-none': tablemode && mode !== 'list' }">
+                <v-col v-bind:class="{ 'col-6': !tablemode && mode === 'list', 'col-lg-5': !tablemode && mode === 'list', 'col-12': tablemode && mode === 'list', 'd-none': tablemode && mode !== 'list', 'py-0': !tablemode  }">
                     <div v-if="tablemode">
                         <div v-if="mode === 'list'"class="table-responsive">
                             <div class="mb-3">
