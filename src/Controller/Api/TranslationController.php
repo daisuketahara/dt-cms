@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Component\Yaml\Yaml;
 
 use App\Entity\Translation;
-use App\Entity\TranslationText;
+use App\Entity\TranslationTranslation;
 use App\Entity\Locale;
 
 class TranslationController extends AbstractController
@@ -47,7 +47,7 @@ class TranslationController extends AbstractController
 
         $locales = $this->getDoctrine()
             ->getRepository(Locale::class)
-            ->findActiveLocales();
+            ->findAll();
 
         if ($locales)
         foreach($locales as $locale) {
@@ -60,6 +60,7 @@ class TranslationController extends AbstractController
                 'editable' => true,
                 'list' => false,
                 'form' => true,
+                'translate' => false,
             ];
         }
 
@@ -118,13 +119,14 @@ class TranslationController extends AbstractController
     {
         if (!empty($id)) {
             $translation = $this->getDoctrine()
-            ->getRepository(Translation::class)
-            ->find($id);
+                ->getRepository(Translation::class)
+                ->find($id);
+
             if ($translation) {
 
                 $locales = $this->getDoctrine()
-                ->getRepository(Locale::class)
-                ->findActiveLocales();
+                    ->getRepository(Locale::class)
+                    ->findAll();
 
                 $data = array(
                     'id' => $id,
@@ -133,14 +135,8 @@ class TranslationController extends AbstractController
                 );
 
                 foreach($locales as $locale) {
-
                     $fieldId = 'translation_' . $locale->getLocale();
-
-                    $fieldTranslation = $this->getDoctrine()
-                        ->getRepository(TranslationText::class)
-                        ->findOneBy(['translation' => $translation, 'locale' => $locale]);
-
-                    if ($fieldTranslation && !empty($fieldTranslation->getText())) $data[$fieldId] = $fieldTranslation->getText();
+                    $data[$fieldId] = $translation->translate($locale->getLocale())->getTranslation();
                 }
 
                 $response = [
@@ -213,26 +209,20 @@ class TranslationController extends AbstractController
 
             $locales = $this->getDoctrine()
                 ->getRepository(Locale::class)
-                ->findActiveLocales();
+                ->findAll();
 
             foreach($locales as $locale) {
 
-                if (isset($params['translation_' . $locale->getLocale()])) $data['translation_' . $locale->getLocale()] = $params['translation_' . $locale->getLocale()];
+                if (isset($params['translation_' . $locale->getLocale()])) $text = $params['translation_' . $locale->getLocale()];
+                else $text = '';
 
-                $translationText = $this->getDoctrine()
-                    ->getRepository(TranslationText::class)
-                    ->findOneBy(['translation'=> $translation, 'locale' => $locale]);
-
-                if (!$translationText) $translationText = new TranslationText();
-
-                $translationText->setTranslation($translation);
-                $translationText->setLocale($locale);
-                $translationText->setText($data['translation_' . $locale->getLocale()]);
-
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($translationText);
-                $em->flush();
+                $translation->translate($locale->getLocale())->setTranslation($text);
             }
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($translation);
+            $translation->mergeNewTranslations();
+            $em->flush();
 
             $response = [
                 'success' => true,
@@ -263,16 +253,6 @@ class TranslationController extends AbstractController
 
                     $em->remove($translation);
                     $em->flush();
-
-                    $relatedTranslations = $em->getRepository(Translation::class)->findBy(['parentId' => $translationId]);
-
-                    if ($relatedTranslations) {
-                        foreach($relatedTranslations as $relatedTranslation) {
-                            $em->remove($relatedTranslation);
-                            $em->flush();
-                        }
-                    }
-
                     $response = ['success' => true];
 
                 } else {
@@ -319,7 +299,7 @@ class TranslationController extends AbstractController
                 ->findTranslationsByLocaleId($locale->getId());
 
             foreach($translations as $translation) {
-                if (!empty($translation['text'])) $fs->appendToFile($file, "'" . htmlentities($translation['original']) . "': '" . htmlentities($translation['text']) . "'" . PHP_EOL);
+                if (!empty($translation['translation'])) $fs->appendToFile($file, "'" . htmlentities($translation['original']) . "': '" . htmlentities($translation['translation']) . "'" . PHP_EOL);
             }
 
         }
@@ -417,37 +397,26 @@ class TranslationController extends AbstractController
     */
     final public function getTranslationsByLocale(string $locale)
     {
-        $locale = $this->getDoctrine()
-            ->getRepository(Locale::class)
+        $translations = $this->getDoctrine()
+            ->getRepository(TranslationTranslation::class)
             ->findBy(['locale' => $locale]);
 
-        if ($locale) {
-            $translations = $this->getDoctrine()
-                ->getRepository(TranslationText::class)
-                ->findBy(['locale' => $locale]);
+        if ($translations) {
 
-            if ($translations) {
-
-                $data = array();
-                foreach($translations as $translation) {
-                    if (!empty($translation->getText())) $data[$translation->getTranslation()->getTag()] = $translation->getText();
-                    else $data[$translation->getTranslation()->getTag()] = $translation->getTranslation()->getOriginal();
-                }
-
-                $json = array(
-                    'success' => true,
-                    'data' => $data,
-                );
-            } else {
-                $json = array(
-                    'success' => false,
-                    'message' => 'Cannot find translations',
-                );
+            $data = array();
+            foreach($translations as $translation) {
+                if (!empty($translation->getTranslation())) $data[$translation->getTranslatable()->getTag()] = $translation->getTranslation();
+                else $data[$translation->getTranslatable()->getTag()] = $translation->getTranslatable()->getOriginal();
             }
+
+            $json = array(
+                'success' => true,
+                'data' => $data,
+            );
         } else {
             $json = array(
                 'success' => false,
-                'message' => 'Locale cannot be found',
+                'message' => 'Cannot find translations',
             );
         }
 

@@ -18,7 +18,7 @@ class TranslationRepository extends ServiceEntityRepository
     public function findTranslationsList(string $where='', array $order=[], int $limit=0, int $offset=0)
     {
         $sql = "SELECT t.id, t.tag, t.original, ";
-        $sql .= "CONCAT(CAST(ROUND(((SELECT COUNT(*) FROM translation_text AS t2 WHERE t2.text <> '' AND t2.text IS NOT NULL AND t2.translation_id=t.id)/(SELECT COUNT(*) FROM locale AS l WHERE l.active=1))*100) AS CHAR(3)),'%') AS complete ";
+        $sql .= "CONCAT(CAST(ROUND(((SELECT COUNT(*) FROM translation_translation AS t2 WHERE t2.translation <> '' AND t2.translation IS NOT NULL AND t2.translatable_id=t.id)/(SELECT COUNT(*) FROM locale AS l WHERE l.active=1))*100) AS CHAR(3)),'%') AS complete ";
         $sql .= "FROM translation AS t ";
         $sql .= "WHERE 1=1";
 
@@ -53,9 +53,11 @@ class TranslationRepository extends ServiceEntityRepository
     public function findTranslationsByLocaleId(int $localeId)
     {
         $sql = "SELECT t.tag, t.original, ";
-        $sql .= "CASE WHEN tt.text IS NOT NULL THEN tt.text ELSE t.original END AS text ";
+        $sql .= "CASE WHEN tt.translation IS NOT NULL THEN tt.translation ELSE t.original END AS text ";
         $sql .= "FROM translation AS t ";
-        $sql .= "LEFT JOIN translation_text AS tt ON t.id = tt.translation_id AND tt.locale_id=" . $localeId;
+        $sql .= "LEFT JOIN translation_translation AS tt ON t.id = tt.translatable_id ";
+        $sql .= "LEFT JOIN locale AS l ON l.locale = tt.locale ";
+        $sql .= "WHERE l.id=" . $localeId;
 
         $conn = $this->getEntityManager()->getConnection();
         $stmt = $conn->prepare($sql);
@@ -93,7 +95,7 @@ class TranslationRepository extends ServiceEntityRepository
         $i = 2;
         if (!empty($locales)) {
             foreach($locales as $locale) {
-                $sql .= "LEFT JOIN translation_text AS t" . $i . " ON t" . $i . ".translation_id = t1.id AND t" . $i . ".locale_id = " . $locale->getId() . " ";
+                $sql .= "LEFT JOIN translation_translation AS t" . $i . " ON t" . $i . ".translatable_id = t1.id AND t" . $i . ".locale = " . $locale->getLocale() . " ";
                 $i++;
             }
         }
