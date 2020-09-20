@@ -89,7 +89,7 @@
                             </table>
                             <div class="row">
                                 <div class="col-3">
-                                    <v-btn color="error" small @click="dropMultiple">{{translations.delete_selected || 'Delete selected'}}</v-btn>
+                                    <v-btn v-if="api.delete" color="error" small @click="dropMultiple">{{translations.delete_selected || 'Delete selected'}}</v-btn>
                                 </div>
                                 <div class="col-3">
                                     <v-select class="d-inline" width="40" :items="[10,20,50,250]" v-model="limit" :dark="darkmode" solo x-small dense></v-select>
@@ -199,20 +199,20 @@
                             <div class="data-functions-container text-center">
                                 <h1 v-if="typeof settings.title !== 'undefined'">{{translations[settings.title] || settings.title}}</h1>
                                 <div v-else class="title-replace-spacer"></div>
-                                <div class="my-3">
-                                    <v-btn v-if="api.insert" block color="success" x-large @click="add">
+                                <div v-if="api.insert" class="my-3">
+                                    <v-btn block color="success" x-large @click="add">
                                         <i class="fa fa-plus" aria-hidden="true"></i>
                                         {{translations.add_new_item || 'Add a new item'}}
                                     </v-btn>
                                 </div>
-                                <div class="my-3">
-                                    <v-btn v-if="settings.insert" block color="success" x-large :data-url="settings.insert" @click="customButton">
+                                <div v-if="settings.insert" class="my-3">
+                                    <v-btn block color="success" x-large :data-url="settings.insert" @click="customButton">
                                         <i class="fa fa-plus" aria-hidden="true" :data-url="settings.insert"></i>
                                         {{translations.add_new_item || 'Add a new item'}}
                                     </v-btn>
                                 </div>
-                                <div class="my-3">
-                                    <v-btn v-if="settings.component" block color="success" x-large @click="setComponent" :data-component="settings.component">
+                                <div v-if="settings.component" class="my-3">
+                                    <v-btn block color="success" x-large @click="setComponent" :data-component="settings.component">
                                         <i class="fa fa-plus" aria-hidden="true"></i>
                                         {{translations.add_new_item || 'Add a new item'}}
                                     </v-btn>
@@ -223,7 +223,7 @@
                                         {{translations.search || 'Search'}}
                                     </v-btn>
                                 </div>
-                                <div class="my-3">
+                                <div v-if="api.delete" class="my-3">
                                     <v-btn block color="error" x-large @click="dropMultiple">
                                         <i class="fad fa-trash-alt"></i>
                                         {{translations.delete_selected || 'Delete selected'}}
