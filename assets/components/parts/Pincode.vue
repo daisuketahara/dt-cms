@@ -37,12 +37,12 @@
             test: function(event) {
                 var i = 1;
                 this.string = '';
-                while (i < this.length) {
+                while (i <= this.length) {
                     if (typeof this.code[i] != typeof undefined) this.string += this.code[i];
                     i++;
                 }
                 this.$emit('input', this.string);
-                event.target.nextElementSibling.focus();
+                if (event.target.nextElementSibling != null) event.target.nextElementSibling.focus();
             }
         }
     }
