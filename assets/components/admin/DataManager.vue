@@ -753,12 +753,11 @@
                                 } else {
 
                                     if (this.columns[i]['type'] == 'password') {
-                                        cValue = '';
-                                        this.form_data[this.columns[i]['id']] = cValue;
+                                        this.form_data[this.columns[i]['id']] = '';
                                     } else if (typeof this.columns[i]['object'] != typeof undefined) {
-                                        cValue = result['data'][this.columns[i]['object']][this.columns[i]['object_id']];
+                                        var cValue = result['data'][this.columns[i]['object']][this.columns[i]['object_id']];
                                         this.form_data[this.columns[i]['id']] = cValue;
-                                    } 
+                                    }
                                 }
                             }
 
