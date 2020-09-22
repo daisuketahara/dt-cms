@@ -17,6 +17,11 @@ class Setting
     private $id;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Module")
+     */
+    protected $module;
+
+    /**
      * @ORM\Column(type="string", length=255, unique=true)
      */
     protected $settingKey;
@@ -51,6 +56,30 @@ class Setting
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Module
+     *
+     * @return mixed
+     */
+    public function getModule()
+    {
+        return $this->module;
+    }
+
+    /**
+     * Set the value of Module
+     *
+     * @param mixed $module
+     *
+     * @return self
+     */
+    public function setModule($module)
+    {
+        $this->module = $module;
 
         return $this;
     }
@@ -126,4 +155,5 @@ class Setting
 
         return $this;
     }
+
 }

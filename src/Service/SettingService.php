@@ -38,4 +38,27 @@ class SettingService
         }
         return false;
     }
+
+    public function set(string $key, $value)
+    {
+        $setting = $this->em->getRepository(Setting::class)
+            ->findOneBy(['settingKey' => $key]);
+
+        if (!$setting) {
+            $setting = new Setting();
+            $setting->setSettingKey($key);
+        }
+
+        $setting->setSettingValue($value);
+
+        $this->em->persist($setting);
+        $this->em->flush();
+
+        $cache = new CacheService();
+
+        $value = html_entity_decode($value);
+        $cache->set('setting.'.$key, $value);
+
+        return false;
+    }
 }
