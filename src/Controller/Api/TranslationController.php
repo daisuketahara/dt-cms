@@ -191,10 +191,10 @@ class TranslationController extends AbstractController
 
             $params = json_decode(file_get_contents("php://input"),true);
 
-            if (isset($params['original'])) $data['original'] = $params['original'];
+            if (isset($params['original'])) $translation->setOriginal($params['original']);
             else $errors[] = 'Original cannot be empty';
 
-            if (isset($params['tag'])) $data['tag'] = $params['tag'];
+            if (isset($params['tag'])) $translation->setTag($params['tag']);
             else $errors[] = 'tag cannot be empty';
 
             if (!empty($errors)) {
