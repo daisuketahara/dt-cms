@@ -37,6 +37,7 @@
 {% endblock %}
 {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
+        <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="{{ asset('/') }}css/app.css?v={{settingservice.get('template.assets.version')}}">
         <link rel="shortcut icon" href="{{ asset('favicon.png') }}" type="image/png">
 {% endblock %}
