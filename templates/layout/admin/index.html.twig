@@ -8,13 +8,15 @@
         <meta name="HandheldFriendly" content="True">
         <meta name="MobileOptimized" content="320">
         {{ encore_entry_link_tags('admin') }}
+        
+        <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
         <link rel="stylesheet" type="text/css" href="/css/admin.css?v={{settingservice.get('template.assets.version')}}">
         <script src="https://kit.fontawesome.com/f4e4c62af9.js"></script>
     </head>
     <body data-locale="{{ app.request.locale }}">
         <div id="admin-app"></div>
         <footer class="container-fluid">
-            &copy; 2014 - {{ "now"|date('Y') }} by InterMention.
+            &copy; 2014 - {{ "now"|date('Y') }} by Daisuke Tahara.
             {% trans %}All rights reserved.{% endtrans %}
             {{constant('APPLICATION_VERSION')}}
         </footer>
@@ -25,5 +27,7 @@
             {% endfor %}
         </script>
         {{ encore_entry_script_tags('admin') }}
+        {% set customAdminScript = settingservice.get('admin.custom.script') %}
+        {{customAdminScript|raw}}
     </body>
 </html>
