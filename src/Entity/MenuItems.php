@@ -63,6 +63,11 @@ class MenuItems
     protected $sort;
 
     /**
+    * @ORM\Column(type="string", length=255, nullable=true)
+    */
+    protected $tag;
+
+    /**
     * @ORM\Column(type="boolean")
     */
     protected $active = false;
@@ -308,6 +313,30 @@ class MenuItems
     }
 
     /**
+     * Get the value of Tag
+     *
+     * @return mixed
+     */
+    public function getTag()
+    {
+        return $this->tag;
+    }
+
+    /**
+     * Set the value of Tag
+     *
+     * @param mixed $tag
+     *
+     * @return self
+     */
+    public function setTag($tag)
+    {
+        $this->tag = $tag;
+
+        return $this;
+    }
+
+    /**
      * Get the value of Active
      *
      * @return mixed
@@ -330,4 +359,5 @@ class MenuItems
 
         return $this;
     }
+
 }

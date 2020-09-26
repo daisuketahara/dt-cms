@@ -43,6 +43,7 @@ class PermissionRepository extends ServiceEntityRepository
         $sql .= "LEFT JOIN permission AS p ON p.id = up.permission_id ";
         $sql .= "WHERE uak.token = '" . $token . "' ";
         $sql .= "AND p.route LIKE '" . $path . "') p1 ";
+        $sql .= "AND p.active = 1 ";
         $sql .= "UNION ";
         $sql .= "SELECT route_name, route FROM ( ";
         $sql .= "SELECT p2.route_name, p2.route ";
@@ -53,6 +54,7 @@ class PermissionRepository extends ServiceEntityRepository
         $sql .= "LEFT JOIN permission AS p2 ON p2.id = rp.permission_id ";
         $sql .= "WHERE uak.token = '" . $token . "' ";
         $sql .= "AND p2.route LIKE '" . $path . "' ";
+        $sql .= "AND p2.active = 1 ";
         $sql .= ") p2";
 
         $conn = $this->getEntityManager()->getConnection();

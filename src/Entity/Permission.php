@@ -52,6 +52,16 @@ class Permission
     protected $description;
 
     /**
+    * @ORM\Column(type="string", length=255, nullable=true)
+    */
+    protected $tag;
+
+    /**
+    * @ORM\Column(type="boolean", nullable=true)
+    */
+    protected $active;
+
+    /**
      * Get the value of Id
      *
      * @return mixed
@@ -242,4 +252,53 @@ class Permission
 
         return $this;
     }
+
+    /**
+     * Get the value of Tag
+     *
+     * @return mixed
+     */
+    public function getTag()
+    {
+        return $this->tag;
+    }
+
+    /**
+     * Set the value of Tag
+     *
+     * @param mixed $tag
+     *
+     * @return self
+     */
+    public function setTag($tag)
+    {
+        $this->tag = $tag;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Active
+     *
+     * @return mixed
+     */
+    public function getActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * Set the value of Active
+     *
+     * @param mixed $active
+     *
+     * @return self
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
 }
