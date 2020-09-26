@@ -19,6 +19,11 @@ class Module
     /**
      * @ORM\Column(type="string", length=255)
      */
+    private $tag;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
     private $name;
 
     /**
@@ -36,56 +41,148 @@ class Module
      */
     private $active;
 
-    public function getId(): ?int
+    /**
+     * Get the value of Id
+     *
+     * @return mixed
+     */
+    public function getId()
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    /**
+     * Set the value of Id
+     *
+     * @param mixed $id
+     *
+     * @return self
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Tag
+     *
+     * @return mixed
+     */
+    public function getTag()
+    {
+        return $this->tag;
+    }
+
+    /**
+     * Set the value of Tag
+     *
+     * @param mixed $tag
+     *
+     * @return self
+     */
+    public function setTag($tag)
+    {
+        $this->tag = $tag;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of Name
+     *
+     * @return mixed
+     */
+    public function getName()
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
+    /**
+     * Set the value of Name
+     *
+     * @param mixed $name
+     *
+     * @return self
+     */
+    public function setName($name)
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getDescription(): ?string
+    /**
+     * Get the value of Description
+     *
+     * @return mixed
+     */
+    public function getDescription()
     {
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
+    /**
+     * Set the value of Description
+     *
+     * @param mixed $description
+     *
+     * @return self
+     */
+    public function setDescription($description)
     {
         $this->description = $description;
 
         return $this;
     }
 
-    public function getIcon(): ?string
+    /**
+     * Get the value of Icon
+     *
+     * @return mixed
+     */
+    public function getIcon()
     {
         return $this->icon;
     }
 
-    public function setIcon(?string $icon): self
+    /**
+     * Set the value of Icon
+     *
+     * @param mixed $icon
+     *
+     * @return self
+     */
+    public function setIcon($icon)
     {
         $this->icon = $icon;
 
         return $this;
     }
 
-    public function getActive(): ?bool
+    /**
+     * Get the value of Active
+     *
+     * @return mixed
+     */
+    public function getActive()
     {
         return $this->active;
     }
 
-    public function setActive(?bool $active): self
+    /**
+     * Set the value of Active
+     *
+     * @param mixed $active
+     *
+     * @return self
+     */
+    public function setActive($active)
     {
         $this->active = $active;
 
         return $this;
     }
+
 }
