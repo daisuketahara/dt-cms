@@ -480,6 +480,7 @@
 
 <script>
     import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+    import UploadAdapter from '../../plugins/UploadAdapter';
     import { ModelSelect } from 'vue-search-select';
     import { codemirror } from 'vue-codemirror';
 
@@ -521,7 +522,8 @@
                 editor: ClassicEditor, //ClassicEditor,
                 editorData: {}, //'<p>Rich-text editor content.</p>',
                 editorConfig: {
-                    'min-height': '500px'
+                    'min-height': '500px',
+                    extraPlugins: [this.uploader],
                 },
                 cmCssOptions: {
                     tabSize: 4,
@@ -776,6 +778,11 @@
             },
             updateFormData: function(event) {
                 this.form_data[event.target.dataset.id] = event.target.value;
+            },
+            uploader: function(editor) {
+                editor.plugins.get( 'FileRepository' ).createUploadAdapter = ( loader ) => {
+                    return new UploadAdapter( loader );
+                };
             },
             update: function(event) {
                 if (this.$refs.form.validate()) {

@@ -1,6 +1,21 @@
 <template>
     <transition name="fade" enter-active-class="animated fadeIn">
-        <div v-if="loaded">
+        <v-container v-if="!loaded" fluid fill-height key="loading">
+            <v-row justify="center" align="center">
+                <v-col cols="12" align="center">
+                    <v-progress-circular
+                        :size="50"
+                        color="white"
+                        indeterminate
+                        class="mr-5"
+                    ></v-progress-circular>
+                    <span class="text-uppercase">
+                        {{translations.loading || 'Loading...'}}
+                    </span>
+                </v-col>
+            </v-row>
+        </v-container>
+        <div v-else>
             <nav class="navbar mt-2">
                 <div class="form-inline">
                     <select id="file-group2" name="file-group" class="form-control form-control-sm mr-2">

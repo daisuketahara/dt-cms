@@ -63,20 +63,26 @@ class FileController extends AbstractController
     }
 
     /**
-    * @Route("/api/v1/file/upload/", name="api_file_upload"))
+    * @Route("/api/v1/file/upload/", name="api_file_upload"), methods={"POST"})
     */
-    final public function processFileUpload(Request $request, FileService $fileService)
+    final public function processFileUpload(Request $request, string $uploadDir, string $secureUploadDir, FileService $fileService)
     {
         $group = $request->request->get('file-group', '');
         $hide = $request->request->get('file-hide', 0);
+        $file = $request->files->get('upload');
+        $result = $fileService->upload($uploadDir, $file, $group, $hide);
 
-        foreach($request->files as $file) {
-            $fileId = $fileService->upload($file[0], $group, $hide);
+        if ($result) {
+            $json = array(
+                'success' => true,
+                'url' => $filePath
+            );
+        } else {
+            $json = array(
+                'success' => true,
+                'url' => $filePath
+            );
         }
-
-        $json = array(
-            'success' => true,
-        );
 
         return $this->json($json);
     }

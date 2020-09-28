@@ -14,34 +14,22 @@ class FileService
 {
     protected $em;
     protected $container;
-    private $targetDirectory;
 
     public function __construct(EntityManager $em, ContainerInterface $container)
     {
-        $this->setTargetDirectory();
         $this->em = $em;
         $this->container = $container;
     }
 
-    public function upload(UploadedFile $uploadedFile, int $group=0, bool $hide=false)
+    public function upload($uploadDir, $uploadedFile, $group=0, bool $hide=false)
     {
-        $filePath = $this->get('kernel')->getProjectDir() . '/';
-        if (empty($hide)) $filePath .= 'public/';
-
-        $envPath = getenv('FILES_PATH');
-        $path = 'files/';
-        if (!empty($envPath)) $path .= $envPath . '/';
-        if (!empty($group)) $path .= $path . '/';
-
         $fileSystem = new Filesystem();
-        $fileSystem->mkdir($filePath . $path);
-
-        $this->targetDirectory = $path;
+        $fileSystem->mkdir($uploadDir);
 
         $fileName = md5(uniqid()).'.'.$uploadedFile->guessExtension();
         $fileSize = $uploadedFile->getClientSize();
         $fileType = $uploadedFile->getMimeType();
-        $uploadedFile->move($filePath . $path, $fileName);
+        $uploadedFile->move($uploadDir, $fileName);
 
         $file = new File();
         //$file->setGroup($group);
@@ -58,17 +46,7 @@ class FileService
         $this->em->flush();
         $fileId = $file->getId();
 
-        return true;
-    }
-
-    public function getTargetDirectory()
-    {
-        return $this->targetDirectory;
-    }
-
-    public function setTargetDirectory()
-    {
-        return $this->targetDirectory;
+        return '/'.$path.$fileName;
     }
 
     public function getFile(int $id)
