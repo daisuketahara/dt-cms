@@ -759,6 +759,14 @@
                                     } else if (typeof this.columns[i]['object'] != typeof undefined) {
                                         var cValue = result['data'][this.columns[i]['object']][this.columns[i]['object_id']];
                                         this.form_data[this.columns[i]['id']] = cValue;
+                                    } else if (this.columns[i]['translate']) {
+
+
+                                        for (var n = 0; n < this.locales.length; n++) {
+                                            if (typeof this.form_data.translations[this.locales[n].locale] == typeof undefined)
+                                                this.form_data.translations[this.locales[n].locale] = {};
+                                        }
+
                                     }
                                 }
                             }
@@ -800,7 +808,8 @@
 
                                 for (var n = 0; n < this.locales.length; n++) {
                                     if (typeof params.translations[this.locales[n].locale] == typeof undefined) params.translations[this.locales[n].locale] = {};
-                                    params.translations[this.locales[n].locale][this.columns[i]['id']] = this.form_data.translations[this.locales[n].locale][this.columns[i]['id']];
+                                    if (typeof this.form_data.translations[this.locales[n].locale] != typeof undefined)
+                                        params.translations[this.locales[n].locale][this.columns[i]['id']] = this.form_data.translations[this.locales[n].locale][this.columns[i]['id']];
                                 }
 
 
