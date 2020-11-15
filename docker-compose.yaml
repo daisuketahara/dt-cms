@@ -2,7 +2,6 @@ version: '3.8'
 
 services:
     apache:
-        container_name: Apache
         build:
             context: .
             dockerfile: Dockerfile-Apache
@@ -16,7 +15,6 @@ services:
             - dev
 
     mariadb:
-        container_name: MariaDb
         image: mariadb
         environment:
             MYSQL_ROOT_PASSWORD: Dsd255255
@@ -29,7 +27,6 @@ services:
 
 
     memcached:
-        container_name: Memcached
         image: memcached
         ports:
             - 11211:11211
