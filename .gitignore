@@ -9,6 +9,7 @@ Migrations/*
 !Migrations/.gitignore
 node_modules/*
 var/cache/*
+var/data/*
 vendor/*
 !vendor/.gitignore
 webpack.config.js

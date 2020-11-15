@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+    apache:
+        container_name: Apache
+        build:
+            context: .
+            dockerfile: Dockerfile-Apache
+        volumes:
+            - ./:/var/www/html/
+        environment:
+            APACHE_DOCUMENT_ROOT: /var/www/html/
+        ports:
+            - 80:80
+        networks:
+            - dev
+
+    mariadb:
+        container_name: MariaDb
+        image: mariadb
+        environment:
+            MYSQL_ROOT_PASSWORD: Dsd255255
+        ports:
+            - 3306:3306
+        volumes:
+            - ./var/data/:/var/lib/mysql
+        networks:
+            - dev
+
+
+    memcached:
+        container_name: Memcached
+        image: memcached
+        ports:
+            - 11211:11211
+        networks:
+            - dev
+
+networks:
+    dev:
