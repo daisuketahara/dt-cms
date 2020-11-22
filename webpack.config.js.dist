@@ -43,7 +43,8 @@ Encore
     .enableVersioning(Encore.isProduction())
 
     // Enable Vue support
-    .enableVueLoader()
+    //.enableVueLoader()
+    .enableVueLoader(() => {}, { runtimeCompilerBuild: false })
 
     // enables Sass/SCSS support
     .enableSassLoader()
