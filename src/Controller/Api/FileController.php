@@ -4,6 +4,8 @@ namespace App\Controller\Api;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -23,7 +25,7 @@ class FileController extends AbstractController
     {
         $sort_column = $request->request->get('sortColumn', 'id');
         $sort_direction = strtoupper($request->request->get('sortDirection', 'desc'));
-        $limit = $request->request->get('limit', 15);
+        $limit = $request->request->get('limit', 99);
         $offset = $request->request->get('offset', 0);
         $filter = $request->request->get('filter', '');
 
@@ -65,22 +67,32 @@ class FileController extends AbstractController
     /**
     * @Route("/api/v1/file/upload/", name="api_file_upload"), methods={"POST"})
     */
-    final public function processFileUpload(Request $request, string $uploadDir, string $secureUploadDir, FileService $fileService)
+    final public function processFileUpload(Request $request, FileService $fileService)
     {
         $group = $request->request->get('file-group', '');
-        $hide = $request->request->get('file-hide', 0);
-        $file = $request->files->get('upload');
-        $result = $fileService->upload($uploadDir, $file, $group, $hide);
+        $hide = $request->request->get('file-hide', false);
+
+        foreach($request->files as $file) {
+            if ($file->isValid()) {
+                $result = $fileService->upload($file, $group, $hide);
+            } else {
+                $json = array(
+                    'success' => false,
+                    'message' => 'An error occurred during upload'
+                );
+                return $this->json($json);
+            }
+
+        }
 
         if ($result) {
             $json = array(
                 'success' => true,
-                'url' => $filePath
+                'url' => $result
             );
         } else {
             $json = array(
-                'success' => true,
-                'url' => $filePath
+                'success' => false,
             );
         }
 
@@ -90,13 +102,24 @@ class FileController extends AbstractController
     /**
     * @Route("/api/v1/file/delete/{id}/", name="api_file_delete"))
     */
-    final public function delete(int $id)
+    final public function delete(int $id, ParameterBagInterface $params)
     {
         $em = $this->getDoctrine()->getManager();
         $file = $em->getRepository(File::class)->find($id);
 
-        $em->remove($file);
-        $em->flush();
+        if ($file) {
+
+            $filesystem = new Filesystem();
+
+            if ($file->getHidden()) $path = $params->get('secure_upload_dir');
+            else $path = $params->get('upload_dir');
+
+            $filepath = $path . $file->getFileName();
+            if ($filesystem->exists($filepath)) $filesystem->remove([$filepath]);
+
+            $em->remove($file);
+            $em->flush();
+        }
 
         $json = array(
             'success' => true,

@@ -9,7 +9,6 @@ import vuetify from '../plugins/vuetify'
 import router from '../router';
 import store from '../store/admin.js';
 import axios from 'axios';
-import CKEditor from '@ckeditor/ckeditor5-vue';
 import VueCookies from 'vue-cookies';
 import VModal from 'vue-js-modal';
 import VueCodemirror from 'vue-codemirror';
@@ -18,7 +17,7 @@ import VueTelInputVuetify from 'vue-tel-input-vuetify/lib';
 import moment from 'moment';
 
 import Admin from '../app/Admin';
-import Editor from '../components/admin/Editor';
+import Page from '../components/admin/Page';
 import MenuEditor from '../components/admin/MenuEditor';
 import Control from '../components/admin/Control';
 import DataManager from '../components/admin/DataManager';
@@ -29,8 +28,10 @@ import Template from '../components/admin/Template';
 import Module from '../components/admin/Module';
 import Profile from '../components/Profile';
 import Map from '../components/Map';
+import Pincode from '../components/parts/Pincode';
+import Editor from '../components/parts/Editor';
+import Richtext from '../components/parts/Richtext';
 
-Vue.use(CKEditor);
 Vue.use(VueCodemirror);
 Vue.use(VModal, { dialog: true });
 Vue.use(VueCookies);
@@ -41,7 +42,10 @@ Vue.use(VueTelInputVuetify, {
 });
 Vue.component('filemanager', FileManager);
 Vue.component('User', User);
+Vue.component('Editor', Editor);
 Vue.component('Map', Map);
+Vue.component('Pincode', Pincode);
+Vue.component('Richtext', Richtext);
 
 Vue.filter('formatDate', function(value) {
     if (value) {
@@ -111,7 +115,7 @@ new Vue({
                         }
 
                         if (permissions[i]['component'] == 'Dashboard') newRoute.component = Dashboard;
-                        if (permissions[i]['component'] == 'Editor') newRoute.component = Editor;
+                        if (permissions[i]['component'] == 'Page') newRoute.component = Page;
                         if (permissions[i]['component'] == 'Control') newRoute.component = Control;
                         if (permissions[i]['component'] == 'MenuEditor') newRoute.component = MenuEditor;
                         if (permissions[i]['component'] == 'FileManager') newRoute.component = FileManager;
@@ -120,6 +124,7 @@ new Vue({
                         if (permissions[i]['component'] == 'Template') newRoute.component = Template;
                         if (permissions[i]['component'] == 'Module') newRoute.component = Module;
                         if (permissions[i]['component'] == 'Profile') newRoute.component = Profile;
+
                         if (permissions[i]['props'] != '') newRoute.props = JSON.parse(permissions[i]['props']);
 
                         var checkExist = this.$router.resolve({path: newRoute.path});

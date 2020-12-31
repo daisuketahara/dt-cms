@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -14,20 +15,25 @@ class FileService
 {
     protected $em;
     protected $container;
+    private $params;
 
-    public function __construct(EntityManager $em, ContainerInterface $container)
+    public function __construct(EntityManager $em, ContainerInterface $container, ParameterBagInterface $params)
     {
         $this->em = $em;
         $this->container = $container;
+        $this->params = $params;
     }
 
-    public function upload($uploadDir, $uploadedFile, $group=0, bool $hide=false)
+    public function upload($uploadedFile, $group=0, bool $hide=false)
     {
+        $uploadDir = $this->params->get('upload_dir');
+        $uploadUrl = $this->params->get('upload_url');
+
         $fileSystem = new Filesystem();
         $fileSystem->mkdir($uploadDir);
 
         $fileName = md5(uniqid()).'.'.$uploadedFile->guessExtension();
-        $fileSize = $uploadedFile->getClientSize();
+        //$fileSize = $uploadedFile->getClientSize();
         $fileType = $uploadedFile->getMimeType();
         $uploadedFile->move($uploadDir, $fileName);
 
@@ -36,8 +42,8 @@ class FileService
         $file->setUserId(0);
         $file->setName($uploadedFile->getClientOriginalName());
         $file->setFileName($fileName);
-        $file->setFilePath($path);
-        $file->setFileSize($fileSize);
+        $file->setFilePath($uploadUrl);
+        //$file->setFileSize($fileSize);
         $file->setFileType($fileType);
         $file->setHidden($hide);
         $file->setActive(true);
@@ -46,7 +52,7 @@ class FileService
         $this->em->flush();
         $fileId = $file->getId();
 
-        return '/'.$path.$fileName;
+        return $uploadUrl.$fileName;
     }
 
     public function getFile(int $id)

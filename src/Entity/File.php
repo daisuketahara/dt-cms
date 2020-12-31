@@ -37,27 +37,27 @@ class File
     protected $fileName;
 
     /**
-    * @ORM\Column(type="string", length=255)
+    * @ORM\Column(type="string", length=255, nullable=true)
     */
     protected $filePath;
 
     /**
-    * @ORM\Column(type="integer", length=255)
+    * @ORM\Column(type="integer", length=255, nullable=true)
     */
     protected $fileSize;
 
     /**
-    * @ORM\Column(type="string", length=255)
+    * @ORM\Column(type="string", length=255, nullable=true)
     */
     protected $fileType;
 
     /**
-    * @ORM\Column(type="boolean")
+    * @ORM\Column(type="boolean", nullable=true)
     */
     protected $hidden;
 
     /**
-    * @ORM\Column(type="boolean")
+    * @ORM\Column(type="boolean", nullable=true)
     */
     protected $active;
 

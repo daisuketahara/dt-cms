@@ -427,7 +427,7 @@
                                         </transition>
                                     </div>
                                     <v-text-field v-else-if="column.type === 'price'" v-model="form_data[column.id]" :label="translations[column.label]+' (e.g. 10.00)' || column.label+' (e.g. 10.00)'" :rules="validation[column.id]" :hint="column.tooltip" :dark="darkmode"></v-text-field>
-                                    <div v-else-if="column.type === 'textarea' || column.type === 'code' || column.type === 'texteditor'" class="mb-3">
+                                    <div v-else-if="column.type === 'textarea' || column.type === 'code' || column.type === 'texteditor' || column.type === 'editor'" class="mb-3">
                                         <v-row no-gutters dense>
                                             <v-col class="pt-2"><label>{{ translations[column.label] || column.label }}</label></v-col>
                                             <v-col cols="1" class="pl-2" v-if="column.translate">
@@ -440,9 +440,11 @@
                                         <codemirror v-else-if="column.type === 'code' && column.translate" v-model="form_data.translations[form_locale][column.id]" :options="cmCssOptions"></codemirror>
                                         <codemirror v-else-if="column.type === 'code'" v-model="form_data[column.id]" :options="cmCssOptions"></codemirror>
 
+                                        <editor v-else-if="column.type === 'texteditor' && column.translate" :key="column.id+'_'+form_locale" v-model="form_data.translations[form_locale][column.id]"></editor>
+                                        <editor v-else-if="column.type === 'texteditor'" v-model="form_data[column.id]"></editor>
 
-                                        <ckeditor v-else-if="column.type === 'texteditor' && column.translate" :editor="editor" v-model="form_data.translations[form_locale][column.id]" :config="editorConfig"></ckeditor>
-                                        <ckeditor v-else-if="column.type === 'texteditor'" :editor="editor" v-model="form_data[column.id]" :config="editorConfig"></ckeditor>
+                                        <editor v-else-if="column.type === 'editor' && column.translate" :key="column.id+'_'+form_locale" v-model="form_data.translations[form_locale][column.id]"></editor>
+                                        <editor v-else-if="column.type === 'editor'" v-model="form_data[column.id]"></editor>
                                     </div>
                                     <v-row v-else no-gutters dense>
                                         <v-col>
@@ -479,8 +481,6 @@
 </template>
 
 <script>
-    import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-    import UploadAdapter from '../../plugins/UploadAdapter';
     import { ModelSelect } from 'vue-search-select';
     import { codemirror } from 'vue-codemirror';
 
@@ -519,12 +519,6 @@
                 total: 0,
                 pages: 0,
                 buttons: [],
-                editor: ClassicEditor, //ClassicEditor,
-                editorData: {}, //'<p>Rich-text editor content.</p>',
-                editorConfig: {
-                    'min-height': '500px',
-                    extraPlugins: [this.uploader],
-                },
                 cmCssOptions: {
                     tabSize: 4,
                     theme: 'base16-light',

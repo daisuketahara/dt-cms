@@ -145,7 +145,6 @@
 </template>
 
 <script>
-    import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
     import { codemirror } from 'vue-codemirror';
 
     import 'codemirror/lib/codemirror.css'
@@ -167,14 +166,7 @@
                     settings: {}
                 },
                 templates: [],
-                data: {},
-                editor: ClassicEditor,
-                editorData: {},
-                editorConfig: {
-                    codeSnippet_theme: 'default',
-                    toolbar: []
-                },
-                cmCssOptions: {
+                data: {},ons: {
                     tabSize: 4,
                     theme: 'base16-light',
                     mode: 'text/css',

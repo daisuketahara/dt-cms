@@ -4,13 +4,29 @@
 
 .component {
 	text-align: left;
+
+	li {
+
+		p {
+			margin-bottom: 0;
+		}
+
+	}
+
+	a.component-button,
+	a.component-button2,
+	a.component-button3,
+	a.component-button4 {
+		background-color: #fb8c00;
+		color: #FFFFFF;
+	}
+
+	.component-image,
+	.component-image2 {
+		min-height: 300px;
+	}
 }
 
 .component-block {
 	text-align: center;
-}
-
-.component-image,
-.component-image2 {
-	min-height: 300px;
 }

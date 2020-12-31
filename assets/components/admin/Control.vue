@@ -19,7 +19,7 @@
             </div>
             <div v-else-if="element.type === 'texteditor'" class="form-group">
                 <label :for="'form-'+element.id">{{element.label}}</label>
-                <ckeditor :editor="editor" v-model="form_data[element.id]" :config="editorConfig"></ckeditor>
+                <richtext v-model="form_data[element.id]" :value="form_data[element.id]"></richtext>
             </div>
             <div v-else-if="element.type === 'checkbox'" class="form-group">
                 <div class="checkbox">
@@ -44,7 +44,6 @@
 </template>
 
 <script>
-    import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
     export default {
         name: "control",
@@ -57,11 +56,6 @@
                 elements: [],
                 form_data: {},
                 api: {},
-                editor: ClassicEditor, //ClassicEditor,
-                editorData: {}, //'<p>Rich-text editor content.</p>',
-                editorConfig: {
-                    'min-height': '500px'
-                }
             }
         },
         created() {

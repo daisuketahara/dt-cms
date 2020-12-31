@@ -3,8 +3,11 @@
 parameters:
     locale: 'en'
     app.locales: en|nl
-    files_directory: '%kernel.project_dir%/files'
-    profile_picture_directory: '%kernel.project_dir%/public/files'
+    project_dir: '%kernel.project_dir%'
+    upload_dir: '%kernel.project_dir%/public/files/'
+    upload_url: '/files/'
+    secure_upload_dir: '%kernel.project_dir%/files/'
+    secure_upload_url: '/secure_files/'
 
 services:
     # default configuration for services in *this* file
