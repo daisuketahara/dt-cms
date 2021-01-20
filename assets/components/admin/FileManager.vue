@@ -74,7 +74,7 @@
                 <v-col v-else cols="12" class="file-upload-drop" justify="center" align="center" v-cloak @drop.prevent="addFile" @dragover.prevent>
                     <h2>{{translations.drop_file || 'Drop a file in this box'}}</h2>
                     <div>{{translations.or || 'or'}}</div>
-                    <v-btn>{{translations.select_file || 'Sexy a file'}}</v-btn>
+                    <v-btn>{{translations.select_file || 'Send a file'}}</v-btn>
                 </v-col>
             </v-row>
             <v-row class="mt-4 p-3">
