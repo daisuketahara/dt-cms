@@ -89,8 +89,8 @@
             <transition-group name="fade" enter-active-class="animated bounceInUp" leave-active-class="animated fadeOut">
                 <v-alert v-for="alert in alerts" :type="alert.type" :key="alert.id">
                     {{alert.message}}
-                    <v-btn class="close" data-dismiss="alert" aria-label="Close" @click="removeAlert" :data-key="alert.id">
-                        <span aria-hidden="true">&times;</span>
+                    <v-btn fab text x-small class="close" color="white" data-dismiss="alert" aria-label="Close" @click="removeAlert" :data-key="alert.id">
+                        <v-icon>fal fa-times</v-icon>
                     </v-btn>
                 </v-alert>
             </transition-group>
@@ -287,7 +287,7 @@
 </script>
 
 
-<style lang="scss" scoped>
+<style lang="scss">
     .dt-alerts {
         position: fixed;
         bottom: 1rem;
@@ -297,18 +297,14 @@
         z-index: 9999;
         min-width: 280px;
 
-        .alert {
-            text-align: left;
-            font-size: 0.9rem;
+        .v-alert {
+
             position: relative;
-            -webkit-box-shadow: -1px 2px 22px 0px rgba(0,0,0,0.75);
-            -moz-box-shadow: -1px 2px 22px 0px rgba(0,0,0,0.75);
-            box-shadow: -1px 2px 22px 0px rgba(0,0,0,0.75);
 
             .close {
                 position: absolute;
-                top: 9px;
-                right: 9px;
+                top: 1px;
+                right: 1px;
                 font-size: 1rem;
             }
         }
