@@ -9,7 +9,7 @@
                     >
                         {{ element.parts.title.content }}
                     </h3>
-                    <div v-if="element.parts.text.settings.display!='none'" class="component-text" v-html="element.parts.text.content"></div>
+                    <div v-if="element.parts.text.settings.display!='none'" class="component-textarea" v-html="element.parts.text.content"></div>
                     <a
                         v-if="element.parts.button.settings.display!='none'"
                         :data-href="element.parts.button.settings.href"
@@ -34,7 +34,7 @@
                     >
                         {{ element.parts.title.content }}
                     </h3>
-                    <div v-if="element.parts.text.settings.display!='none'" class="component-text" v-html="element.parts.text.content"></div>
+                    <div v-if="element.parts.text.settings.display!='none'" class="component-textarea" v-html="element.parts.text.content"></div>
                     <a
                         v-if="element.parts.button.settings.display!='none'"
                         :data-href="element.parts.button.settings.href"
@@ -50,7 +50,7 @@
                     >
                         {{ element.parts.title2.content }}
                     </h3>
-                    <div v-if="element.parts.text2.settings.display!='none'" class="component-text" v-html="element.parts.text2.content"></div>
+                    <div v-if="element.parts.text2.settings.display!='none'" class="component-textarea" v-html="element.parts.text2.content"></div>
                     <a
                         v-if="element.parts.button2.settings.display!='none'"
                         :data-href="element.parts.button2.settings.href"
@@ -64,12 +64,12 @@
                 <v-col cols="12" sm="6" class="component-image"></v-col>
                 <v-col cols="12" sm="6" class="component-image"></v-col>
             </v-row>
-            <v-row v-else-if="element.type == 'block'" :id="element.id" class="component component-block">
+            <v-row v-else-if="element.type == 'text'" :id="element.id" class="component component-text">
                 <v-col cols="12">
                     <h3 v-if="element.parts.title.settings.display!='none'" class="component-title">
                         {{ element.parts.title.content }}
                     </h3>
-                    <div v-if="element.parts.text.settings.display!='none'" class="component-text" v-html="element.parts.text.content"></div>
+                    <div v-if="element.parts.text.settings.display!='none'" class="component-textarea" v-html="element.parts.text.content"></div>
                     <a
                         v-if="element.parts.button.settings.display!='none'"
                         :data-href="element.parts.button.settings.href"
@@ -77,6 +77,10 @@
                     >
                         {{element.parts.button.content}}
                     </a>
+                </v-col>
+            </v-row>
+            <v-row v-else-if="element.type == 'block'" :id="element.id" class="component component-block">
+                <v-col cols="12">
                 </v-col>
             </v-row>
             <v-row v-else-if="element.type == 'html'" :id="element.id" class="component component-html">

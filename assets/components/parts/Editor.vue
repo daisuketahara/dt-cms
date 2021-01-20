@@ -21,7 +21,7 @@
                             {{ element.parts.title.content }}
                             <v-btn v-if="element.parts.title.selected" fab x-small class="btn-settings" @click="sheets.style = true;"><v-icon>fas fa-cogs</v-icon></v-btn>
                         </h3>
-                        <div v-if="element.parts.text.settings.display!='none'" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
+                        <div v-if="element.parts.text.settings.display!='none'" v-bind:class="{ 'component-textarea': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
                             <v-btn v-if="element.parts.text.selected" fab x-small class="btn-settings" @click="sheets.style = true;"><v-icon>fas fa-cogs</v-icon></v-btn>
                             <richtext v-model="element.parts.text.content" :content="element.parts.text.content" :active="element.parts.text.selected"></richtext>
                         </div>
@@ -57,7 +57,7 @@
                             {{ element.parts.title.content }}
                             <v-btn v-if="element.parts.title.selected" fab x-small class="btn-settings" @click="sheets.style = true;"><v-icon>fas fa-cogs</v-icon></v-btn>
                         </h3>
-                        <div v-if="element.parts.text.settings.display!='none'" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
+                        <div v-if="element.parts.text.settings.display!='none'" v-bind:class="{ 'component-textarea': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
                             <v-btn v-if="element.parts.text.selected" fab x-small class="btn-settings" @click="sheets.style = true;"><v-icon>fas fa-cogs</v-icon></v-btn>
                             <richtext v-model="element.parts.text.content" :content="element.parts.text.content" :active="element.parts.text.selected"></richtext>
                         </div>
@@ -82,7 +82,7 @@
                             {{ element.parts.title2.content }}
                             <v-btn v-if="element.parts.title2.selected" fab x-small class="btn-settings" @click="sheets.style = true;"><v-icon>fas fa-cogs</v-icon></v-btn>
                         </h3>
-                        <div v-if="element.parts.text2.settings.display!='none'" v-bind:class="{ 'component-text2': true, active: element.parts.text2.selected == true}" v-on:click.stop="setActiveElement(element.parts.text2, index);">
+                        <div v-if="element.parts.text2.settings.display!='none'" v-bind:class="{ 'component-textarea2': true, active: element.parts.text2.selected == true}" v-on:click.stop="setActiveElement(element.parts.text2, index);">
                             <v-btn v-if="element.parts.text2.selected" fab x-small class="btn-settings" @click="sheets.style = true;"><v-icon>fas fa-cogs</v-icon></v-btn>
                             <richtext v-model="element.parts.text2.content" :content="element.parts.text2.content" :active="element.parts.text2.selected"></richtext>
                         </div>
@@ -116,7 +116,7 @@
                         <v-btn v-if="element.parts.image2.selected" fab x-small class="btn-settings" @click="sheets.style = true;"><v-icon>fas fa-cogs</v-icon></v-btn>
                     </v-col>
                 </v-row>
-                <v-row v-else-if="element.type == 'block'" :id="element.id" class="" v-bind:class="{ 'component': true, 'component-block': true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
+                <v-row v-else-if="element.type == 'text'" :id="element.id" class="" v-bind:class="{ 'component': true, 'component-text': true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
                     <v-col cols="12">
                         <h3
                             v-if="element.parts.title.settings.display!='none'"
@@ -127,7 +127,7 @@
                             {{ element.parts.title.content }}
                             <v-btn v-if="element.parts.title.selected" fab x-small class="btn-settings" @click="sheets.style = true;"><v-icon>fas fa-cogs</v-icon></v-btn>
                         </h3>
-                        <div v-if="element.parts.text.settings.display!='none'" v-bind:class="{ 'component-text': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
+                        <div v-if="element.parts.text.settings.display!='none'" v-bind:class="{ 'component-textarea': true, active: element.parts.text.selected == true}" v-on:click.stop="setActiveElement(element.parts.text, index);">
                             <v-btn v-if="element.parts.text.selected" fab x-small class="btn-settings" @click="sheets.style = true;"><v-icon>fas fa-cogs</v-icon></v-btn>
                             <richtext v-model="element.parts.text.content" :content="element.parts.text.content" :active="element.parts.text.selected"></richtext>
                         </div>
@@ -142,6 +142,8 @@
                             <v-btn v-if="element.parts.button.selected" fab x-small class="btn-settings" @click="sheets.style = true;"><v-icon>fas fa-cogs</v-icon></v-btn>
                         </a>
                     </v-col>
+                </v-row>
+                <v-row v-else-if="element.type == 'block'" :id="element.id" class="" v-bind:class="{ 'component': true, 'component-block': true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
                 </v-row>
                 <v-row v-else-if="element.type == 'html'" :id="element.id" class="" v-bind:class="{ 'component': true, 'component-html': true, active: element.selected == true}" v-on:click.stop="setActiveElement(element, index);">
                     <v-col cols="12" v-html="element.html"></v-col>
@@ -1189,9 +1191,9 @@
                             },
                         }
                     },
-                    block: {
-                        type: 'block',
-                        title: this.translations.block,
+                    text: {
+                        type: 'text',
+                        title: this.translations.text,
                         image: this.example.bg_image,
                         active: true,
                         selected: false,
@@ -1212,6 +1214,16 @@
                                 selected: false,
                                 settings: button_settings,
                             },
+                        }
+                    },
+                    block: {
+                        type: 'block',
+                        title: this.translations.block,
+                        image: this.example.bg_image,
+                        active: true,
+                        selected: false,
+                        settings: component_settings,
+                        parts: {
                         }
                     },
                     html: {
@@ -1487,14 +1499,15 @@
         position: relative;
 
         .component-block,
+        .component-text,
         .component-title,
         .component-title2,
         .component-title3,
         .component-title4,
-        .component-text,
-        .component-text2,
-        .component-text3,
-        .component-text4,
+        .component-textarea,
+        .component-textarea2,
+        .component-textarea3,
+        .component-textarea4,
         .component-button,
         .component-button2,
         .component-button3,
@@ -1520,15 +1533,16 @@
     }
 
     .component.active,
+    .component-text.active,
     .component-block.active,
     .component-title.active,
     .component-title2.active,
     .component-title3.active,
     .component-title4.active,
-    .component-text.active,
-    .component-text2.active,
-    .component-text3.active,
-    .component-text4.active,
+    .component-textarea.active,
+    .component-textarea2.active,
+    .component-textarea3.active,
+    .component-textarea4.active,
     .component-button.active,
     .component-button2.active,
     .component-button3.active,
