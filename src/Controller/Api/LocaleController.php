@@ -61,10 +61,10 @@ class LocaleController extends AbstractController
         if (!empty($filter)) {
             parse_str($filter, $filter_array);
             foreach($filter_array as $key => $value) {
-                if (!empty($value)) {
+                //if (!empty($value)) {
                     //$where[$key] = $value;
                     $whereString .= " AND l." . $key . " LIKE '%" . $value . "%'";
-                }
+                //}
             }
         }
 
