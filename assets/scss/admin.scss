@@ -240,3 +240,12 @@ button > * {
         display: none;
     }
 }
+
+.v-select__slot {
+
+    .v-input__icon--append {
+        position: absolute;
+        right: -10px;
+        top: 2px;
+    }
+}
