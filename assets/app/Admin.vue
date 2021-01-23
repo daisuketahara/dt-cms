@@ -196,9 +196,9 @@
                     document.body.classList.add('darkmode');
                     this.$store.commit('setDarkmode', true);
                 }
-                if (this.$cookies.isKey('fullscreen')) {
-                    document.body.classList.add('fullscreen');
-                    this.$store.commit('setFullscreen', true);
+                if (this.$cookies.isKey('disableFullscreen')) {
+                    document.body.classList.remove('fullscreen');
+                    this.$store.commit('setFullscreen', false);
                 }
             },
             checkPermission(route_name) {
@@ -272,11 +272,11 @@
                 if (this.$store.state.fullscreen == false) {
                     body.classList.add('fullscreen');
                     this.$store.commit('setFullscreen', true);
-                    this.$cookies.set('fullscreen', 1);
+                    this.$cookies.remove('disableFullscreen');
                 } else {
                     body.classList.remove('fullscreen');
                     this.$store.commit('setFullscreen', false);
-                    this.$cookies.remove('fullscreen');
+                    this.$cookies.set('disableFullscreen', 1);
                 }
             },
             removeAlert: function(event) {

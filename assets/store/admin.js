@@ -18,7 +18,7 @@ export default new Vuex.Store({
         menu: [],
         permissions: [],
         darkmode: false,
-        fullscreen: false,
+        fullscreen: true,
         alerts: {},
         settings: {}
     },
