@@ -181,7 +181,7 @@
                 if (typeof settings.background_color !== 'undefined' && settings.background_color_enabled) {
                     if (settings.background_color.hex != '') css+= "background-color: " + settings.background_color.hex + "; ";
                 }
-                if (typeof settings.background_image !== 'undefined' && settings.background_image != '') css+= "background-image: url(" + settings.background_image + "); ";
+                if (typeof settings.background_image !== 'undefined' && settings.background_image != '' && settings.background_image != '/img/img-placeholder.png') css+= "background-image: url(" + settings.background_image + "); ";
                 if (typeof settings.background_size !== 'undefined' && settings.background_size != '') css+= "background-size: " + settings.background_size + "; ";
                 if (typeof settings.background_position !== 'undefined' && settings.background_position != '') css+= "background-position: " + settings.background_position + "; ";
                 if (typeof settings.background_repeat !== 'undefined' && settings.background_repeat != '') css+= "background-repeat: " + settings.background_repeat + "; ";
