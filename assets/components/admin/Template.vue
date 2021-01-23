@@ -117,7 +117,7 @@
                             <v-img
                                 class="white--text align-end"
                                 height="200px"
-                                :src="'/' + item.image.filePath + item.image.fileName"
+                                :src="item.image != null ? '/' + item.image.filePath + item.image.fileName : '/img/img-placeholder.png'"
                             >
                                 <v-card-title>{{item.name}}</v-card-title>
                             </v-img>
