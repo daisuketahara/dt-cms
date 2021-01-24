@@ -214,7 +214,11 @@
             getLocales: function() {
                 this.$store.commit('setLocale', document.body.dataset.locale);
 
-                this.$axios.get('/api/v1/locale/list/')
+                var params = {
+                    filter: 'active=1'
+                }
+
+                this.$axios.post('/api/v1/locale/list/', params)
                     .then(response => {
                         var locales = response.data.data;
                         this.$store.commit('setLocales', locales);
