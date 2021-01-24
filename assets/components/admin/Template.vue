@@ -166,7 +166,8 @@
                     settings: {}
                 },
                 templates: [],
-                data: {},ons: {
+                data: {},
+                cmCssOptions: {
                     tabSize: 4,
                     theme: 'base16-light',
                     mode: 'text/css',
