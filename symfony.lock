@@ -101,6 +101,9 @@
     "fig/link-util": {
         "version": "1.0.0"
     },
+    "friendsofphp/proxy-manager-lts": {
+        "version": "v1.0.3"
+    },
     "guzzlehttp/guzzle": {
         "version": "6.3.0"
     },

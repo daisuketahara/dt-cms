@@ -24,7 +24,7 @@
         "@tomtom-international/web-sdk-maps": "^5.60.0",
         "@tomtom-international/web-sdk-services": "^5.60.0",
         "animate.css": "^3.7.0",
-        "axios": "^0.18.0",
+        "axios": "^0.21.1",
         "babel-polyfill": "^6.26.0",
         "bootstrap": "^4.5.0",
         "bowser": "^2.10.0",
